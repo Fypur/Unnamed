@@ -6,17 +6,20 @@ namespace Basic_platformer
 {
     public abstract class Entity
     {
-        public Entity(Vector2 position, int width, int height)
+        public Entity(Vector2 position, int width, int height, float gravityScale)
         {
             Pos = position;
             this.Width = width;
             this.Height = height;
+            this.gravityScale = gravityScale;
         }
 
         public Vector2 Pos;
         public int Width;
         public int Height;
         public Vector2 velocity;
+        private const float gravity = 9.81f;
+        private readonly float gravityScale;
 
         private float xRemainder;
         private float yRemainder;
@@ -88,9 +91,9 @@ namespace Basic_platformer
             return false;
         }
 
-        public void Gravity(float gravityScale)
+        public void Gravity()
         {
-            velocity += new Vector2(0, 9.81f * gravityScale);
+            velocity += new Vector2(0, 9.81f * gravityScale * Platformer.Deltatime);
         }
     }
 }

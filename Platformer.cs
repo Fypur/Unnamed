@@ -26,9 +26,10 @@ namespace Basic_platformer
 
         protected override void Initialize()
         {
-            player = new Player(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight - 40 - 128), 32, 60);
+            player = new Player(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight - 100), 32, 60);
             Solids.Add(new Platform(new Vector2(0, graphics.PreferredBackBufferHeight - 30), graphics.PreferredBackBufferWidth, 30, Color.White));
             Solids.Add(new Platform(new Vector2(graphics.PreferredBackBufferWidth - 30, 0), 30, graphics.PreferredBackBufferHeight, Color.White));
+            Solids.Add(new Platform(new Vector2(graphics.PreferredBackBufferWidth - 400, graphics.PreferredBackBufferHeight / 2 + 100), graphics.PreferredBackBufferWidth - 500, 10, Color.White));
             base.Initialize();
         }
 
