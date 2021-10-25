@@ -15,7 +15,7 @@ namespace Basic_platformer
         private const float gravityScale = 200;
         private const float speed = 300f; //in Pixel Per Second
         private const float wallJumpSpeed = 100f;
-        private const float wallJumpSideForce = 600f;
+        private const float wallJumpSideForce = 620f;
         private const float jumpForce = 600;
         private const float constJumpTime = 0.4f;
 
@@ -71,7 +71,16 @@ namespace Basic_platformer
             else
                 Gravity();
 
-            Debug.Log(facing);
+            if(CollidedWithEntity(Platformer.Entities, Pos + new Vector2(0, 1), out Goomba goomba) &&
+                !CollidedWithEntity(goomba, Pos + new Vector2(1, -3)) &&
+                !CollidedWithEntity(goomba, Pos + new Vector2(-1, -3)))
+            {
+                Platformer.Destroy(goomba);
+                jumpTime = constJumpTime;
+                Jump();
+            }
+
+            Debug.Log(velocity.Y);
 
             MoveX(velocity.X * Platformer.Deltatime, null);
             MoveY(velocity.Y * Platformer.Deltatime, null);
@@ -114,15 +123,15 @@ namespace Basic_platformer
             {
                 velocity.Y = -jumpForce * (jumpTime / constJumpTime);
                 velocity.X = wallJumpSideForce * (wallJumpingDirection ? -1 : 1) * (jumpTime / constJumpTime) + wallJumpSpeed * movingDir;
-                jumpTime -= Platformer.Deltatime * 10;
+                jumpTime -= Platformer.Deltatime * 2;
             }
         }
 
         public override void Render()
         {
-            Rectangle playerRect = new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height);
             Drawing.Draw(Sprites[SpriteStates.Idle], Pos, null, Color.White, 0, Vector2.Zero,
                 new Vector2(Width / Sprites[SpriteStates.Idle].Width, Height / Sprites[SpriteStates.Idle].Height), facing == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+            Debug.Log(Height / Sprites[SpriteStates.Idle].Width);
         }
     }
 }

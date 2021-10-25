@@ -86,10 +86,26 @@ namespace Basic_platformer
         {
             Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
             foreach (Solid s in solids)
-                if (new Rectangle((int)s.Pos.X, (int)s.Pos.Y, s.Width, s.Height).Intersects(playerRect))
+                if (playerRect.Intersects(new Rectangle((int)s.Pos.X, (int)s.Pos.Y, s.Width, s.Height)))
                     return true;
             return false;
         }
+
+        protected bool CollidedWithEntity<T>(List<Entity> entities,Vector2 pos, out T collidedEntity) where T : Entity
+        {
+            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
+            foreach (Entity e in entities)
+                if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e is T castedEntity)
+                {
+                    collidedEntity = castedEntity;
+                    return true;
+                }
+            collidedEntity = null;
+            return false;
+        }
+
+        protected bool CollidedWithEntity(Entity e, Vector2 pos)
+            => new Rectangle((int)pos.X, (int)pos.Y, Width, Height).Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height));
 
         public void Gravity()
         {
