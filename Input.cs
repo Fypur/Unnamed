@@ -1,0 +1,47 @@
+﻿using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Basic_platformer
+{
+    public static class Input
+    {
+        private static KeyboardState state;
+        private static KeyboardState previousState;
+
+        public static void UpdateState()
+        {
+            state = Keyboard.GetState();
+        }
+
+        public static void UpdateOldState()
+        {
+            previousState = Keyboard.GetState();
+        }
+
+        public static bool GetKeyDown(Keys key)
+        {
+            if (state.IsKeyDown(key) && !previousState.IsKeyDown(key))
+                return true;
+            else
+                return false;
+        }
+
+        public static bool GetKey(Keys key)
+        {
+            if (state.IsKeyDown(key))
+                return true;
+            else
+                return false;
+        }
+
+        public static bool GetKeyUp(Keys key)
+        {
+            if (!state.IsKeyDown(key) && previousState.IsKeyDown(key))
+                return true;
+            else
+                return false;
+        }
+    }
+}

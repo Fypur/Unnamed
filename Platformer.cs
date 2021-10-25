@@ -45,11 +45,13 @@ namespace Basic_platformer
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            Input.UpdateState();
 
             Deltatime = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
             player.Update();
 
+            Input.UpdateOldState();
             base.Update(gameTime);
         }
 
@@ -61,10 +63,9 @@ namespace Basic_platformer
             player.Render();
             foreach (Solid s in Solids)
                 s.Render();
-            spriteBatch.End();
 
-            /*foreach (Entity e in ???)
-                e.Render();*/
+            Drawing.DebugString();
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

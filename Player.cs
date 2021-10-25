@@ -13,7 +13,10 @@ namespace Basic_platformer
         public static Dictionary<SpriteStates, Texture2D> Sprites = new Dictionary<SpriteStates, Texture2D>();
 
         private readonly float speed = 300f; //in Pixel Per Second
-        private readonly float jumpForce = 4000;
+        private const float jumpForce = 1000;
+        private const float constJumpTime = 0.4f;
+        private float jumpTime;
+        private bool isJumping;
 
         private bool onGround;
         
@@ -25,22 +28,50 @@ namespace Basic_platformer
 
         public override void Update()
         {
-            Gravity(3);
+            onGround = CollideAt(Platformer.Solids, Pos + new Vector2(0, 1));
 
-            KeyboardState kbState = Keyboard.GetState();
-            if (kbState.IsKeyDown(Keys.Right))
-                velocity.X += speed;
-            if (kbState.IsKeyDown(Keys.Left))
-                velocity.X -= speed;
-            if (kbState.IsKeyDown(Keys.Space))
-                velocity.Y -= jumpForce;
+            float movingSpeed = 0;
+            if (Input.GetKey(Keys.Right))
+                movingSpeed += speed * Platformer.Deltatime;
+            if (Input.GetKey(Keys.Left))
+                movingSpeed -= speed * Platformer.Deltatime;
 
-            base.Update();
+            velocity.X += movingSpeed;
+
+            if (Input.GetKeyDown(Keys.Space) && onGround || isJumping)
+                Jump();
+
+            if (onGround)
+                jumpTime = constJumpTime;
+            else
+                Gravity(0.5f);
+
+            Debug.Log(onGround);
+
+            MoveX(velocity.X, null);
+            MoveY(velocity.Y, null);
+            velocity = Vector2.Zero;
+        }
+        
+        void Jump()
+        {
+            isJumping = true;
+            if (jumpTime > 0 && Input.GetKey(Keys.Space))
+            {
+                velocity.Y -= jumpForce * (jumpTime/constJumpTime) * Platformer.Deltatime;
+                jumpTime -= Platformer.Deltatime;
+            }
+            else if(jumpTime <= 0)
+                isJumping = false;
+            else
+            {
+                velocity.Y -= jumpForce * (jumpTime / constJumpTime) * Platformer.Deltatime;
+                jumpTime -= Platformer.Deltatime * 2;
+            }
         }
 
         public override void Render()
         {
-            Drawing.Draw(Sprites[SpriteStates.Idle], new Rectangle((int) Pos.X, (int)Pos.Y, Width, Height), Color.White);
-        }
+            Drawing.Draw(Sprites[SpriteStates.Idle], new Rectangle((int) Pos.X, (int)Pos.Y, Width, Height), Color.White);        }
     }
 }

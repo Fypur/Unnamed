@@ -23,12 +23,11 @@ namespace Basic_platformer
 
         public virtual void Update()
         {
-            MoveX(velocity.X, null);
-            MoveY(velocity.Y, null);
+
         }
         public virtual void Render() { }
 
-        protected void MoveX(float amount, Action Callback)
+        protected void MoveX(float amount, Action CallbackOnCollision)
         {
             xRemainder += amount;
             int move = (int)Math.Round(xRemainder);
@@ -47,7 +46,7 @@ namespace Basic_platformer
                     }
                     else
                     {
-                        Callback?.Invoke();
+                        CallbackOnCollision?.Invoke();
                         break;
                     }
                 }
@@ -91,7 +90,7 @@ namespace Basic_platformer
 
         public void Gravity(float gravityScale)
         {
-            MoveY(1 * gravityScale, null);
+            velocity += new Vector2(0, 9.81f * gravityScale);
         }
     }
 }
