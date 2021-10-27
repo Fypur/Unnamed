@@ -28,7 +28,7 @@ namespace Basic_platformer
                 Gravity();
             else if (velocity.Y > 0)
                 velocity.Y = 0;
-                
+
             MoveX(velocity.X * Platformer.Deltatime, null);
             MoveY(velocity.Y * Platformer.Deltatime, null);
             //TODO: Add DamagePlayer Method
@@ -36,7 +36,9 @@ namespace Basic_platformer
 
         public override void Render()
         {
-            Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), Color.Red);
+            Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), Color.Blue);
+            Drawing.DrawEdge(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), 1, Color.Red);
+
         }
     }
 }

@@ -6,31 +6,49 @@ namespace Basic_platformer
 {
     public abstract class Entity
     {
-        public Entity(Vector2 position, int width, int height, float gravityScale)
-        {
-            Pos = position;
-            this.Width = width;
-            this.Height = height;
-            this.gravityScale = gravityScale;
-        }
-
         public Vector2 Pos;
         public int Width;
         public int Height;
         public Vector2 velocity;
-        private const float gravity = 9.81f;
         private readonly float gravityScale;
+
+        public List<Component> Components = new List<Component>();
+        private List<Component> componentsToAdd = new List<Component>();
+        private List<Component> componentsToRemove = new List<Component>();
 
         private float xRemainder;
         private float yRemainder;
 
+        public Entity(Vector2 position, int width, int height, float gravityScale)
+        {
+            Pos = position;
+            Width = width;
+            Height = height;
+            this.gravityScale = gravityScale;
+
+            Type t = GetType();
+            if (!Platformer.EntitiesByType.ContainsKey(t))
+                Platformer.EntitiesByType.Add(t, new List<Entity>());
+            Platformer.EntitiesByType[t].Add(this);
+        }
+
         public virtual void Update()
         {
+            foreach (Component c in componentsToAdd)
+                Components.Add(c);
+            componentsToAdd.Clear();
 
+            foreach (Component c in componentsToRemove)
+                Components.Remove(c);
+            componentsToRemove.Clear();
+
+            foreach (Component c in Components)
+                c.Update();
         }
+
         public virtual void Render() { }
 
-        protected void MoveX(float amount, Action CallbackOnCollision)
+        protected void MoveX(float amount, Action CallbackOnCollision = null)
         {
             xRemainder += amount;
             int move = (int)Math.Round(xRemainder);
@@ -56,7 +74,7 @@ namespace Basic_platformer
             }
         }
 
-        public void MoveY(float amount, Action Callback)
+        public void MoveY(float amount, Action CallbackOnSolidCollision = null)
         {
             yRemainder += amount;
             int move = (int)Math.Round(yRemainder);
@@ -75,7 +93,7 @@ namespace Basic_platformer
                     }
                     else
                     {
-                        Callback?.Invoke();
+                        CallbackOnSolidCollision?.Invoke();
                         break;
                     }
                 }
@@ -85,22 +103,64 @@ namespace Basic_platformer
         protected bool CollideAt(List<Solid> solids, Vector2 pos)
         {
             Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
+
             foreach (Solid s in solids)
                 if (playerRect.Intersects(new Rectangle((int)s.Pos.X, (int)s.Pos.Y, s.Width, s.Height)))
                     return true;
+
             return false;
         }
 
-        protected bool CollidedWithEntity<T>(List<Entity> entities,Vector2 pos, out T collidedEntity) where T : Entity
+        protected bool CollideAt(List<Entity> entities, Vector2 pos)
         {
             Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
+
             foreach (Entity e in entities)
-                if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e is T castedEntity)
+                if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e!= this)
+                    return true;
+
+            return false;
+        }
+
+        protected bool CollideAt(List<Entity> entities, Vector2 pos, out Entity entity)
+        {
+            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
+
+            foreach (Entity e in entities)
+                if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e != this)
                 {
-                    collidedEntity = castedEntity;
+                    entity = e;
                     return true;
                 }
+            entity = null;
+            return false;
+        }
+
+        protected bool CollidedWithEntityOfType<T>(Vector2 pos, out T collidedEntity) where T : Entity
+        {
+            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
+
+            if(Platformer.EntitiesByType.ContainsKey(typeof(T)))
+                foreach (Entity e in Platformer.EntitiesByType[typeof(T)])
+                    if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e is T castedEntity)
+                    {
+                        collidedEntity = castedEntity;
+                        return true;
+                    }
+
             collidedEntity = null;
+            return false;
+        }
+
+        protected bool CollidedWithEntityOfType<T>(Vector2 pos) where T : Entity
+        {
+            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
+
+            if (Platformer.EntitiesByType.ContainsKey(typeof(T)))
+                foreach (Entity e in Platformer.EntitiesByType[typeof(T)])
+                    if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e is T castedEntity)
+                        return true;
+
             return false;
         }
 
@@ -110,6 +170,17 @@ namespace Basic_platformer
         public void Gravity()
         {
             velocity += new Vector2(0, 9.81f * gravityScale * Platformer.Deltatime);
+        }
+
+        public void AddComponent(Component component)
+        {
+            component.parentEntity = this;
+            componentsToAdd.Add(component);
+        }
+
+        public void RemoveComponent(Component component)
+        {
+            componentsToRemove.Remove(component);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace Basic_platformer
@@ -8,15 +9,17 @@ namespace Basic_platformer
     public class Platformer : Game
     {
         public static Platformer instance;
-        private GraphicsDeviceManager graphics;
+        public static GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
         public static float Deltatime;
 
         public static List<Solid> Solids = new List<Solid>();
         public static List<Entity> Entities = new List<Entity>();
+        public static List<Entity> EntitiesToAdd = new List<Entity>();
         public static List<Entity> EntitiesToRemove = new List<Entity>();
-        Player player;
+        public static Dictionary<Type, List<Entity>> EntitiesByType = new Dictionary<Type, List<Entity>>();
+        public Player player;
 
         public Platformer()
         {
@@ -33,7 +36,7 @@ namespace Basic_platformer
             Solids.Add(new Platform(new Vector2(0, graphics.PreferredBackBufferHeight - 30), graphics.PreferredBackBufferWidth, 30, Color.White));
             Solids.Add(new Platform(new Vector2(graphics.PreferredBackBufferWidth - 30, 0), 30, graphics.PreferredBackBufferHeight, Color.White));
             //Solids.Add(new Platform(new Vector2(graphics.PreferredBackBufferWidth - 400, graphics.PreferredBackBufferHeight / 2 + 100), graphics.PreferredBackBufferWidth - 500, 10, Color.White));
-            Solids.Add(new Platform(new Vector2(graphics.PreferredBackBufferWidth - 300, graphics.PreferredBackBufferHeight - 40), 10, 50, Color.White));
+            Solids.Add(new Platform(new Vector2(graphics.PreferredBackBufferWidth - 700, graphics.PreferredBackBufferHeight - 40), 10, 50, Color.White));
             base.Initialize();
         }
 
@@ -52,8 +55,15 @@ namespace Basic_platformer
 
             Deltatime = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
+            if(Input.GetKeyDown(Keys.A))
+                Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
+
             foreach (Entity e in Entities)
                 e.Update();
+
+            foreach (Entity e in EntitiesToAdd)
+                Entities.Add(e);
+            EntitiesToAdd.Clear();
 
             foreach (Entity e in EntitiesToRemove)
                 Entities.Remove(e);
@@ -81,11 +91,17 @@ namespace Basic_platformer
 
         public static Entity Instantiate(Entity entity)
         {
-            Entities.Add(entity);
+            EntitiesToAdd.Add(entity);
             return entity;
         }
 
         public static void Destroy(Entity entity)
-            => EntitiesToRemove.Add(entity);
+        {
+            EntitiesToRemove.Add(entity);
+            Type t = entity.GetType();
+            EntitiesByType[t].Remove(entity);
+            if (EntitiesByType[t].Count == 0)
+                EntitiesByType.Remove(t);
+        }
     }
 }

@@ -6,7 +6,19 @@ namespace Basic_platformer
 {
     public static class Debug
     {
-        public static void Log(object log)
-            => Drawing.Debug.Add(log.ToString());
+        public static void LogUpdate(params object[] log)
+        {
+            foreach (object l in log)
+                Drawing.Debug.Add(l.ToString());
+        }
+
+        public static void Log(params object[] log)
+        {
+            foreach (object l in log)
+                Drawing.DebugForever.Add(l.ToString());
+        }
+
+        public static void Clear()
+            => Drawing.DebugForever.Clear();
     }
 }
