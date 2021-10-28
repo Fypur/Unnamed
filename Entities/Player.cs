@@ -42,65 +42,90 @@ namespace Basic_platformer
 
         public override void Update()
         {
-            onGround = CollideAt(Platformer.Solids, Pos + new Vector2(0, 1));
-            onWall = CollideAt(Platformer.Solids, Pos + new Vector2(1, 0)) ||
-                CollideAt(Platformer.Solids, Pos + new Vector2(-1, 0));
-            onRightWall = CollideAt(Platformer.Solids, Pos + new Vector2(Width + 1, 0));
+            //Checks for Ground and Wall
+            {
+                onGround = CollideAt(Platformer.Solids, Pos + new Vector2(0, 1));
+                onWall = CollideAt(Platformer.Solids, Pos + new Vector2(1, 0)) ||
+                    CollideAt(Platformer.Solids, Pos + new Vector2(-1, 0));
+                onRightWall = CollideAt(Platformer.Solids, Pos + new Vector2(Width + 1, 0));
+            }
 
+            //Components Update
             base.Update();
 
-            if (Input.GetKey(Keys.Right))
-                movingDir = 1;
-            if (Input.GetKey(Keys.Left))
-                movingDir = -1;
-            if(!Input.GetKey(Keys.Right) && !Input.GetKey(Keys.Left))
-                movingDir = 0;
-
-            if (movingDir != 0)
-                facing = movingDir;
-
-            velocity.X = movingDir * speed + otherSpeed;
-            otherSpeed *= 0.95f;
-            if (otherSpeed <= 1 && otherSpeed >= -1)
-                otherSpeed = 0;
-
-            if (Input.GetKeyDown(Keys.Space) && onGround || isJumping)
-                Jump();
-            else if (Input.GetKeyDown(Keys.Space) && onWall || isWallJumping)
-                WallJump();
-
-            if (Input.GetKeyDown(Keys.C))
-                Debug.Clear();
-
-            if((onGround | onWall) &&  !isJumping && !isWallJumping)
-                jumpTime = constJumpTime;
-
-            if (onGround)
+            //Horizontal
             {
-                if (velocity.Y > 0)
-                    velocity.Y = 0;
-            }
-            else
-                Gravity();
+                if (Input.GetKey(Keys.Right))
+                    movingDir = 1;
+                if (Input.GetKey(Keys.Left))
+                    movingDir = -1;
+                if (!Input.GetKey(Keys.Right) && !Input.GetKey(Keys.Left))
+                    movingDir = 0;
 
-            if (CollidedWithEntityOfType(Pos + new Vector2(0, 7), out Goomba goomba) &&
+                if (movingDir != 0)
+                    facing = movingDir;
+
+                velocity.X = movingDir * speed + otherSpeed;
+                otherSpeed *= 0.95f;
+                if (otherSpeed <= 1 && otherSpeed >= -1)
+                    otherSpeed = 0;
+                if (Math.Sign(movingDir) != Math.Sign(otherSpeed))
+                    otherSpeed *= 0.8f;
+                else
+                    otherSpeed *= 0.95f;
+            }
+
+            //Vertical
+            {
+                if (Input.GetKeyDown(Keys.Space) && onGround || isJumping)
+                    Jump();
+                else if (Input.GetKeyDown(Keys.Space) && onWall || isWallJumping)
+                    WallJump();
+
+                if (Input.GetKeyDown(Keys.C))
+                    Debug.Clear();
+
+                if ((onGround | onWall) && !isJumping && !isWallJumping)
+                    jumpTime = constJumpTime;
+
+                if (onGround)
+                {
+                    if (velocity.Y > 0)
+                        velocity.Y = 0;
+                }
+                else
+                    Gravity();
+            }
+
+            //Entity Collisions
+            {
+                if (CollidedWithEntityOfType(Pos + new Vector2(0, 7), out Goomba goomba) &&
                 !CollidedWithEntity(goomba, Pos + new Vector2(1, 0)) &&
                 !CollidedWithEntity(goomba, Pos + new Vector2(-1, 0)))
-            {
-                Platformer.Destroy(goomba);
-                jumpTime = constJumpTime;
-                Jump();
-            }
-            else if (!invicible)
-            {
-                if (CollidedWithEntityOfType(Pos + new Vector2(1, 0), out goomba) &&
-                    !CollidedWithEntity(goomba, Pos + new Vector2(-1, 0)))
-                    Damage(-1);
-                else if (CollidedWithEntityOfType<Goomba>(Pos + new Vector2(-1, 0)))
-                    Damage(1);
+                {
+                    Platformer.Destroy(goomba);
+                    jumpTime = constJumpTime;
+                    Jump();
+                }
+                else if (!invicible)
+                {
+                    if (CollidedWithEntityOfType(Pos + new Vector2(1, 0), out goomba))
+                    {
+                        if (!CollidedWithEntity(goomba, Pos + new Vector2(-1, 0)))
+                            Damage(-1);
+                        else
+                        {
+                            if (Pos.X - goomba.Pos.X < 0)
+                                Damage(-1);
+                            else
+                                Damage(1);
+                        }
+                    }
+                    else if (CollidedWithEntityOfType<Goomba>(Pos + new Vector2(-1, 0)))
+                        Damage(1);
+                }
             }
 
-            Debug.LogUpdate(invicible);
             MoveX(velocity.X * Platformer.Deltatime, CollisionX);
             MoveY(velocity.Y * Platformer.Deltatime, CollisionY);
         }
@@ -118,9 +143,9 @@ namespace Basic_platformer
         public void Damage(int direction)
         {
             /*Platformer.Instantiate(new Player(new Vector2(Platformer.graphics.PreferredBackBufferWidth / 2, Platformer.graphics.PreferredBackBufferHeight - 100), 32, 60));
-            Platformer.Destroy(this);*/
+            Platformer.Destroy(this);*/ //Player death code (could also just move to position)
             otherSpeed += 300 * direction;
-            velocity.Y -= 100;
+            velocity.Y -= 200;
             invicible = true;
             Timer timer = new Timer(invinciblityTime, true,() => invicible = false);
             AddComponent(timer);

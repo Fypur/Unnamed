@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Basic_platformer.Solids;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -14,6 +15,7 @@ namespace Basic_platformer
 
         public static float Deltatime;
 
+        public static Map map;
         public static List<Solid> Solids = new List<Solid>();
         public static List<Entity> Entities = new List<Entity>();
         public static List<Entity> EntitiesToAdd = new List<Entity>();
@@ -33,11 +35,24 @@ namespace Basic_platformer
         {
             player = (Player)Instantiate(new Player(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight - 100), 32, 60));
             Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
-            Solids.Add(new Platform(new Vector2(0, graphics.PreferredBackBufferHeight - 30), graphics.PreferredBackBufferWidth, 30, Color.White));
-            Solids.Add(new Platform(new Vector2(graphics.PreferredBackBufferWidth - 30, 0), 30, graphics.PreferredBackBufferHeight, Color.White));
-            //Solids.Add(new Platform(new Vector2(graphics.PreferredBackBufferWidth - 400, graphics.PreferredBackBufferHeight / 2 + 100), graphics.PreferredBackBufferWidth - 500, 10, Color.White));
-            Solids.Add(new Platform(new Vector2(graphics.PreferredBackBufferWidth - 700, graphics.PreferredBackBufferHeight - 40), 10, 50, Color.White));
+            
             base.Initialize();
+
+            map = new Map(new Vector2(0, 20), graphics.PreferredBackBufferWidth / 13, graphics.PreferredBackBufferHeight / 10, new int[10, 13] {
+                {0,0,0,0,0,0,0,0,0,0, 0, 0, 1},
+                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
+                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
+                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
+                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
+                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
+                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
+                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
+                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
+                {1,1,1,1,1,1,1,1,1,1, 1, 1, 1}
+            });
+
+            foreach (Solid s in map.solidTiles)
+                Solids.Add(s);
         }
 
         protected override void LoadContent()
@@ -78,6 +93,9 @@ namespace Basic_platformer
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+
+            map.Render();
+
             foreach (Entity e in Entities)
                 e.Render();
             foreach (Solid s in Solids)

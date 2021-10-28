@@ -7,7 +7,7 @@ namespace Basic_platformer
     public static class Drawing
     {
         private static SpriteBatch spriteBatch;
-        private static Texture2D pointTexture;
+        public static Texture2D pointTexture;
         public static SpriteFont font;
         public static List<string> Debug = new List<string>();
         public static List<string> DebugForever = new List<string>();
