@@ -15,13 +15,15 @@ namespace Basic_platformer
 
         public static float Deltatime;
 
+        public Player player;
+
         public static Map map;
+        public static Camera cam;
         public static List<Solid> Solids = new List<Solid>();
         public static List<Entity> Entities = new List<Entity>();
         public static List<Entity> EntitiesToAdd = new List<Entity>();
         public static List<Entity> EntitiesToRemove = new List<Entity>();
         public static Dictionary<Type, List<Entity>> EntitiesByType = new Dictionary<Type, List<Entity>>();
-        public Player player;
 
         public Platformer()
         {
@@ -33,22 +35,24 @@ namespace Basic_platformer
 
         protected override void Initialize()
         {
-            player = (Player)Instantiate(new Player(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight - 100), 32, 60));
+            player = (Player)Instantiate(new Player(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight - 300), 32, 32));
             Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
-            
+
+            cam = new Camera(Vector2.Zero, 0, 1);
+
             base.Initialize();
 
-            map = new Map(new Vector2(0, 20), graphics.PreferredBackBufferWidth / 13, graphics.PreferredBackBufferHeight / 10, new int[10, 13] {
-                {0,0,0,0,0,0,0,0,0,0, 0, 0, 1},
-                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
-                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
-                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
-                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
-                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
-                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
-                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
-                {1,0,0,0,0,0,0,0,0,0, 0, 0, 1},
-                {1,1,1,1,1,1,1,1,1,1, 1, 1, 1}
+            map = new Map(Vector2.Zero, graphics.PreferredBackBufferWidth / 13, graphics.PreferredBackBufferHeight / 10, new int[10, 13] {
+                {1,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1}
             });
 
             foreach (Solid s in map.solidTiles)
@@ -92,7 +96,7 @@ namespace Basic_platformer
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cam.ViewMatrix);
 
             map.Render();
 

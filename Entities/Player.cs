@@ -14,10 +14,14 @@ namespace Basic_platformer
 
         private const float gravityScale = 200;
         private const float speed = 300f; //in Pixel Per Second
+
         private const float wallJumpSpeed = 100f;
         private const float wallJumpSideForce = 620f;
         private const float jumpForce = 600;
         private const float constJumpTime = 0.4f;
+
+        private const float dashSpeed = 1000f;
+
         private const float invinciblityTime = 1.5f;
 
         private int facing = 1;
@@ -73,6 +77,14 @@ namespace Basic_platformer
                     otherSpeed *= 0.8f;
                 else
                     otherSpeed *= 0.95f;
+
+                if (Input.GetKeyDown(Keys.E))
+                {
+                    if (Input.GetKey(Keys.Left))
+                        Dash(-1);
+                    else if (Input.GetKey(Keys.Right))
+                        Dash(1);
+                }
             }
 
             //Vertical
@@ -130,28 +142,20 @@ namespace Basic_platformer
             MoveY(velocity.Y * Platformer.Deltatime, CollisionY);
         }
 
-        void CollisionX()
-        {
-            velocity.X = 0;
-        }
 
-        void CollisionY()
+        private void Dash(int dir)
         {
+            otherSpeed += dashSpeed * dir;
             velocity.Y = 0;
+            Timer dashTimer = new Timer(0.5f, true, null, SlowDashStop);
         }
 
-        public void Damage(int direction)
+        private void SlowDashStop(Timer timerValue)
         {
-            /*Platformer.Instantiate(new Player(new Vector2(Platformer.graphics.PreferredBackBufferWidth / 2, Platformer.graphics.PreferredBackBufferHeight - 100), 32, 60));
-            Platformer.Destroy(this);*/ //Player death code (could also just move to position)
-            otherSpeed += 300 * direction;
-            velocity.Y -= 200;
-            invicible = true;
-            Timer timer = new Timer(invinciblityTime, true,() => invicible = false);
-            AddComponent(timer);
+            velocity.X = dashSpeed * (timerValue.value / timerValue.maxValue);
         }
 
-        void Jump()
+        private void Jump()
         {
             isJumping = true;
             if (jumpTime > 0 && Input.GetKey(Keys.Space))
@@ -192,10 +196,32 @@ namespace Basic_platformer
             }
         }
 
+        void CollisionX()
+        {
+            velocity.X = 0;
+        }
+
+        void CollisionY()
+        {
+            velocity.Y = 0;
+        }
+
+        public void Damage(int direction)
+        {
+            /*Platformer.Instantiate(new Player(new Vector2(Platformer.graphics.PreferredBackBufferWidth / 2, Platformer.graphics.PreferredBackBufferHeight - 100), 32, 60));
+            Platformer.Destroy(this);*/ //Player death code (could also just move to position)
+            otherSpeed += 300 * direction;
+            velocity.Y -= 200;
+            invicible = true;
+            Timer timer = new Timer(invinciblityTime, true, () => invicible = false);
+            AddComponent(timer);
+        }
+
         public override void Render()
         {
-            Drawing.Draw(Sprites[SpriteStates.Idle], Pos, null, Color.White, 0, Vector2.Zero,
-                new Vector2(Width / Sprites[SpriteStates.Idle].Width, Height / Sprites[SpriteStates.Idle].Height), facing == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+            Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), Color.White);
+            //Drawing.Draw(Sprites[SpriteStates.Idle], Pos, null, Color.White, 0, Vector2.Zero,
+            //new Vector2(Width / Sprites[SpriteStates.Idle].Width, Height / Sprites[SpriteStates.Idle].Height), facing == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
             Drawing.DrawEdge(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), 1, Color.Red);
         }
     }
