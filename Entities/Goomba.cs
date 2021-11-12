@@ -37,7 +37,9 @@ namespace Basic_platformer
         public override void Render()
         {
             Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), Color.Blue);
-            Drawing.DrawEdge(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), 1, Color.Red);
+
+            if(Debug.DebugMode)
+                Drawing.DrawEdge(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), 1, Color.Red);
 
         }
     }

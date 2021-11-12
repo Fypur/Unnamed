@@ -6,6 +6,8 @@ namespace Basic_platformer
 {
     public static class Debug
     {
+        public static bool DebugMode;
+
         public static void LogUpdate(params object[] log)
         {
             foreach (object l in log)

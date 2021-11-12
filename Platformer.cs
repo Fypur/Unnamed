@@ -74,6 +74,9 @@ namespace Basic_platformer
 
             Deltatime = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
+            if (Input.GetKeyDown(Keys.F3))
+                Debug.DebugMode = !Debug.DebugMode;
+
             if(Input.GetKeyDown(Keys.A))
                 Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
 

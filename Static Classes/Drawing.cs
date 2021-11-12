@@ -47,15 +47,18 @@ namespace Basic_platformer
         public static void DebugString()
         {
             Vector2 pos = Vector2.Zero;
+
             foreach(string s in Debug)
             {
-                Drawing.DrawString(s, pos, Color.Aqua, Vector2.Zero);
+                Drawing.DrawString(s, pos, Color.Brown, Vector2.Zero);
                 pos.Y += font.MeasureString(s).Y;
             }
+
             pos.Y += font.MeasureString(" ").Y;
+
             foreach (string s in DebugForever)
             {
-                Drawing.DrawString(s, pos, Color.Aqua, Vector2.Zero);
+                Drawing.DrawString(s, pos, Color.Brown, Vector2.Zero);
                 pos.Y += font.MeasureString(s).Y;
             }
 

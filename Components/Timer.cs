@@ -6,16 +6,20 @@ namespace Basic_platformer
 {
     public class Timer : Component
     {
-        public readonly float maxValue;
-        public float value;
+        public readonly float MaxValue;
+        public float Value;
+
+        public float TimeScale = 1;
+
         bool destroyOnComplete;
+
         Action onComplete;
         Action<Timer> UpdateAction;
         
-        public Timer(float maxValue, bool destroyOnComplete = true, Action OnComplete = null, Action<Timer> UpdateAction = null)
+        public Timer(float maxValue, bool destroyOnComplete = true, Action<Timer> UpdateAction = null, Action OnComplete = null)
         {
-            this.maxValue = maxValue;
-            value = maxValue;
+            this.MaxValue = maxValue;
+            Value = maxValue;
             onComplete = OnComplete;
             this.UpdateAction = UpdateAction;
             this.destroyOnComplete = destroyOnComplete;
@@ -23,12 +27,12 @@ namespace Basic_platformer
 
         public override void Update()
         {
-            if(value > 0)
+            if(Value > 0)
             {
-                value -= Platformer.Deltatime;
-                if (value <= 0)
+                Value -= Platformer.Deltatime * TimeScale;
+                if (Value <= 0)
                 {
-                    value = 0;
+                    Value = 0;
                     onComplete?.Invoke();
                     if (destroyOnComplete)
                         parentEntity.RemoveComponent(this);
