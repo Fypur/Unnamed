@@ -14,7 +14,7 @@ namespace Basic_platformer
 
             set {
                 hasChanged = true;
-                pos = value;
+                pos = value - new Vector2(Platformer.graphics.PreferredBackBufferWidth / 2, Platformer.graphics.PreferredBackBufferHeight / 2);
             }
         }
 
@@ -26,7 +26,7 @@ namespace Basic_platformer
             set
             {
                 hasChanged = true;
-                rot = value;
+                rot = value % 360 + value < 0 ? 360 : 0;
             }
         }
 

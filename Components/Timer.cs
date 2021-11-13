@@ -8,10 +8,9 @@ namespace Basic_platformer
     {
         public readonly float MaxValue;
         public float Value;
-
         public float TimeScale = 1;
 
-        bool destroyOnComplete;
+        private bool destroyOnComplete;
 
         Action onComplete;
         Action<Timer> UpdateAction;
@@ -40,6 +39,12 @@ namespace Basic_platformer
                 else
                     UpdateAction?.Invoke(this);
             }
+        }
+
+        public void End()
+        {
+            onComplete?.Invoke();
+            parentEntity.RemoveComponent(this);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Basic_platformer
         private SpriteBatch spriteBatch;
 
         public static float Deltatime;
+        public static float TimeScale = 1;
 
         public Player player;
 
@@ -38,7 +39,7 @@ namespace Basic_platformer
             player = (Player)Instantiate(new Player(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight - 300), 32, 32));
             Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
 
-            cam = new Camera(Vector2.Zero, 0, 1);
+            cam = new Camera(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), 0, 1);
 
             base.Initialize();
 
@@ -72,10 +73,11 @@ namespace Basic_platformer
                 Exit();
             Input.UpdateState();
 
-            Deltatime = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            Deltatime = (float) gameTime.ElapsedGameTime.TotalSeconds * TimeScale;
 
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
+            
 
             if(Input.GetKeyDown(Keys.A))
                 Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
