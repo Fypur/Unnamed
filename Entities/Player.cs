@@ -139,7 +139,7 @@ namespace Basic_platformer
                 }
             }
 
-            Debug.LogUpdate(velocity.X);
+            
 
             collisionX = collisionY = false;
             MoveX(velocity.X * Platformer.Deltatime, CollisionX);

@@ -7,14 +7,18 @@ namespace Basic_platformer
 {
     public class Camera
     {
+        private bool hasChanged;
+
         private Vector2 pos;
+        private Vector2 origin;
         public Vector2 Position
         {
             get => pos;
 
             set {
                 hasChanged = true;
-                pos = value - new Vector2(Platformer.graphics.PreferredBackBufferWidth / 2, Platformer.graphics.PreferredBackBufferHeight / 2);
+                origin = value;
+                pos = value - Platformer.ScreenSize / 2;
             }
         }
 
@@ -26,7 +30,7 @@ namespace Basic_platformer
             set
             {
                 hasChanged = true;
-                rot = value % 360 + value < 0 ? 360 : 0;
+                rot = value % 360 + (value < 0 ? 360 : 0);
             }
         }
 
@@ -48,18 +52,21 @@ namespace Basic_platformer
             {
                 if (hasChanged)
                 {
-                    return Matrix.CreateTranslation(new Vector3(Position.X, Position.Y, 0)) *
-                    Matrix.CreateScale(ZoomLevel) *
-                    Matrix.CreateRotationZ(MathHelper.ToRadians(Rotation));
+                    hasChanged = false;
+                    return view = Matrix.CreateTranslation(new Vector3(-origin, 0.0f)) *
+                           Matrix.CreateScale(ZoomLevel) *
+                           Matrix.CreateRotationZ(MathHelper.ToRadians(Rotation)) *
+                           Matrix.CreateTranslation(new Vector3(Platformer.ScreenSize / 2, 0.0f));
                 }
                 else
                     return view;
             }
-
-            set => view = value;
         }
 
-        private bool hasChanged;
+        public Matrix InverseViewMatrix
+        {
+            get => Matrix.Invert(ViewMatrix);
+        }
 
         public Camera(Vector2 position, float rotation, float zoomLevel)
         {
@@ -67,5 +74,11 @@ namespace Basic_platformer
             Rotation = rotation;
             ZoomLevel = zoomLevel;
         }
+
+        public Vector2 WorldToScreenPosition(Vector2 position)
+            => Vector2.Transform(position, ViewMatrix);
+
+        public Vector2 ScreenToWorldPosition(Vector2 position)
+            => Vector2.Transform(position, InverseViewMatrix);
     }
 }
