@@ -10,7 +10,7 @@ namespace Basic_platformer
         public int Width;
         public int Height;
         public Vector2 velocity;
-        private readonly float gravityScale;
+        public float gravityScale;
 
         public List<Component> Components = new List<Component>();
         private List<Component> componentsToAdd = new List<Component>();

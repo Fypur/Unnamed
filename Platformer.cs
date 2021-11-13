@@ -39,7 +39,8 @@ namespace Basic_platformer
         protected override void Initialize()
         {
             player = (Player)Instantiate(new Player(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight - 300), 32, 32));
-            Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
+            
+            //Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
 
             cam = new Camera(ScreenSize / 2, 0, 1f);
 
@@ -79,10 +80,6 @@ namespace Basic_platformer
 
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
-
-            if (Input.GetKey(Keys.A))
-                cam.Rotation += 0.1f;
-            Debug.LogUpdate(cam.Rotation);
 
             foreach (Entity e in Entities)
                 e.Update();

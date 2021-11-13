@@ -13,18 +13,16 @@ namespace Basic_platformer
         public enum SpriteStates { Idle, Running, Jumping, Falling }
         public static Dictionary<SpriteStates, Texture2D> Sprites = new Dictionary<SpriteStates, Texture2D>();
 
-
-        private const float gravityScale = 200;
+        #region constants
 
         private const float maxSpeed = 600f; //in Pixel Per Second
-        private const float airSpeed = 250f;
-        private const float wallJumpSpeed = 100f;
         private const float dashSpeed = 800f;
 
         private const float acceleration = 200f;
         private const float airAcceleration = 50f;
         private const float friction = 0.4f;
         private const float airFriction = 0.1f;
+        private const float constGravityScale = 200f;
 
         private const float wallJumpSideForce = 620f;
         private const float jumpForce = 600f;
@@ -32,35 +30,47 @@ namespace Basic_platformer
         private const float maxJumpTime = 0.4f;
         private const float dashTime = 0.2f;
         private const float invinciblityTime = 1.5f;
+        private const float unstickTime = 0.1f;
 
+        #endregion
+
+        #region variables
         private int movingDir;
         private int facing = 1;
         private bool normalMouvement = true;
         private bool invicible;
         private bool hasDashed;
+        private bool isUnsticking;
 
+        #endregion
+
+        #region check variables
         private bool onGround;
         private bool onWall;
         private bool onRightWall;
         private bool collisionX;
         private bool collisionY;
 
-        public Player(Vector2 position, int width, int height) : base(position, width, height, gravityScale) { }
+        #endregion
+
+        public Player(Vector2 position, int width, int height) : base(position, width, height, constGravityScale) { }
 
         public override void Update()
         {
-            //Checks for Ground and Wall
-            {
-                onGround = CollideAt(Platformer.Solids, Pos + new Vector2(0, 1));
-                onWall = CollideAt(Platformer.Solids, Pos + new Vector2(1, 0)) ||
-                    CollideAt(Platformer.Solids, Pos + new Vector2(-1, 0));
-                onRightWall = CollideAt(Platformer.Solids, Pos + new Vector2(Width + 1, 0));
-            }
+            #region Checks for Ground and Wall
+            onGround = CollideAt(Platformer.Solids, Pos + new Vector2(0, 1));
+            onWall = CollideAt(Platformer.Solids, Pos + new Vector2(1, 0)) ||
+                CollideAt(Platformer.Solids, Pos + new Vector2(-1, 0));
+            onRightWall = CollideAt(Platformer.Solids, Pos + new Vector2(Width + 1, 0));
+            #endregion
 
-            //Components Update
+            #region Component Update
             base.Update();
+            #endregion
 
-            //Horizontal
+            #region Horizontal
+
+            #region calulating the moving direction and the facing direction
             {
                 if (Input.GetKey(Keys.Right) || Input.GetKey(Keys.D))
                     movingDir = 1;
@@ -71,19 +81,32 @@ namespace Basic_platformer
 
                 if (movingDir != 0)
                     facing = movingDir;
+            }
+            
+            #endregion
 
+            #region Velocity calculation and clamping
+            {
                 if (normalMouvement && onGround)
                     velocity.X += movingDir * acceleration - friction * velocity.X;
-                else if (normalMouvement)
+                else if (normalMouvement && !onWall)
                     velocity.X += movingDir * airAcceleration - airFriction * velocity.X;
 
-                velocity.X = Math.Clamp(velocity.X, -maxSpeed, maxSpeed);
-
+                if (normalMouvement)
+                    velocity.X = Math.Clamp(velocity.X, -maxSpeed, maxSpeed);
                 if (velocity.X <= 1 && velocity.X >= -1)
                     velocity.X = 0;
             }
+            #endregion
 
-            //Vertical
+            if (onWall && !onGround)
+                WallSlide();
+            else
+                gravityScale = constGravityScale;
+
+            #endregion
+
+            #region Vertical
             {
                 if (Input.GetKeyDown(Keys.Space) && onGround)
                     Jump();
@@ -101,8 +124,9 @@ namespace Basic_platformer
                 else
                     Gravity();
             }
+            #endregion
 
-            //Dashing
+            #region Dashing
             {
                 if (Input.GetKeyDown(Keys.E) && !hasDashed)
                     Dash();
@@ -110,62 +134,38 @@ namespace Basic_platformer
                 if(onGround || onWall)
                     hasDashed = false;
             }
+            #endregion
 
-            //Entity Collisions
-            {
-                if (CollidedWithEntityOfType(Pos + new Vector2(0, 7), out Goomba goomba) &&
+            #region Entity Collisions
+            if (CollidedWithEntityOfType(Pos + new Vector2(0, 7), out Goomba goomba) &&
                 !CollidedWithEntity(goomba, Pos + new Vector2(1, 0)) &&
                 !CollidedWithEntity(goomba, Pos + new Vector2(-1, 0)))
+            {
+                Platformer.Destroy(goomba);
+                Jump();
+            }
+            else if (!invicible)
+            {
+                if (CollidedWithEntityOfType(Pos + new Vector2(1, 0), out goomba))
                 {
-                    Platformer.Destroy(goomba);
-                    Jump();
-                }
-                else if (!invicible)
-                {
-                    if (CollidedWithEntityOfType(Pos + new Vector2(1, 0), out goomba))
+                    if (!CollidedWithEntity(goomba, Pos + new Vector2(-1, 0)))
+                        Damage(-1);
+                    else
                     {
-                        if (!CollidedWithEntity(goomba, Pos + new Vector2(-1, 0)))
+                        if (Pos.X - goomba.Pos.X < 0)
                             Damage(-1);
                         else
-                        {
-                            if (Pos.X - goomba.Pos.X < 0)
-                                Damage(-1);
-                            else
-                                Damage(1);
-                        }
+                            Damage(1);
                     }
-                    else if (CollidedWithEntityOfType<Goomba>(Pos + new Vector2(-1, 0)))
-                        Damage(1);
                 }
+                else if (CollidedWithEntityOfType<Goomba>(Pos + new Vector2(-1, 0)))
+                    Damage(1);
             }
-
-            
+            #endregion
 
             collisionX = collisionY = false;
             MoveX(velocity.X * Platformer.Deltatime, CollisionX);
             MoveY(velocity.Y * Platformer.Deltatime, CollisionY);
-        }
-        
-        private void Dash()
-        {
-            int dir = facing;
-
-            velocity.X += dashSpeed * dir;
-
-            AddComponent(new Timer(dashTime, true, (timer) => {
-                //velocity.X = dir * dashSpeed * Ease.QuintOut(Ease.Reverse(timer.Value / timer.MaxValue));
-                if (collisionX)
-                    timer.End();
-
-                velocity.Y = 0;
-                normalMouvement = false;
-            }
-            , () =>
-            {
-                //velocity.X -= dashSpeed * dir;
-                normalMouvement = true;
-            }
-            ));
         }
 
         private void Jump()
@@ -180,6 +180,27 @@ namespace Basic_platformer
 
                 velocity.Y = -jumpForce * (timer.Value / maxJumpTime);
             }));
+        }
+
+        private void Dash()
+        {
+            int dir = facing;
+
+            velocity.X += dashSpeed * dir;
+
+            AddComponent(new Timer(dashTime, true, (timer) => {
+                if (collisionX)
+                    timer.End();
+
+                velocity.Y = 0;
+                normalMouvement = false;
+            }
+            , () =>
+            {
+                //velocity.X -= dashSpeed * dir;
+                normalMouvement = true;
+            }
+            ));
         }
 
         private void WallJump()
@@ -201,6 +222,25 @@ namespace Basic_platformer
                     velocity.Y = -jumpForce * timer.Value / maxJumpTime;
 
             }, null));
+        }
+
+        private void WallSlide()
+        {
+            if(velocity.Y > 0)
+                gravityScale = 0.5f * constGravityScale;
+
+            if (!isUnsticking && movingDir != 0 && (movingDir < 0) == onRightWall)
+            {
+                isUnsticking = true;
+                AddComponent(new Timer(unstickTime, true, (timer) =>
+                {
+                    if (movingDir != 0 && (movingDir < 0) != onRightWall || !onWall)
+                    {
+                        isUnsticking = false;
+                        RemoveComponent(timer);
+                    }
+                }, () => { velocity.X += movingDir * 4; isUnsticking = false; }));
+            }
         }
 
         void CollisionX()
