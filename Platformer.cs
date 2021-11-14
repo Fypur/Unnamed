@@ -1,4 +1,5 @@
 ﻿using Basic_platformer.Solids;
+using Basic_platformer.Static_Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -22,15 +23,17 @@ namespace Basic_platformer
         public static Map map;
         public static Camera cam;
         public static List<Solid> Solids = new List<Solid>();
-        public static List<Entity> Entities = new List<Entity>();
-        public static List<Entity> EntitiesToAdd = new List<Entity>();
-        public static List<Entity> EntitiesToRemove = new List<Entity>();
-        public static Dictionary<Type, List<Entity>> EntitiesByType = new Dictionary<Type, List<Entity>>();
+        public static List<Actor> Entities = new List<Actor>();
+        public static List<Actor> EntitiesToAdd = new List<Actor>();
+        public static List<Actor> EntitiesToRemove = new List<Actor>();
+        public static Dictionary<Type, List<Actor>> EntitiesByType = new Dictionary<Type, List<Actor>>();
 
         public Platformer()
         {
             instance = this;
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 960;
+            graphics.PreferredBackBufferHeight = 540;
             ScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -38,25 +41,22 @@ namespace Basic_platformer
 
         protected override void Initialize()
         {
-            player = (Player)Instantiate(new Player(new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight - 300), 32, 32));
-            
+            player = (Player)Instantiate(new Player(new Vector2(ScreenSize.X / 2, ScreenSize.Y - 300), 32, 32));
+            Debug.Log(player.Pos);
             //Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
 
             cam = new Camera(ScreenSize / 2, 0, 1f);
-
             base.Initialize();
 
-            map = new Map(Vector2.Zero, graphics.PreferredBackBufferWidth / 13, graphics.PreferredBackBufferHeight / 10, new int[10, 13] {
-                {1,0,0,0,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1}
+            map = new Map(Vector2.Zero, 60, 60, new int[8, 20] {
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
             });
 
             foreach (Solid s in map.solidTiles)
@@ -81,16 +81,21 @@ namespace Basic_platformer
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
 
-            foreach (Entity e in Entities)
+            if (Input.GetKeyDown(Keys.A))
+                cam.Move(Vector2.UnitX * 500, 4, Ease.QuintInAndOut);
+
+            foreach (Actor e in Entities)
                 e.Update();
 
-            foreach (Entity e in EntitiesToAdd)
+            foreach (Actor e in EntitiesToAdd)
                 Entities.Add(e);
             EntitiesToAdd.Clear();
 
-            foreach (Entity e in EntitiesToRemove)
+            foreach (Actor e in EntitiesToRemove)
                 Entities.Remove(e);
             EntitiesToRemove.Clear();
+
+            cam.Update();
 
             Input.UpdateOldState();
             base.Update(gameTime);
@@ -103,7 +108,7 @@ namespace Basic_platformer
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cam.ViewMatrix);
             map.Render();
 
-            foreach (Entity e in Entities)
+            foreach (Actor e in Entities)
                 e.Render();
             foreach (Solid s in Solids)
                 s.Render();
@@ -118,13 +123,13 @@ namespace Basic_platformer
             base.Draw(gameTime);
         }
 
-        public static Entity Instantiate(Entity entity)
+        public static Actor Instantiate(Actor entity)
         {
             EntitiesToAdd.Add(entity);
             return entity;
         }
 
-        public static void Destroy(Entity entity)
+        public static void Destroy(Actor entity)
         {
             EntitiesToRemove.Add(entity);
             Type t = entity.GetType();

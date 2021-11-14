@@ -5,14 +5,14 @@ using System.Text;
 
 namespace Basic_platformer
 {
-    public class Goomba : Entity
+    public class Goomba : Actor
     {
-        private const float gravityScale = 100f;
+        private const float constGravityScale = 100f;
         private const float speed = 100f;
 
         private bool onGround;
 
-        public Goomba(Vector2 position, int width, int height) : base(position, width, height, gravityScale)
+        public Goomba(Vector2 position, int width, int height) : base(position, width, height, constGravityScale)
         {
             velocity.X = -speed;
         }

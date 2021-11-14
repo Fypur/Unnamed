@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Basic_platformer
 {
-    public class Player : Entity
+    public class Player : Actor
     {
         public enum SpriteStates { Idle, Running, Jumping, Falling }
         public static Dictionary<SpriteStates, Texture2D> Sprites = new Dictionary<SpriteStates, Texture2D>();

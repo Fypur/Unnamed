@@ -1,24 +1,22 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Basic_platformer.Static_Classes;
+using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Basic_platformer
 {
-    public class Camera
+    public class Camera : Entity
     {
         private bool hasChanged;
 
         private Vector2 pos;
-        private Vector2 origin;
         public Vector2 Position
         {
             get => pos;
 
-            set {
+            set
+            {
                 hasChanged = true;
-                origin = value;
-                pos = value - Platformer.ScreenSize / 2;
+                pos = value;
             }
         }
 
@@ -53,7 +51,7 @@ namespace Basic_platformer
                 if (hasChanged)
                 {
                     hasChanged = false;
-                    return view = Matrix.CreateTranslation(new Vector3(-origin, 0.0f)) *
+                    return view = Matrix.CreateTranslation(new Vector3(-pos, 0.0f)) *
                            Matrix.CreateScale(ZoomLevel) *
                            Matrix.CreateRotationZ(MathHelper.ToRadians(Rotation)) *
                            Matrix.CreateTranslation(new Vector3(Platformer.ScreenSize / 2, 0.0f));
@@ -74,7 +72,24 @@ namespace Basic_platformer
             Rotation = rotation;
             ZoomLevel = zoomLevel;
         }
+        
+        public void Move(Vector2 newPosition, float time, Func<float, float> easingFunction = null)
+        {
+            Vector2 initPos = Position;
+            Vector2 newPos = Position + newPosition;
+            AddComponent(new Timer(time, true, (timer) =>
 
+            Position = Vector2.Lerp(initPos, newPos,
+                     (easingFunction ?? DefaultEasing).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))),
+
+             () => Position = newPos));
+        }
+
+        public void MoveTo(Vector2 newPosition, float time, Func<float, float> easingFunction = null)
+            => Move(newPosition - Position, time, easingFunction);
+
+        private float DefaultEasing(float x)
+            => x;
         public Vector2 WorldToScreenPosition(Vector2 position)
             => Vector2.Transform(position, ViewMatrix);
 
