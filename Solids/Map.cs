@@ -8,6 +8,7 @@ namespace Basic_platformer.Solids
     public class Map : Solid
     {
         public List<SolidTile> solidTiles = new List<SolidTile>();
+        public MapData data;
 
         /// <summary>
         /// 
@@ -25,15 +26,22 @@ namespace Basic_platformer.Solids
                 for(int x = 0; x < mapOrganisation.GetLength(1); x++)
                 {
                     if (mapOrganisation[y, x] == 1)
-                        solidTiles.Add(new SolidTile(Drawing.pointTexture, new Vector2(position.X + x * tileWidth, position.Y + y * tileHeight), tileWidth, tileHeight));
+                    {
+                        data.solids.Add(new SolidTile(Drawing.pointTexture, new Vector2(position.X + x * tileWidth, position.Y + y * tileHeight), tileWidth, tileHeight));
+                        data.solidTiles.Add(new SolidTile(Drawing.pointTexture, new Vector2(position.X + x * tileWidth, position.Y + y * tileHeight), tileWidth, tileHeight));
+                    }
+                        
                 }
             }
+
+            data.solids.Add(new GrapplingPoint(Platformer.ScreenSize / 2));
+            data.grapplingPoints.Add(new GrapplingPoint(Platformer.ScreenSize / 2));
         }
 
         public override void Render()
         {
-            foreach (SolidTile s in solidTiles)
-                s.Render();
+            foreach (Solid s in data.solids)
+                    s.Render();
         }
     }
 }
