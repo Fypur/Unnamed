@@ -8,7 +8,7 @@ namespace Basic_platformer.Solids
     public class Map : Solid
     {
         public List<SolidTile> solidTiles = new List<SolidTile>();
-        public MapData data;
+        public MapData data = new MapData();
 
         /// <summary>
         /// 
@@ -34,8 +34,9 @@ namespace Basic_platformer.Solids
                 }
             }
 
-            data.solids.Add(new GrapplingPoint(Platformer.ScreenSize / 2));
-            data.grapplingPoints.Add(new GrapplingPoint(Platformer.ScreenSize / 2));
+            GrapplingPoint gP = new GrapplingPoint(new Vector2(Platformer.ScreenSize.X / 2, 0));
+            data.solids.Add(gP);
+            data.grapplingPoints.Add(gP);
         }
 
         public override void Render()

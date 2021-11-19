@@ -59,7 +59,7 @@ namespace Basic_platformer
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
             });
 
-            foreach (Solid s in map.solidTiles)
+            foreach (Solid s in map.data.solids)
                 Solids.Add(s);
         }
 
@@ -80,9 +80,6 @@ namespace Basic_platformer
 
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
-
-            if (Input.GetKeyDown(Keys.A))
-                cam.Move(Vector2.UnitX * 500, 4, Ease.QuintInAndOut);
 
             foreach (Actor e in Entities)
                 e.Update();

@@ -1,4 +1,5 @@
-﻿using Basic_platformer.Static_Classes;
+﻿using Basic_platformer.Solids;
+using Basic_platformer.Static_Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -41,6 +42,7 @@ namespace Basic_platformer
         private bool invicible;
         private bool hasDashed;
         private bool isUnsticking;
+        private bool isSwinging;
 
         #endregion
 
@@ -76,7 +78,7 @@ namespace Basic_platformer
                     movingDir = 1;
                 if (Input.GetKey(Keys.Left) || Input.GetKey(Keys.Q))
                     movingDir = -1;
-                if (!(Input.GetKey(Keys.Right) || Input.GetKey(Keys.D)) && !(Input.GetKey(Keys.Left) || Input.GetKey(Keys.Q)))
+                if (!((Input.GetKey(Keys.Right) || Input.GetKey(Keys.D)) ^ (Input.GetKey(Keys.Left) || Input.GetKey(Keys.Q))))
                     movingDir = 0;
 
                 if (movingDir != 0)
@@ -126,13 +128,16 @@ namespace Basic_platformer
             }
             #endregion
 
-            #region Dashing
+            #region Horizontal and Vertical
             {
                 if (Input.GetKeyDown(Keys.E) && !hasDashed)
                     Dash();
 
                 if(onGround || onWall)
                     hasDashed = false;
+
+                if (Input.GetKey(Keys.A))
+                    Swing(Platformer.map.data.grapplingPoints[0].Pos);
             }
             #endregion
 
@@ -166,6 +171,19 @@ namespace Basic_platformer
             collisionX = collisionY = false;
             MoveX(velocity.X * Platformer.Deltatime, CollisionX);
             MoveY(velocity.Y * Platformer.Deltatime, CollisionY);
+        }
+
+        private void ThrowRope()
+        {
+            //get grappling point with direction of player and distance to grappling point
+
+            //raycast to check if there is collision in between
+        }
+
+        private void Swing(Vector2 grapplePos)
+        {
+            if(velocity.Y > 0)
+                velocity += Vector2.Normalize(grapplePos - Pos) * gravityScale * 9.81f;
         }
 
         private void Jump()
