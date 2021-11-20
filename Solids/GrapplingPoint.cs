@@ -13,7 +13,7 @@ namespace Basic_platformer.Solids
 
         public override void Render()
         {
-            Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, width, height), Color.AliceBlue);
+            Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, width, height), Color.Blue);
         }
     }
 }

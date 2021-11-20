@@ -12,15 +12,15 @@ namespace Basic_platformer
 
         private bool destroyOnComplete;
 
-        Action onComplete;
-        Action<Timer> UpdateAction;
+        private Action onComplete;
+        private Action<Timer> updateAction;
         
         public Timer(float maxValue, bool destroyOnComplete = true, Action<Timer> UpdateAction = null, Action OnComplete = null)
         {
             this.MaxValue = maxValue;
             Value = maxValue;
             onComplete = OnComplete;
-            this.UpdateAction = UpdateAction;
+            this.updateAction = UpdateAction;
             this.destroyOnComplete = destroyOnComplete;
         }
 
@@ -37,7 +37,7 @@ namespace Basic_platformer
                         parentEntity.RemoveComponent(this);
                 }
                 else
-                    UpdateAction?.Invoke(this);
+                    updateAction?.Invoke(this);
             }
         }
 

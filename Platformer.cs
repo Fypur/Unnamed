@@ -20,7 +20,7 @@ namespace Basic_platformer
 
         public Player player;
 
-        public static Map map;
+        public static Map Map;
         public static Camera cam;
         public static List<Solid> Solids = new List<Solid>();
         public static List<Actor> Entities = new List<Actor>();
@@ -42,13 +42,12 @@ namespace Basic_platformer
         protected override void Initialize()
         {
             player = (Player)Instantiate(new Player(new Vector2(ScreenSize.X / 2, ScreenSize.Y - 300), 32, 32));
-            Debug.Log(player.Pos);
             //Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
 
             cam = new Camera(ScreenSize / 2, 0, 1f);
             base.Initialize();
 
-            map = new Map(Vector2.Zero, 60, 60, new int[8, 20] {
+            Map = new Map(Vector2.Zero, 60, 60, new int[8, 20] {
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -59,7 +58,7 @@ namespace Basic_platformer
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
             });
 
-            foreach (Solid s in map.data.solids)
+            foreach (Solid s in Map.data.solids)
                 Solids.Add(s);
         }
 
@@ -80,6 +79,15 @@ namespace Basic_platformer
 
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
+            
+            if(Input.GetKeyDown(Keys.C))
+                Debug.Clear();
+            if (Input.GetKey(Keys.X))
+            {
+                player.Pos.X = Map.data.grapplingPoints[0].Pos.X - 300;
+                player.Pos.Y = 80;
+                player.velocity.Y = 0;
+            }
 
             foreach (Actor e in Entities)
                 e.Update();
@@ -103,7 +111,7 @@ namespace Basic_platformer
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cam.ViewMatrix);
-            map.Render();
+            Map.Render();
 
             foreach (Actor e in Entities)
                 e.Render();

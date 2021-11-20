@@ -7,7 +7,7 @@ namespace Basic_platformer
 {
     public class Goomba : Actor
     {
-        private const float constGravityScale = 100f;
+        private const float constGravityScale = 2f;
         private const float speed = 100f;
 
         private bool onGround;

@@ -1,4 +1,5 @@
-﻿using Basic_platformer.Solids;
+﻿using Basic_platformer.Components;
+using Basic_platformer.Solids;
 using Basic_platformer.Static_Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,12 +19,13 @@ namespace Basic_platformer
 
         private const float maxSpeed = 600f; //in Pixel Per Second
         private const float dashSpeed = 800f;
+        private const float swingingSpeed = 200;
 
         private const float acceleration = 200f;
         private const float airAcceleration = 50f;
         private const float friction = 0.4f;
         private const float airFriction = 0.1f;
-        private const float constGravityScale = 200f;
+        private const float constGravityScale = 4f;
 
         private const float wallJumpSideForce = 620f;
         private const float jumpForce = 600f;
@@ -42,7 +44,7 @@ namespace Basic_platformer
         private bool invicible;
         private bool hasDashed;
         private bool isUnsticking;
-        private bool isSwinging;
+        private float    distanceToGrapplingPoint;
 
         #endregion
 
@@ -136,8 +138,12 @@ namespace Basic_platformer
                 if(onGround || onWall)
                     hasDashed = false;
 
-                if (Input.GetKey(Keys.A))
-                    Swing(Platformer.map.data.grapplingPoints[0].Pos);
+        if (Input.GetKeyDown(Keys.A))
+        {
+            distanceToGrapplingPoint = (Platformer.Map.data.grapplingPoints[0].Pos - Pos).Length();
+        }
+        if (Input.GetKey(Keys.A))
+            Swing();
             }
             #endregion
 
@@ -179,11 +185,17 @@ namespace Basic_platformer
 
             //raycast to check if there is collision in between
         }
-
-        private void Swing(Vector2 grapplePos)
+        
+        private void Swing()
         {
-            if(velocity.Y > 0)
-                velocity += Vector2.Normalize(grapplePos - Pos) * gravityScale * 9.81f;
+            Vector2 distance = Vector2.Normalize(Platformer.Map.data.grapplingPoints[0].Pos - Pos) * distanceToGrapplingPoint;
+            
+            Vector2 gravityTension = -Vector2.Normalize(distance) * gravityVector.Y * gravityScale * distance.Y / distance.Length();
+            Vector2 centripetalForce = distance * gravityVector.Y * gravityScale * (velocity / distance.Length()) * (velocity / distance.Length());
+            
+            Vector2 totalTension = gravityTension + centripetalForce;
+            
+            velocity += totalTension;
         }
 
         private void Jump()
