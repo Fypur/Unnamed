@@ -19,10 +19,10 @@ namespace Basic_platformer
 
         private const float maxSpeed = 600f; //in Pixel Per Second
         private const float dashSpeed = 800f;
-        private const float swingingSpeed = 200;
 
         private const float acceleration = 200f;
         private const float airAcceleration = 50f;
+        private const float swingAcceleration = 10f;
         private const float friction = 0.4f;
         private const float airFriction = 0.1f;
         private const float constGravityScale = 4f;
@@ -44,7 +44,9 @@ namespace Basic_platformer
         private bool invicible;
         private bool hasDashed;
         private bool isUnsticking;
-        private float    distanceToGrapplingPoint;
+        private float distanceToGrapplingPoint;
+        private bool isSwinging;
+        private bool isAtSwingEnd;
 
         #endregion
 
@@ -93,10 +95,12 @@ namespace Basic_platformer
             {
                 if (normalMouvement && onGround)
                     velocity.X += movingDir * acceleration - friction * velocity.X;
+                else if (normalMouvement && isAtSwingEnd)
+                    velocity.X += movingDir * swingAcceleration;
                 else if (normalMouvement && !onWall)
                     velocity.X += movingDir * airAcceleration - airFriction * velocity.X;
 
-                if (normalMouvement)
+                if (normalMouvement && !isSwinging)
                     velocity.X = Math.Clamp(velocity.X, -maxSpeed, maxSpeed);
                 if (velocity.X <= 1 && velocity.X >= -1)
                     velocity.X = 0;
@@ -138,12 +142,31 @@ namespace Basic_platformer
                 if(onGround || onWall)
                     hasDashed = false;
 
-        if (Input.GetKeyDown(Keys.A))
-        {
-            distanceToGrapplingPoint = (Platformer.Map.data.grapplingPoints[0].Pos - Pos).Length();
-        }
-        if (Input.GetKey(Keys.A))
-            Swing();
+                if (Input.GetKeyDown(Keys.A))
+                {
+                    Vector2 grapplePos = Platformer.Map.data.grapplingPoints[0].Pos;
+                    Vector2 middlePoint = grapplePos +
+                        new Vector2(Platformer.Map.data.grapplingPoints[0].Width / 2, Platformer.Map.data.grapplingPoints[0].Height / 2);
+
+                    distanceToGrapplingPoint = (Pos - grapplePos).Length();
+
+                    AddComponent(new LineRenderer(Pos, grapplePos, 4, Color.Blue,
+                        (line) => { if (!isSwinging) RemoveComponent(line); }, 
+                    (line) => {
+                        line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
+                        line.EndPos = middlePoint;
+                    }));
+                    
+                isSwinging = true;
+                }
+                if (Input.GetKey(Keys.A) && isSwinging)
+                    Swing(Platformer.Map.data.grapplingPoints[0].Pos, distanceToGrapplingPoint);
+                else
+                {
+                    isSwinging = false;
+                    isAtSwingEnd = false;
+                }                    
+
             }
             #endregion
 
@@ -186,16 +209,18 @@ namespace Basic_platformer
             //raycast to check if there is collision in between
         }
         
-        private void Swing()
+        private void Swing(Vector2 grapplePos, float ropeLength)
         {
-            Vector2 distance = Vector2.Normalize(Platformer.Map.data.grapplingPoints[0].Pos - Pos) * distanceToGrapplingPoint;
-            
-            Vector2 gravityTension = -Vector2.Normalize(distance) * gravityVector.Y * gravityScale * distance.Y / distance.Length();
-            Vector2 centripetalForce = distance * gravityVector.Y * gravityScale * (velocity / distance.Length()) * (velocity / distance.Length());
-            
-            Vector2 totalTension = gravityTension + centripetalForce;
-            
-            velocity += totalTension;
+            Vector2 testPos = Pos + velocity * Platformer.Deltatime;
+
+            if ((grapplePos - testPos).Length() > ropeLength)
+            {
+                testPos = grapplePos + Vector2.Normalize(testPos - grapplePos) * ropeLength;
+                velocity = (testPos - Pos) / Platformer.Deltatime;
+                isAtSwingEnd = true;
+            }
+            else
+                isAtSwingEnd = false;
         }
 
         private void Jump()
@@ -298,6 +323,9 @@ namespace Basic_platformer
 
         public override void Render()
         {
+            //Renderer components
+            base.Render();
+
             Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), Color.Red);
             //Drawing.Draw(Sprites[SpriteStates.Idle], Pos, null, Color.White, 0, Vector2.Zero,
             //new Vector2(Width / Sprites[SpriteStates.Idle].Width, Height / Sprites[SpriteStates.Idle].Height), facing == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
