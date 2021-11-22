@@ -43,8 +43,8 @@ namespace Basic_platformer
         {
             player = (Player)Instantiate(new Player(new Vector2(ScreenSize.X / 2, ScreenSize.Y - 300), 32, 32));
             //Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
-
-            cam = new Camera(ScreenSize / 2, 0, 1f);
+            
+            cam = new Camera(ScreenSize / 2, 0, 1);
             base.Initialize();
 
             Map = new Map(Vector2.Zero, 60, 60, new int[8, 20] {

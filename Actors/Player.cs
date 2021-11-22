@@ -161,12 +161,15 @@ namespace Basic_platformer
                 }
                 if (Input.GetKey(Keys.A) && isSwinging)
                     Swing(Platformer.Map.data.grapplingPoints[0].Pos, distanceToGrapplingPoint);
-                else
+                else if(Input.GetKeyUp(Keys.A))
                 {
+                    if(movingDir == 0 || movingDir == Math.Sign(velocity.X))
+                        velocity.X *= 1.5f;
+                    if(velocity.Y < 0)
+                        velocity.Y *= 1.4f;
                     isSwinging = false;
                     isAtSwingEnd = false;
-                }                    
-
+                }
             }
             #endregion
 
@@ -239,23 +242,21 @@ namespace Basic_platformer
 
         private void Dash()
         {
-            int dir = facing;
+            hasDashed = true;
 
+            int dir = facing;
             velocity.X += dashSpeed * dir;
 
             AddComponent(new Timer(dashTime, true, (timer) => {
                 if (collisionX)
                     timer.End();
-
-                velocity.Y = 0;
-                normalMouvement = false;
+                else
+                {
+                    velocity.Y = 0;
+                    normalMouvement = false;
+                }
             }
-            , () =>
-            {
-                //velocity.X -= dashSpeed * dir;
-                normalMouvement = true;
-            }
-            ));
+            , () => normalMouvement = true));
         }
 
         private void WallJump()
