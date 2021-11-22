@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace Basic_platformer
@@ -63,6 +64,13 @@ namespace Basic_platformer
             }
 
             Debug.Clear();
+        }
+
+        public static void DrawLine(Vector2 begin, Vector2 end, Color color, int thickness = 1)
+        {
+            float distance = Vector2.Distance(begin, end);
+            float angle = (float)Math.Acos(Vector2.Dot(Vector2.Normalize(begin - end), -Vector2.UnitX));
+            spriteBatch.Draw(pointTexture, begin, null, color, -angle, new Vector2(0, 0.5f), new Vector2(distance, thickness), SpriteEffects.None, 0);
         }
     }
 }

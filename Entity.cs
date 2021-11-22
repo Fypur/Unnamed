@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Basic_platformer.Components;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,32 +12,35 @@ namespace Basic_platformer
     public abstract class Entity
     {
         public List<Component> Components = new List<Component>();
-        private List<Component> componentsToAdd = new List<Component>();
-        private List<Component> componentsToRemove = new List<Component>();
+        public List<Renderer> Renderers = new List<Renderer>();
 
         public virtual void Update()
         {
-            foreach (Component c in componentsToAdd)
-                Components.Add(c);
-            componentsToAdd.Clear();
+            for(int i = Components.Count - 1; i >= 0; i--)
+                Components[i].Update();
+        }
 
-            foreach (Component c in componentsToRemove)
-                Components.Remove(c);
-            componentsToRemove.Clear();
-
-            foreach (Component c in Components)
-                c.Update();
+        public virtual void Render()
+        {
+            for (int i = Renderers.Count - 1; i >= 0; i--)
+                Renderers[i].Render();
         }
 
         public void AddComponent(Component component)
         {
             component.parentEntity = this;
-            componentsToAdd.Add(component);
+            Components.Add(component);
+
+            if (component.GetType().IsSubclassOf(typeof(Renderer)))
+                Renderers.Add((Renderer)component);
         }
 
         public void RemoveComponent(Component component)
         {
-            componentsToRemove.Remove(component);
+            Components.Remove(component);
+
+            if (component.GetType().IsSubclassOf(typeof(Renderer)))
+                Renderers.Remove((Renderer)component);
         }
     }
 }

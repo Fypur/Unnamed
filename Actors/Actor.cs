@@ -32,8 +32,6 @@ namespace Basic_platformer
             Platformer.EntitiesByType[t].Add(this);
         }
 
-        public virtual void Render() { }
-
         protected void MoveX(float amount, Action CallbackOnCollision = null)
         {
             xRemainder += amount;
@@ -84,6 +82,12 @@ namespace Basic_platformer
                     }
                 }
             }
+        }
+
+        public void MoveTo(Vector2 pos, Action CallbackOnCollisionX = null, Action CallbackOnCollisionY = null) 
+        {
+            MoveX(pos.X - Pos.X, CallbackOnCollisionX);
+            MoveY(pos.Y - Pos.Y, CallbackOnCollisionY);
         }
 
         protected bool CollideAt(List<Solid> solids, Vector2 pos)
