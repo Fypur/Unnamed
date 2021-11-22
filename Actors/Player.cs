@@ -150,7 +150,7 @@ namespace Basic_platformer
 
                     distanceToGrapplingPoint = (Pos - grapplePos).Length();
 
-                    AddComponent(new LineRenderer(Pos, grapplePos, 30, Color.Blue,
+                    AddComponent(new LineRenderer(Pos, grapplePos, 4, Color.Blue,
                         (line) => { if (!isSwinging) RemoveComponent(line); }, 
                     (line) => {
                         line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
