@@ -35,6 +35,8 @@ namespace Basic_platformer
         private const float invinciblityTime = 1.5f;
         private const float unstickTime = 0.1f;
 
+        private const float maxGrappleDist = 20000f;
+
         #endregion
 
         #region variables
@@ -144,29 +146,33 @@ namespace Basic_platformer
 
                 if (Input.GetKeyDown(Keys.A))
                 {
-                    Vector2 grapplePos = Platformer.Map.data.grapplingPoints[0].Pos;
-                    Vector2 middlePoint = grapplePos +
-                        new Vector2(Platformer.Map.data.grapplingPoints[0].Width / 2, Platformer.Map.data.grapplingPoints[0].Height / 2);
+                    GrapplingPoint grapplingPoint = null;
+                    ThrowRope(out grapplingPoint, out distanceToGrapplingPoint);
 
-                    distanceToGrapplingPoint = (Pos - grapplePos).Length();
+                     if(grapplingPoint != null)
+                    {
+                        isSwinging = true;
 
-                    AddComponent(new LineRenderer(Pos, grapplePos, 4, Color.Blue,
-                        (line) => { if (!isSwinging) RemoveComponent(line); }, 
-                    (line) => {
-                        line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
-                        line.EndPos = middlePoint;
-                    }));
-                    
-                isSwinging = true;
+                        Vector2 middlePoint = grapplingPoint.Pos +
+                        new Vector2(grapplingPoint.Width / 2, grapplingPoint.Height / 2);
+
+                        AddComponent(new LineRenderer(Pos, middlePoint, 4, Color.Blue,
+                            (line) => { if (!isSwinging) RemoveComponent(line); },
+                        (line) => {
+                            line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
+                            line.EndPos = middlePoint;
+                        }));
+                    }
                 }
                 if (Input.GetKey(Keys.A) && isSwinging)
                     Swing(Platformer.Map.data.grapplingPoints[0].Pos, distanceToGrapplingPoint);
                 else if(Input.GetKeyUp(Keys.A))
                 {
-                    if(movingDir == 0 || movingDir == Math.Sign(velocity.X))
-                        velocity.X *= 1.5f;
-                    if(velocity.Y < 0)
+                    velocity.X *= 1.5f;
+                    if (velocity.Y < 0)
                         velocity.Y *= 1.4f;
+                    else
+                        velocity.Y *= 0.7f;
                     isSwinging = false;
                     isAtSwingEnd = false;
                 }
@@ -205,9 +211,20 @@ namespace Basic_platformer
             MoveY(velocity.Y * Platformer.Deltatime, CollisionY);
         }
 
-        private void ThrowRope()
+        private void ThrowRope(out GrapplingPoint grapplingPoint, out float distance)
         {
-            //get grappling point with direction of player and distance to grappling point
+            grapplingPoint = null;
+            distance = maxGrappleDist;
+
+            foreach(GrapplingPoint g in Platformer.Map.data.grapplingPoints)
+            {
+                float d = Vector2.Distance(Pos, g.Pos);
+                if (d < distance)
+                {
+                    distance = d;
+                    grapplingPoint = g;
+                }
+            }
 
             //raycast to check if there is collision in between
         }
