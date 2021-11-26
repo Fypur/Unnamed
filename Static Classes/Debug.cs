@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Basic_platformer
+namespace Basic_platformer.Static_Classes
 {
     public static class Debug
     {

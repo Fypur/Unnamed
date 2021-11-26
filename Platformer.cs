@@ -82,12 +82,11 @@ namespace Basic_platformer
             
             if(Input.GetKeyDown(Keys.C))
                 Debug.Clear();
+
             if (Input.GetKey(Keys.X))
-            {
-                player.Pos.X = Map.data.grapplingPoints[0].Pos.X - 300;
-                player.Pos.Y = 80;
-                player.velocity.Y = 0;
-            }
+                cam.Move(Vector2.UnitX * 40, 0.5f, Ease.QuintInAndOut);
+            if (Input.GetKeyDown(Keys.C))
+                cam.ZoomLevel -= 0.2f;
 
             foreach (Actor e in Entities)
                 e.Update();
