@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using Basic_platformer.Static_Classes;
+using Basic_platformer.Utility;
 
 namespace Basic_platformer
 {
@@ -11,8 +11,10 @@ namespace Basic_platformer
         private static SpriteBatch spriteBatch;
         public static Texture2D pointTexture;
         public static SpriteFont font;
+        
         public static List<string> Debug = new List<string>();
         public static List<string> DebugForever = new List<string>();
+        public static List<Vector2> DebugPos = new List<Vector2>();
 
         public static void Init(SpriteBatch spriteBatch, SpriteFont font)
         {
@@ -38,12 +40,25 @@ namespace Basic_platformer
             => spriteBatch.DrawString(font, text, position, color, 0, origin,
                 1, SpriteEffects.None, 1);
 
+        public static void DrawLine(Vector2 begin, Vector2 end, Color color, int thickness = 1)
+        {
+            float distance = Vector2.Distance(begin, end);
+            var angle = (float)Math.Atan2(end.Y - begin.Y, end.X - begin.X);
+            var scale = new Vector2(distance, thickness);
+            spriteBatch.Draw(pointTexture, begin, null, color, angle, new Vector2(0f, 0.5f), scale, SpriteEffects.None, 0);
+        }
+
         public static void DrawEdge(Rectangle rectangle, int lineWidth, Color color)
         {
             spriteBatch.Draw(pointTexture, new Rectangle(rectangle.X, rectangle.Y, lineWidth, rectangle.Height + lineWidth), color);
             spriteBatch.Draw(pointTexture, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width + lineWidth, lineWidth), color);
             spriteBatch.Draw(pointTexture, new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, lineWidth, rectangle.Height + lineWidth), color);
             spriteBatch.Draw(pointTexture, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width + lineWidth, lineWidth), color);
+        }
+
+        public static void DrawPoint(Vector2 pos, int thickness, Color color)
+        {
+            spriteBatch.Draw(pointTexture, new Rectangle((int)pos.X - (thickness / 2), (int)pos.Y - (thickness / 2), thickness, thickness), color);
         }
 
         public static void DebugString()
@@ -67,12 +82,12 @@ namespace Basic_platformer
             Debug.Clear();
         }
 
-        public static void DrawLine(Vector2 begin, Vector2 end, Color color, int thickness = 1)
+        public static void DebugPoint()
         {
-            float distance = Vector2.Distance(begin, end);
-            var angle = (float)Math.Atan2(end.Y - begin.Y, end.X - begin.X);
-            var scale = new Vector2(distance, thickness);
-            spriteBatch.Draw(pointTexture, begin, null, color, angle, new Vector2(0f, 0.5f), scale, SpriteEffects.None, 0);
+            foreach(Vector2 pos in DebugPos)
+            {
+                DrawPoint(pos, 7, Color.DarkRed);
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Basic_platformer.Static_Classes
+namespace Basic_platformer.Utility
 {
     public static class Ease
     {

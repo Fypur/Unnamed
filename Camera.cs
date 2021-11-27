@@ -1,4 +1,4 @@
-﻿using Basic_platformer.Static_Classes;
+﻿using Basic_platformer.Utility;
 using Microsoft.Xna.Framework;
 using System;
 

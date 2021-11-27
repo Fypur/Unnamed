@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Basic_platformer.Static_Classes
+namespace Basic_platformer.Utility
 {
     public static class Debug
     {
@@ -20,7 +21,16 @@ namespace Basic_platformer.Static_Classes
                 Drawing.DebugForever.Add(l.ToString());
         }
 
+        public static void Point(params Vector2[] log)
+        {
+            foreach (Vector2 v in log)
+                Drawing.DebugPos.Add(v);
+        }
+
         public static void Clear()
-            => Drawing.DebugForever.Clear();
+        {
+            Drawing.DebugForever.Clear();
+            Drawing.DebugPos.Clear();
+        }
     }
 }

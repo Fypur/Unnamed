@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Basic_platformer.Static_Classes;
+using Basic_platformer.Utility;
 
 namespace Basic_platformer
 {

@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Basic_platformer.Solids
 {
     public class Map : Solid
     {
+        public int TileWidth;
+        public int TileHeight;
+        public int[,] MapOrganisation;
         public List<SolidTile> solidTiles = new List<SolidTile>();
         public MapData data = new MapData();
 
@@ -19,8 +20,12 @@ namespace Basic_platformer.Solids
         /// <param name="tileWidth"></param>
         /// <param name="tileHeight"></param>
         /// <param name="mapOrganisation">0 for nothing placed, a 1 for a tile placed, lenght of the array must be equal to mapWidth * mapHeight</param>
-        public Map(Vector2 position, int tileWidth, int tileHeight, int[,] mapOrganisation) : base(position, mapOrganisation.GetLength(0) * tileWidth, mapOrganisation.GetLength(1) * tileHeight)
+        public Map(Vector2 position, int tileWidth, int tileHeight, int[,] mapOrganisation) : base(position, mapOrganisation.GetLength(1) * tileWidth, mapOrganisation.GetLength(0) * tileHeight)
         {
+            TileWidth = tileWidth;
+            TileHeight = tileHeight;
+            MapOrganisation = mapOrganisation;
+
             for(int y = 0; y < mapOrganisation.GetLength(0); y++)
             {
                 for(int x = 0; x < mapOrganisation.GetLength(1); x++)
@@ -34,7 +39,7 @@ namespace Basic_platformer.Solids
                 }
             }
 
-            GrapplingPoint gP = new GrapplingPoint(new Vector2(Platformer.ScreenSize.X / 2, 0));
+            GrapplingPoint gP = new GrapplingPoint(new Vector2(Platformer.ScreenSize.X / 2, 60));
             data.solids.Add(gP);
             data.grapplingPoints.Add(gP);
         }

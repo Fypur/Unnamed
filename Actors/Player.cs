@@ -1,6 +1,6 @@
 ﻿using Basic_platformer.Components;
 using Basic_platformer.Solids;
-using Basic_platformer.Static_Classes;
+using Basic_platformer.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -219,14 +219,17 @@ namespace Basic_platformer
             foreach(GrapplingPoint g in Platformer.Map.data.grapplingPoints)
             {
                 float d = Vector2.Distance(Pos, g.Pos);
+                
                 if (d < distance)
                 {
-                    distance = d;
-                    grapplingPoint = g;
+                    Raycast ray = new Raycast(Pos + new Vector2(Width / 2, Height / 2), g.Pos + new Vector2(g.Width, g.Height));
+                    if (!ray.hit)
+                    {
+                        distance = d;
+                        grapplingPoint = g;
+                    }
                 }
             }
-
-            //raycast to check if there is collision in between
         }
         
         private void Swing(Vector2 grapplePos, float ropeLength)

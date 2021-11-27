@@ -1,5 +1,5 @@
 ﻿using Basic_platformer.Solids;
-using Basic_platformer.Static_Classes;
+using Basic_platformer.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -44,11 +44,11 @@ namespace Basic_platformer
             player = (Player)Instantiate(new Player(new Vector2(ScreenSize.X / 2, ScreenSize.Y - 300), 32, 32));
             //Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
             
-            cam = new Camera(ScreenSize / 2, 0, 1);
+            cam = new Camera(ScreenSize / 2, 0, 0.8f);
             base.Initialize();
 
             Map = new Map(Vector2.Zero, 60, 60, new int[8, 20] {
-                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
@@ -83,12 +83,16 @@ namespace Basic_platformer
             if(Input.GetKeyDown(Keys.C))
                 Debug.Clear();
 
-            if (Input.GetKey(Keys.X))
-                cam.Move(Vector2.UnitX * 40, 0.5f, Ease.QuintInAndOut);
-            if (Input.GetKeyDown(Keys.C))
+            if (Input.GetKeyDown(Keys.X))
                 cam.ZoomLevel -= 0.2f;
 
-            foreach (Actor e in Entities)
+            if (Input.GetKeyDown(Keys.V))
+            {
+                Point mousePos = Mouse.GetState(Window).Position;
+                player.Pos = cam.ScreenToWorldPosition(new Vector2(mousePos.X, mousePos.Y));
+            }
+
+                foreach (Actor e in Entities)
                 e.Update();
 
             foreach (Actor e in EntitiesToAdd)
@@ -117,7 +121,8 @@ namespace Basic_platformer
             foreach (Solid s in Solids)
                 s.Render();
 
-            
+            Drawing.DebugPoint();
+
             spriteBatch.End();
 
             spriteBatch.Begin();
