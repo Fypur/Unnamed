@@ -48,7 +48,7 @@ namespace Basic_platformer
             base.Initialize();
 
             Map = new Map(Vector2.Zero, 60, 60, new int[8, 20] {
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
@@ -66,7 +66,6 @@ namespace Basic_platformer
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
-            Player.Sprites.Add(Player.SpriteStates.Idle, Content.Load<Texture2D>("idle"));
         }
 
         protected override void Update(GameTime gameTime)
