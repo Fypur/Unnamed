@@ -270,7 +270,7 @@ namespace Basic_platformer
                     timer.TimeScale = 10;
 
                 velocity.Y = -jumpForce * (timer.Value / maxJumpTime);
-            }, () => stateMachine.Switch(States.Falling)));
+            }, () => { if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Falling); } ));
         }
 
         private void Dash()
@@ -312,7 +312,7 @@ namespace Basic_platformer
                 if(!collisionY)
                     velocity.Y = -jumpForce * timer.Value / maxJumpTime;
 
-            }, () => stateMachine.Switch(States.Falling)));
+            }, () => { if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Falling); } ));
         }
 
         private void WallSlide()
