@@ -64,7 +64,7 @@ namespace Basic_platformer
         public Player(Vector2 position, int width, int height) : base(position, width, height, constGravityScale) 
         {
             stateMachine = new StateMachine<States>(States.Idle);
-            stateMachine.RegisterStateFunctions(States.Jumping, null, () => { if (velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);
+            stateMachine.RegisterStateFunctions(States.Jumping, null, () => { if (Velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);
             AddComponent(stateMachine);
         }
 
@@ -101,16 +101,16 @@ namespace Basic_platformer
             #region Velocity calculation and clamping
             {
                 if (normalMouvement && onGround)
-                    velocity.X += movingDir * acceleration - friction * velocity.X;
+                    Velocity.X += movingDir * acceleration - friction * Velocity.X;
                 else if (normalMouvement && isAtSwingEnd)
-                    velocity.X += movingDir * swingAcceleration;
+                    Velocity.X += movingDir * swingAcceleration;
                 else if (normalMouvement && !onWall)
-                    velocity.X += movingDir * airAcceleration - airFriction * velocity.X;
+                    Velocity.X += movingDir * airAcceleration - airFriction * Velocity.X;
 
                 if (normalMouvement && !stateMachine.Is(States.Swinging))
-                    velocity.X = Math.Clamp(velocity.X, -maxSpeed, maxSpeed);
-                if (velocity.X <= 1 && velocity.X >= -1)
-                    velocity.X = 0;
+                    Velocity.X = Math.Clamp(Velocity.X, -maxSpeed, maxSpeed);
+                if (Velocity.X <= 1 && Velocity.X >= -1)
+                    Velocity.X = 0;
             }
             #endregion
 
@@ -133,8 +133,8 @@ namespace Basic_platformer
 
                 if (onGround)
                 {
-                    if (velocity.Y > 0)
-                        velocity.Y = 0;
+                    if (Velocity.Y > 0)
+                        Velocity.Y = 0;
                 }
                 else
                     Gravity();
@@ -173,11 +173,11 @@ namespace Basic_platformer
                     Swing(grapplingPos, distanceToGrapplingPoint);
                 else if(Input.GetKeyUp(Keys.A))
                 {
-                    velocity.X *= 1.5f;
-                    if (velocity.Y < 0)
-                        velocity.Y *= 1.4f;
+                    Velocity.X *= 1.5f;
+                    if (Velocity.Y < 0)
+                        Velocity.Y *= 1.4f;
                     else
-                        velocity.Y *= 0.7f;
+                        Velocity.Y *= 0.7f;
                     stateMachine.Switch(States.Jumping);
                     isAtSwingEnd = false;
                 }
@@ -216,11 +216,9 @@ namespace Basic_platformer
             else if (onGround && !stateMachine.Is(States.Swinging) && normalMouvement)
                 stateMachine.Switch(States.Running);
 
-            Debug.LogUpdate(stateMachine.CurrentState);
-
             collisionX = collisionY = false;
-            MoveX(velocity.X * Platformer.Deltatime, CollisionX);
-            MoveY(velocity.Y * Platformer.Deltatime, CollisionY);
+            MoveX(Velocity.X * Platformer.Deltatime, CollisionX);
+            MoveY(Velocity.Y * Platformer.Deltatime, CollisionY);
         }
 
         private void ThrowRope(out GrapplingPoint grapplingPoint, out float distance)
@@ -246,12 +244,12 @@ namespace Basic_platformer
         
         private void Swing(Vector2 grapplePos, float ropeLength)
         {
-            Vector2 testPos = Pos + velocity * Platformer.Deltatime;
+            Vector2 testPos = Pos + Velocity * Platformer.Deltatime;
 
             if ((grapplePos - testPos).Length() > ropeLength)
             {
                 testPos = grapplePos + Vector2.Normalize(testPos - grapplePos) * ropeLength;
-                velocity = (testPos - Pos) / Platformer.Deltatime;
+                Velocity = (testPos - Pos) / Platformer.Deltatime;
                 isAtSwingEnd = true;
             }
             else
@@ -269,7 +267,7 @@ namespace Basic_platformer
                 if (!Input.GetKey(Keys.Space))
                     timer.TimeScale = 10;
 
-                velocity.Y = -jumpForce * (timer.Value / maxJumpTime);
+                Velocity.Y = -jumpForce * (timer.Value / maxJumpTime);
             }, () => { if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Falling); } ));
         }
 
@@ -279,14 +277,14 @@ namespace Basic_platformer
             stateMachine.Switch(States.Dashing);
 
             int dir = facing;
-            velocity.X += dashSpeed * dir;
+            Velocity.X += dashSpeed * dir;
 
             AddComponent(new Timer(dashTime, true, (timer) => {
                 if (collisionX)
                     timer.End();
                 else
                 {
-                    velocity.Y = 0;
+                    Velocity.Y = 0;
                     normalMouvement = false;
                 }
             }
@@ -298,8 +296,8 @@ namespace Basic_platformer
             stateMachine.Switch(States.Jumping);
             int wallJumpingDirection = onRightWall ? -1 : 1;
             facing = -facing;
-            velocity.X = wallJumpSideForce * wallJumpingDirection;
-            velocity.Y -= jumpForce * 0.5f;
+            Velocity.X = wallJumpSideForce * wallJumpingDirection;
+            Velocity.Y -= jumpForce * 0.5f;
 
             AddComponent(new Timer(maxJumpTime, true, (timer) =>
             {
@@ -310,7 +308,7 @@ namespace Basic_platformer
                     timer.TimeScale = 2;
 
                 if(!collisionY)
-                    velocity.Y = -jumpForce * timer.Value / maxJumpTime;
+                    Velocity.Y = -jumpForce * timer.Value / maxJumpTime;
 
             }, () => { if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Falling); } ));
         }
@@ -318,7 +316,7 @@ namespace Basic_platformer
         private void WallSlide()
         {
             stateMachine.Switch(States.WallSliding);
-            if(velocity.Y > 0)
+            if(Velocity.Y > 0)
                 gravityScale = 0.5f * constGravityScale;
 
             if (!isUnsticking && movingDir != 0 && (movingDir < 0) == onRightWall)
@@ -331,19 +329,19 @@ namespace Basic_platformer
                         isUnsticking = false;
                         RemoveComponent(timer);
                     }
-                }, () => { velocity.X += movingDir * 4; isUnsticking = false; stateMachine.Switch(States.Falling); }));
+                }, () => { Velocity.X += movingDir * 4; isUnsticking = false; stateMachine.Switch(States.Falling); }));
             }
         }
 
         void CollisionX()
         {
-            velocity.X = 0;
+            Velocity.X = 0;
             collisionX = true;
         }
 
         void CollisionY()
         {
-            velocity.Y = 0;
+            Velocity.Y = 0;
             collisionY = true;
         }
 
@@ -351,8 +349,8 @@ namespace Basic_platformer
         {
             /*Platformer.Instantiate(new Player(new Vector2(Platformer.graphics.PreferredBackBufferWidth / 2, Platformer.graphics.PreferredBackBufferHeight - 100), 32, 60));
             Platformer.Destroy(this);*/ //Player death code (could also just move to position)
-            velocity.X += 300 * direction;
-            velocity.Y -= 200;
+            Velocity.X += 300 * direction;
+            Velocity.Y -= 200;
             invicible = true;
             Timer timer = new Timer(invinciblityTime, true, null, () => invicible = false);
             AddComponent(timer);

@@ -23,7 +23,7 @@ namespace Basic_platformer
         public static Map Map;
         public static Camera cam;
         public static List<Solid> Solids = new List<Solid>();
-        public static List<Actor> Entities = new List<Actor>();
+        public static List<Actor> Actors = new List<Actor>();
         public static List<Actor> EntitiesToAdd = new List<Actor>();
         public static List<Actor> EntitiesToRemove = new List<Actor>();
         public static Dictionary<Type, List<Actor>> EntitiesByType = new Dictionary<Type, List<Actor>>();
@@ -91,16 +91,18 @@ namespace Basic_platformer
                 player.Pos = cam.ScreenToWorldPosition(new Vector2(mousePos.X, mousePos.Y));
             }
 
-                foreach (Actor e in Entities)
+                foreach (Actor e in Actors)
                 e.Update();
 
             foreach (Actor e in EntitiesToAdd)
-                Entities.Add(e);
+                Actors.Add(e);
             EntitiesToAdd.Clear();
 
             foreach (Actor e in EntitiesToRemove)
-                Entities.Remove(e);
+                Actors.Remove(e);
             EntitiesToRemove.Clear();
+
+            Map.Update();
 
             cam.Update();
 
@@ -115,10 +117,10 @@ namespace Basic_platformer
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cam.ViewMatrix);
             Map.Render();
 
-            foreach (Actor e in Entities)
+            foreach (Actor e in Actors)
                 e.Render();
-            foreach (Solid s in Solids)
-                s.Render();
+            /*foreach (Solid s in Solids)
+                s.Render();*/
 
             Drawing.DebugPoint();
 

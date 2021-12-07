@@ -15,7 +15,7 @@ namespace Basic_platformer
 
         public Goomba(Vector2 position, int width, int height) : base(position, width, height, constGravityScale)
         {
-            velocity.X = -speed;
+            Velocity.X = -speed;
         }
 
         public override void Update()
@@ -23,15 +23,15 @@ namespace Basic_platformer
             onGround = CollideAt(Platformer.Solids, Pos + new Vector2(0, 1));
 
             if (CollideAt(Platformer.Solids, Pos + new Vector2(1, 0)) || CollideAt(Platformer.Solids, Pos + new Vector2(-1, 0)))
-                velocity.X *= -1;
+                Velocity.X *= -1;
 
             if (!onGround)
                 Gravity();
-            else if (velocity.Y > 0)
-                velocity.Y = 0;
+            else if (Velocity.Y > 0)
+                Velocity.Y = 0;
 
-            MoveX(velocity.X * Platformer.Deltatime, null);
-            MoveY(velocity.Y * Platformer.Deltatime, null);
+            MoveX(Velocity.X * Platformer.Deltatime, null);
+            MoveY(Velocity.Y * Platformer.Deltatime, null);
             //TODO: Add DamagePlayer Method
         }
 

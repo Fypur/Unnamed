@@ -12,7 +12,7 @@ namespace Basic_platformer
         public Vector2 Pos;
         public int Width;
         public int Height;
-        public Vector2 velocity;
+        public Vector2 Velocity;
         public float gravityScale;
         public static readonly Vector2 gravityVector = new Vector2(0, 9.81f);
 
@@ -159,7 +159,7 @@ namespace Basic_platformer
 
         public void Gravity()
         {
-            velocity += gravityVector * gravityScale;
+            Velocity += gravityVector * gravityScale;
         }
     }
 }

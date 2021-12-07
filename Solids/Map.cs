@@ -42,9 +42,14 @@ namespace Basic_platformer.Solids
             GrapplingPoint gP = new GrapplingPoint(new Vector2(Platformer.ScreenSize.X / 2, 60));
             data.solids.Add(gP);
             data.grapplingPoints.Add(gP);
-            GrapplingPoint gP2 = new GrapplingPoint(new Vector2(Platformer.ScreenSize.X / 2 + 500, 60));
-            data.solids.Add(gP2);
-            data.grapplingPoints.Add(gP2);
+            PulledPlatform pulled = new PulledPlatform(new Vector2(30 ,Platformer.ScreenSize.Y - 400), 200, 10, new Vector2(30 + 200, Platformer.ScreenSize.Y - 400), true);
+            data.solids.Add(pulled);
+        }
+
+        public override void Update()
+        {
+            foreach (Solid s in data.solids)
+                s.Update();
         }
 
         public override void Render()
