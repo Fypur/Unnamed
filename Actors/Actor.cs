@@ -106,7 +106,7 @@ namespace Basic_platformer
             Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
 
             foreach (Actor e in entities)
-                if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e!= this)
+                if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e != this)
                     return true;
 
             return false;

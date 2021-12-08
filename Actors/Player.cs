@@ -14,7 +14,7 @@ namespace Basic_platformer
     {
         #region constants
 
-        private enum States { Idle, Running, Jumping, Falling, Dashing, Swinging, WallSliding }
+        private enum States { Idle, Running, Jumping, Falling, Dashing, Swinging, WallSliding, Pulling }
 
         private const float maxSpeed = 600f; //in Pixel Per Second
         private const float dashSpeed = 800f;
@@ -46,9 +46,12 @@ namespace Basic_platformer
         private bool invicible;
         private bool hasDashed;
         private bool isUnsticking;
+
         private float distanceToGrapplingPoint;
         private Vector2 grapplingPos;
         private bool isAtSwingEnd;
+
+        private Vector2 respawnPoint;
 
         #endregion
 
@@ -66,6 +69,7 @@ namespace Basic_platformer
             stateMachine = new StateMachine<States>(States.Idle);
             stateMachine.RegisterStateFunctions(States.Jumping, null, () => { if (Velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);
             AddComponent(stateMachine);
+            respawnPoint = position;
         }
 
         public override void Update()
@@ -151,23 +155,7 @@ namespace Basic_platformer
 
                 if (Input.GetKeyDown(Keys.A))
                 {
-                    GrapplingPoint grapplingPoint = null;
-                    ThrowRope(out grapplingPoint, out distanceToGrapplingPoint);
-
-                     if(grapplingPoint != null)
-                    {
-                        stateMachine.Switch(States.Swinging);
-
-                        grapplingPos = grapplingPoint.Pos +
-                        new Vector2(grapplingPoint.Width / 2, grapplingPoint.Height / 2);
-
-                        AddComponent(new LineRenderer(Pos, grapplingPos, 4, Color.Blue,
-                            (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
-                        (line) => {
-                            line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
-                            line.EndPos = grapplingPos;
-                        }));
-                    }
+                    ThrowRope();
                 }
                 if (Input.GetKey(Keys.A) && stateMachine.Is(States.Swinging))
                     Swing(grapplingPos, distanceToGrapplingPoint);
@@ -185,6 +173,9 @@ namespace Basic_platformer
             #endregion
 
             #region Entity Collisions
+            if (CollideAt(Platformer.Map.Data.Solids, Pos))
+                Death();
+
             if (CollidedWithEntityOfType(Pos + new Vector2(0, 7), out Goomba goomba) &&
                 !CollidedWithEntity(goomba, Pos + new Vector2(1, 0)) &&
                 !CollidedWithEntity(goomba, Pos + new Vector2(-1, 0)))
@@ -221,25 +212,69 @@ namespace Basic_platformer
             MoveY(Velocity.Y * Platformer.Deltatime, CollisionY);
         }
 
-        private void ThrowRope(out GrapplingPoint grapplingPoint, out float distance)
+        private void ThrowRope()
         {
-            grapplingPoint = null;
-            distance = maxGrappleDist;
+            Solid grappledSolid = null;
+            float distance = maxGrappleDist;
 
-            foreach(GrapplingPoint g in Platformer.Map.data.grapplingPoints)
+            foreach(Solid g in Platformer.Map.Data.GrapplingSolids)
             {
                 float d = Vector2.Distance(Pos, g.Pos);
                 
                 if (d < distance)
                 {
+                    if (g is GrapplingTrigger trigger && !trigger.Active)
+                        continue;
+
                     Raycast ray = new Raycast(Pos + new Vector2(Width / 2, Height / 2), g.Pos + new Vector2(g.Width, g.Height));
                     if (!ray.hit)
                     {
                         distance = d;
-                        grapplingPoint = g;
+                        grappledSolid = g;
                     }
                 }
             }
+
+            if (grappledSolid.GetType() == typeof(GrapplingPoint))
+            {
+                stateMachine.Switch(States.Swinging);
+                distanceToGrapplingPoint = distance;
+                grapplingPos = grappledSolid.Pos;
+
+                grapplingPos = grappledSolid.Pos +
+                new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
+
+                AddComponent(new LineRenderer(Pos, grapplingPos, 4, Color.Blue,
+                        (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
+                    (line) => {
+                        line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
+                        line.EndPos = grapplingPos;
+                    }));
+            }
+            else if(grappledSolid is GrapplingTrigger trigger)
+            {
+                stateMachine.Switch(States.Pulling);
+                trigger.Active = false;
+                bool deactivateLine = false;
+
+                AddComponent(new Timer(0.1f, true, 
+                    (timer) => {
+                        Velocity.Y *= 0.5f;
+                    },
+                    () => {
+                    trigger.Pulled();
+                    deactivateLine = true;
+                    stateMachine.Switch(States.Jumping);
+                    Velocity.Y = -500; }));
+
+                AddComponent(new LineRenderer(Pos, trigger.Pos, 4, Color.Blue, 
+                    (line) => { if (deactivateLine) RemoveComponent(line); },
+                    (line) => {
+                        line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
+                        line.EndPos = trigger.Pos;
+                    }));
+            }
+            
         }
         
         private void Swing(Vector2 grapplePos, float ropeLength)
@@ -254,6 +289,12 @@ namespace Basic_platformer
             }
             else
                 isAtSwingEnd = false;
+        }
+
+        public void Death()
+        {
+            Pos = respawnPoint;
+            Velocity = Vector2.Zero;
         }
 
         private void Jump()

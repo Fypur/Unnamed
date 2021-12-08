@@ -16,10 +16,15 @@ namespace Basic_platformer.Solids
 
         public Vector2 originalPos;
         public Vector2 PulledPos;
-        private float speed = 200f;
+        public float PulledOutTime;
+        public float speed = 200f;
+        public Func<float, float> EasingFunction;
+
+        public float movingTime { get => 2 + PulledOutTime; }
+
         private float distanceBetweenPos;
 
-        public PulledPlatform(Vector2 position, int width, int height, Vector2 pulledPos, bool railed) : base(position, width, height, 0)
+        public PulledPlatform(Vector2 position, int width, int height, Vector2 pulledPos, float pulledOutTime, Func<float, float> easingFunction = null, bool railed = false) : base(position, width, height, 0)
         {
             Pos = position;
             Width = width;
@@ -27,26 +32,29 @@ namespace Basic_platformer.Solids
             originalPos = position;
             PulledPos = pulledPos;
             distanceBetweenPos = Vector2.Distance(originalPos, PulledPos);
+            PulledOutTime = pulledOutTime;
             Railed = railed;
+            EasingFunction = easingFunction;
         }
 
-        public void Pulled(Func<float,float> easingFunction)
+        public void Pulled()
         {
             Vector2 initPos = Pos;
             Vector2 newPos = PulledPos;
             AddComponent(new Timer(1f, true, (timer) =>
             {
                 MoveTo(Vector2.Lerp(initPos, newPos,
-                         (easingFunction ?? DefaultEasing).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
+                     (EasingFunction ?? DefaultEasing).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
+                Debug.LogUpdate(timer.Value);
             },
             () =>
             {
                 Pos = newPos;
-                AddComponent(new Timer(2f, false, null, () => Unpulled(Ease.QuintInAndOut)));
+                AddComponent(new Timer(PulledOutTime, false, null, () => Unpulled(Ease.QuintInAndOut)));
             }));
         }
 
-        public void Unpulled(Func<float, float> easingFunction)
+        public void Unpulled(Func<float, float> easingFunction = null)
         {
             Vector2 initPos = Pos;
             Vector2 newPos = originalPos;
@@ -54,14 +62,11 @@ namespace Basic_platformer.Solids
             {
                 MoveTo(Vector2.Lerp(initPos, newPos,
                          (easingFunction ?? DefaultEasing).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
-            }, () => Pos = originalPos));
+            }, () => { Pos = originalPos; }));
         }
 
         public override void Update()
         {
-            if (Input.GetKeyDown(Keys.W))
-                Pulled(Ease.QuintOut);
-
             base.Update();
 
             MoveX(Velocity.X * Platformer.Deltatime);

@@ -58,7 +58,7 @@ namespace Basic_platformer
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
             });
 
-            foreach (Solid s in Map.data.solids)
+            foreach (Solid s in Map.Data.Solids)
                 Solids.Add(s);
         }
 
@@ -91,16 +91,8 @@ namespace Basic_platformer
                 player.Pos = cam.ScreenToWorldPosition(new Vector2(mousePos.X, mousePos.Y));
             }
 
-                foreach (Actor e in Actors)
-                e.Update();
-
-            foreach (Actor e in EntitiesToAdd)
-                Actors.Add(e);
-            EntitiesToAdd.Clear();
-
-            foreach (Actor e in EntitiesToRemove)
-                Actors.Remove(e);
-            EntitiesToRemove.Clear();
+            for (int i = Actors.Count - 1; i >= 0; i--)
+                Actors[i].Update();
 
             Map.Update();
 
@@ -135,17 +127,13 @@ namespace Basic_platformer
 
         public static Actor Instantiate(Actor entity)
         {
-            EntitiesToAdd.Add(entity);
+            Actors.Add(entity);
             return entity;
         }
 
         public static void Destroy(Actor entity)
         {
-            EntitiesToRemove.Add(entity);
-            Type t = entity.GetType();
-            EntitiesByType[t].Remove(entity);
-            if (EntitiesByType[t].Count == 0)
-                EntitiesByType.Remove(t);
+            Actors.Remove(entity);
         }
     }
 }

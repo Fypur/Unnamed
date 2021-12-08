@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Basic_platformer.Utility;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 namespace Basic_platformer.Solids
@@ -9,10 +10,10 @@ namespace Basic_platformer.Solids
         public int TileHeight;
         public int[,] MapOrganisation;
         public List<SolidTile> solidTiles = new List<SolidTile>();
-        public MapData data = new MapData();
+        public MapData Data = new MapData();
 
         /// <summary>
-        /// 
+        /// Map constructor
         /// </summary>
         /// <param name="position"></param>
         /// <param name="mapWidth">Max number of horizontal tiles</param>
@@ -32,29 +33,35 @@ namespace Basic_platformer.Solids
                 {
                     if (mapOrganisation[y, x] == 1)
                     {
-                        data.solids.Add(new SolidTile(Drawing.pointTexture, new Vector2(position.X + x * tileWidth, position.Y + y * tileHeight), tileWidth, tileHeight));
-                        data.solidTiles.Add(new SolidTile(Drawing.pointTexture, new Vector2(position.X + x * tileWidth, position.Y + y * tileHeight), tileWidth, tileHeight));
+                        Data.Solids.Add(new SolidTile(Drawing.pointTexture, new Vector2(position.X + x * tileWidth, position.Y + y * tileHeight), tileWidth, tileHeight));
+                        Data.solidTiles.Add(new SolidTile(Drawing.pointTexture, new Vector2(position.X + x * tileWidth, position.Y + y * tileHeight), tileWidth, tileHeight));
                     }
                         
                 }
             }
 
             GrapplingPoint gP = new GrapplingPoint(new Vector2(Platformer.ScreenSize.X / 2, 60));
-            data.solids.Add(gP);
-            data.grapplingPoints.Add(gP);
-            PulledPlatform pulled = new PulledPlatform(new Vector2(30 ,Platformer.ScreenSize.Y - 400), 200, 10, new Vector2(30 + 200, Platformer.ScreenSize.Y - 400), true);
-            data.solids.Add(pulled);
+            Data.Solids.Add(gP);
+            Data.GrapplingSolids.Add(gP);
+            PulledPlatform pulled = new PulledPlatform(new Vector2(30 ,Platformer.ScreenSize.Y - 400), 200, 10, new Vector2(30 + 200, Platformer.ScreenSize.Y - 400), 2f, Ease.QuintOut, true);
+            Data.Solids.Add(pulled);
+            GrapplingTrigger platformTrigger = new GrapplingTrigger(new Vector2(pulled.Pos.X + pulled.Width, pulled.Pos.Y), true, pulled.movingTime, pulled.Pulled);
+            Data.GrapplingSolids.Add(platformTrigger);
+            Data.Triggers.Add(platformTrigger);
         }
 
         public override void Update()
         {
-            foreach (Solid s in data.solids)
-                s.Update();
+            for (int i = Data.Solids.Count - 1; i >= 0; i--)
+                Data.Solids[i].Update();
+
+            for (int i = Data.Triggers.Count - 1; i >= 0; i--)
+                Data.Triggers[i].Update();
         }
 
         public override void Render()
         {
-            foreach (Solid s in data.solids)
+            foreach (Solid s in Data.Solids)
                     s.Render();
         }
     }

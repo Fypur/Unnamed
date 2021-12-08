@@ -6,13 +6,9 @@ namespace Basic_platformer.Solids
 {
     public class MapData
     {
-        public List<Solid> solids = new List<Solid>();
+        public List<Solid> Solids = new List<Solid>();
         public List<SolidTile> solidTiles = new List<SolidTile>();
-        public List<GrapplingPoint> grapplingPoints = new List<GrapplingPoint>();
-
-        public void AddElement(List<Solid> list)
-        {
-
-        }
+        public List<Solid> GrapplingSolids = new List<Solid>();
+        public List<Entity> Triggers = new List<Entity>();
     }
 }
