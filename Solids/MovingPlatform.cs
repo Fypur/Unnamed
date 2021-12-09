@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Text;
 
-namespace Basic_platformer.Actors
+namespace Basic_platformer.Solids
 {
-    public class MovingPlatform : Actor
+    public class MovingPlatform : MovingSolid
     {
         Vector2[] positions;
         float[] times;

@@ -34,13 +34,14 @@ namespace Basic_platformer
         private const float invinciblityTime = 1.5f;
         private const float unstickTime = 0.1f;
 
-        private const float maxGrappleDist = 20000f;
+        private const float maxGrappleDist = 1000f;
         #endregion
 
         #region variables
         private readonly StateMachine<States> stateMachine;
 
-        private int movingDir;
+        private int xMoving;
+        private int yMoving;
         private int facing = 1;
         private bool normalMouvement = true;
         private bool invicible;
@@ -85,31 +86,38 @@ namespace Basic_platformer
             base.Update();
             #endregion
 
-            #region Horizontal
-
             #region calulating the moving direction and the facing direction
             {
                 if (Input.GetKey(Keys.Right) || Input.GetKey(Keys.D))
-                    movingDir = 1;
+                    xMoving = 1;
                 if (Input.GetKey(Keys.Left) || Input.GetKey(Keys.Q))
-                    movingDir = -1;
+                    xMoving = -1;
                 if (!((Input.GetKey(Keys.Right) || Input.GetKey(Keys.D)) ^ (Input.GetKey(Keys.Left) || Input.GetKey(Keys.Q))))
-                    movingDir = 0;
+                    xMoving = 0;
 
-                if (movingDir != 0)
-                    facing = movingDir;
+                if (Input.GetKey(Keys.Up) || Input.GetKey(Keys.Z))
+                    yMoving = -1;
+                if (Input.GetKey(Keys.Down) || Input.GetKey(Keys.S))
+                    yMoving = 1;
+                if (!((Input.GetKey(Keys.Up) || Input.GetKey(Keys.Z)) ^ (Input.GetKey(Keys.Down) || Input.GetKey(Keys.S))))
+                    yMoving = 0;
+
+                if (xMoving != 0)
+                    facing = xMoving;
             }
-            
+
             #endregion
+
+            #region Horizontal
 
             #region Velocity calculation and clamping
             {
                 if (normalMouvement && onGround)
-                    Velocity.X += movingDir * acceleration - friction * Velocity.X;
+                    Velocity.X += xMoving * acceleration - friction * Velocity.X;
                 else if (normalMouvement && isAtSwingEnd)
-                    Velocity.X += movingDir * swingAcceleration;
+                    Velocity.X += xMoving * swingAcceleration;
                 else if (normalMouvement && !onWall)
-                    Velocity.X += movingDir * airAcceleration - airFriction * Velocity.X;
+                    Velocity.X += xMoving * airAcceleration - airFriction * Velocity.X;
 
                 if (normalMouvement && !stateMachine.Is(States.Swinging))
                     Velocity.X = Math.Clamp(Velocity.X, -maxSpeed, maxSpeed);
@@ -202,7 +210,7 @@ namespace Basic_platformer
             }
             #endregion
 
-            if (onGround && movingDir == 0 && normalMouvement && !stateMachine.Is(States.Swinging))
+            if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging))
                 stateMachine.Switch(States.Idle);
             else if (onGround && !stateMachine.Is(States.Swinging) && normalMouvement)
                 stateMachine.Switch(States.Running);
@@ -214,27 +222,62 @@ namespace Basic_platformer
 
         private void ThrowRope()
         {
+            #region Determining grappling point
             Solid grappledSolid = null;
+            Solid reserveGrappledSolid = null;
             float distance = maxGrappleDist;
+            float reserveDistance = maxGrappleDist;
 
             foreach(Solid g in Platformer.Map.Data.GrapplingSolids)
             {
                 float d = Vector2.Distance(Pos, g.Pos);
-                
+
                 if (d < distance)
                 {
+                    Vector2 dir = g.Pos - Pos;
+                    bool onRightDir = true;
+
+                    if (!(((Math.Sign(dir.X) == xMoving || Math.Sign(dir.X) == 0) && (Math.Sign(dir.Y) == yMoving || Math.Sign(dir.Y) == 0)) || (xMoving == 0 && yMoving == 0)))
+                    {
+                        if (d > reserveDistance)
+                            continue;
+                        onRightDir = false;
+                    }
+
                     if (g is GrapplingTrigger trigger && !trigger.Active)
                         continue;
 
                     Raycast ray = new Raycast(Pos + new Vector2(Width / 2, Height / 2), g.Pos + new Vector2(g.Width, g.Height));
                     if (!ray.hit)
                     {
-                        distance = d;
-                        grappledSolid = g;
+                        if (onRightDir)
+                        {
+                            distance = d;
+                            grappledSolid = g;
+                        }
+                        else
+                        {
+                            reserveGrappledSolid = g;
+                            reserveDistance = d;
+                        }
                     }
                 }
             }
 
+            if (grappledSolid == null)
+            {
+                if (reserveGrappledSolid != null)
+                {
+                    grappledSolid = reserveGrappledSolid;
+                    distance = reserveDistance;
+                }
+                else
+                    return;
+            }
+
+            #endregion
+
+            #region Acting Accordingly depending on Grappled Object
             if (grappledSolid.GetType() == typeof(GrapplingPoint))
             {
                 stateMachine.Switch(States.Swinging);
@@ -244,11 +287,11 @@ namespace Basic_platformer
                 grapplingPos = grappledSolid.Pos +
                 new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
 
-                AddComponent(new LineRenderer(Pos, grapplingPos, 4, Color.Blue,
+                AddComponent(new LineRenderer(Pos, grappledSolid.Pos, 4, Color.Blue,
                         (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
                     (line) => {
                         line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
-                        line.EndPos = grapplingPos;
+                        line.EndPos = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
                     }));
             }
             else if(grappledSolid is GrapplingTrigger trigger)
@@ -267,16 +310,17 @@ namespace Basic_platformer
                     stateMachine.Switch(States.Jumping);
                     Velocity.Y = -500; }));
 
-                AddComponent(new LineRenderer(Pos, trigger.Pos, 4, Color.Blue, 
+                AddComponent(new LineRenderer(Pos, grappledSolid.Pos, 4, Color.Blue, 
                     (line) => { if (deactivateLine) RemoveComponent(line); },
                     (line) => {
                         line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
-                        line.EndPos = trigger.Pos;
+                        line.EndPos = grappledSolid.Pos;
                     }));
             }
-            
+
+            #endregion
         }
-        
+
         private void Swing(Vector2 grapplePos, float ropeLength)
         {
             Vector2 testPos = Pos + Velocity * Platformer.Deltatime;
@@ -328,7 +372,7 @@ namespace Basic_platformer
                     Velocity.Y = 0;
                     normalMouvement = false;
                 }
-            }
+            } 
             , () => normalMouvement = true));
         }
 
@@ -342,7 +386,7 @@ namespace Basic_platformer
 
             AddComponent(new Timer(maxJumpTime, true, (timer) =>
             {
-                if (hasDashed)
+                if (collisionY || hasDashed)
                     timer.End();
 
                 if (!Input.GetKey(Keys.Space))
@@ -360,17 +404,17 @@ namespace Basic_platformer
             if(Velocity.Y > 0)
                 gravityScale = 0.5f * constGravityScale;
 
-            if (!isUnsticking && movingDir != 0 && (movingDir < 0) == onRightWall)
+            if (!isUnsticking && xMoving != 0 && (xMoving < 0) == onRightWall)
             {
                 isUnsticking = true;
                 AddComponent(new Timer(unstickTime, true, (timer) =>
                 {
-                    if (movingDir != 0 && (movingDir < 0) != onRightWall || !onWall)
+                    if (xMoving != 0 && (xMoving < 0) != onRightWall || !onWall)
                     {
                         isUnsticking = false;
                         RemoveComponent(timer);
                     }
-                }, () => { Velocity.X += movingDir * 4; isUnsticking = false; stateMachine.Switch(States.Falling); }));
+                }, () => { Velocity.X += xMoving * 4; isUnsticking = false; stateMachine.Switch(States.Falling); }));
             }
         }
 
