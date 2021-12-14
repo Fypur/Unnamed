@@ -17,6 +17,7 @@ namespace Basic_platformer
         private enum States { Idle, Running, Jumping, Falling, Dashing, Swinging, WallSliding, Pulling }
 
         private const float maxSpeed = 600f; //in Pixel Per Second
+        private const float maxFallingSpeed = 1000f;
         private const float dashSpeed = 800f;
 
         private const float acceleration = 200f;
@@ -34,7 +35,7 @@ namespace Basic_platformer
         private const float invinciblityTime = 1.5f;
         private const float unstickTime = 0.1f;
 
-        private const float maxGrappleDist = 1000f;
+        private const float maxGrappleDist = 2000f;
         #endregion
 
         #region variables
@@ -126,15 +127,15 @@ namespace Basic_platformer
             }
             #endregion
 
-            if (onWall && !onGround)
-                WallSlide();
-            else
-                gravityScale = constGravityScale;
-
             #endregion
 
             #region Vertical
             {
+                if (onWall && !onGround && !stateMachine.Is(States.Swinging))
+                    WallSlide();
+                else
+                    gravityScale = constGravityScale;
+
                 if (Input.GetKeyDown(Keys.Space) && onGround)
                     Jump();
                 else if (Input.GetKeyDown(Keys.Space) && onWall)
@@ -150,6 +151,8 @@ namespace Basic_platformer
                 }
                 else
                     Gravity();
+
+                Velocity.Y = Math.Min(Velocity.Y, maxFallingSpeed);
             }
             #endregion
 
@@ -234,8 +237,9 @@ namespace Basic_platformer
                 {
                     Vector2 dir = g.Pos - Pos;
                     bool onRightDir = true;
+                    int signX = Math.Sign(dir.X), signY = Math.Sign(dir.Y);
 
-                    if (!(((Math.Sign(dir.X) == xMoving || Math.Sign(dir.X) == 0) && (Math.Sign(dir.Y) == yMoving || Math.Sign(dir.Y) == 0)) || (xMoving == 0 && yMoving == 0)))
+                    if ( !( ( xMoving == signX || xMoving == 0 ) && ( yMoving == signY || yMoving == 0 ) ) )
                     {
                         if (d > reserveDistance)
                             continue;
@@ -278,7 +282,7 @@ namespace Basic_platformer
             #endregion
 
             #region Acting Accordingly depending on Grappled Object
-            if (determinedGrappledSolid.GetType() == typeof(GrapplingPoint))
+            if (determinedGrappledSolid is GrapplingPoint)
             {
                 stateMachine.Switch(States.Swinging);
                 distanceToGrapplingPoint = distance;
@@ -330,7 +334,6 @@ namespace Basic_platformer
                 testPos = grapplePos + Vector2.Normalize(testPos - grapplePos) * ropeLength;
                 Velocity = (testPos - Pos) / Platformer.Deltatime;
                 isAtSwingEnd = true;
-                Debug.LogUpdate("triggered");
             }
             else
                 isAtSwingEnd = false;
