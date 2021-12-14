@@ -8,7 +8,7 @@ using Basic_platformer.Components;
 
 namespace Basic_platformer.Solids
 {
-    public class CyclingSolid : MovingSolid
+    public abstract class CyclingSolid : MovingSolid
     {
         public bool moving;
 
@@ -37,8 +37,6 @@ namespace Basic_platformer.Solids
             EasingFunction = easingfunction;
 
             StartTimer();
-
-            //AddComponent(movingTimer);
         }
 
         private void StartTimer()
@@ -48,11 +46,11 @@ namespace Basic_platformer.Solids
                 if (!moving)
                     timer.PauseUntil(() => moving);
 
-                Pos = Vector2.Lerp(Positions[nextIndex + (increment ? -1 : 1)], Positions[nextIndex], EasingFunction.Invoke(Ease.Reverse(timer.Value / timer.MaxValue)));
+                MoveTo(Vector2.Lerp(Positions[nextIndex + (increment ? -1 : 1)], Positions[nextIndex], EasingFunction.Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
 
             }, () =>
             {
-                Pos = Positions[nextIndex];
+                MoveTo(Positions[nextIndex]);
 
                 if (nextIndex == 0 || nextIndex == Positions.Length - 1)
                     increment = !increment;

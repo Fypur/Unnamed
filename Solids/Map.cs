@@ -44,6 +44,8 @@ namespace Basic_platformer.Solids
                 new float[] { 1, 0.2f, 3f }, Ease.QuintInAndOut);
             Data.Solids.Add(gP);
             Data.GrapplingSolids.Add(gP);
+            CyclingPlatform c = new CyclingPlatform(10, 200, Color.Red, new Vector2[] { Vector2.Zero, Vector2.One * 200, Vector2.UnitY * 500 }, new float[] { 0.4f, 1f }, Ease.QuintInAndOut);
+            Data.Solids.Add(c);
             PulledPlatform pulled = new PulledPlatform(new Vector2(30 ,Platformer.ScreenSize.Y - 400), 200, 10, new Vector2(30 + 200, Platformer.ScreenSize.Y - 400), 2f, Ease.QuintOut, true);
             Data.Solids.Add(pulled);
             GrapplingTrigger platformTrigger = new GrapplingTrigger(new Vector2(pulled.Pos.X + pulled.Width, pulled.Pos.Y), true, pulled.movingTime, pulled.Pulled);
