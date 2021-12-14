@@ -1,4 +1,5 @@
-﻿using Basic_platformer.Solids;
+﻿using Basic_platformer.Mapping;
+using Basic_platformer.Solids;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace Basic_platformer.Utility
         {
             #region Ray Direction, Step Size and Original Pos Tile
 
-            Map map = Platformer.Map;
+            Map map = Platformer.CurrentMap;
             Vector2 end = begin + Vector2.Normalize(direction) * length;
 
             Vector2 rayDir = Vector2.Normalize(direction);

@@ -27,9 +27,9 @@ namespace Basic_platformer
             this.gravityScale = gravityScale;
 
             Type t = GetType();
-            if (!Platformer.EntitiesByType.ContainsKey(t))
-                Platformer.EntitiesByType.Add(t, new List<Actor>());
-            Platformer.EntitiesByType[t].Add(this);
+            if (!Platformer.CurrentMap.Data.EntitiesByType.ContainsKey(t))
+                Platformer.CurrentMap.Data.EntitiesByType.Add(t, new List<Actor>());
+            Platformer.CurrentMap.Data.EntitiesByType[t].Add(this);
         }
 
         protected void MoveX(float amount, Action CallbackOnCollision = null)
@@ -44,7 +44,7 @@ namespace Basic_platformer
 
                 while (move != 0)
                 {
-                    if (!CollideAt(Platformer.Solids, Pos + new Vector2(sign, 0)))
+                    if (!CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(sign, 0)))
                     {
                         Pos.X += sign;
                         move -= sign;
@@ -70,7 +70,7 @@ namespace Basic_platformer
 
                 while (move != 0)
                 {
-                    if (!CollideAt(Platformer.Solids, Pos + new Vector2(0, sign)))
+                    if (!CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(0, sign)))
                     {
                         Pos.Y += sign;
                         move -= sign;
@@ -130,8 +130,8 @@ namespace Basic_platformer
         {
             Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
 
-            if(Platformer.EntitiesByType.ContainsKey(typeof(T)))
-                foreach (Actor e in Platformer.EntitiesByType[typeof(T)])
+            if(Platformer.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(T)))
+                foreach (Actor e in Platformer.CurrentMap.Data.EntitiesByType[typeof(T)])
                     if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e is T castedEntity)
                     {
                         collidedEntity = castedEntity;
@@ -146,8 +146,8 @@ namespace Basic_platformer
         {
             Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
 
-            if (Platformer.EntitiesByType.ContainsKey(typeof(T)))
-                foreach (Actor e in Platformer.EntitiesByType[typeof(T)])
+            if (Platformer.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(T)))
+                foreach (Actor e in Platformer.CurrentMap.Data.EntitiesByType[typeof(T)])
                     if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e is T castedEntity)
                         return true;
 

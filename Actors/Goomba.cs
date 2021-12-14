@@ -20,9 +20,9 @@ namespace Basic_platformer
 
         public override void Update()
         {
-            onGround = CollideAt(Platformer.Solids, Pos + new Vector2(0, 1));
+            onGround = CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(0, 1));
 
-            if (CollideAt(Platformer.Solids, Pos + new Vector2(1, 0)) || CollideAt(Platformer.Solids, Pos + new Vector2(-1, 0)))
+            if (CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(1, 0)) || CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(-1, 0)))
                 Velocity.X *= -1;
 
             if (!onGround)

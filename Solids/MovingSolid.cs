@@ -40,7 +40,7 @@ namespace Basic_platformer.Solids
             else
                 movingRect = new Rectangle((int)Pos.X + move, (int)Pos.Y, Width - move, Height);
 
-            foreach (Actor actor in Platformer.Actors)
+            foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
             {
                 //Take those entities and move them
                 if (new Rectangle((int)actor.Pos.X, (int)actor.Pos.Y, actor.Width, actor.Height).Intersects(movingRect))
@@ -75,7 +75,7 @@ namespace Basic_platformer.Solids
             else
                 movingRect = new Rectangle((int)Pos.X, (int)Pos.Y + move, Width, -move + Height);
 
-            foreach (Actor actor in Platformer.Actors)
+            foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
             {
                 //Take those entities and move them
                 if (new Rectangle((int)actor.Pos.X, (int)actor.Pos.Y, actor.Width, actor.Height).Intersects(movingRect))

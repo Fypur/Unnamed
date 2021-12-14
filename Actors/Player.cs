@@ -77,10 +77,10 @@ namespace Basic_platformer
         public override void Update()
         {
             #region Checks for Ground and Wall
-            onGround = CollideAt(Platformer.Solids, Pos + new Vector2(0, 1));
-            onWall = CollideAt(Platformer.Solids, Pos + new Vector2(1, 0)) ||
-                CollideAt(Platformer.Solids, Pos + new Vector2(-1, 0));
-            onRightWall = CollideAt(Platformer.Solids, Pos + new Vector2(Width + 1, 0));
+            onGround = CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(0, 1));
+            onWall = CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(1, 0)) ||
+                CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(-1, 0));
+            onRightWall = CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(Width + 1, 0));
             #endregion
 
             #region Component Update
@@ -182,14 +182,14 @@ namespace Basic_platformer
             #endregion
 
             #region Entity Collisions
-            if (CollideAt(Platformer.Map.Data.Solids, Pos))
+            if (CollideAt(Platformer.CurrentMap.Data.Solids, Pos))
                 Death();
 
             if (CollidedWithEntityOfType(Pos + new Vector2(0, 7), out Goomba goomba) &&
                 !CollidedWithEntity(goomba, Pos + new Vector2(1, 0)) &&
                 !CollidedWithEntity(goomba, Pos + new Vector2(-1, 0)))
             {
-                Platformer.Destroy(goomba);
+                Platformer.CurrentMap.Destroy(goomba);
                 Jump();
             }
             else if (!invicible)
@@ -229,7 +229,7 @@ namespace Basic_platformer
             float distance = maxGrappleDist;
             float reserveDistance = maxGrappleDist;
 
-            foreach(Solid g in Platformer.Map.Data.GrapplingSolids)
+            foreach(Solid g in Platformer.CurrentMap.Data.GrapplingSolids)
             {
                 float d = Vector2.Distance(Pos, g.Pos);
 

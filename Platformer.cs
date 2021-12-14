@@ -1,4 +1,5 @@
-﻿using Basic_platformer.Solids;
+﻿using Basic_platformer.Mapping;
+using Basic_platformer.Solids;
 using Basic_platformer.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,13 +21,8 @@ namespace Basic_platformer
 
         public Player player;
 
-        public static Map Map;
+        public static Map CurrentMap;
         public static Camera cam;
-        public static List<Solid> Solids = new List<Solid>();
-        public static List<Actor> Actors = new List<Actor>();
-        public static List<Actor> EntitiesToAdd = new List<Actor>();
-        public static List<Actor> EntitiesToRemove = new List<Actor>();
-        public static Dictionary<Type, List<Actor>> EntitiesByType = new Dictionary<Type, List<Actor>>();
 
         public Platformer()
         {
@@ -41,13 +37,9 @@ namespace Basic_platformer
 
         protected override void Initialize()
         {
-            player = (Player)Instantiate(new Player(new Vector2(ScreenSize.X / 2, ScreenSize.Y - 300), 32, 32));
-            //Instantiate(new Goomba(new Vector2(graphics.PreferredBackBufferWidth / 2 + 200, graphics.PreferredBackBufferHeight - 100), 30, 30));
-            
-            cam = new Camera(ScreenSize / 2, 0, 0.8f);
             base.Initialize();
 
-            Map = new Map(Vector2.Zero, 60, 60, new int[8, 20] {
+            CurrentMap = new Map(Vector2.Zero, 60, 60, new int[8, 20] {
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
@@ -57,9 +49,9 @@ namespace Basic_platformer
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
             });
+            CurrentMap.LoadMap();
 
-            foreach (Solid s in Map.Data.Solids)
-                Solids.Add(s);
+            cam = new Camera(ScreenSize / 2, 0, 0.8f);
         }
 
         protected override void LoadContent()
@@ -91,10 +83,7 @@ namespace Basic_platformer
                 player.Pos = cam.ScreenToWorldPosition(new Vector2(mousePos.X, mousePos.Y));
             }
 
-            for (int i = Actors.Count - 1; i >= 0; i--)
-                Actors[i].Update();
-
-            Map.Update();
+            CurrentMap.Update();
 
             cam.Update();
 
@@ -107,12 +96,8 @@ namespace Basic_platformer
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cam.ViewMatrix);
-            Map.Render();
 
-            foreach (Actor e in Actors)
-                e.Render();
-            /*foreach (Solid s in Solids)
-                s.Render();*/
+            CurrentMap.Render();
 
             Drawing.DebugPoint();
 
@@ -123,17 +108,6 @@ namespace Basic_platformer
             spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        public static Actor Instantiate(Actor entity)
-        {
-            Actors.Add(entity);
-            return entity;
-        }
-
-        public static void Destroy(Actor entity)
-        {
-            Actors.Remove(entity);
         }
     }
 }
