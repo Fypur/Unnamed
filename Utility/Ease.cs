@@ -15,6 +15,9 @@ namespace Basic_platformer.Utility
         public static float QuintInAndOut(float x)
             => x < 0.5f ? 4 * x * x * x : 1 - (float)Math.Pow(-2 * x + 2, 3) / 2;
 
+        public static float Default(float x) 
+            => x;
+
         /// <summary>
         /// Make a value that goes from 1 to 0 go from 0 to 1 or the opposite
         /// </summary>

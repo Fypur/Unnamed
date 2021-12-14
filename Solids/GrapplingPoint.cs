@@ -5,11 +5,15 @@ using System.Text;
 
 namespace Basic_platformer.Solids
 {
-    public class GrapplingPoint : Solid
+    public class GrapplingPoint : CyclingSolid
     {
         private const int width = 7;
         private const int height = 7;
+
         public GrapplingPoint(Vector2 position) : base(position, width, height) { }
+
+        public GrapplingPoint(Vector2[] positions, float[] timesBetweenPositions, Func<float, float> easeFunction = null)
+            : base(width, height, positions, timesBetweenPositions, easeFunction) { }
 
         public override void Render()
         {

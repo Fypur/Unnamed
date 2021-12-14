@@ -1,6 +1,7 @@
 ﻿using Basic_platformer.Utility;
 using Microsoft.Xna.Framework;
 using System;
+using Basic_platformer.Components;
 
 namespace Basic_platformer
 {

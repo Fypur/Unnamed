@@ -49,7 +49,7 @@ namespace Basic_platformer
         private bool isUnsticking;
 
         private float distanceToGrapplingPoint;
-        private Vector2 grapplingPos;
+        private Solid grappledSolid;
         private bool isAtSwingEnd;
 
         private Vector2 respawnPoint;
@@ -162,11 +162,9 @@ namespace Basic_platformer
                     hasDashed = false;
 
                 if (Input.GetKeyDown(Keys.A))
-                {
                     ThrowRope();
-                }
                 if (Input.GetKey(Keys.A) && stateMachine.Is(States.Swinging))
-                    Swing(grapplingPos, distanceToGrapplingPoint);
+                    Swing(grappledSolid.Pos, distanceToGrapplingPoint);
                 else if(Input.GetKeyUp(Keys.A))
                 {
                     Velocity.X *= 1.5f;
@@ -223,7 +221,7 @@ namespace Basic_platformer
         private void ThrowRope()
         {
             #region Determining grappling point
-            Solid grappledSolid = null;
+            Solid determinedGrappledSolid = null;
             Solid reserveGrappledSolid = null;
             float distance = maxGrappleDist;
             float reserveDistance = maxGrappleDist;
@@ -253,7 +251,7 @@ namespace Basic_platformer
                         if (onRightDir)
                         {
                             distance = d;
-                            grappledSolid = g;
+                            determinedGrappledSolid = g;
                         }
                         else
                         {
@@ -264,37 +262,39 @@ namespace Basic_platformer
                 }
             }
 
-            if (grappledSolid == null)
+            if (determinedGrappledSolid == null)
             {
                 if (reserveGrappledSolid != null)
                 {
-                    grappledSolid = reserveGrappledSolid;
+                    determinedGrappledSolid = reserveGrappledSolid;
                     distance = reserveDistance;
                 }
                 else
                     return;
             }
 
+            grappledSolid = determinedGrappledSolid;
+
             #endregion
 
             #region Acting Accordingly depending on Grappled Object
-            if (grappledSolid.GetType() == typeof(GrapplingPoint))
+            if (determinedGrappledSolid.GetType() == typeof(GrapplingPoint))
             {
                 stateMachine.Switch(States.Swinging);
                 distanceToGrapplingPoint = distance;
-                grapplingPos = grappledSolid.Pos;
+                Vector2 grapplingPos = determinedGrappledSolid.Pos;
 
-                grapplingPos = grappledSolid.Pos +
-                new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
+                grapplingPos = determinedGrappledSolid.Pos +
+                new Vector2(determinedGrappledSolid.Width / 2, determinedGrappledSolid.Height / 2);
 
-                AddComponent(new LineRenderer(Pos, grappledSolid.Pos, 4, Color.Blue,
+                AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, 4, Color.Blue,
                         (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
                     (line) => {
                         line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
-                        line.EndPos = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
+                        line.EndPos = determinedGrappledSolid.Pos + new Vector2(determinedGrappledSolid.Width / 2, determinedGrappledSolid.Height / 2);
                     }));
             }
-            else if(grappledSolid is GrapplingTrigger trigger)
+            else if(determinedGrappledSolid is GrapplingTrigger trigger)
             {
                 stateMachine.Switch(States.Pulling);
                 trigger.Active = false;
@@ -310,11 +310,11 @@ namespace Basic_platformer
                     stateMachine.Switch(States.Jumping);
                     Velocity.Y = -500; }));
 
-                AddComponent(new LineRenderer(Pos, grappledSolid.Pos, 4, Color.Blue, 
+                AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, 4, Color.Blue, 
                     (line) => { if (deactivateLine) RemoveComponent(line); },
                     (line) => {
                         line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
-                        line.EndPos = grappledSolid.Pos;
+                        line.EndPos = determinedGrappledSolid.Pos;
                     }));
             }
 
@@ -330,6 +330,7 @@ namespace Basic_platformer
                 testPos = grapplePos + Vector2.Normalize(testPos - grapplePos) * ropeLength;
                 Velocity = (testPos - Pos) / Platformer.Deltatime;
                 isAtSwingEnd = true;
+                Debug.LogUpdate("triggered");
             }
             else
                 isAtSwingEnd = false;

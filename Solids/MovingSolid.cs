@@ -17,7 +17,7 @@ namespace Basic_platformer.Solids
         protected float gravityScale = 0;
         protected static readonly Vector2 gravityVector = new Vector2(0, 9.81f);
 
-        public MovingSolid(Vector2 position, int width, int height, float gravityScale) : base (position, width, height) { }
+        public MovingSolid(Vector2 position, int width, int height) : base (position, width, height) { }
 
         protected void MoveX(float amount, Action CallbackOnCollisionX = null)
         {

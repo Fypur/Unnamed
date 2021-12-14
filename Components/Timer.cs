@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Basic_platformer
+namespace Basic_platformer.Components
 {
     public class Timer : Component
     {
         public readonly float MaxValue;
         public float Value;
+        public bool Paused = false;
         public float TimeScale = 1;
+        public Func<bool> PausedFunc = () => false;
 
         private bool destroyOnComplete;
 
@@ -26,7 +28,8 @@ namespace Basic_platformer
 
         public override void Update()
         {
-            if(Value > 0)
+            //Timer stuff (don't worry about that)
+            if(Value > 0 && !Paused)
             {
                 Value -= Platformer.Deltatime * TimeScale;
                 if (Value <= 0)
@@ -39,12 +42,23 @@ namespace Basic_platformer
                 else
                     updateAction?.Invoke(this);
             }
+
+            if (Paused && PausedFunc())
+            {
+                Paused = true;
+                PausedFunc = () => false;
+            }
         }
 
         public void End()
         {
             onComplete?.Invoke();
             parentEntity.RemoveComponent(this);
+        }
+
+        public void PauseUntil(Func<bool> pausedUntil)
+        {
+            Paused = true;
         }
     }
 }

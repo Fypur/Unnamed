@@ -40,14 +40,15 @@ namespace Basic_platformer.Solids
                 }
             }
 
-            GrapplingPoint gP = new GrapplingPoint(new Vector2(Platformer.ScreenSize.X / 2, 60));
+            GrapplingPoint gP = new GrapplingPoint(new Vector2[] { new Vector2(Platformer.ScreenSize.X / 2, 60), new Vector2(Platformer.ScreenSize.X / 2 + 200, 60), new Vector2(Platformer.ScreenSize.X / 2 + 200, 60 + 200), new Vector2(Platformer.ScreenSize.X / 2, 60 + 200) }, 
+                new float[] { 1, 0.2f, 3f }, Ease.QuintInAndOut);
             Data.Solids.Add(gP);
             Data.GrapplingSolids.Add(gP);
-            PulledPlatform pulled = new PulledPlatform(new Vector2(30 ,Platformer.ScreenSize.Y - 400), 200, 10, new Vector2(30 + 200, Platformer.ScreenSize.Y - 400), 2f, Ease.QuintOut, true);
+            /*PulledPlatform pulled = new PulledPlatform(new Vector2(30 ,Platformer.ScreenSize.Y - 400), 200, 10, new Vector2(30 + 200, Platformer.ScreenSize.Y - 400), 2f, Ease.QuintOut, true);
             Data.Solids.Add(pulled);
             GrapplingTrigger platformTrigger = new GrapplingTrigger(new Vector2(pulled.Pos.X + pulled.Width, pulled.Pos.Y), true, pulled.movingTime, pulled.Pulled);
             Data.GrapplingSolids.Add(platformTrigger);
-            Data.Triggers.Add(platformTrigger);
+            Data.Triggers.Add(platformTrigger);*/
         }
 
         public override void Update()
