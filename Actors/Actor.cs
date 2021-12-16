@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using Basic_platformer.Entities;
 
 namespace Basic_platformer
 {
     /// <summary>
     /// Entity that moves and collides with things
     /// </summary>
-    public abstract class Actor : Entity
+    public abstract class Actor : RenderedEntity
     {
         public Vector2 Pos;
         public int Width;

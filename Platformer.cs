@@ -22,7 +22,7 @@ namespace Basic_platformer
         public Player player;
 
         public static Map CurrentMap;
-        public static Camera cam;
+        public static Camera Cam;
 
         public Platformer()
         {
@@ -51,7 +51,7 @@ namespace Basic_platformer
             });
             CurrentMap.LoadMap();
 
-            cam = new Camera(ScreenSize / 2, 0, 0.8f);
+            Cam = new Camera(ScreenSize / 2, 0, 0.8f);
         }
 
         protected override void LoadContent()
@@ -75,17 +75,17 @@ namespace Basic_platformer
                 Debug.Clear();
 
             if (Input.GetKeyDown(Keys.X))
-                cam.ZoomLevel -= 0.2f;
+                Cam.ZoomLevel -= 0.2f;
 
             if (Input.GetKeyDown(Keys.V))
             {
                 Point mousePos = Mouse.GetState(Window).Position;
-                player.Pos = cam.ScreenToWorldPosition(new Vector2(mousePos.X, mousePos.Y));
+                player.Pos = Cam.ScreenToWorldPosition(new Vector2(mousePos.X, mousePos.Y));
             }
 
             CurrentMap.Update();
 
-            cam.Update();
+            Cam.Update();
 
             Input.UpdateOldState();
             base.Update(gameTime);
@@ -95,7 +95,7 @@ namespace Basic_platformer
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cam.ViewMatrix);
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             CurrentMap.Render();
 

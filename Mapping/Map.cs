@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Basic_platformer.Solids;
+using Basic_platformer.Entities;
+
 
 namespace Basic_platformer.Mapping
 {
@@ -40,7 +42,7 @@ namespace Basic_platformer.Mapping
                 {
                     if (mapOrganisation[y, x] == 1)
                     {
-                        Data.Entities.Add(new SolidTile(Drawing.pointTexture, new Vector2(position.X + x * tileWidth, position.Y + y * tileHeight), tileWidth, tileHeight));
+                        Data.RenderedEntities.Add(new SolidTile(Drawing.pointTexture, new Vector2(position.X + x * tileWidth, position.Y + y * tileHeight), tileWidth, tileHeight));
                         Data.Solids.Add(new SolidTile(Drawing.pointTexture, new Vector2(position.X + x * tileWidth, position.Y + y * tileHeight), tileWidth, tileHeight));
                     } 
                 }
@@ -49,31 +51,31 @@ namespace Basic_platformer.Mapping
 
         public void LoadMap()
         {
-            currentLevel = new Level(1, this);
+            currentLevel = new Level(1, Vector2.Zero, this);
             currentLevel.Load();
         }
 
         public void Update()
         {
-            for (int i = Data.Entities.Count - 1; i >= 0; i--)
-                Data.Entities[i].Update();
+            for (int i = Data.RenderedEntities.Count - 1; i >= 0; i--)
+                Data.RenderedEntities[i].Update();
         }
 
         public void Render()
         {
-            for (int i = Data.Entities.Count - 1; i >= 0; i--)
-                Data.Entities[i].Render();
+            for (int i = Data.RenderedEntities.Count - 1; i >= 0; i--)
+                Data.RenderedEntities[i].Render();
         }
 
-        public Entity Instantiate(Entity entity)
+        public RenderedEntity Instantiate(RenderedEntity entity)
         {
-            Data.Entities.Add(entity);
+            Data.RenderedEntities.Add(entity);
             return entity;
         }
 
-        public void Destroy(Entity entity)
+        public void Destroy(RenderedEntity entity)
         {
-            Data.Entities.Remove(entity);
+            Data.RenderedEntities.Remove(entity);
         }
     }
 }

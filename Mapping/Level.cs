@@ -1,27 +1,34 @@
 ﻿using Basic_platformer.Solids;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Basic_platformer.Entities;
 
 namespace Basic_platformer.Mapping
 {
     public class Level
     {
+        public Vector2 Pos;
+        public Vector2 Size;
+
         public Map ParentMap;
         public readonly int Index;
-        private List<Entity> data;
+        private List<Entity> entityData;
 
-        public Level(int index, Map parentMap)
+        public Level(int index, Vector2 position, Map parentMap)
         {
+            Pos = position;
             ParentMap = parentMap;
-            data = LevelData.GetLevelData(index);
+            entityData = LevelData.GetLevelData(index);
+            Size = LevelData.GetLevelSize(index);
         }
 
         public void Load()
         {
-            foreach(Entity e in data)
+            foreach(RenderedEntity e in entityData)
             {
-                ParentMap.Data.Entities.Add(e);
+                ParentMap.Data.RenderedEntities.Add(e);
 
                 if (e is Solid)
                 {
@@ -37,9 +44,9 @@ namespace Basic_platformer.Mapping
 
         public void Unload()
         {
-            foreach (Entity e in data)
+            foreach (RenderedEntity e in entityData)
             {
-                ParentMap.Data.Entities.Remove(e);
+                ParentMap.Data.RenderedEntities.Remove(e);
 
                 if (e is Solid)
                     ParentMap.Data.Solids.Remove((Solid)e);

@@ -2,10 +2,11 @@
 using Microsoft.Xna.Framework;
 using System;
 using Basic_platformer.Components;
+using Basic_platformer.Entities;
 
 namespace Basic_platformer
 {
-    public class Camera : Entity
+    public class Camera : RenderedEntity
     {
         private bool hasChanged;
 
@@ -86,8 +87,8 @@ namespace Basic_platformer
              () => Position = newPos));
         }
 
-        public void MoveTo(Vector2 newPosition, float time, Func<float, float> easingFunction = null)
-            => Move(newPosition - Position, time, easingFunction);
+        public void MoveTo(Vector2 position, float time, Func<float, float> easingFunction = null)
+            => Move(position - Position, time, easingFunction);
 
         private float DefaultEasing(float x)
             => x;
@@ -96,5 +97,7 @@ namespace Basic_platformer
 
         public Vector2 ScreenToWorldPosition(Vector2 position)
             => Vector2.Transform(position, InverseViewMatrix);
+
+        //TODO: Camera Boundaries
     }
 }
