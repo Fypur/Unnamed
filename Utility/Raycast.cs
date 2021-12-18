@@ -29,11 +29,11 @@ namespace Basic_platformer.Utility
             Vector2 rayDir = Vector2.Normalize(direction);
 
             //The hypothenus' size for one Unit (a tile width) on the x and y axis
-            Vector2 rayUnitStep = new Vector2((float)Math.Sqrt(map.TileWidth * map.TileWidth + (rayDir.Y * map.TileWidth / rayDir.X) * (rayDir.Y * map.TileWidth / rayDir.X)),
-                (float)Math.Sqrt(map.TileHeight * map.TileHeight + (rayDir.X * map.TileHeight / rayDir.Y) * (rayDir.X * map.TileHeight / rayDir.Y)));
+            Vector2 rayUnitStep = new Vector2((float)Math.Sqrt(map.currentLevel.TileWidth * map.currentLevel.TileWidth + (rayDir.Y * map.currentLevel.TileWidth / rayDir.X) * (rayDir.Y * map.currentLevel.TileWidth / rayDir.X)),
+                (float)Math.Sqrt(map.currentLevel.TileHeight * map.currentLevel.TileHeight + (rayDir.X * map.currentLevel.TileHeight / rayDir.Y) * (rayDir.X * map.currentLevel.TileHeight / rayDir.Y)));
 
             //The tile the begin point is on and the one the end point is on : position truncated to a multiple of the tile's width or height
-            Vector2 mapPoint = new Vector2((float)Math.Floor(begin.X / map.TileWidth) * map.TileWidth, (float)Math.Floor(begin.Y / map.TileWidth) * map.TileHeight);
+            Vector2 mapPoint = new Vector2((float)Math.Floor(begin.X / map.currentLevel.TileWidth) * map.currentLevel.TileWidth, (float)Math.Floor(begin.Y / map.currentLevel.TileWidth) * map.currentLevel.TileHeight);
 
             #endregion
 
@@ -44,24 +44,24 @@ namespace Basic_platformer.Utility
 
             if (rayDir.X < 0)
             {
-                rayStep.X = -map.TileWidth;
-                rayLength1D.X = (begin.X - mapPoint.X) * rayUnitStep.X / map.TileWidth;
+                rayStep.X = -map.currentLevel.TileWidth;
+                rayLength1D.X = (begin.X - mapPoint.X) * rayUnitStep.X / map.currentLevel.TileWidth;
             }
             else
             {
-                rayStep.X = map.TileWidth;
-                rayLength1D.X = (map.TileWidth + mapPoint.X - begin.X) * rayUnitStep.X / map.TileWidth;
+                rayStep.X = map.currentLevel.TileWidth;
+                rayLength1D.X = (map.currentLevel.TileWidth + mapPoint.X - begin.X) * rayUnitStep.X / map.currentLevel.TileWidth;
 
             }
             if (rayDir.Y < 0)
             {
-                rayStep.Y = -map.TileHeight;
-                rayLength1D.Y = (begin.Y - mapPoint.Y) * rayUnitStep.Y / map.TileWidth;
+                rayStep.Y = -map.currentLevel.TileHeight;
+                rayLength1D.Y = (begin.Y - mapPoint.Y) * rayUnitStep.Y / map.currentLevel.TileWidth;
             }
             else
             {
-                rayStep.Y = map.TileHeight;
-                rayLength1D.Y = (map.TileWidth + mapPoint.Y - begin.Y) * rayUnitStep.Y / map.TileWidth;
+                rayStep.Y = map.currentLevel.TileHeight;
+                rayLength1D.Y = (map.currentLevel.TileWidth + mapPoint.Y - begin.Y) * rayUnitStep.Y / map.currentLevel.TileWidth;
             }
             #endregion
 
@@ -87,7 +87,7 @@ namespace Basic_platformer.Utility
 
                 //Checking
                 if (mapPoint.X >= 0 && mapPoint.Y >= 0 && mapPoint.X < map.Width && mapPoint.Y < map.Height && travelledDistance < length)
-                    if (map.MapOrganisation[(int)mapPoint.Y / map.TileHeight, (int)mapPoint.X / map.TileWidth] > 0)
+                    if (map.currentLevel.LevelOrganisation[(int)mapPoint.Y / map.currentLevel.TileHeight, (int)mapPoint.X / map.currentLevel.TileWidth] > 0)
                         hit = true;
             }
 

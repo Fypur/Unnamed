@@ -41,6 +41,8 @@ namespace Basic_platformer
         #region variables
         private readonly StateMachine<States> stateMachine;
 
+        public bool canMove = true;
+
         private int xMoving;
         private int yMoving;
         private int facing = 1;
@@ -76,6 +78,8 @@ namespace Basic_platformer
 
         public override void Update()
         {
+            if(!canMove) return;
+
             #region Checks for Ground and Wall
             onGround = CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(0, 1));
             onWall = CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(1, 0)) ||

@@ -8,6 +8,7 @@ namespace Basic_platformer
 {
     public class Camera : RenderedEntity
     {
+        private Rectangle bounds = Rectangle.Empty;
         private bool hasChanged;
 
         private Vector2 pos;
@@ -18,7 +19,34 @@ namespace Basic_platformer
             set
             {
                 hasChanged = true;
-                pos = value;
+
+                if((bounds.Contains(value - Platformer.ScreenSize / 2 * ZoomLevel) && bounds.Contains(value + Platformer.ScreenSize / 2 * ZoomLevel)) || bounds == Rectangle.Empty)
+                {
+                    hasChanged = true;
+                    pos = value;
+                } 
+                else
+                {
+                    Vector2 correctedPos = value - Platformer.ScreenSize / 2 * ZoomLevel;
+
+                    if(correctedPos.X < bounds.X)
+                        correctedPos.X = bounds.X;
+                    else if(correctedPos.X + Platformer.ScreenSize.X * ZoomLevel > bounds.X + bounds.Width)
+                        correctedPos.X += bounds.X + bounds.Width - correctedPos.X - Platformer.ScreenSize.X;
+
+                    if (correctedPos.Y < bounds.Y)
+                        correctedPos.Y = bounds.Y;
+                    else if (correctedPos.Y + Platformer.ScreenSize.Y * ZoomLevel > bounds.Y + bounds.Height)
+                        correctedPos.Y -= bounds.Y + bounds.Height - correctedPos.X - Platformer.ScreenSize.Y;
+
+                    correctedPos += Platformer.ScreenSize / 2 * ZoomLevel;
+
+                    if (pos != correctedPos)
+                    {
+                        hasChanged = true;
+                        pos = correctedPos;
+                    }
+                }
             }
         }
 
@@ -68,21 +96,24 @@ namespace Basic_platformer
             get => Matrix.Invert(ViewMatrix);
         }
 
-        public Camera(Vector2 position, float rotation, float zoomLevel)
+        public Camera(Vector2 position, float rotation, float zoomLevel, Rectangle? bounds = null)
         {
             Position = position;
             Rotation = rotation;
             ZoomLevel = zoomLevel;
+
+            if (bounds != null)
+                SetBoundaries((Rectangle)bounds);
         }
         
-        public void Move(Vector2 newPosition, float time, Func<float, float> easingFunction = null)
+        public void Move(Vector2 offset, float time, Func<float, float> easingFunction = null)
         {
             Vector2 initPos = Position;
-            Vector2 newPos = Position + newPosition;
+            Vector2 newPos = Position + offset;
             AddComponent(new Timer(time, true, (timer) =>
 
             Position = Vector2.Lerp(initPos, newPos,
-                     (easingFunction ?? DefaultEasing).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))),
+                     (easingFunction ?? Ease.Default).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))),
 
              () => Position = newPos));
         }
@@ -90,8 +121,9 @@ namespace Basic_platformer
         public void MoveTo(Vector2 position, float time, Func<float, float> easingFunction = null)
             => Move(position - Position, time, easingFunction);
 
-        private float DefaultEasing(float x)
-            => x;
+        public void SetBoundaries(Rectangle bounds)
+            => this.bounds = bounds;
+
         public Vector2 WorldToScreenPosition(Vector2 position)
             => Vector2.Transform(position, ViewMatrix);
 

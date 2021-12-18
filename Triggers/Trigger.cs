@@ -12,9 +12,13 @@ namespace Basic_platformer.Triggers
         public Vector2 Size;
         public List<Type> Triggerers;
 
-        private List<RenderedEntity> enteredEntities;
+        private List<RenderedEntity> enteredEntities = new List<RenderedEntity>();
 
-        public Trigger(Vector2 position, Vector2 size, List<Type> triggerers) { Pos = position; Size = size; Triggerers = triggerers; }
+        public Trigger(Vector2 position, Vector2 size, List<Type> triggerers) {
+            Pos = position; Size = size; Triggerers = triggerers; }
+
+        public Trigger(Rectangle triggerRect, List<Type> triggerers) {
+            Pos = triggerRect.Location.ToVector2(); Size = triggerRect.Size.ToVector2(); Triggerers = triggerers; }
 
         public override void Update()
         {
@@ -28,10 +32,16 @@ namespace Basic_platformer.Triggers
                         if (enteredEntities.Contains(actor))
                             OnTriggerStay(actor);
                         else
+                        {
                             OnTriggerEnter(actor);
+                            enteredEntities.Add(actor);
+                        }
                     }
                     else if (enteredEntities.Contains(actor))
+                    {
                         OnTriggerExit(actor);
+                        enteredEntities.Remove(actor);
+                    }
                 }
         }
 

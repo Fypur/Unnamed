@@ -17,9 +17,12 @@ namespace Basic_platformer
 
         public static float Deltatime;
         public static float TimeScale = 1;
-        public static Vector2 ScreenSize;
 
-        public Player player;
+        public static Vector2 ScreenSize;
+        public static Vector2 ScreenSizeX;
+        public static Vector2 ScreenSizeY;
+
+        public static Player player;
 
         public static Map CurrentMap;
         public static Camera Cam;
@@ -28,9 +31,7 @@ namespace Basic_platformer
         {
             instance = this;
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 960;
-            graphics.PreferredBackBufferHeight = 540;
-            ScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -39,19 +40,19 @@ namespace Basic_platformer
         {
             base.Initialize();
 
-            CurrentMap = new Map(Vector2.Zero, 60, 60, new int[8, 20] {
-                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-            });
-            CurrentMap.LoadMap();
+            graphics.PreferredBackBufferWidth = 960;
+            graphics.PreferredBackBufferHeight = 540;
+            ScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            ScreenSizeX = new Vector2(ScreenSize.X, 0);
+            ScreenSizeY = new Vector2(0, ScreenSize.Y);
+            graphics.ApplyChanges();
 
-            Cam = new Camera(ScreenSize / 2, 0, 0.8f);
+            CurrentMap = new Map(Vector2.Zero);
+
+            Cam = new Camera(ScreenSize / 2, 0, 1f, new Rectangle(Point.Zero, (ScreenSize * 2).ToPoint()));
+            player = (Player)CurrentMap.Instantiate(new Player(new Vector2(Platformer.ScreenSize.X / 2, Platformer.ScreenSize.Y - 300), 32, 32));
+
+            CurrentMap.LoadMap();
         }
 
         protected override void LoadContent()
@@ -74,9 +75,6 @@ namespace Basic_platformer
             if(Input.GetKeyDown(Keys.C))
                 Debug.Clear();
 
-            if (Input.GetKeyDown(Keys.X))
-                Cam.ZoomLevel -= 0.2f;
-
             if (Input.GetKeyDown(Keys.V))
             {
                 Point mousePos = Mouse.GetState(Window).Position;
@@ -86,7 +84,7 @@ namespace Basic_platformer
             CurrentMap.Update();
 
             Cam.Update();
-
+            Debug.LogUpdate(player.Pos);
             Input.UpdateOldState();
             base.Update(gameTime);
         }

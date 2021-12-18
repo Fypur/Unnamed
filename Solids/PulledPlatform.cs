@@ -10,11 +10,6 @@ namespace Basic_platformer.Solids
 {
     public class PulledPlatform : MovingSolid
     {
-        /// <summary>
-        /// if this is true it means it can only move in a predefined line
-        /// </summary>
-        public bool Railed;
-
         public Vector2 originalPos;
         public Vector2 PulledPos;
         public float PulledOutTime;
@@ -26,7 +21,7 @@ namespace Basic_platformer.Solids
         private float distanceBetweenPos;
 
         public PulledPlatform(Vector2 position, int width, int height, Vector2 pulledPos, float pulledOutTime, 
-            Func<float, float> easingFunction = null, bool railed = false) : base(position, width, height)
+            Func<float, float> easingFunction = null) : base(position, width, height)
         {
             Pos = position;
             Width = width;
@@ -35,28 +30,27 @@ namespace Basic_platformer.Solids
             PulledPos = pulledPos;
             distanceBetweenPos = Vector2.Distance(originalPos, PulledPos);
             PulledOutTime = pulledOutTime;
-            Railed = railed;
             EasingFunction = easingFunction;
         }
 
-        public void Pulled()
+        public void Pull()
         {
             Vector2 initPos = Pos;
             Vector2 newPos = PulledPos;
             AddComponent(new Timer(1f, true, (timer) =>
             {
                 MoveTo(Vector2.Lerp(initPos, newPos,
-                     (EasingFunction ?? DefaultEasing).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
+                     (EasingFunction ?? Ease.QuintInAndOut).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
                 Debug.LogUpdate(timer.Value);
             },
             () =>
             {
                 Pos = newPos;
-                AddComponent(new Timer(PulledOutTime, false, null, () => Unpulled(Ease.QuintInAndOut)));
+                AddComponent(new Timer(PulledOutTime, false, null, () => Unpull(Ease.QuintInAndOut)));
             }));
         }
 
-        public void Unpulled(Func<float, float> easingFunction = null)
+        private void Unpull(Func<float, float> easingFunction = null)
         {
             Vector2 initPos = Pos;
             Vector2 newPos = originalPos;
