@@ -449,6 +449,8 @@ namespace Basic_platformer
             AddComponent(timer);
         }
 
+        //TODO: Player respawn and respawn Points
+
         public override void Render()
         {
             //Renderer components

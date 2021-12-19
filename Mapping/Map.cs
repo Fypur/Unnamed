@@ -39,6 +39,13 @@ namespace Basic_platformer.Mapping
         {
             for (int i = Data.Entities.Count - 1; i >= 0; i--)
                 Data.Entities[i].Update();
+
+            if (Input.GetKeyDown(Keys.L))
+            {
+                currentLevel.Unload();
+                currentLevel = new Level(currentLevel.Index, currentLevel.Pos, this);
+                currentLevel.Load();
+            }
         }
 
         public void Render()

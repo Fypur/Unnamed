@@ -18,11 +18,11 @@ namespace Basic_platformer.Mapping
             switch (level.Index)
             {
                 case 1:
-                    return new List<Entity> {
+                    var l = new List<Entity> {
                         new GrapplingPoint(new Vector2(Platformer.ScreenSize.X / 2, 200)),
-                        new LevelTransition(new Vector2(Platformer.ScreenSize.X - 10, 0) + p, Platformer.ScreenSize + new Vector2(10, 0) + p,
-                            level, new Level(2, Platformer.ScreenSizeX, Platformer.CurrentMap), LevelTransition.Direction.Right)
                     };
+                    l.AddRange(DefaultLevelTransitions(level, null, null, null, new Level(2, p + Platformer.ScreenSizeY, level.ParentMap)));
+                    return l;
                 case 2:
                     var pulled = new PulledPlatform(new Vector2(60, 200) + p, 200, 40, new Vector2(60, 200) + p + new Vector2(200, 40), 2, Ease.QuintInAndOut);
                     var trig = new GrapplingTrigger(new Vector2(60, 200) + p + new Vector2(200, 40), true, pulled.movingTime, pulled.Pull);
@@ -55,9 +55,9 @@ namespace Basic_platformer.Mapping
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+                        {1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1}
                     };
                 case 2:
                     return new int[,] {
@@ -74,6 +74,32 @@ namespace Basic_platformer.Mapping
                 default:
                     throw new Exception("Couldn't find Level");
             }
+        }
+
+        public static List<LevelTransition> DefaultLevelTransitions(Level fromLevel ,Level rightLevel, Level leftLevel, Level upLevel, Level downLevel)
+        {
+            Vector2 p = fromLevel.Pos;
+
+            List<LevelTransition> transitions = new List<LevelTransition>();
+
+            if (rightLevel != null)
+                transitions.Add(new LevelTransition(new Vector2(Platformer.ScreenSize.X - 2, 0) + p, new Vector2(4, Platformer.ScreenSize.Y),
+                            fromLevel, rightLevel, LevelTransition.Direction.Right));
+
+            if (leftLevel != null)
+                transitions.Add(new LevelTransition(new Vector2(-2, 0) + p, new Vector2(4, Platformer.ScreenSize.Y),
+                            fromLevel, leftLevel, LevelTransition.Direction.Left));
+
+            if (downLevel != null)
+                transitions.Add(new LevelTransition(new Vector2(0, Platformer.ScreenSize.Y - 2) + p, new Vector2(Platformer.ScreenSize.X, 4),
+                            fromLevel, downLevel, LevelTransition.Direction.Down));
+
+            if (upLevel != null)
+                transitions.Add(new LevelTransition(new Vector2(0, -2) + p, new Vector2(Platformer.ScreenSize.X, 4),
+                            fromLevel, upLevel, LevelTransition.Direction.Up));
+
+
+            return transitions;
         }
     }
 }

@@ -25,6 +25,8 @@ namespace Basic_platformer.Triggers
             this.fromLevel = fromLevel;
             this.toLevel = toLevel;
             direction = dir;
+
+            Debug.Point(position, position + size);
         }
 
         public LevelTransition(Rectangle triggerRect, Level fromLevel, Level toLevel, Direction dir)

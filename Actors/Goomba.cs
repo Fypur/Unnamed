@@ -32,7 +32,6 @@ namespace Basic_platformer
 
             MoveX(Velocity.X * Platformer.Deltatime, null);
             MoveY(Velocity.Y * Platformer.Deltatime, null);
-            //TODO: Add DamagePlayer Method
         }
 
         public override void Render()

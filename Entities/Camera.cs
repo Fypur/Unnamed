@@ -129,7 +129,5 @@ namespace Basic_platformer
 
         public Vector2 ScreenToWorldPosition(Vector2 position)
             => Vector2.Transform(position, InverseViewMatrix);
-
-        //TODO: Camera Boundaries
     }
 }
