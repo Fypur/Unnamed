@@ -86,6 +86,12 @@ namespace Basic_platformer.Mapping
             }
         }
 
+        public override string ToString()
+            => $"Level index: {Index} \nPosition: {Pos} \nSize: {Size}";
+
+        public bool Contains(Vector2 point)
+            => new Rectangle(Pos.ToPoint(), Size.ToPoint()).Contains(point);
+
         public Vector2 ToTileCoordinates(Vector2 position)
             => new Vector2((float)Math.Floor(position.X / TileWidth) * TileWidth,
                 (float)Math.Floor(position.Y / TileWidth) * TileHeight);

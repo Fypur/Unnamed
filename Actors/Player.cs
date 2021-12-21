@@ -352,7 +352,7 @@ namespace Basic_platformer
                 if (i == grapplePositions.Count - 1)
                 {
                     if (ray.hit)
-                        grapplePositions.Add(Platformer.CurrentMap.currentLevel.ToClosestTileCoordinates(ray.endPoint));
+                        grapplePositions.Add(Platformer.CurrentMap.CurrentLevel.ToClosestTileCoordinates(ray.endPoint));
                 }
                 else 
                 {

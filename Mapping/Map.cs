@@ -13,7 +13,7 @@ namespace Basic_platformer.Mapping
         public int Height;
         public List<SolidTile> solidTiles = new List<SolidTile>();
         public MapData Data;
-        public Level currentLevel;
+        public Level CurrentLevel;
 
         /// <summary>
         /// Map constructor
@@ -31,8 +31,8 @@ namespace Basic_platformer.Mapping
 
         public void LoadMap()
         {
-            currentLevel = new Level(1, Vector2.Zero, this);
-            currentLevel.Load();
+            CurrentLevel = new Level(1, Vector2.Zero, this);
+            CurrentLevel.Load();
         }
 
         public void Update()
@@ -42,9 +42,9 @@ namespace Basic_platformer.Mapping
 
             if (Input.GetKeyDown(Keys.L))
             {
-                currentLevel.Unload();
-                currentLevel = new Level(currentLevel.Index, currentLevel.Pos, this);
-                currentLevel.Load();
+                CurrentLevel.Unload();
+                CurrentLevel = new Level(CurrentLevel.Index, CurrentLevel.Pos, this);
+                CurrentLevel.Load();
             }
         }
 

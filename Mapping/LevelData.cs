@@ -21,7 +21,7 @@ namespace Basic_platformer.Mapping
                     var l = new List<Entity> {
                         new GrapplingPoint(new Vector2(Platformer.ScreenSize.X / 2, 50)),
                     };
-                    l.AddRange(DefaultLevelTransitions(level, null, null, null, new Level(2, p + Platformer.ScreenSizeY, level.ParentMap)));
+                    l.AddRange(DefaultLevelTransitions(level, new Level(2, p + Platformer.ScreenSizeX, level.ParentMap), null, null, null));
                     return l;
                 case 2:
                     var pulled = new PulledPlatform(new Vector2(60, 200) + p, 200, 40, new Vector2(60, 200) + p + new Vector2(200, 40), 2, Ease.QuintInAndOut);
