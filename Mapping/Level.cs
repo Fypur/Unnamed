@@ -85,5 +85,13 @@ namespace Basic_platformer.Mapping
                 }
             }
         }
+
+        public Vector2 ToTileCoordinates(Vector2 position)
+            => new Vector2((float)Math.Floor(position.X / TileWidth) * TileWidth,
+                (float)Math.Floor(position.Y / TileWidth) * TileHeight);
+
+        public Vector2 ToClosestTileCoordinates(Vector2 position)
+            => new Vector2((float)Math.Round(position.X / TileWidth) * TileWidth,
+                (float)Math.Round(position.Y / TileWidth) * TileHeight);
     }
 }

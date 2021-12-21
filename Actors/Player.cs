@@ -294,18 +294,24 @@ namespace Basic_platformer
             {
                 stateMachine.Switch(States.Swinging);
                 distanceToGrapplingPoint = distance;
-                grapplePositions.Add(grappledSolid.Pos);
 
                 Vector2 grapplingPos = determinedGrappledSolid.Pos;
 
                 grapplingPos = determinedGrappledSolid.Pos +
                 new Vector2(determinedGrappledSolid.Width / 2, determinedGrappledSolid.Height / 2);
 
-                AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, 4, Color.Blue,
+                grapplePositions.Add(grapplingPos);
+
+                AddComponent(new LineRenderer(new List<Vector2> { Pos, grapplingPos }, 4, Color.Blue,
                         (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
                     (line) => {
-                        line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
-                        line.EndPos = determinedGrappledSolid.Pos + new Vector2(determinedGrappledSolid.Width / 2, determinedGrappledSolid.Height / 2);
+
+                        List<Vector2> linePositions = new List<Vector2>() { Pos + new Vector2(Width / 2, Height / 2) };
+                        List<Vector2> reversedPositions = new List<Vector2>(grapplePositions);
+                        reversedPositions.Reverse();
+                        linePositions.AddRange(reversedPositions);
+                        line.Positions = linePositions;
+
                     }));
             }
             else if(determinedGrappledSolid is GrapplingTrigger trigger)
@@ -327,8 +333,8 @@ namespace Basic_platformer
                 AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, 4, Color.Blue, 
                     (line) => { if (deactivateLine) RemoveComponent(line); },
                     (line) => {
-                        line.StartPos = Pos + new Vector2(Width / 2, Height / 2);
-                        line.EndPos = determinedGrappledSolid.Pos;
+                        line.Positions[0] = Pos + new Vector2(Width / 2, Height / 2);
+                        line.Positions[1] = determinedGrappledSolid.Pos;
                     }));
             }
 
@@ -337,6 +343,8 @@ namespace Basic_platformer
 
         private void Swing(float ropeLength)
         {
+            #region Determining the right position to Swing to (Rope colliding with terrain)
+
             for (int i = grapplePositions.Count - 1; i >= 0; i--)
             {
                 Raycast ray = new Raycast(Pos, grapplePositions[i]);
@@ -344,7 +352,7 @@ namespace Basic_platformer
                 if (i == grapplePositions.Count - 1)
                 {
                     if (ray.hit)
-                        grapplePositions.Add(ray.endPoint);
+                        grapplePositions.Add(Platformer.CurrentMap.currentLevel.ToClosestTileCoordinates(ray.endPoint));
                 }
                 else 
                 {
@@ -358,6 +366,10 @@ namespace Basic_platformer
             for (int i = 0; i < grapplePositions.Count - 1; i++)
                 ropeLength -= Vector2.Distance(grapplePositions[i], grapplePositions[i + 1]);
 
+            #endregion
+
+            #region Swinging
+
             Vector2 testPos = Pos + Velocity * Platformer.Deltatime;
 
             if ((grapplePos - testPos).Length() > ropeLength)
@@ -368,6 +380,8 @@ namespace Basic_platformer
             }
             else
                 isAtSwingEnd = false;
+
+            #endregion
         }
 
         public void Death()
