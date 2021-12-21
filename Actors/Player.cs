@@ -53,6 +53,7 @@ namespace Basic_platformer
 
         private float distanceToGrapplingPoint;
         private Solid grappledSolid;
+        private List<Vector2> grapplePositions = new List<Vector2>();
         private bool isAtSwingEnd;
 
         private Vector2 respawnPoint;
@@ -73,6 +74,7 @@ namespace Basic_platformer
             stateMachine = new StateMachine<States>(States.Idle);
             stateMachine.RegisterStateFunctions(States.Jumping, null, () => { if (Velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);
             AddComponent(stateMachine);
+
             respawnPoint = position;
         }
 
@@ -145,9 +147,6 @@ namespace Basic_platformer
                 else if (Input.GetKeyDown(Keys.Space) && onWall)
                     WallJump();
 
-                if (Input.GetKeyDown(Keys.C))
-                    Debug.Clear();
-
                 if (onGround)
                 {
                     if (Velocity.Y > 0)
@@ -171,7 +170,7 @@ namespace Basic_platformer
                 if (Input.GetKeyDown(Keys.A))
                     ThrowRope();
                 if (Input.GetKey(Keys.A) && stateMachine.Is(States.Swinging))
-                    Swing(grappledSolid.Pos, distanceToGrapplingPoint);
+                    Swing(distanceToGrapplingPoint);
                 else if(Input.GetKeyUp(Keys.A))
                 {
                     Velocity.X *= 1.5f;
@@ -179,6 +178,8 @@ namespace Basic_platformer
                         Velocity.Y *= 1.4f;
                     else
                         Velocity.Y *= 0.7f;
+
+                    grapplePositions.Clear();
                     stateMachine.Switch(States.Jumping);
                     isAtSwingEnd = false;
                 }
@@ -186,7 +187,7 @@ namespace Basic_platformer
             #endregion
 
             #region Entity Collisions
-            if (CollideAt(Platformer.CurrentMap.Data.Solids, Pos))
+            /*if (CollideAt(Platformer.CurrentMap.Data.Solids, Pos))
                 Death();
 
             if (CollidedWithEntityOfType(Pos + new Vector2(0, 7), out Goomba goomba) &&
@@ -212,13 +213,16 @@ namespace Basic_platformer
                 }
                 else if (CollidedWithEntityOfType<Goomba>(Pos + new Vector2(-1, 0)))
                     Damage(1);
-            }
+            }*/
             #endregion
 
             if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging))
                 stateMachine.Switch(States.Idle);
             else if (onGround && !stateMachine.Is(States.Swinging) && normalMouvement)
                 stateMachine.Switch(States.Running);
+
+            //Debug.Clear();
+            //foreach (Vector2 g in grapplePositions) Debug.Point(g);
 
             collisionX = collisionY = false;
             MoveX(Velocity.X * Platformer.Deltatime, CollisionX);
@@ -290,6 +294,8 @@ namespace Basic_platformer
             {
                 stateMachine.Switch(States.Swinging);
                 distanceToGrapplingPoint = distance;
+                grapplePositions.Add(grappledSolid.Pos);
+
                 Vector2 grapplingPos = determinedGrappledSolid.Pos;
 
                 grapplingPos = determinedGrappledSolid.Pos +
@@ -329,8 +335,29 @@ namespace Basic_platformer
             #endregion
         }
 
-        private void Swing(Vector2 grapplePos, float ropeLength)
+        private void Swing(float ropeLength)
         {
+            for (int i = grapplePositions.Count - 1; i >= 0; i--)
+            {
+                Raycast ray = new Raycast(Pos, grapplePositions[i]);
+
+                if (i == grapplePositions.Count - 1)
+                {
+                    if (ray.hit)
+                        grapplePositions.Add(ray.endPoint);
+                }
+                else 
+                {
+                    if (!ray.hit)
+                        grapplePositions.RemoveRange(i + 1, grapplePositions.Count - i - 1);
+                }
+            }
+
+            Vector2 grapplePos = grapplePositions[grapplePositions.Count - 1];
+
+            for (int i = 0; i < grapplePositions.Count - 1; i++)
+                ropeLength -= Vector2.Distance(grapplePositions[i], grapplePositions[i + 1]);
+
             Vector2 testPos = Pos + Velocity * Platformer.Deltatime;
 
             if ((grapplePos - testPos).Length() > ropeLength)

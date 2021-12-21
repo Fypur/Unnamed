@@ -19,7 +19,7 @@ namespace Basic_platformer.Mapping
             {
                 case 1:
                     var l = new List<Entity> {
-                        new GrapplingPoint(new Vector2(Platformer.ScreenSize.X / 2, 200)),
+                        new GrapplingPoint(new Vector2(Platformer.ScreenSize.X / 2, 100)),
                     };
                     l.AddRange(DefaultLevelTransitions(level, null, null, null, new Level(2, p + Platformer.ScreenSizeY, level.ParentMap)));
                     return l;
@@ -49,15 +49,15 @@ namespace Basic_platformer.Mapping
             {
                 case 1:
                     return new int[,] {
+                        {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
+                        {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
+                        {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
+                        {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
+                        {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1}
+                        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
                     };
                 case 2:
                     return new int[,] {

@@ -84,7 +84,6 @@ namespace Basic_platformer
             CurrentMap.Update();
 
             Cam.Update();
-            Debug.LogUpdate(player.Pos);
             Input.UpdateOldState();
             base.Update(gameTime);
         }

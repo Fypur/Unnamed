@@ -34,7 +34,6 @@ namespace Basic_platformer.Utility
 
             //The tile the begin point is on and the one the end point is on : position truncated to a multiple of the tile's width or height
             Vector2 mapPoint = new Vector2((float)Math.Floor(begin.X / map.currentLevel.TileWidth) * map.currentLevel.TileWidth, (float)Math.Floor(begin.Y / map.currentLevel.TileWidth) * map.currentLevel.TileHeight);
-
             #endregion
 
             #region Ray Direction for Each Dimension and Length for non tiled objects
@@ -86,12 +85,12 @@ namespace Basic_platformer.Utility
                 }
 
                 //Checking
-                if (mapPoint.X >= 0 && mapPoint.Y >= 0 && mapPoint.X < map.Width && mapPoint.Y < map.Height && travelledDistance < length)
+                if (mapPoint.X >= 0 && mapPoint.Y >= 0 && travelledDistance < length)
                     if (map.currentLevel.LevelOrganisation[(int)mapPoint.Y / map.currentLevel.TileHeight, (int)mapPoint.X / map.currentLevel.TileWidth] > 0)
                         hit = true;
             }
-
-            endPoint = begin + Vector2.Normalize(direction) * length;
+            
+            endPoint = begin + Vector2.Normalize(direction) * travelledDistance;
 
             #endregion
         }
