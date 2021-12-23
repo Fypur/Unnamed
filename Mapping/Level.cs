@@ -15,7 +15,7 @@ namespace Basic_platformer.Mapping
 
         public readonly Vector2 Pos;
         public readonly Vector2 Size;
-        public readonly int[,] LevelOrganisation;
+        public readonly int[,] Organisation;
         public readonly Map ParentMap;
         public readonly int Index;
 
@@ -28,16 +28,16 @@ namespace Basic_platformer.Mapping
             ParentMap = parentMap;
             entityData = LevelData.GetLevelData(this);
             Size = LevelData.GetLevelSize(index);
-            LevelOrganisation = LevelData.GetLevelOrganisation(index);
+            Organisation = LevelData.GetLevelOrganisation(index);
         }
 
         public void Load()
         {
-            for (int y = 0; y < LevelOrganisation.GetLength(0); y++)
+            for (int y = 0; y < Organisation.GetLength(0); y++)
             {
-                for (int x = 0; x < LevelOrganisation.GetLength(1); x++)
+                for (int x = 0; x < Organisation.GetLength(1); x++)
                 {
-                    if (LevelOrganisation[y, x] == 1)
+                    if (Organisation[y, x] == 1)
                         entityData.Add(new SolidTile(Drawing.pointTexture, new Vector2(Pos.X + x * TileWidth, Pos.Y + y * TileHeight), TileWidth, TileHeight));
                 }
             }

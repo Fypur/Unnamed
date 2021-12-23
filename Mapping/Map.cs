@@ -31,7 +31,7 @@ namespace Basic_platformer.Mapping
 
         public void LoadMap()
         {
-            CurrentLevel = new Level(1, Vector2.Zero, this);
+            CurrentLevel = new Level(2, Vector2.Zero, this);
             CurrentLevel.Load();
         }
 

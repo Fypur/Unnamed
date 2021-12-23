@@ -26,7 +26,10 @@ namespace Basic_platformer.Mapping
                 case 2:
                     var pulled = new PulledPlatform(new Vector2(60, 200) + p, 200, 40, new Vector2(60, 200) + p + new Vector2(200, 40), 2, Ease.QuintInAndOut);
                     var trig = new GrapplingTrigger(new Vector2(60, 200) + p + new Vector2(200, 40), true, pulled.movingTime, pulled.Pull);
-                    return new List<Entity> { pulled, trig };
+                    return new List<Entity> { pulled, trig,
+                    new CyclingPlatform(40, 200, Color.YellowGreen, new Vector2[]{ Platformer.ScreenSize / 2, Platformer.ScreenSize / 2 + new Vector2(-200 ,0) }, new float[] { 1.5f }, Ease.QuintInAndOut),
+                    new CyclingPlatform(200, 20, Color.YellowGreen, new Vector2[]{ Platformer.ScreenSize / 2 + Platformer.ScreenSizeX * 0.1f, Platformer.ScreenSize / 2 + new Vector2(0 ,-200) }, new float[] { 1.5f }, Ease.QuintInAndOut)
+                    };
                 default:
                     throw new Exception("Couldn't find Level");
             }
@@ -49,11 +52,11 @@ namespace Basic_platformer.Mapping
             {
                 case 1:
                     return new int[,] {
-                        {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                        {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
+                        {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
+                        {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
+                        {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
+                        {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},

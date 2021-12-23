@@ -8,15 +8,16 @@ namespace Basic_platformer
 {
     public abstract class Solid : RenderedEntity
     {
+        public Vector2 Pos;
+        public int Width;
+        public int Height;
+        public bool Collidable = true;
+
         public Solid(Vector2 position, int width, int height)
         {
             this.Pos = position;
             Width = width;
             Height = height;
         }
-
-        public Vector2 Pos;
-        public int Width;
-        public int Height;
     }
 }

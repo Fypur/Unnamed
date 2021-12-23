@@ -86,7 +86,7 @@ namespace Basic_platformer.Utility
                 
                 //Checking
                 if (map.CurrentLevel.Contains(mapPoint) && travelledDistance < length)
-                    if (map.CurrentLevel.LevelOrganisation[(int)(mapPoint.Y - map.CurrentLevel.Pos.Y) / map.CurrentLevel.TileHeight, (int)(mapPoint.X - map.CurrentLevel.Pos.X) / map.CurrentLevel.TileWidth] > 0)
+                    if (map.CurrentLevel.Organisation[(int)(mapPoint.Y - map.CurrentLevel.Pos.Y) / map.CurrentLevel.TileHeight, (int)(mapPoint.X - map.CurrentLevel.Pos.X) / map.CurrentLevel.TileWidth] > 0)
                         hit = true;
             }
             

@@ -20,6 +20,12 @@ namespace Basic_platformer
         private float xRemainder;
         private float yRemainder;
 
+        public virtual bool IsRiding(Solid solid)
+            => new Rectangle(Pos.ToPoint(), new Point(Width, Height + 1)).Intersects(new Rectangle(solid.Pos.ToPoint(), new Point(solid.Width, solid.Height)));
+
+        public virtual void Squish() 
+            => Platformer.CurrentMap.Destroy(this);
+
         public Actor(Vector2 position, int width, int height, float gravityScale)
         {
             Pos = position;
@@ -33,7 +39,7 @@ namespace Basic_platformer
             Platformer.CurrentMap.Data.EntitiesByType[t].Add(this);
         }
 
-        protected void MoveX(float amount, Action CallbackOnCollision = null)
+        public void MoveX(float amount, Action CallbackOnCollision = null)
         {
             xRemainder += amount;
             int move = (int)Math.Round(xRemainder);
@@ -96,7 +102,7 @@ namespace Basic_platformer
             Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
 
             foreach (Solid s in solids)
-                if (playerRect.Intersects(new Rectangle((int)s.Pos.X, (int)s.Pos.Y, s.Width, s.Height)))
+                if (playerRect.Intersects(new Rectangle((int)s.Pos.X, (int)s.Pos.Y, s.Width, s.Height)) && s.Collidable)
                     return true;
 
             return false;

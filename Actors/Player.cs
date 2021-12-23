@@ -1,4 +1,5 @@
 ﻿using Basic_platformer.Components;
+using Basic_platformer.Mapping;
 using Basic_platformer.Solids;
 using Basic_platformer.Utility;
 using Microsoft.Xna.Framework;
@@ -221,12 +222,15 @@ namespace Basic_platformer
             else if (onGround && !stateMachine.Is(States.Swinging) && normalMouvement)
                 stateMachine.Switch(States.Running);
 
-            //Debug.Clear();
-            //foreach (Vector2 g in grapplePositions) Debug.Point(g);
-
             collisionX = collisionY = false;
             MoveX(Velocity.X * Platformer.Deltatime, CollisionX);
             MoveY(Velocity.Y * Platformer.Deltatime, CollisionY);
+        }
+
+        public override bool IsRiding(Solid solid)
+        {
+            return base.IsRiding(solid) 
+                || (new Rectangle(new Point((int)Pos.X - 1, (int)Pos.Y), new Point(solid.Width + 2, solid.Height)).Intersects(new Rectangle(solid.Pos.ToPoint(), new Point(solid.Width, solid.Height))) && stateMachine.Is(States.WallSliding));
         }
 
         private void ThrowRope()
@@ -239,7 +243,7 @@ namespace Basic_platformer
 
             foreach(Solid g in Platformer.CurrentMap.Data.GrapplingSolids)
             {
-                float d = Vector2.Distance(Pos, g.Pos);
+                float d = Vector2.Distance(Pos + new Vector2(Width, Height) / 2, g.Pos);
 
                 if (d < distance)
                 {
@@ -352,12 +356,64 @@ namespace Basic_platformer
                 if (i == grapplePositions.Count - 1)
                 {
                     if (ray.hit)
+                    {
                         grapplePositions.Add(Platformer.CurrentMap.CurrentLevel.ToClosestTileCoordinates(ray.endPoint));
+                        break;
+                    }
                 }
-                else 
+                else
                 {
                     if (!ray.hit)
-                        grapplePositions.RemoveRange(i + 1, grapplePositions.Count - i - 1);
+                    {
+                        #region Creating a polygon and checking if a solid is inside the rope when transitionning
+
+                        float MinX = Pos.X, MinY = Pos.Y, MaxX = Pos.X, MaxY = Pos.Y;
+                        for (int j = i; j < grapplePositions.Count; j++)
+                        {
+                            if (grapplePositions[j].X < MinX)
+                                MinX = grapplePositions[j].X;
+                            if (grapplePositions[j].X > MaxX)
+                                MaxX = grapplePositions[j].X;
+                            if (grapplePositions[j].Y < MinY)
+                                MinY = grapplePositions[j].Y;
+                            if (grapplePositions[j].Y > MaxY)
+                                MaxY = grapplePositions[j].Y;
+                        }
+
+                        Level lvl = Platformer.CurrentMap.CurrentLevel;
+
+                        Vector2 beginTile = new Vector2((float)Math.Floor(MinX / lvl.TileWidth) * lvl.TileWidth,
+                            (float)Math.Floor(MinY / lvl.TileWidth) * lvl.TileHeight);
+
+                        int nbX = (int)Math.Abs(beginTile.X - (float)Math.Floor(MaxX / lvl.TileWidth) * lvl.TileWidth);
+                        int nbY = (int)Math.Abs(beginTile.Y - (float)Math.Floor(MaxY / lvl.TileHeight) * lvl.TileHeight);
+
+                        bool blockInside = false;
+                        for(int x = (int)beginTile.X; x < beginTile.X + nbX; x += lvl.TileWidth)
+                        {
+                            for(int y = (int)beginTile.Y; y < beginTile.Y + nbY; y += lvl.TileHeight)
+                            {
+                                if(lvl.Contains(new Vector2(x, y)))
+                                {
+                                    if (lvl.Organisation[y / lvl.TileHeight, x / lvl.TileWidth] == 1)
+                                    {
+                                        blockInside = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (blockInside)
+                                break;
+                        }
+
+                        #endregion
+
+                        if (!blockInside)
+                            grapplePositions.RemoveRange(i + 1, grapplePositions.Count - i - 1);
+                    }
+                    else
+                        break;
                 }
             }
 
@@ -370,12 +426,12 @@ namespace Basic_platformer
 
             #region Swinging
 
-            Vector2 testPos = Pos + Velocity * Platformer.Deltatime;
+            Vector2 testPos = Pos + new Vector2(Width, Height) / 2 + Velocity * Platformer.Deltatime;
 
             if ((grapplePos - testPos).Length() > ropeLength)
             {
                 testPos = grapplePos + Vector2.Normalize(testPos - grapplePos) * ropeLength;
-                Velocity = (testPos - Pos) / Platformer.Deltatime;
+                Velocity = (testPos - Pos - new Vector2(Width, Height) / 2) / Platformer.Deltatime;
                 isAtSwingEnd = true;
             }
             else

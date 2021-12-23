@@ -50,7 +50,9 @@ namespace Basic_platformer
             CurrentMap = new Map(Vector2.Zero);
 
             Cam = new Camera(ScreenSize / 2, 0, 1f);
+
             player = (Player)CurrentMap.Instantiate(new Player(new Vector2(Platformer.ScreenSize.X / 2, Platformer.ScreenSize.Y - 300), 32, 32));
+            CurrentMap.Data.Actors.Add(player);
 
             CurrentMap.LoadMap();
         }

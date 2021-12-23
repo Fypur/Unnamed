@@ -45,7 +45,7 @@ namespace Basic_platformer.Solids
             },
             () =>
             {
-                Pos = newPos;
+                MoveTo(newPos);
                 AddComponent(new Timer(PulledOutTime, false, null, () => Unpull(Ease.QuintInAndOut)));
             }));
         }
@@ -58,15 +58,7 @@ namespace Basic_platformer.Solids
             {
                 MoveTo(Vector2.Lerp(initPos, newPos,
                          (easingFunction ?? DefaultEasing).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
-            }, () => { Pos = originalPos; }));
-        }
-
-        public override void Update()
-        {
-            base.Update();
-
-            MoveX(Velocity.X * Platformer.Deltatime);
-            MoveY(Velocity.Y * Platformer.Deltatime);
+            }, () => { MoveTo(originalPos); }));
         }
 
         public override void Render()
