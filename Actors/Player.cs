@@ -355,7 +355,7 @@ namespace Basic_platformer
             grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
             for (int i = grapplePositions.Count - 1; i >= 0; i--)
             {
-                Raycast ray = new Raycast(Pos, grapplePositions[i]);
+                Raycast ray = new Raycast(Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2), grapplePositions[i]);
 
                 if (i == grapplePositions.Count - 1)
                 {
@@ -392,6 +392,9 @@ namespace Basic_platformer
                         int nbX = (int)Math.Abs(beginTile.X - (float)Math.Floor(MaxX / lvl.TileWidth) * lvl.TileWidth);
                         int nbY = (int)Math.Abs(beginTile.Y - (float)Math.Floor(MaxY / lvl.TileHeight) * lvl.TileHeight);
 
+                        List<Vector2> allPos = grapplePositions;
+                        allPos.Add(Pos + new Vector2(Width, Height));
+                        
                         bool blockInside = false;
                         for(int x = (int)beginTile.X; x < beginTile.X + nbX; x += lvl.TileWidth)
                         {
@@ -399,7 +402,7 @@ namespace Basic_platformer
                             {
                                 if(lvl.Contains(new Vector2(x, y)))
                                 {
-                                    if (lvl.Organisation[y / lvl.TileHeight, x / lvl.TileWidth] == 1)
+                                    if (Polygon.IsPointInPolygon(allPos.ToArray(), new Vector2(x, y)) && lvl.Organisation[y / lvl.TileHeight, x / lvl.TileWidth] == 1)
                                     {
                                         blockInside = true;
                                         break;
@@ -551,7 +554,7 @@ namespace Basic_platformer
             AddComponent(timer);
         }
 
-        //TODO: Death when falling out of a level
+        //TODO: Fix Removing Grappling Points Bug
 
         public override void Render()
         {
