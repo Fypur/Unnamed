@@ -37,6 +37,8 @@ namespace Basic_platformer
         private const float unstickTime = 0.1f;
 
         private const float maxGrappleDist = 2000f;
+
+        private readonly Texture2D idleTexture;
         #endregion
 
         #region variables
@@ -57,7 +59,7 @@ namespace Basic_platformer
         private List<Vector2> grapplePositions = new List<Vector2>();
         private bool isAtSwingEnd;
 
-        private Vector2 respawnPoint;
+        public Vector2 respawnPoint;
 
         #endregion
 
@@ -70,12 +72,13 @@ namespace Basic_platformer
 
         #endregion
 
-        public Player(Vector2 position, int width, int height) : base(position, width, height, constGravityScale) 
+        public Player(Vector2 position, int width, int height, Texture2D idleTexture) : base(position, width, height, constGravityScale) 
         {
             stateMachine = new StateMachine<States>(States.Idle);
             stateMachine.RegisterStateFunctions(States.Jumping, null, () => { if (Velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);
             AddComponent(stateMachine);
 
+            this.idleTexture = idleTexture;
             respawnPoint = position;
         }
 
@@ -243,7 +246,7 @@ namespace Basic_platformer
 
             foreach(Solid g in Platformer.CurrentMap.Data.GrapplingSolids)
             {
-                float d = Vector2.Distance(Pos + new Vector2(Width, Height) / 2, g.Pos);
+                float d = Vector2.Distance(Pos + new Vector2(Width / 2, Height / 2), g.Pos);
 
                 if (d < distance)
                 {
@@ -349,6 +352,7 @@ namespace Basic_platformer
         {
             #region Determining the right position to Swing to (Rope colliding with terrain)
 
+            grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
             for (int i = grapplePositions.Count - 1; i >= 0; i--)
             {
                 Raycast ray = new Raycast(Pos, grapplePositions[i]);
@@ -426,12 +430,12 @@ namespace Basic_platformer
 
             #region Swinging
 
-            Vector2 testPos = Pos + new Vector2(Width, Height) / 2 + Velocity * Platformer.Deltatime;
+            Vector2 testPos = Pos + new Vector2(Width / 2, Height / 2) + Velocity * Platformer.Deltatime;
 
             if ((grapplePos - testPos).Length() > ropeLength)
             {
                 testPos = grapplePos + Vector2.Normalize(testPos - grapplePos) * ropeLength;
-                Velocity = (testPos - Pos - new Vector2(Width, Height) / 2) / Platformer.Deltatime;
+                Velocity = (testPos - Pos - new Vector2(Width / 2, Height / 2)) / Platformer.Deltatime;
                 isAtSwingEnd = true;
             }
             else
@@ -444,6 +448,7 @@ namespace Basic_platformer
         {
             Pos = respawnPoint;
             Velocity = Vector2.Zero;
+            stateMachine.Switch(States.Idle);
         }
 
         private void Jump()
@@ -546,7 +551,7 @@ namespace Basic_platformer
             AddComponent(timer);
         }
 
-        //TODO: Player respawn and respawn Points
+        //TODO: Death when falling out of a level
 
         public override void Render()
         {
@@ -554,9 +559,10 @@ namespace Basic_platformer
             base.Render();
 
             Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), Color.Red);
-            //Drawing.Draw(Sprites[SpriteStates.Idle], Pos, null, Color.White, 0, Vector2.Zero,
-            //new Vector2(Width / Sprites[SpriteStates.Idle].Width, Height / Sprites[SpriteStates.Idle].Height), facing == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
-            
+
+            /*Drawing.Draw(idleTexture, Pos + new Vector2(Width / 2, Height / 2), null, Color.White, 0, new Vector2(idleTexture.Width / 2, idleTexture.Height / 2),
+                Vector2.One * 1.5f, facing == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);*/
+
             if(Debug.DebugMode)
                 Drawing.DrawEdge(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), 1, Color.Red);
         }

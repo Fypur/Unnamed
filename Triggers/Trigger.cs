@@ -11,11 +11,13 @@ namespace Basic_platformer.Triggers
         public Vector2 Pos;
         public Vector2 Size;
         public List<Type> Triggerers;
+        private string name;
 
         private List<RenderedEntity> enteredEntities = new List<RenderedEntity>();
 
         public Trigger(Vector2 position, Vector2 size, List<Type> triggerers) {
-            Pos = position; Size = size; Triggerers = triggerers; }
+            Pos = position; Size = size; Triggerers = triggerers; name = GetType().Name; 
+        }
 
         public Trigger(Rectangle triggerRect, List<Type> triggerers) {
             Pos = triggerRect.Location.ToVector2(); Size = triggerRect.Size.ToVector2(); Triggerers = triggerers; }
@@ -44,6 +46,12 @@ namespace Basic_platformer.Triggers
                     }
                 }
         }
+
+        public void Render() 
+        {
+            Drawing.DrawString(name, Pos + Size / 2, Color.Aqua, true);
+            Drawing.Draw(new Rectangle(Pos.ToPoint(), Size.ToPoint()), Color.Aqua * 0.2f);
+        } 
 
         public virtual void OnTriggerEnter(Actor actor) { }
 

@@ -15,6 +15,7 @@ namespace Basic_platformer
         public static List<string> Debug = new List<string>();
         public static List<string> DebugForever = new List<string>();
         public static List<Vector2> DebugPos = new List<Vector2>();
+        public static List<Vector2> DebugPosUpdate = new List<Vector2>();
 
         public static void Init(SpriteBatch spriteBatch, SpriteFont font)
         {
@@ -38,6 +39,10 @@ namespace Basic_platformer
 
         public static void DrawString(string text, Vector2 position, Color color, Vector2 origin)
             => spriteBatch.DrawString(font, text, position, color, 0, origin,
+                1, SpriteEffects.None, 1);
+        
+        public static void DrawString(string text, Vector2 position, Color color, bool centered)
+            => spriteBatch.DrawString(font, text, position, color, 0, centered ? font.MeasureString(text) / 2 : Vector2.Zero,
                 1, SpriteEffects.None, 1);
 
         public static void DrawLine(Vector2 begin, Vector2 end, Color color, int thickness = 1)
@@ -85,9 +90,12 @@ namespace Basic_platformer
         public static void DebugPoint()
         {
             foreach(Vector2 pos in DebugPos)
-            {
                 DrawPoint(pos, 7, Color.DarkRed);
-            }
+
+            foreach(Vector2 pos in DebugPosUpdate)
+                DrawPoint(pos, 7, Color.DarkRed);
+
+            DebugPosUpdate.Clear();
         }
     }
 }

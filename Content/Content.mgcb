@@ -32,7 +32,7 @@
 /processorParam:TextureFormat=Compressed
 /build:font.spritefont
 
-#begin idle.png
+#begin robot.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -42,5 +42,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:idle.png
+/build:robot.png
 

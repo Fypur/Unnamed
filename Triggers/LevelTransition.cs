@@ -45,20 +45,20 @@ namespace Basic_platformer.Triggers
             switch (direction)
             {
                 case Direction.Up:
-                    cam.MoveTo(cam.Position - new Vector2(0, Platformer.ScreenSize.Y), transitionTime, Ease.QuintInAndOut);
+                    cam.MoveTo(cam.Pos - new Vector2(0, Platformer.ScreenSize.Y), transitionTime, Ease.QuintInAndOut);
                     p.Pos.Y = Pos.Y - p.Height;
                     p.Velocity.Y = Math.Min(p.Velocity.Y, -300);
                     break;
                 case Direction.Down:
-                    cam.MoveTo(cam.Position + new Vector2(0, Platformer.ScreenSize.Y), transitionTime, Ease.QuintInAndOut);
+                    cam.MoveTo(cam.Pos + new Vector2(0, Platformer.ScreenSize.Y), transitionTime, Ease.QuintInAndOut);
                     p.Pos.Y = Pos.Y;
                     break;
                 case Direction.Left:
-                    cam.MoveTo(cam.Position - new Vector2(Platformer.ScreenSize.X, 0), transitionTime, Ease.QuintInAndOut);
+                    cam.MoveTo(cam.Pos - new Vector2(Platformer.ScreenSize.X, 0), transitionTime, Ease.QuintInAndOut);
                     p.Pos.X = Pos.X - p.Width;
                     break;
                 case Direction.Right:
-                    cam.MoveTo(cam.Position + new Vector2(Platformer.ScreenSize.X, 0), transitionTime, Ease.QuintInAndOut);
+                    cam.MoveTo(cam.Pos + new Vector2(Platformer.ScreenSize.X, 0), transitionTime, Ease.QuintInAndOut);
                     p.Pos.X = Pos.X;
                     break;
             }

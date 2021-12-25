@@ -38,29 +38,30 @@ namespace Basic_platformer
 
         protected override void Initialize()
         {
-            base.Initialize();
-
             graphics.PreferredBackBufferWidth = 960;
             graphics.PreferredBackBufferHeight = 540;
+            graphics.ApplyChanges();
             ScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             ScreenSizeX = new Vector2(ScreenSize.X, 0);
             ScreenSizeY = new Vector2(0, ScreenSize.Y);
-            graphics.ApplyChanges();
 
             CurrentMap = new Map(Vector2.Zero);
 
-            Cam = new Camera(ScreenSize / 2, 0, 1f);
+            Cam = new Camera(ScreenSize / 2, 0, 1);
 
-            player = (Player)CurrentMap.Instantiate(new Player(new Vector2(Platformer.ScreenSize.X / 2, Platformer.ScreenSize.Y - 300), 32, 32));
-            CurrentMap.Data.Actors.Add(player);
-
-            CurrentMap.LoadMap();
+            base.Initialize();
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
+
+            player = (Player)CurrentMap.Instantiate(
+                new Player(new Vector2(Platformer.ScreenSize.X / 2, Platformer.ScreenSize.Y - 300), 20, 32, Content.Load<Texture2D>("robot")));
+            CurrentMap.Data.Actors.Add(player);
+
+            CurrentMap.LoadMap();
         }
 
         protected override void Update(GameTime gameTime)

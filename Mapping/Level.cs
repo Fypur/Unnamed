@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Basic_platformer.Entities;
 using Basic_platformer.Triggers;
+using Basic_platformer.Utility;
 
 namespace Basic_platformer.Mapping
 {
@@ -20,19 +21,24 @@ namespace Basic_platformer.Mapping
         public readonly int Index;
 
         private List<Entity> entityData;
+        private Action enterAction;
 
         public Level(int index, Vector2 position, Map parentMap)
         {
             Pos = position;
             Index = index;
             ParentMap = parentMap;
-            entityData = LevelData.GetLevelData(this);
-            Size = LevelData.GetLevelSize(index);
             Organisation = LevelData.GetLevelOrganisation(index);
+            Size = LevelData.GetLevelSize(this);
+            entityData = LevelData.GetLevelData(this);
+            enterAction = LevelData.GetLevelEnterAction(index);
         }
 
         public void Load()
         {
+            Platformer.Cam.SetBoundaries(Pos, Size);
+            enterAction();
+
             for (int y = 0; y < Organisation.GetLength(0); y++)
             {
                 for (int x = 0; x < Organisation.GetLength(1); x++)
@@ -60,6 +66,8 @@ namespace Basic_platformer.Mapping
                     else if (e is Actor)
                         ParentMap.Data.Actors.Add((Actor)e);
                 }
+                else if (e is Trigger)
+                    ParentMap.Data.Triggers.Add((Trigger)e);
             }
         }
 

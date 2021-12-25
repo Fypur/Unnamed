@@ -27,6 +27,12 @@ namespace Basic_platformer.Utility
                 Drawing.DebugPos.Add(v);
         }
 
+        public static void PointUpdate(params Vector2[] log)
+        {
+            foreach (Vector2 v in log)
+                Drawing.DebugPosUpdate.Add(v);
+        }
+
         public static void Clear()
         {
             Drawing.DebugForever.Clear();

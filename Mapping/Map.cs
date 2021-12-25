@@ -31,7 +31,7 @@ namespace Basic_platformer.Mapping
 
         public void LoadMap()
         {
-            CurrentLevel = new Level(2, Vector2.Zero, this);
+            CurrentLevel = new Level(3, Vector2.Zero, this);
             CurrentLevel.Load();
         }
 
@@ -52,6 +52,9 @@ namespace Basic_platformer.Mapping
         {
             for (int i = Data.RenderedEntities.Count - 1; i >= 0; i--)
                 Data.RenderedEntities[i].Render();
+
+            for (int i = Data.Triggers.Count - 1; i >= 0; i--)
+                Data.Triggers[i].Render();
         }
 
         public RenderedEntity Instantiate(RenderedEntity entity)
