@@ -32,6 +32,7 @@ namespace Basic_platformer.Mapping
             Size = LevelData.GetLevelSize(this);
             entityData = LevelData.GetLevelData(this);
             enterAction = LevelData.GetLevelEnterAction(index);
+            GetLevelCorners();
         }
 
         public void Load()
@@ -92,6 +93,42 @@ namespace Basic_platformer.Mapping
                         ParentMap.Data.Actors.Remove((Actor)e);
                 }
             }
+        }
+
+        public IReadOnlyCollection<Vector2> GetLevelCorners()
+        {
+            List<Vector2> points = new List<Vector2>();
+            for (int x = 0; x < Organisation.GetLength(1); x++)
+            {
+                for (int y = 0; y < Organisation.GetLength(0); y++)
+                {
+                    if(Organisation[y, x] != 0)
+                    {
+                        if (GetOrganisation(x - 1, y) == 0 && GetOrganisation(x, y - 1) == 0 && GetOrganisation(x - 1, y - 1) == 0)
+                            points.Add(new Vector2(x * TileWidth, y * TileHeight));
+
+                        if (GetOrganisation(x + 1, y) == 0 && GetOrganisation(x, y - 1) == 0 && GetOrganisation(x + 1, y - 1) == 0)
+                            points.Add(new Vector2((x + 1) * TileWidth, y * TileHeight));
+
+                        if (GetOrganisation(x - 1, y) == 0 && GetOrganisation(x, y + 1) == 0 && GetOrganisation(x - 1, y + 1) == 0)
+                            points.Add(new Vector2(x * TileWidth, (y + 1) * TileHeight));
+
+                        if (GetOrganisation(x + 1, y) == 0 && GetOrganisation(x, y + 1) == 0 && GetOrganisation(x + 1, y + 1) == 0)
+                            points.Add(new Vector2((x + 1) * TileWidth, (y + 1) * TileHeight));
+                    }
+                }
+            }
+
+            points.ForEach(v => Debug.Point(v));
+            return points;
+        }
+
+        public int GetOrganisation(int x, int y)
+        {
+            if(x >= 0 && x < Organisation.GetLength(1) && y >= 0 && y < Organisation.GetLength(0))
+                return Organisation[y, x];
+            else
+                return 0;
         }
 
         public override string ToString()

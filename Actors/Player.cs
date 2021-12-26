@@ -353,76 +353,6 @@ namespace Basic_platformer
             #region Determining the right position to Swing to (Rope colliding with terrain)
 
             grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
-            for (int i = grapplePositions.Count - 1; i >= 0; i--)
-            {
-                Raycast ray = new Raycast(Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2), grapplePositions[i]);
-
-                if (i == grapplePositions.Count - 1)
-                {
-                    if (ray.hit)
-                    {
-                        grapplePositions.Add(Platformer.CurrentMap.CurrentLevel.ToClosestTileCoordinates(ray.endPoint));
-                        break;
-                    }
-                }
-                else
-                {
-                    if (!ray.hit)
-                    {
-                        #region Creating a polygon and checking if a solid is inside the rope when transitionning
-
-                        float MinX = Pos.X, MinY = Pos.Y, MaxX = Pos.X, MaxY = Pos.Y;
-                        for (int j = i; j < grapplePositions.Count; j++)
-                        {
-                            if (grapplePositions[j].X < MinX)
-                                MinX = grapplePositions[j].X;
-                            if (grapplePositions[j].X > MaxX)
-                                MaxX = grapplePositions[j].X;
-                            if (grapplePositions[j].Y < MinY)
-                                MinY = grapplePositions[j].Y;
-                            if (grapplePositions[j].Y > MaxY)
-                                MaxY = grapplePositions[j].Y;
-                        }
-
-                        Level lvl = Platformer.CurrentMap.CurrentLevel;
-
-                        Vector2 beginTile = new Vector2((float)Math.Floor(MinX / lvl.TileWidth) * lvl.TileWidth,
-                            (float)Math.Floor(MinY / lvl.TileWidth) * lvl.TileHeight);
-
-                        int nbX = (int)Math.Abs(beginTile.X - (float)Math.Floor(MaxX / lvl.TileWidth) * lvl.TileWidth);
-                        int nbY = (int)Math.Abs(beginTile.Y - (float)Math.Floor(MaxY / lvl.TileHeight) * lvl.TileHeight);
-
-                        List<Vector2> allPos = grapplePositions;
-                        allPos.Add(Pos + new Vector2(Width, Height));
-                        
-                        bool blockInside = false;
-                        for(int x = (int)beginTile.X; x < beginTile.X + nbX; x += lvl.TileWidth)
-                        {
-                            for(int y = (int)beginTile.Y; y < beginTile.Y + nbY; y += lvl.TileHeight)
-                            {
-                                if(lvl.Contains(new Vector2(x, y)))
-                                {
-                                    if (Polygon.IsPointInPolygon(allPos.ToArray(), new Vector2(x, y)) && lvl.Organisation[y / lvl.TileHeight, x / lvl.TileWidth] == 1)
-                                    {
-                                        blockInside = true;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (blockInside)
-                                break;
-                        }
-
-                        #endregion
-
-                        if (!blockInside)
-                            grapplePositions.RemoveRange(i + 1, grapplePositions.Count - i - 1);
-                    }
-                    else
-                        break;
-                }
-            }
 
             Vector2 grapplePos = grapplePositions[grapplePositions.Count - 1];
 
@@ -553,8 +483,6 @@ namespace Basic_platformer
             Timer timer = new Timer(invinciblityTime, true, null, () => invicible = false);
             AddComponent(timer);
         }
-
-        //TODO: Fix Removing Grappling Points Bug
 
         public override void Render()
         {
