@@ -15,8 +15,11 @@ namespace Basic_platformer.Mapping
         public int TileHeight = 60;
 
         public readonly Vector2 Pos;
+
         public readonly Vector2 Size;
         public readonly int[,] Organisation;
+        public readonly Vector2[] Corners;
+
         public readonly Map ParentMap;
         public readonly int Index;
 
@@ -28,8 +31,11 @@ namespace Basic_platformer.Mapping
             Pos = position;
             Index = index;
             ParentMap = parentMap;
+
             Organisation = LevelData.GetLevelOrganisation(index);
             Size = LevelData.GetLevelSize(this);
+            Corners = GetLevelCorners();
+
             entityData = LevelData.GetLevelData(this);
             enterAction = LevelData.GetLevelEnterAction(index);
             GetLevelCorners();
@@ -95,7 +101,7 @@ namespace Basic_platformer.Mapping
             }
         }
 
-        public IReadOnlyCollection<Vector2> GetLevelCorners()
+        public Vector2[] GetLevelCorners()
         {
             List<Vector2> points = new List<Vector2>();
             for (int x = 0; x < Organisation.GetLength(1); x++)
@@ -120,7 +126,7 @@ namespace Basic_platformer.Mapping
             }
 
             points.ForEach(v => Debug.Point(v));
-            return points;
+            return points.ToArray();
         }
 
         public int GetOrganisation(int x, int y)

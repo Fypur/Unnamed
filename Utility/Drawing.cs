@@ -70,6 +70,9 @@ namespace Basic_platformer
         {
             Vector2 pos = Vector2.Zero;
 
+            if(Debug.Count * font.MeasureString("A").Y + DebugForever.Count * font.MeasureString("A").Y > Platformer.ScreenSize.Y)
+                DebugForever.Clear();
+
             foreach(string s in Debug)
             {
                 Drawing.DrawString(s, pos, Color.Brown, Vector2.Zero);

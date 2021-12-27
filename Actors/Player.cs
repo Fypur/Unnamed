@@ -354,6 +354,37 @@ namespace Basic_platformer
 
             grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
 
+            float angle = VectorHelper.GetAngle(grapplePositions[grapplePositions.Count - 1] - Pos, grapplePositions[grapplePositions.Count - 1] - Pos - Velocity * Platformer.Deltatime);
+            Debug.LogUpdate(angle);
+
+            //Debug.Log(MathHelper.ToDegrees(VectorHelper.GetAngle(-Vector2.UnitX, -Vector2.UnitY)));
+
+            Vector2? closestPoint = null;
+            float closestPointAngle = angle;
+
+            //Debug.Log(VectorHelper.GetAngle(grapplePositions[grapplePositions.Count - 1] - previousPos, grapplePositions[grapplePositions.Count - 1] - Platformer.CurrentMap.CurrentLevel.Corners[11]));
+            
+            foreach(Vector2 point in Platformer.CurrentMap.CurrentLevel.Corners)
+            {
+                if (Vector2.Distance(grapplePositions[grapplePositions.Count - 1], point) > Vector2.Distance(grapplePositions[grapplePositions.Count - 1], Pos + Velocity * Platformer.Deltatime))
+                    continue;
+
+                float pointAngle = VectorHelper.GetAngle(grapplePositions[grapplePositions.Count - 1] - Pos, grapplePositions[grapplePositions.Count - 1] - point);
+                if (point == new Vector2(840, 780))
+                    Debug.LogUpdate("zefzef :" + pointAngle);
+
+                if (pointAngle * Math.Sign(angle) > 0 && pointAngle * Math.Sign(angle) < angle * Math.Sign(angle))
+                {
+                    closestPointAngle = pointAngle;
+                    closestPoint = point;
+                }
+            }
+
+            if (closestPoint != null)
+                grapplePositions.Add((Vector2)closestPoint);
+            /*if(grapplePositions.Count > 1)
+                Debug.Log(grapplePositions[1]);*/
+            
             Vector2 grapplePos = grapplePositions[grapplePositions.Count - 1];
 
             for (int i = 0; i < grapplePositions.Count - 1; i++)
