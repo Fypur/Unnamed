@@ -10,7 +10,14 @@ namespace Basic_platformer.Utility
         public static float GetAngle(Vector2 vector)
             => (float)Math.Atan2(vector.Y, vector.X);
 
-        public static float GetAngle(Vector2 from, Vector2 to)
+        //3 Different methods
+        /*public static float GetAngle(Vector2 from, Vector2 to)
             => GetAngle(from) - GetAngle(to);
+            => (float)Math.Acos(Vector2.Dot(from, to) / (from.Length() * to.Length()) % Math.PI)
+            => (float)Math.Atan2(from.X * to.Y - from.Y * to.X, Vector2.Dot(from, to))
+        */
+
+        public static float GetAngle(Vector2 from, Vector2 to)
+            => (float)Math.Atan2(from.X * to.Y - from.Y * to.X, Vector2.Dot(from, to));
     }
 }

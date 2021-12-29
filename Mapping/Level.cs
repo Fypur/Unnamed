@@ -24,7 +24,7 @@ namespace Basic_platformer.Mapping
         public readonly int Index;
 
         private List<Entity> entityData;
-        private Action enterAction;
+        private Action enterAction = null;
 
         public Level(int index, Vector2 position, Map parentMap)
         {
@@ -44,7 +44,7 @@ namespace Basic_platformer.Mapping
         public void Load()
         {
             Platformer.Cam.SetBoundaries(Pos, Size);
-            enterAction();
+            enterAction?.Invoke();
 
             for (int y = 0; y < Organisation.GetLength(0); y++)
             {
@@ -125,7 +125,6 @@ namespace Basic_platformer.Mapping
                 }
             }
 
-            points.ForEach(v => Debug.Point(v));
             return points.ToArray();
         }
 
