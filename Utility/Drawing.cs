@@ -16,6 +16,7 @@ namespace Basic_platformer
         public static List<string> DebugForever = new List<string>();
         public static List<Vector2> DebugPos = new List<Vector2>();
         public static List<Vector2> DebugPosUpdate = new List<Vector2>();
+        public static event Action DebugEvent = delegate { };
 
         public static void Init(SpriteBatch spriteBatch, SpriteFont font)
         {
@@ -99,6 +100,12 @@ namespace Basic_platformer
                 DrawPoint(pos, 7, Color.DarkRed);
 
             DebugPosUpdate.Clear();
+        }
+
+        public static void DebugEvents()
+        {
+            DebugEvent();
+            DebugEvent = delegate { };
         }
     }
 }

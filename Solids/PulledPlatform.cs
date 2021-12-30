@@ -41,7 +41,6 @@ namespace Basic_platformer.Solids
             {
                 MoveTo(Vector2.Lerp(initPos, newPos,
                      (EasingFunction ?? Ease.QuintInAndOut).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
-                Debug.LogUpdate(timer.Value);
             },
             () =>
             {

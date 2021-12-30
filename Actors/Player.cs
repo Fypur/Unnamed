@@ -54,8 +54,10 @@ namespace Basic_platformer
         private bool hasDashed;
         private bool isUnsticking;
 
+        private float totalRopeLength;
         private Solid grappledSolid;
         private List<Vector2> grapplePositions = new List<Vector2>();
+        private List<int> grapplePositionsSign = new List<int>() { 0 };
         private bool isAtSwingEnd;
 
         public Vector2 respawnPoint;
@@ -183,6 +185,7 @@ namespace Basic_platformer
                         Velocity.Y *= 0.7f;
 
                     grapplePositions.Clear();
+                    grapplePositionsSign = new List<int> { 0 };
                     stateMachine.Switch(States.Jumping);
                     isAtSwingEnd = false;
                 }
@@ -299,6 +302,7 @@ namespace Basic_platformer
             if (determinedGrappledSolid is GrapplingPoint)
             {
                 stateMachine.Switch(States.Swinging);
+                totalRopeLength = distance;
 
                 Vector2 grapplingPos = determinedGrappledSolid.Pos;
 
@@ -353,63 +357,82 @@ namespace Basic_platformer
             grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
 
             float angle = VectorHelper.GetAngle(grapplePositions[grapplePositions.Count - 1] - Pos - HalfSize, grapplePositions[grapplePositions.Count - 1] - Pos - HalfSize - Velocity * Platformer.Deltatime);
-            Debug.LogUpdate(angle);
-
-            for (int i = grapplePositions.Count - 1; i >= 1; i--)
-            {
-                float grappleAngle = VectorHelper.GetAngle(grapplePositions[i - 1] - Pos - HalfSize, grapplePositions[i] - Pos - HalfSize - Velocity * Platformer.Deltatime);
-
-                if (grappleAngle <= 0)
-                    grapplePositions.RemoveAt(i);
-                else
-                    break;
-            }
 
             List<Vector2> cornersToCheck = new List<Vector2>(Platformer.CurrentMap.CurrentLevel.Corners);
+            foreach (Vector2 p in grapplePositions)
+                cornersToCheck.Remove(p);
 
-            for(int i = 0; i < grapplePositions.Count - 1; i++)
-                cornersToCheck.Remove(grapplePositions[i]);
-
-            //Vector2 coolPoint = new Vector2(300, 540);
-            
+            Vector2 coolPoint = new Vector2(660, 840);
+            int count = 1;
             while (cornersToCheck.Count > 0)
             {
                 Vector2? closestPoint = null;
-                float closestPointAngle = angle;
+                float closestPointAngle;
+                if (count == 1)
+                    closestPointAngle = angle;
+                else
+                    closestPointAngle = VectorHelper.GetAngle(grapplePositions[grapplePositions.Count - 1] - Pos - HalfSize, grapplePositions[grapplePositions.Count - 1] - Pos - HalfSize - Velocity * Platformer.Deltatime);
+
+                float distanceToLastGrapplingPoint = Vector2.Distance(grapplePositions[grapplePositions.Count - 1], Pos + HalfSize + Velocity * Platformer.Deltatime);
+
+                /*Debug.Line(Pos + HalfSize, grapplePositions[grapplePositions.Count - 1], Color.White);
+                Debug.Line(Pos + Velocity * Platformer.Deltatime + HalfSize, grapplePositions[grapplePositions.Count - 1], Color.White);*/
 
                 for (int i = cornersToCheck.Count - 1; i >= 0; i--)
                 {
-                    if (Vector2.Distance(grapplePositions[grapplePositions.Count - 1], cornersToCheck[i]) > Vector2.Distance(grapplePositions[grapplePositions.Count - 1], Pos + HalfSize + Velocity * Platformer.Deltatime))
+                    float cornerDistance = Vector2.Distance(grapplePositions[grapplePositions.Count - 1], cornersToCheck[i]);
+                    if (cornerDistance > distanceToLastGrapplingPoint)
                     {
                         cornersToCheck.RemoveAt(i);
                         continue;
                     }
 
                     float pointAngle = VectorHelper.GetAngle(grapplePositions[grapplePositions.Count - 1] - Pos - HalfSize, grapplePositions[grapplePositions.Count - 1] - cornersToCheck[i]);
-                    
-                    /*if (cornersToCheck[i] == coolPoint)
-                        Debug.Log($"{pointAngle * Math.Sign(angle) > 0}, {pointAngle * Math.Sign(angle) < angle * Math.Sign(angle)}");*/
-                    
+
                     if (pointAngle * Math.Sign(angle) > 0 && pointAngle * Math.Sign(angle) < angle * Math.Sign(angle))
                     {
-                        if (pointAngle * Math.Sign(angle) < closestPointAngle * Math.Sign(angle))
+                        if (pointAngle * Math.Sign(closestPointAngle) < closestPointAngle * Math.Sign(closestPointAngle))
                         {
+                            if(closestPoint is Vector2 p)
+                                cornersToCheck.Add(p);
+
                             closestPointAngle = pointAngle;
                             closestPoint = cornersToCheck[i];
                             cornersToCheck.RemoveAt(i);
-                        }   
+                       }
                     }
                     else
                         cornersToCheck.RemoveAt(i);
+                        
                 }
-                
+
                 if (closestPoint != null)
+                {
                     grapplePositions.Add((Vector2)closestPoint);
+                    float a = closestPointAngle;
+                    grapplePositionsSign.Add(Math.Sign(a));
+                }
+                count++;
             }
 
+            /*for (int i = grapplePositions.Count - 1; i >= 1; i--)
+            {
+                float grappleAngle = VectorHelper.GetAngle(grapplePositions[i - 1] - Pos - HalfSize, grapplePositions[i] - Pos - HalfSize - Velocity * Platformer.Deltatime);
+
+                if (Math.Sign(grappleAngle) == grapplePositionsSign[i])
+                {
+                    grapplePositions.RemoveAt(i);
+                    grapplePositionsSign.RemoveAt(i);
+                }
+                else
+                    break;
+            }*/
+
             Vector2 grapplePos = grapplePositions[grapplePositions.Count - 1];
-            
-            float ropeLength = Vector2.Distance(Pos + HalfSize, grapplePositions[grapplePositions.Count - 1]);
+
+            float ropeLength = totalRopeLength;
+            for(int i = 0; i < grapplePositions.Count - 1; i ++)
+                ropeLength -= Vector2.Distance(grapplePositions[i], grapplePositions[i + 1]);
 
             #endregion
 

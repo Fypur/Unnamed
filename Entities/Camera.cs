@@ -197,19 +197,19 @@ namespace Basic_platformer
 
         public float InBoundsPosY(float y)
         {
-            if (y - Platformer.ScreenSize.Y / 2 * ZoomLevel > bounds.Y && y - Platformer.ScreenSize.Y / 2 * ZoomLevel < bounds.Y + bounds.Height &&
-                y + Platformer.ScreenSize.Y / 2 * ZoomLevel > bounds.Y && y + Platformer.ScreenSize.Y / 2 * ZoomLevel < bounds.Y + bounds.Height)
+            if (y - Platformer.ScreenSize.Y / 2 > bounds.Y && y - Platformer.ScreenSize.Y / 2 < bounds.Y + bounds.Height &&
+                y + Platformer.ScreenSize.Y / 2 > bounds.Y && y + Platformer.ScreenSize.Y / 2 < bounds.Y + bounds.Height)
                 return y;
             else
             {
-                float correctedY = y - Platformer.ScreenSize.Y / 2 * ZoomLevel;
+                float correctedY = y - Platformer.ScreenSize.Y / 2;
 
                 if (correctedY < bounds.Y)
                     correctedY = bounds.Y;
-                else if (correctedY + Platformer.ScreenSize.Y * ZoomLevel > bounds.Y + bounds.Height)
+                else if (correctedY + Platformer.ScreenSize.Y > bounds.Y + bounds.Height)
                     correctedY = bounds.Y + bounds.Height - Platformer.ScreenSize.Y;
 
-                correctedY += Platformer.ScreenSize.Y / 2 * ZoomLevel;
+                correctedY += Platformer.ScreenSize.Y / 2;
 
                 return correctedY;
             }
