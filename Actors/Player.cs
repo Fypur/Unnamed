@@ -355,78 +355,10 @@ namespace Basic_platformer
         {
             #region Determining the right position to Swing to (Rope colliding with terrain)
 
-            #region Adding Grappling Points
-
             grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
 
-            //Get all corners in the level
-            List<Vector2> cornersToCheck = new List<Vector2>(Platformer.CurrentMap.CurrentLevel.Corners);
-            //remove all the corners that are already a grappling point except the last one
-            for (int i = 1; i < grapplePositions.Count - 2; i++)
-                cornersToCheck.Remove(grapplePositions[i]);
-            int count = 1;
-            //as long as there are corners to check we loop in order to add more than one grappling point on a single frame
-            while (cornersToCheck.Count > 0)
-            {
-                //we remove the last grappling point (we do this in the while loop to always remove the last grappling point when we add multiples ones at once)
-                cornersToCheck.Remove(grapplePositions[grapplePositions.Count - 1]);
+            AddGrapplingPoints(new List<Vector2>(Platformer.CurrentMap.CurrentLevel.Corners), grapplePositions[grapplePositions.Count - 1]);
 
-                //calculate the angle between the previous position, the current position and the grappling point
-                float angle = VectorHelper.GetAngle(grapplePositions[grapplePositions.Count - 1] - Pos - HalfSize, grapplePositions[grapplePositions.Count - 1] - Pos - HalfSize - Velocity * Platformer.Deltatime);
-                float closestPointAngle = angle;
-                Vector2? closestPoint = null;
-
-                float distanceToLastGrapplingPoint = Vector2.Distance(grapplePositions[grapplePositions.Count - 1], Pos + HalfSize + Velocity * Platformer.Deltatime);
-
-                //we loop this way in order to be able to remove things from the cornersToCheck list while looping
-                for (int i = cornersToCheck.Count - 1; i >= 0; i--)
-                {
-                    //We check if the corner is further to the grappling point than the player
-                    float cornerDistance = Vector2.Distance(grapplePositions[grapplePositions.Count - 1], cornersToCheck[i]);
-                    if (cornerDistance > distanceToLastGrapplingPoint)
-                    {
-                        cornersToCheck.RemoveAt(i);
-                        continue;
-                    }
-
-                    //the angle from the corner (the one I did in cyan in the images)
-                    float pointAngle = VectorHelper.GetAngle(grapplePositions[grapplePositions.Count - 1] - Pos - HalfSize, grapplePositions[grapplePositions.Count - 1] - cornersToCheck[i]);
-
-                    //if point angle is no closer to than the angle then we don't need to consider it anymore and we remove it
-                    if (pointAngle * Math.Sign(angle) > 0 && pointAngle * Math.Sign(angle) <= angle * Math.Sign(angle))
-                    {
-                        //if it is inside the angle but then we don't remove it from the list in order
-                        //to check it on the next iteration on the while loop, we want to be able to add multiple grappling points in one frame
-                        if (pointAngle * Math.Sign(closestPointAngle) <= closestPointAngle * Math.Sign(closestPointAngle))
-                        {
-                            closestPointAngle = pointAngle;
-                            closestPoint = cornersToCheck[i];
-
-                            if (closestPoint == new Vector2(660, 840))
-                                Debug.Log("attached");
-                            else
-                                Debug.Log("removed");
-                        }
-                    }
-                    else
-                    {
-                        if (count == 2 && cornersToCheck[i] == new Vector2(660, 840))
-                        {
-                            Debug.Pause();
-                            Debug.Log($"angle: {angle}, closestAngle: {closestPointAngle}, pointAngle: {pointAngle}");
-                        }
-                        cornersToCheck.RemoveAt(i);
-                    }
-                }
-
-                //If a corner is inside the angle, we add the closest corner as a grappling point
-                if (closestPoint != null)
-                    grapplePositions.Add((Vector2)closestPoint);
-
-                count++;
-            }
-
-            #endregion
 
             /*for (int i = grapplePositions.Count - 1; i >= 1; i--)
             {
@@ -464,6 +396,50 @@ namespace Basic_platformer
                 isAtSwingEnd = false;
 
             #endregion
+        }
+
+        private void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
+        {
+            float angle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - Pos - HalfSize - Velocity * Platformer.Deltatime);
+
+            if (angle == 0)
+                return;
+            
+            float distanceFromPoint = Vector2.Distance(Pos + HalfSize + Velocity * Platformer.Deltatime, checkingFrom);
+            
+            float closestAngle = angle;
+            Vector2? closestPoint = null;
+
+            List<Vector2> nextCorners = new List<Vector2>();
+
+            foreach(Vector2 corner in cornersToCheck)
+            {
+                float cornerDistance = Vector2.Distance(checkingFrom, corner);
+                if (cornerDistance > distanceFromPoint)
+                    continue;
+
+                float pointAngle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - corner);
+
+                if (pointAngle * Math.Sign(angle) >= 0 && pointAngle * Math.Sign(angle) <= angle * Math.Sign(angle))
+                {
+                    if (pointAngle * Math.Sign(closestAngle) <= closestAngle * Math.Sign(closestAngle))
+                    {
+                        closestAngle = pointAngle;
+                        closestPoint = corner;
+                    }
+                    
+                    nextCorners.Add(corner);
+                }
+            }
+
+            if (closestPoint is Vector2 foundCorner)
+            {
+                grapplePositions.Add(foundCorner);
+                nextCorners.Remove(foundCorner);
+
+                if(nextCorners.Count > 0)
+                    AddGrapplingPoints(nextCorners, foundCorner);
+            }
         }
 
         public void Death()
