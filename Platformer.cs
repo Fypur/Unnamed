@@ -46,7 +46,7 @@ namespace Basic_platformer
             ScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             ScreenSizeX = new Vector2(ScreenSize.X, 0);
             ScreenSizeY = new Vector2(0, ScreenSize.Y);
-
+            
             CurrentMap = new Map(Vector2.Zero);
 
             Cam = new Camera(ScreenSize / 2, 0, 1);
@@ -111,7 +111,7 @@ namespace Basic_platformer
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
-
+            
             CurrentMap.Render();
 
             Drawing.DebugPoint();
