@@ -54,9 +54,10 @@ namespace Basic_platformer
         private bool hasDashed;
         private bool isUnsticking;
 
-        private float distanceToGrapplingPoint;
+        private float totalRopeLength;
         private Solid grappledSolid;
         private List<Vector2> grapplePositions = new List<Vector2>();
+        private List<int> grapplePositionsSign = new List<int>() { 0 };
         private bool isAtSwingEnd;
 
         public Vector2 respawnPoint;
@@ -174,7 +175,7 @@ namespace Basic_platformer
                 if (Input.GetKeyDown(Keys.A))
                     ThrowRope();
                 if (Input.GetKey(Keys.A) && stateMachine.Is(States.Swinging))
-                    Swing(distanceToGrapplingPoint);
+                    Swing();
                 else if(Input.GetKeyUp(Keys.A))
                 {
                     Velocity.X *= 1.5f;
@@ -184,6 +185,7 @@ namespace Basic_platformer
                         Velocity.Y *= 0.7f;
 
                     grapplePositions.Clear();
+                    grapplePositionsSign = new List<int> { 0 };
                     stateMachine.Switch(States.Jumping);
                     isAtSwingEnd = false;
                 }
@@ -300,7 +302,7 @@ namespace Basic_platformer
             if (determinedGrappledSolid is GrapplingPoint)
             {
                 stateMachine.Switch(States.Swinging);
-                distanceToGrapplingPoint = distance;
+                totalRopeLength = distance;
 
                 Vector2 grapplingPos = determinedGrappledSolid.Pos;
 
@@ -348,103 +350,109 @@ namespace Basic_platformer
             #endregion
         }
 
-        private void Swing(float ropeLength)
+        private void Swing()
         {
-            #region Determining the right position to Swing to (Rope colliding with terrain)
-
-            grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
-            for (int i = grapplePositions.Count - 1; i >= 0; i--)
-            {
-                Raycast ray = new Raycast(Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2), grapplePositions[i]);
-
-                if (i == grapplePositions.Count - 1)
-                {
-                    if (ray.hit)
-                    {
-                        grapplePositions.Add(Platformer.CurrentMap.CurrentLevel.ToClosestTileCoordinates(ray.endPoint));
-                        break;
-                    }
-                }
-                else
-                {
-                    if (!ray.hit)
-                    {
-                        #region Creating a polygon and checking if a solid is inside the rope when transitionning
-
-                        float MinX = Pos.X, MinY = Pos.Y, MaxX = Pos.X, MaxY = Pos.Y;
-                        for (int j = i; j < grapplePositions.Count; j++)
-                        {
-                            if (grapplePositions[j].X < MinX)
-                                MinX = grapplePositions[j].X;
-                            if (grapplePositions[j].X > MaxX)
-                                MaxX = grapplePositions[j].X;
-                            if (grapplePositions[j].Y < MinY)
-                                MinY = grapplePositions[j].Y;
-                            if (grapplePositions[j].Y > MaxY)
-                                MaxY = grapplePositions[j].Y;
-                        }
-
-                        Level lvl = Platformer.CurrentMap.CurrentLevel;
-
-                        Vector2 beginTile = new Vector2((float)Math.Floor(MinX / lvl.TileWidth) * lvl.TileWidth,
-                            (float)Math.Floor(MinY / lvl.TileWidth) * lvl.TileHeight);
-
-                        int nbX = (int)Math.Abs(beginTile.X - (float)Math.Floor(MaxX / lvl.TileWidth) * lvl.TileWidth);
-                        int nbY = (int)Math.Abs(beginTile.Y - (float)Math.Floor(MaxY / lvl.TileHeight) * lvl.TileHeight);
-
-                        List<Vector2> allPos = grapplePositions;
-                        allPos.Add(Pos + new Vector2(Width, Height));
-                        
-                        bool blockInside = false;
-                        for(int x = (int)beginTile.X; x < beginTile.X + nbX; x += lvl.TileWidth)
-                        {
-                            for(int y = (int)beginTile.Y; y < beginTile.Y + nbY; y += lvl.TileHeight)
-                            {
-                                if(lvl.Contains(new Vector2(x, y)))
-                                {
-                                    if (Polygon.IsPointInPolygon(allPos.ToArray(), new Vector2(x, y)) && lvl.Organisation[y / lvl.TileHeight, x / lvl.TileWidth] == 1)
-                                    {
-                                        blockInside = true;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (blockInside)
-                                break;
-                        }
-
-                        #endregion
-
-                        if (!blockInside)
-                            grapplePositions.RemoveRange(i + 1, grapplePositions.Count - i - 1);
-                    }
-                    else
-                        break;
-                }
-            }
+            #region Swinging
 
             Vector2 grapplePos = grapplePositions[grapplePositions.Count - 1];
 
+            float ropeLength = totalRopeLength;
             for (int i = 0; i < grapplePositions.Count - 1; i++)
                 ropeLength -= Vector2.Distance(grapplePositions[i], grapplePositions[i + 1]);
 
-            #endregion
-
-            #region Swinging
-
-            Vector2 testPos = Pos + new Vector2(Width / 2, Height / 2) + Velocity * Platformer.Deltatime;
+            Vector2 testPos = Pos + HalfSize + Velocity * Platformer.Deltatime;
 
             if ((grapplePos - testPos).Length() > ropeLength)
             {
                 testPos = grapplePos + Vector2.Normalize(testPos - grapplePos) * ropeLength;
-                Velocity = (testPos - Pos - new Vector2(Width / 2, Height / 2)) / Platformer.Deltatime;
+                Velocity = (testPos - Pos - HalfSize) / Platformer.Deltatime;
                 isAtSwingEnd = true;
             }
             else
                 isAtSwingEnd = false;
 
             #endregion
+
+            #region Determining the right position to Swing to (Rope colliding with terrain)
+
+            grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
+
+            RemoveGrapplingPoints();
+
+            List<Vector2> cornersToCheck = new List<Vector2>(Platformer.CurrentMap.CurrentLevel.Corners);
+            foreach (Vector2 point in grapplePositions)
+                cornersToCheck.Remove(point);
+
+            AddGrapplingPoints(cornersToCheck, grapplePositions[grapplePositions.Count - 1]);
+            #endregion
+        }
+
+        private void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
+        {
+            float angle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - Pos - HalfSize - Velocity * Platformer.Deltatime);
+
+            if (angle == 0)
+                return;
+            
+            float distanceFromPoint = Vector2.Distance(Pos + HalfSize + Velocity * Platformer.Deltatime, checkingFrom);
+            
+            float closestAngle = angle;
+            Vector2? closestPoint = null;
+
+            List<Vector2> nextCorners = new List<Vector2>();
+
+            foreach(Vector2 corner in cornersToCheck)
+            {
+                float cornerDistance = Vector2.Distance(checkingFrom, corner);
+                if (cornerDistance > distanceFromPoint)
+                {
+                    continue;
+                }
+
+                float pointAngle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - corner);
+
+                if (pointAngle * Math.Sign(angle) >= 0 && pointAngle * Math.Sign(angle) <= angle * Math.Sign(angle))
+                {
+                    if (pointAngle * Math.Sign(closestAngle) <= closestAngle * Math.Sign(closestAngle))
+                    {
+                        closestAngle = pointAngle;
+                        closestPoint = corner;
+                    }
+                    
+                    nextCorners.Add(corner);
+                }
+            }
+
+            if (closestPoint is Vector2 foundCorner)
+            {
+                grapplePositions.Add(foundCorner);
+                grapplePositionsSign.Add(Math.Sign(angle));
+                if (foundCorner == new Vector2(660, 840))
+                {
+                    //Debug.Pause();
+                }
+
+                nextCorners.Remove(foundCorner);
+
+                if(nextCorners.Count > 0)
+                    AddGrapplingPoints(nextCorners, foundCorner);
+            }
+        }
+
+        private void RemoveGrapplingPoints()
+        {
+            for (int i = grapplePositions.Count - 1; i >= 1; i--)
+            {
+                float grappleAngle = VectorHelper.GetAngle(grapplePositions[i - 1] - Pos - HalfSize, grapplePositions[i - 1] - grapplePositions[i]);
+
+                if (Math.Sign(grappleAngle) == grapplePositionsSign[i])
+                {
+                    grapplePositions.RemoveAt(i);
+                    grapplePositionsSign.RemoveAt(i);
+                }
+                else
+                    break;
+            }
         }
 
         public void Death()
@@ -553,8 +561,6 @@ namespace Basic_platformer
             Timer timer = new Timer(invinciblityTime, true, null, () => invicible = false);
             AddComponent(timer);
         }
-
-        //TODO: Fix Removing Grappling Points Bug
 
         public override void Render()
         {

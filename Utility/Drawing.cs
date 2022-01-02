@@ -14,8 +14,9 @@ namespace Basic_platformer
         
         public static List<string> Debug = new List<string>();
         public static List<string> DebugForever = new List<string>();
-        public static List<Vector2> DebugPos = new List<Vector2>();
-        public static List<Vector2> DebugPosUpdate = new List<Vector2>();
+        public static List<Tuple<Vector2, Color>> DebugPos = new List<Tuple<Vector2, Color>>();
+        public static List<Tuple<Vector2, Color>> DebugPosUpdate = new List<Tuple<Vector2, Color>>();
+        public static event Action DebugEvent = delegate { };
 
         public static void Init(SpriteBatch spriteBatch, SpriteFont font)
         {
@@ -70,6 +71,9 @@ namespace Basic_platformer
         {
             Vector2 pos = Vector2.Zero;
 
+            if(Debug.Count * font.MeasureString("A").Y + DebugForever.Count * font.MeasureString("A").Y > Platformer.ScreenSize.Y)
+                DebugForever.Clear();
+
             foreach(string s in Debug)
             {
                 Drawing.DrawString(s, pos, Color.Brown, Vector2.Zero);
@@ -89,13 +93,19 @@ namespace Basic_platformer
 
         public static void DebugPoint()
         {
-            foreach(Vector2 pos in DebugPos)
-                DrawPoint(pos, 7, Color.DarkRed);
+            foreach(Tuple<Vector2, Color> pos in DebugPos)
+                DrawPoint(pos.Item1, 7, pos.Item2);
 
-            foreach(Vector2 pos in DebugPosUpdate)
-                DrawPoint(pos, 7, Color.DarkRed);
+            foreach (Tuple<Vector2, Color> pos in DebugPosUpdate)
+                DrawPoint(pos.Item1, 7, pos.Item2);
 
             DebugPosUpdate.Clear();
+        }
+
+        public static void DebugEvents()
+        {
+            DebugEvent();
+            DebugEvent = delegate { };
         }
     }
 }

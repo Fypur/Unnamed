@@ -15,29 +15,36 @@ namespace Basic_platformer.Mapping
         public int TileHeight = 60;
 
         public readonly Vector2 Pos;
+
         public readonly Vector2 Size;
         public readonly int[,] Organisation;
+        public readonly Vector2[] Corners;
+
         public readonly Map ParentMap;
         public readonly int Index;
 
         private List<Entity> entityData;
-        private Action enterAction;
+        private Action enterAction = null;
 
         public Level(int index, Vector2 position, Map parentMap)
         {
             Pos = position;
             Index = index;
             ParentMap = parentMap;
+
             Organisation = LevelData.GetLevelOrganisation(index);
             Size = LevelData.GetLevelSize(this);
+            Corners = GetLevelCorners();
+
             entityData = LevelData.GetLevelData(this);
             enterAction = LevelData.GetLevelEnterAction(index);
+            GetLevelCorners();
         }
 
         public void Load()
         {
             Platformer.Cam.SetBoundaries(Pos, Size);
-            enterAction();
+            enterAction?.Invoke();
 
             for (int y = 0; y < Organisation.GetLength(0); y++)
             {
@@ -92,6 +99,41 @@ namespace Basic_platformer.Mapping
                         ParentMap.Data.Actors.Remove((Actor)e);
                 }
             }
+        }
+
+        public Vector2[] GetLevelCorners()
+        {
+            List<Vector2> points = new List<Vector2>();
+            for (int x = 0; x < Organisation.GetLength(1); x++)
+            {
+                for (int y = 0; y < Organisation.GetLength(0); y++)
+                {
+                    if(Organisation[y, x] != 0)
+                    {
+                        if (GetOrganisation(x - 1, y) == 0 && GetOrganisation(x, y - 1) == 0 && GetOrganisation(x - 1, y - 1) == 0)
+                            points.Add(new Vector2(x * TileWidth, y * TileHeight));
+
+                        if (GetOrganisation(x + 1, y) == 0 && GetOrganisation(x, y - 1) == 0 && GetOrganisation(x + 1, y - 1) == 0)
+                            points.Add(new Vector2((x + 1) * TileWidth, y * TileHeight));
+
+                        if (GetOrganisation(x - 1, y) == 0 && GetOrganisation(x, y + 1) == 0 && GetOrganisation(x - 1, y + 1) == 0)
+                            points.Add(new Vector2(x * TileWidth, (y + 1) * TileHeight));
+
+                        if (GetOrganisation(x + 1, y) == 0 && GetOrganisation(x, y + 1) == 0 && GetOrganisation(x + 1, y + 1) == 0)
+                            points.Add(new Vector2((x + 1) * TileWidth, (y + 1) * TileHeight));
+                    }
+                }
+            }
+
+            return points.ToArray();
+        }
+
+        public int GetOrganisation(int x, int y)
+        {
+            if(x >= 0 && x < Organisation.GetLength(1) && y >= 0 && y < Organisation.GetLength(0))
+                return Organisation[y, x];
+            else
+                return 0;
         }
 
         public override string ToString()

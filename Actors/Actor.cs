@@ -13,6 +13,7 @@ namespace Basic_platformer
         public Vector2 Pos;
         public int Width;
         public int Height;
+        protected readonly Vector2 HalfSize;
         public Vector2 Velocity;
         public float gravityScale;
         public static readonly Vector2 gravityVector = new Vector2(0, 9.81f);
@@ -31,6 +32,7 @@ namespace Basic_platformer
             Pos = position;
             Width = width;
             Height = height;
+            HalfSize = new Vector2(width / 2, height / 2);
             this.gravityScale = gravityScale;
 
             Type t = GetType();

@@ -15,6 +15,8 @@ namespace Basic_platformer
         public static GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
+        public static bool Paused;
+        private bool previousPauseKeyPress;
         public static float Deltatime;
         public static float TimeScale = 1;
 
@@ -68,7 +70,20 @@ namespace Basic_platformer
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
             Input.UpdateState();
+
+            #region Pausing
+
+            if (Input.GetKey(Keys.X) && !previousPauseKeyPress)
+                Paused = !Paused;
+
+            previousPauseKeyPress = Input.GetKey(Keys.X);
+
+            if (Paused)
+                return;
+
+            #endregion
 
             Deltatime = (float) gameTime.ElapsedGameTime.TotalSeconds * TimeScale;
 
@@ -100,6 +115,7 @@ namespace Basic_platformer
             CurrentMap.Render();
 
             Drawing.DebugPoint();
+            Drawing.DebugEvents();
 
             spriteBatch.End();
 
