@@ -184,7 +184,6 @@ namespace Basic_platformer
                     else
                         Velocity.Y *= 0.7f;
 
-                    Debug.Clear();
                     grapplePositions.Clear();
                     grapplePositionsSign = new List<int> { 0 };
                     stateMachine.Switch(States.Jumping);
@@ -353,36 +352,13 @@ namespace Basic_platformer
 
         private void Swing()
         {
-            #region Determining the right position to Swing to (Rope colliding with terrain)
-
-            grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
-
-            AddGrapplingPoints(new List<Vector2>(Platformer.CurrentMap.CurrentLevel.Corners), grapplePositions[grapplePositions.Count - 1]);
-
-
-            /*for (int i = grapplePositions.Count - 1; i >= 1; i--)
-            {
-                float grappleAngle = VectorHelper.GetAngle(grapplePositions[i - 1] - Pos - HalfSize, grapplePositions[i] - Pos - HalfSize - Velocity * Platformer.Deltatime);
-
-                //Debug.Log(grappleAngle + " " + grapplePositionsSign[i]);
-                if (grappleAngle < 0)
-                {
-                    grapplePositions.RemoveAt(i);
-                    //grapplePositionsSign.RemoveAt(i);
-                }
-                else
-                    break;
-            }*/
+            #region Swinging
 
             Vector2 grapplePos = grapplePositions[grapplePositions.Count - 1];
 
             float ropeLength = totalRopeLength;
-            for(int i = 0; i < grapplePositions.Count - 1; i++)
+            for (int i = 0; i < grapplePositions.Count - 1; i++)
                 ropeLength -= Vector2.Distance(grapplePositions[i], grapplePositions[i + 1]);
-
-            #endregion
-
-            #region Swinging
 
             Vector2 testPos = Pos + HalfSize + Velocity * Platformer.Deltatime;
 
@@ -395,6 +371,19 @@ namespace Basic_platformer
             else
                 isAtSwingEnd = false;
 
+            #endregion
+
+            #region Determining the right position to Swing to (Rope colliding with terrain)
+
+            grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
+
+            RemoveGrapplingPoints();
+
+            List<Vector2> cornersToCheck = new List<Vector2>(Platformer.CurrentMap.CurrentLevel.Corners);
+            foreach (Vector2 point in grapplePositions)
+                cornersToCheck.Remove(point);
+
+            AddGrapplingPoints(cornersToCheck, grapplePositions[grapplePositions.Count - 1]);
             #endregion
         }
 
@@ -416,7 +405,9 @@ namespace Basic_platformer
             {
                 float cornerDistance = Vector2.Distance(checkingFrom, corner);
                 if (cornerDistance > distanceFromPoint)
+                {
                     continue;
+                }
 
                 float pointAngle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - corner);
 
@@ -435,10 +426,32 @@ namespace Basic_platformer
             if (closestPoint is Vector2 foundCorner)
             {
                 grapplePositions.Add(foundCorner);
+                grapplePositionsSign.Add(Math.Sign(angle));
+                if (foundCorner == new Vector2(660, 840))
+                {
+                    //Debug.Pause();
+                }
+
                 nextCorners.Remove(foundCorner);
 
                 if(nextCorners.Count > 0)
                     AddGrapplingPoints(nextCorners, foundCorner);
+            }
+        }
+
+        private void RemoveGrapplingPoints()
+        {
+            for (int i = grapplePositions.Count - 1; i >= 1; i--)
+            {
+                float grappleAngle = VectorHelper.GetAngle(grapplePositions[i - 1] - Pos - HalfSize, grapplePositions[i - 1] - grapplePositions[i]);
+
+                if (Math.Sign(grappleAngle) == grapplePositionsSign[i])
+                {
+                    grapplePositions.RemoveAt(i);
+                    grapplePositionsSign.RemoveAt(i);
+                }
+                else
+                    break;
             }
         }
 
