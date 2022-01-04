@@ -6,6 +6,7 @@ using System.Text;
 using Basic_platformer.Entities;
 using Basic_platformer.Triggers;
 using Basic_platformer.Utility;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Basic_platformer.Mapping
 {
@@ -50,8 +51,10 @@ namespace Basic_platformer.Mapping
             {
                 for (int x = 0; x < Organisation.GetLength(1); x++)
                 {
-                    if (Organisation[y, x] == 1)
-                        entityData.Add(new SolidTile(Drawing.pointTexture, new Vector2(Pos.X + x * TileWidth, Pos.Y + y * TileHeight), TileWidth, TileHeight));
+                    if (Organisation[y, x] != 0)
+                    {
+                        entityData.Add(new SolidTile(GetTileTexture(x, y), new Vector2(Pos.X + x * TileWidth, Pos.Y + y * TileHeight), TileWidth, TileHeight));
+                    }
                 }
             }
 
@@ -128,12 +131,57 @@ namespace Basic_platformer.Mapping
             return points.ToArray();
         }
 
-        public int GetOrganisation(int x, int y)
+        public int GetOrganisation(int x, int y, int returnIfEmpty = 0)
         {
             if(x >= 0 && x < Organisation.GetLength(1) && y >= 0 && y < Organisation.GetLength(0))
                 return Organisation[y, x];
             else
-                return 0;
+                return returnIfEmpty;
+        }
+
+        private Texture2D GetTileTexture(int x, int y) 
+        {
+            int tileValue = Organisation[y, x];
+            Dictionary<string, Texture2D> tileSet = TileData.TileSets[tileValue];
+
+            /*bool leftBlock = GetOrganisation(x + 1, y, tileValue) != 0;
+            bool rightBlock = GetOrganisation(x - 1, y, tileValue) != 0;
+            bool topBlock = GetOrganisation(x, y - 1, tileValue) != 0;
+            bool bottomBlock = GetOrganisation(x, y + 1, tileValue) != 0;
+
+            bool topRightBlock = GetOrganisation(x + 1, y - 1, tileValue) != 0;
+            bool topLeftBlock = GetOrganisation(x - 1, y - 1, tileValue) != 0;
+            bool bottomRightBlock = GetOrganisation(x + 1, y + 1, tileValue) != 0;
+            bool bottomLeftBlock = GetOrganisation(x - 1, y - 1, tileValue) != 0;
+
+            if (!rightBlock && !leftBlock && !topBlock && !bottomBlock)
+                return tileSet["complete"];
+
+            if (!topBlock && rightBlock && leftBlock && bottomBlock)
+                return tileSet["top"];
+
+            if (!bottomBlock && rightBlock && leftBlock && topBlock)
+                return tileSet["bottom"];
+
+            if (topBlock && bottomBlock && !leftBlock && rightBlock)
+                return tileSet["right"];
+
+            if (topBlock && bottomBlock && leftBlock && !rightBlock)
+                return tileSet["left"];
+
+            if (!topBlock && !leftBlock && !topLeftBlock)
+                return tileSet["topRightCorner"];
+
+            if (!topBlock && !rightBlock && !topRightBlock)
+                return tileSet["topLeftCorner"];
+
+            if (!bottomBlock && !leftBlock && !bottomLeftBlock)
+                return tileSet["bottomLeftCorner"];
+
+            if (!bottomBlock && !rightBlock && !bottomRightBlock)
+                return tileSet["bottomRightCorner"];*/
+
+            return tileSet["inside"];
         }
 
         public override string ToString()

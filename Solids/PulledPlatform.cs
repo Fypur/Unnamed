@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Basic_platformer.Components;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Basic_platformer.Solids
 {
@@ -20,12 +21,9 @@ namespace Basic_platformer.Solids
 
         private float distanceBetweenPos;
 
-        public PulledPlatform(Vector2 position, int width, int height, Vector2 pulledPos, float pulledOutTime, 
-            Func<float, float> easingFunction = null) : base(position, width, height)
+        public PulledPlatform(Vector2 position, int width, int height, Vector2 pulledPos, float pulledOutTime, Color color,
+            Func<float, float> easingFunction = null) : base(position, width, height, color)
         {
-            Pos = position;
-            Width = width;
-            Height = height;
             originalPos = position;
             PulledPos = pulledPos;
             distanceBetweenPos = Vector2.Distance(originalPos, PulledPos);

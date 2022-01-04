@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Content;
 using System.IO;
+using Basic_platformer.Utility;
 
 namespace Basic_platformer.Mapping
 {
     public static class TileData
     {
-        public static readonly Dictionary<string, Texture2D> GrassTileSet;
-
-        static TileData()
+        public static Dictionary<string, Texture2D> GrassTileSet = LoadAllFilesInFolder<Texture2D>("GrassTileSet");
+        public static readonly Dictionary<int, Dictionary<string, Texture2D>> TileSets = new Dictionary<int, Dictionary<string, Texture2D>>()
         {
-            GrassTileSet = LoadAllFilesInFolder<Texture2D>("GrassTileSet");
-        }
+            { 1, GrassTileSet }
+        };
 
         private static Dictionary<string, T> LoadAllFilesInFolder<T>(string folderName)
         {

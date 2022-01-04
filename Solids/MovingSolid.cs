@@ -1,5 +1,6 @@
 ﻿using Basic_platformer.Utility;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,75 +18,8 @@ namespace Basic_platformer.Solids
         protected float gravityScale = 0;
         protected static readonly Vector2 gravityVector = new Vector2(0, 9.81f);
 
-        public MovingSolid(Vector2 position, int width, int height) : base (position, width, height) { }
-
-        /*protected void MoveX(float amount)
-        {
-            int move = (int)amount;
-            xRemainder += amount - move;
-
-            if(xRemainder >= 1)
-            {
-                move += (int)xRemainder;
-                xRemainder -= (int)xRemainder;
-            }
-
-            if (move == 0)
-                return;
-
-            //Check all entities between this solid and it's final Pos
-            Rectangle movingRect;
-            if (Math.Sign(move) == 1)
-                movingRect = new Rectangle((int)Pos.X, (int)Pos.Y, Width + move, Height);
-            else
-                movingRect = new Rectangle((int)Pos.X + move, (int)Pos.Y, Width - move, Height);
-
-            foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
-            {
-                //Take those entities and move them
-                if (new Rectangle((int)actor.Pos.X, (int)actor.Pos.Y, actor.Width, actor.Height).Intersects(movingRect))
-                {
-                    actor.Pos.X = movingRect.X + (Math.Sign(move) == 1 ? movingRect.Width : -actor.Width);
-                }
-            }
-
-            //Move Solid
-            Pos.X += move;
-        }
-        */
-        /*protected void MoveY(float amount)
-        {
-            int move = (int)amount;
-            yRemainder += amount - move;
-
-            if (yRemainder >= 1)
-            {
-                move += (int)yRemainder;
-                yRemainder -= (int)yRemainder;
-            }
-
-            if (move == 0)
-                return;
-
-            //Check all entities between this solid and it's final Pos
-            Rectangle movingRect;
-            if (Math.Sign(move) == 1)
-                movingRect = new Rectangle((int)Pos.X, (int)Pos.Y, Width, move + Height);
-            else
-                movingRect = new Rectangle((int)Pos.X, (int)Pos.Y + move, Width, -move + Height);
-
-            foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
-            {
-                //Take those entities and move them
-                if (new Rectangle((int)actor.Pos.X, (int)actor.Pos.Y, actor.Width, actor.Height).Intersects(movingRect))
-                {
-                    actor.Pos.Y = movingRect.Y + (Math.Sign(move) == 1 ? movingRect.Height : -actor.Height);
-                }
-            }
-
-            //Move Solid
-            Pos.Y += move;
-        }*/
+        public MovingSolid(Vector2 position, int width, int height, Texture2D texture) : base(position, width, height, texture) { }
+        public MovingSolid(Vector2 position, int width, int height, Color color) : base(position, width, height, color) { }
 
         public void Move(float x, float y)
         {

@@ -5,6 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Text;
 using Basic_platformer.Utility;
 using Basic_platformer.Components;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Basic_platformer.Solids
 {
@@ -20,12 +21,30 @@ namespace Basic_platformer.Solids
         private bool increment = true;
         private Timer movingTimer;
 
-        public CyclingSolid(Vector2 position, int width, int height) : base(position, width, height) { }
+        public CyclingSolid(Vector2 position, int width, int height, Texture2D texture) : base(position, width, height, texture) { }
+        public CyclingSolid(Vector2 position, int width, int height, Color color) : base(position, width, height, color) { }
 
-        public CyclingSolid(int width, int height, Vector2[] positions, float[] timesBetweenPositions, Func<float, float> easingfunction)
-            : base(positions[0], width, height)
+        public CyclingSolid(int width, int height, Texture2D texture, Vector2[] positions, float[] timesBetweenPositions, Func<float, float> easingfunction)
+            : base(positions[0], width, height, texture)
         {
             if (timesBetweenPositions.Length != positions.Length - 1) 
+                throw new Exception("Times between positions and positions amounts are not synced");
+            Contract.EndContractBlock();
+
+            moving = true;
+
+            Pos = positions[0];
+            Positions = positions;
+            Times = timesBetweenPositions;
+            EasingFunction = easingfunction;
+
+            StartTimer();
+        }
+
+        public CyclingSolid(int width, int height, Color color, Vector2[] positions, float[] timesBetweenPositions, Func<float, float> easingfunction)
+            : base(positions[0], width, height, color)
+        {
+            if (timesBetweenPositions.Length != positions.Length - 1)
                 throw new Exception("Times between positions and positions amounts are not synced");
             Contract.EndContractBlock();
 

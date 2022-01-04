@@ -10,10 +10,10 @@ namespace Basic_platformer.Solids
         private const int width = 7;
         private const int height = 7;
 
-        public GrapplingPoint(Vector2 position) : base(position, width, height) { }
+        public GrapplingPoint(Vector2 position) : base(position, width, height, Color.Blue) { }
 
         public GrapplingPoint(Vector2[] positions, float[] timesBetweenPositions, Func<float, float> easeFunction = null)
-            : base(width, height, positions, timesBetweenPositions, easeFunction) { }
+            : base(width, height, Drawing.pointTexture, positions, timesBetweenPositions, easeFunction) { }
 
         public override void Render()
         {

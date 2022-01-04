@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Basic_platformer.Components;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Basic_platformer.Solids
 {
@@ -14,7 +15,7 @@ namespace Basic_platformer.Solids
         public event Action OnPulled;
         public float TimeToReactive;
         public bool Active;
-        public GrapplingTrigger(Vector2 position, bool active, float timeToReactive, params Action[] triggeredActions) : base(position, 1, 1)
+        public GrapplingTrigger(Vector2 position, bool active, float timeToReactive, params Action[] triggeredActions) : base(position, 1, 1, Drawing.pointTexture)
         {
             Pos = position;
             Active = active;
@@ -31,5 +32,8 @@ namespace Basic_platformer.Solids
             if(TimeToReactive != 0)
                 AddComponent(new Timer(TimeToReactive, true, null, () => Active = true));
         }
+
+        public override void Render()
+        { }
     }
 }
