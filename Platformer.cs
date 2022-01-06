@@ -60,7 +60,7 @@ namespace Basic_platformer
             Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
             
             player = (Player)CurrentMap.Instantiate(
-                new Player(new Vector2(Platformer.ScreenSize.X / 2, Platformer.ScreenSize.Y - 300), 20, 32, Content.Load<Texture2D>("robot")));
+                new Player(new Vector2(Platformer.ScreenSize.X / 2, Platformer.ScreenSize.Y - 300), 20, 30, Content.Load<Texture2D>("robot")));
             CurrentMap.Data.Actors.Add(player);
 
             CurrentMap.LoadMap();

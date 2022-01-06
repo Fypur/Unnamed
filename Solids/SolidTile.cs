@@ -18,6 +18,8 @@ namespace Basic_platformer
 
         public override void Render()
         {
+            base.Render();
+
             if(Debug.DebugMode)
                 Drawing.DrawEdge(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), 1, Color.Red);
         }

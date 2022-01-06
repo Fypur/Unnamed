@@ -12,8 +12,8 @@ namespace Basic_platformer.Mapping
 {
     public class Level
     {
-        public int TileWidth = 60;
-        public int TileHeight = 60;
+        public int TileWidth = 24;
+        public int TileHeight = 24;
 
         public readonly Vector2 Pos;
 
@@ -144,8 +144,8 @@ namespace Basic_platformer.Mapping
             int tileValue = Organisation[y, x];
             Dictionary<string, Texture2D> tileSet = TileData.TileSets[tileValue];
 
-            /*bool leftBlock = GetOrganisation(x + 1, y, tileValue) != 0;
-            bool rightBlock = GetOrganisation(x - 1, y, tileValue) != 0;
+            bool rightBlock = GetOrganisation(x + 1, y, tileValue) != 0;
+            bool leftBlock = GetOrganisation(x - 1, y, tileValue) != 0;
             bool topBlock = GetOrganisation(x, y - 1, tileValue) != 0;
             bool bottomBlock = GetOrganisation(x, y + 1, tileValue) != 0;
 
@@ -154,7 +154,7 @@ namespace Basic_platformer.Mapping
             bool bottomRightBlock = GetOrganisation(x + 1, y + 1, tileValue) != 0;
             bool bottomLeftBlock = GetOrganisation(x - 1, y - 1, tileValue) != 0;
 
-            if (!rightBlock && !leftBlock && !topBlock && !bottomBlock)
+            if (!leftBlock && !rightBlock && !topBlock && !bottomBlock)
                 return tileSet["complete"];
 
             if (!topBlock && rightBlock && leftBlock && bottomBlock)
@@ -163,23 +163,53 @@ namespace Basic_platformer.Mapping
             if (!bottomBlock && rightBlock && leftBlock && topBlock)
                 return tileSet["bottom"];
 
-            if (topBlock && bottomBlock && !leftBlock && rightBlock)
+            if (topBlock && bottomBlock && !rightBlock && leftBlock)
                 return tileSet["right"];
 
-            if (topBlock && bottomBlock && leftBlock && !rightBlock)
+            if (topBlock && bottomBlock && rightBlock && !leftBlock)
                 return tileSet["left"];
 
-            if (!topBlock && !leftBlock && !topLeftBlock)
+            if (!topBlock && rightBlock && !leftBlock && !bottomBlock)
+                return tileSet["leftFullCorner"];
+
+            if (!topBlock && !rightBlock && leftBlock && !bottomBlock)
+                return tileSet["rightFullCorner"];
+
+            if (!topBlock && !rightBlock && !leftBlock && bottomBlock)
+                return tileSet["upFullCorner"];
+
+            if (topBlock && !rightBlock && !leftBlock && !bottomBlock)
+                return tileSet["downFullCorner"];
+
+            if (!topBlock && leftBlock && rightBlock && !bottomBlock)
+                return tileSet["horizontalPillar"];
+
+            if (topBlock && !leftBlock && !rightBlock && bottomBlock)
+                return tileSet["verticalPillar"];
+
+            if (!topBlock && !rightBlock)
                 return tileSet["topRightCorner"];
 
-            if (!topBlock && !rightBlock && !topRightBlock)
+            if (!topBlock && !leftBlock)
                 return tileSet["topLeftCorner"];
 
-            if (!bottomBlock && !leftBlock && !bottomLeftBlock)
+            if (!bottomBlock && !rightBlock)
+                return tileSet["bottomRightCorner"];
+
+            if (!bottomBlock && !leftBlock)
                 return tileSet["bottomLeftCorner"];
 
-            if (!bottomBlock && !rightBlock && !bottomRightBlock)
-                return tileSet["bottomRightCorner"];*/
+            if (topBlock && rightBlock)
+                return tileSet["topRightPoint"];
+
+            if (topBlock && leftBlock)
+                return tileSet["topLeftPoint"];
+
+            if (bottomBlock && rightBlock)
+                return tileSet["bottomRightPoint"];
+
+            if (bottomBlock && leftBlock)
+                return tileSet["bottomLeftPoint"];
 
             return tileSet["inside"];
         }
