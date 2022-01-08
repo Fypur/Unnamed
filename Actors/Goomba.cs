@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Basic_platformer.Utility;
+using Basic_platformer.Components;
 
 namespace Basic_platformer
 {
@@ -20,9 +21,9 @@ namespace Basic_platformer
 
         public override void Update()
         {
-            onGround = CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(0, 1));
+            onGround = Collision.CollideAt(Pos + new Vector2(0, 1));
 
-            if (CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(1, 0)) || CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(-1, 0)))
+            if (Collision.CollideAt(Pos + new Vector2(1, 0)) || Collision.CollideAt(Pos + new Vector2(-1, 0)))
                 Velocity.X *= -1;
 
             if (!onGround)

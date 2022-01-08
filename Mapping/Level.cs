@@ -62,20 +62,15 @@ namespace Basic_platformer.Mapping
             {
                 ParentMap.Data.Entities.Add(e);
 
-                if(e is RenderedEntity)
+                if (e is Solid)
                 {
-                    ParentMap.Data.RenderedEntities.Add((RenderedEntity)e);
+                    ParentMap.Data.Solids.Add((Solid)e);
 
-                    if (e is Solid)
-                    {
-                        ParentMap.Data.Solids.Add((Solid)e);
-
-                        if (e is GrapplingTrigger || e is GrapplingPoint)
-                            ParentMap.Data.GrapplingSolids.Add((Solid)e);
-                    }
-                    else if (e is Actor)
-                        ParentMap.Data.Actors.Add((Actor)e);
+                    if (e is GrapplingTrigger || e is GrapplingPoint)
+                        ParentMap.Data.GrapplingSolids.Add((Solid)e);
                 }
+                else if (e is Actor)
+                    ParentMap.Data.Actors.Add((Actor)e);
                 else if (e is Trigger)
                     ParentMap.Data.Triggers.Add((Trigger)e);
             }
@@ -87,20 +82,17 @@ namespace Basic_platformer.Mapping
             {
                 ParentMap.Data.Entities.Remove(e);
 
-                if (e is RenderedEntity)
+                if (e is Solid)
                 {
-                    ParentMap.Data.RenderedEntities.Remove((RenderedEntity)e);
+                    ParentMap.Data.Solids.Remove((Solid)e);
 
-                    if (e is Solid)
-                    {
-                        ParentMap.Data.Solids.Remove((Solid)e);
-
-                        if (e is GrapplingTrigger || e is GrapplingPoint)
-                            ParentMap.Data.GrapplingSolids.Remove((Solid)e);
-                    }
-                    else if (e is Actor)
-                        ParentMap.Data.Actors.Remove((Actor)e);
+                    if (e is GrapplingTrigger || e is GrapplingPoint)
+                        ParentMap.Data.GrapplingSolids.Add((Solid)e);
                 }
+                else if (e is Actor)
+                    ParentMap.Data.Actors.Remove((Actor)e);
+                else if (e is Trigger)
+                    ParentMap.Data.Triggers.Remove((Trigger)e);
             }
         }
 

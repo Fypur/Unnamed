@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Basic_platformer.Entities;
 using Basic_platformer.Triggers;
+using Basic_platformer.Components;
 
 namespace Basic_platformer.Mapping
 {
@@ -34,7 +35,7 @@ namespace Basic_platformer.Mapping
                     };
                 case 3:
                     return new List<Entity>() { FallDeathTrigger(level),
-                    new GrapplingPoint(new Vector2(650, 400))};
+                    new GrapplingPoint(new Vector2(200, 100))};
                 default:
                     throw new Exception("Couldn't find Level");
             }
@@ -107,10 +108,8 @@ namespace Basic_platformer.Mapping
         {
             switch (index)
             {
-                case 1: case 2:
+                case 1: case 2: case 3:
                     return null;
-                case 3:
-                    return () => { Platformer.Cam.FollowsPlayer = true; };
                 default:
                     throw new Exception("Couldn't find Level");
             }

@@ -50,7 +50,7 @@ namespace Basic_platformer
         private int yMoving;
         private int facing = 1;
         private bool normalMouvement = true;
-        private bool invicible;
+        //private bool invicible;
         private bool hasDashed;
         private bool isUnsticking;
 
@@ -72,7 +72,7 @@ namespace Basic_platformer
         private bool collisionY;
 
         #endregion
-
+         
         public Player(Vector2 position, int width, int height, Texture2D idleTexture) : base(position, width, height, constGravityScale) 
         {
             stateMachine = new StateMachine<States>(States.Idle);
@@ -88,10 +88,10 @@ namespace Basic_platformer
             if(!canMove) return;
 
             #region Checks for Ground and Wall
-            onGround = CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(0, 1));
-            onWall = CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(1, 0)) ||
-                CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(-1, 0));
-            onRightWall = CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(Width + 1, 0));
+            onGround = Collision.CollideAt(Pos + new Vector2(0, 1));
+            onWall = Collision.CollideAt(Pos + new Vector2(1, 0)) ||
+                Collision.CollideAt(Pos + new Vector2(-1, 0));
+            onRightWall = Collision.CollideAt(Pos + new Vector2(Width + 1, 0));
             #endregion
 
             #region Component Update
@@ -551,16 +551,15 @@ namespace Basic_platformer
             collisionY = true;
         }
 
-        public void Damage(int direction)
+        /*public void Damage(int direction)
         {
-            /*Platformer.Instantiate(new Player(new Vector2(Platformer.graphics.PreferredBackBufferWidth / 2, Platformer.graphics.PreferredBackBufferHeight - 100), 32, 60));
-            Platformer.Destroy(this);*/ //Player death code (could also just move to position)
+            Death();
             Velocity.X += 300 * direction;
             Velocity.Y -= 200;
             invicible = true;
             Timer timer = new Timer(invinciblityTime, true, null, () => invicible = false);
             AddComponent(timer);
-        }
+        }*/
 
         public override void Render()
         {

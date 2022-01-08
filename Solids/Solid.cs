@@ -4,32 +4,32 @@ using System.Collections.Generic;
 using System.Text;
 using Basic_platformer.Entities;
 using Microsoft.Xna.Framework.Graphics;
+using Basic_platformer.Components;
 
 namespace Basic_platformer
 {
-    public abstract class Solid : RenderedEntity
+    public abstract class Solid : Entity
     {
-        public Vector2 Pos;
-        public int Width;
-        public int Height;
-
         public Texture2D Texture;
+
+        public Collider Collision;
 
         public bool Collidable = true;
 
         public Solid(Vector2 position, int width, int height, Texture2D texture)
+            : base(position, width, height)
         {
-            Pos = position;
-            Width = width;
-            Height = height;
             Texture = texture;
+            Collision = new BoxCollider();
+            AddComponent(Collision);
         }
 
         public Solid(Vector2 position, int width, int height, Color color)
+            : base(position, width, height)
         {
-            Pos = position;
-            Width = width;
-            Height = height;
+            Collision = new BoxCollider();
+            AddComponent(Collision);
+
             Texture = new Texture2D(Platformer.graphics.GraphicsDevice, 1, 1);
             Texture.SetData(new Color[] { color });
         }

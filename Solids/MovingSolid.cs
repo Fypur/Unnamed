@@ -1,4 +1,5 @@
-﻿using Basic_platformer.Utility;
+﻿using Basic_platformer.Components;
+using Basic_platformer.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -42,7 +43,7 @@ namespace Basic_platformer.Solids
                 {
                     foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
                     {
-                        if (OverlapCheck(actor))
+                        if (Collision.Overlap(actor))
                         {
                             actor.MoveX(Pos.X + Width - actor.Pos.X, actor.Squish);
                         }
@@ -56,7 +57,7 @@ namespace Basic_platformer.Solids
                 {
                     foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
                     {
-                        if (OverlapCheck(actor))
+                        if (Collision.Overlap(actor))
                         {
                             actor.MoveX(Pos.X - actor.Pos.X - actor.Width, actor.Squish);
                         }
@@ -77,7 +78,7 @@ namespace Basic_platformer.Solids
                 {
                     foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
                     {
-                        if (OverlapCheck(actor))
+                        if (Collision.Overlap(actor))
                         {
                             actor.MoveY(Pos.Y + Height - actor.Pos.Y, actor.Squish);
                         }
@@ -91,7 +92,7 @@ namespace Basic_platformer.Solids
                 {
                     foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
                     {
-                        if (OverlapCheck(actor))
+                        if (Collision.Overlap(actor))
                         {
                             actor.MoveY(Pos.Y - actor.Pos.Y - actor.Height, actor.Squish);
                         }
@@ -126,8 +127,5 @@ namespace Basic_platformer.Solids
 
             return ridingActors;
         }
-
-        private bool OverlapCheck(Actor actor)
-            => new Rectangle(Pos.ToPoint(), new Point(Width, Height)).Intersects(new Rectangle(actor.Pos.ToPoint(), new Point(actor.Width, actor.Height)));
     }
 }

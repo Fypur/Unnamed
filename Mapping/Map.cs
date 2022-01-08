@@ -50,26 +50,22 @@ namespace Basic_platformer.Mapping
 
         public void Render()
         {
-            for (int i = Data.RenderedEntities.Count - 1; i >= 0; i--)
-                Data.RenderedEntities[i].Render();
+            for (int i = Data.Entities.Count - 1; i >= 0; i--)
+                Data.Entities[i].Render();
 
+            #if DEBUG
             for (int i = Data.Triggers.Count - 1; i >= 0; i--)
                 Data.Triggers[i].Render();
+            #endif
         }
 
-        public RenderedEntity Instantiate(RenderedEntity entity)
+        public Entity Instantiate(Entity entity)
         {
             Data.Entities.Add(entity);
-
-            if(entity is RenderedEntity)
-                Data.RenderedEntities.Add(entity);
-
             return entity;
         }
 
-        public void Destroy(RenderedEntity entity)
-        {
-            Data.RenderedEntities.Remove(entity);
-        }
+        public void Destroy(Entity entity)
+            => Data.Entities.Remove(entity);
     }
 }

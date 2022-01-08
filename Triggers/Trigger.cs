@@ -8,19 +8,23 @@ namespace Basic_platformer.Triggers
 {
     public abstract class Trigger : Entity
     {
-        public Vector2 Pos;
         public Vector2 Size;
         public List<Type> Triggerers;
         private string name;
 
-        private List<RenderedEntity> enteredEntities = new List<RenderedEntity>();
+        private List<Entity> enteredEntities = new List<Entity>();
 
-        public Trigger(Vector2 position, Vector2 size, List<Type> triggerers) {
+        public Trigger(Vector2 position, Vector2 size, List<Type> triggerers)
+            : base(position, (int)size.X, (int)size.Y)
+        {
             Pos = position; Size = size; Triggerers = triggerers; name = GetType().Name; 
         }
 
-        public Trigger(Rectangle triggerRect, List<Type> triggerers) {
-            Pos = triggerRect.Location.ToVector2(); Size = triggerRect.Size.ToVector2(); Triggerers = triggerers; }
+        public Trigger(Rectangle triggerRect, List<Type> triggerers)
+            : base(triggerRect.Location.ToVector2(), triggerRect.Width, triggerRect.Height)
+        {
+            Pos = triggerRect.Location.ToVector2(); Size = triggerRect.Size.ToVector2(); Triggerers = triggerers; 
+        }
 
         public override void Update()
         {
@@ -47,7 +51,7 @@ namespace Basic_platformer.Triggers
                 }
         }
 
-        public void Render() 
+        public override void Render() 
         {
             Drawing.DrawString(name, Pos + Size / 2, Color.Aqua, true);
             Drawing.Draw(new Rectangle(Pos.ToPoint(), Size.ToPoint()), Color.Aqua * 0.2f);

@@ -28,7 +28,6 @@ namespace Basic_platformer.Components
 
         public override void Update()
         {
-            //Timer stuff (don't worry about that)
             if(Value > 0 && !Paused)
             {
                 Value -= Platformer.Deltatime * TimeScale;

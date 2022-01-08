@@ -87,6 +87,8 @@ namespace Basic_platformer
 
             Deltatime = (float) gameTime.ElapsedGameTime.TotalSeconds * TimeScale;
 
+            #if DEBUG
+
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
             
@@ -98,6 +100,8 @@ namespace Basic_platformer
                 Point mousePos = Mouse.GetState(Window).Position;
                 player.Pos = Cam.ScreenToWorldPosition(new Vector2(mousePos.X, mousePos.Y));
             }
+
+            #endif
 
             CurrentMap.Update();
 

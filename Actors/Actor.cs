@@ -2,24 +2,27 @@
 using System;
 using System.Collections.Generic;
 using Basic_platformer.Entities;
+using Basic_platformer.Components;
 
 namespace Basic_platformer
 {
     /// <summary>
     /// Entity that moves and collides with things
     /// </summary>
-    public abstract class Actor : RenderedEntity
+    public abstract class Actor : Entity
     {
-        public Vector2 Pos;
-        public int Width;
-        public int Height;
-        protected readonly Vector2 HalfSize;
         public Vector2 Velocity;
+
+        protected Vector2 HalfSize { get => new Vector2(Width / 2, Height / 2); }
+
         public float gravityScale;
         public static readonly Vector2 gravityVector = new Vector2(0, 9.81f);
 
+        public Collider Collision;
+
         private float xRemainder;
         private float yRemainder;
+
 
         public virtual bool IsRiding(Solid solid)
             => new Rectangle(Pos.ToPoint(), new Point(Width, Height + 1)).Intersects(new Rectangle(solid.Pos.ToPoint(), new Point(solid.Width, solid.Height)));
@@ -27,18 +30,21 @@ namespace Basic_platformer
         public virtual void Squish() 
             => Platformer.CurrentMap.Destroy(this);
 
-        public Actor(Vector2 position, int width, int height, float gravityScale)
+
+        public Actor(Vector2 position, int width, int height, float gravityScale) 
+            : base(position, width, height)
         {
-            Pos = position;
-            Width = width;
-            Height = height;
-            HalfSize = new Vector2(width / 2, height / 2);
             this.gravityScale = gravityScale;
 
+            Collision = new BoxCollider();
+            AddComponent(Collision);
+
+            #region Entities By Type
             Type t = GetType();
             if (!Platformer.CurrentMap.Data.EntitiesByType.ContainsKey(t))
                 Platformer.CurrentMap.Data.EntitiesByType.Add(t, new List<Actor>());
-            Platformer.CurrentMap.Data.EntitiesByType[t].Add(this);
+            Platformer.CurrentMap.Data.EntitiesByType[t].Add(this); 
+            #endregion
         }
 
         public void MoveX(float amount, Action CallbackOnCollision = null)
@@ -53,7 +59,7 @@ namespace Basic_platformer
 
                 while (move != 0)
                 {
-                    if (!CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(sign, 0)))
+                    if (!Collision.CollideAt(Pos + new Vector2(sign, 0)))
                     {
                         Pos.X += sign;
                         move -= sign;
@@ -79,7 +85,7 @@ namespace Basic_platformer
 
                 while (move != 0)
                 {
-                    if (!CollideAt(Platformer.CurrentMap.Data.Solids, Pos + new Vector2(0, sign)))
+                    if (!Collision.CollideAt(Pos + new Vector2(0, sign)))
                     {
                         Pos.Y += sign;
                         move -= sign;
@@ -98,73 +104,6 @@ namespace Basic_platformer
             MoveX(pos.X - Pos.X, CallbackOnCollisionX);
             MoveY(pos.Y - Pos.Y, CallbackOnCollisionY);
         }
-
-        protected bool CollideAt(List<Solid> solids, Vector2 pos)
-        {
-            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
-
-            foreach (Solid s in solids)
-                if (playerRect.Intersects(new Rectangle((int)s.Pos.X, (int)s.Pos.Y, s.Width, s.Height)) && s.Collidable)
-                    return true;
-
-            return false;
-        }
-
-        protected bool CollideAt(List<Actor> entities, Vector2 pos)
-        {
-            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
-
-            foreach (Actor e in entities)
-                if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e != this)
-                    return true;
-
-            return false;
-        }
-
-        protected bool CollideAt(List<Actor> entities, Vector2 pos, out Actor entity)
-        {
-            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
-
-            foreach (Actor e in entities)
-                if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e != this)
-                {
-                    entity = e;
-                    return true;
-                }
-            entity = null;
-            return false;
-        }
-
-        protected bool CollidedWithEntityOfType<T>(Vector2 pos, out T collidedEntity) where T : Actor
-        {
-            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
-
-            if(Platformer.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(T)))
-                foreach (Actor e in Platformer.CurrentMap.Data.EntitiesByType[typeof(T)])
-                    if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e is T castedEntity)
-                    {
-                        collidedEntity = castedEntity;
-                        return true;
-                    }
-
-            collidedEntity = null;
-            return false;
-        }
-
-        protected bool CollidedWithEntityOfType<T>(Vector2 pos) where T : Actor
-        {
-            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
-
-            if (Platformer.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(T)))
-                foreach (Actor e in Platformer.CurrentMap.Data.EntitiesByType[typeof(T)])
-                    if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e is T castedEntity)
-                        return true;
-
-            return false;
-        }
-
-        protected bool CollidedWithEntity(Actor e, Vector2 pos)
-            => new Rectangle((int)pos.X, (int)pos.Y, Width, Height).Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height));
 
         public void Gravity()
         {

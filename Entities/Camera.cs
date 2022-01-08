@@ -6,11 +6,12 @@ using Basic_platformer.Entities;
 
 namespace Basic_platformer
 {
-    public class Camera : Entity
+    public class Camera
     {
         private Rectangle bounds = Rectangle.Empty;
         private bool hasChanged;
         public bool FollowsPlayer;
+        private Timer timer;
 
         private Vector2 pos;
         public Vector2 Pos
@@ -21,7 +22,6 @@ namespace Basic_platformer
             {
                 pos = InBoundsPos(value, out bool changed);
                 if(changed) hasChanged = true;
-
             }
         }
 
@@ -81,9 +81,10 @@ namespace Basic_platformer
                 SetBoundaries((Rectangle)bounds);
         }
         
-        public override void Update()
+        public void Update()
         {
-            base.Update();
+            if(timer != null)
+                timer.Update();
 
             if (FollowsPlayer)
                 Follow(Platformer.player, 5, 5, new Rectangle(new Vector2(-Platformer.ScreenSize.X / 6, -Platformer.ScreenSize.Y / 12).ToPoint(),
@@ -110,17 +111,21 @@ namespace Basic_platformer
         {
             Vector2 initPos = Pos;
             Vector2 newPos = Pos + offset;
-            AddComponent(new Timer(time, true, (timer) =>
+            timer = new Timer(time, false, (t) =>
 
-            Pos = Vector2.Lerp(initPos, newPos,
-                     (easingFunction ?? Ease.Default).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))),
+                Pos = Vector2.Lerp(initPos, newPos,
+                     (easingFunction ?? Ease.Default).Invoke(Ease.Reverse(t.Value / t.MaxValue))),
 
-             () => Pos = newPos));
+                () => Pos = newPos);
         }
 
         public Vector2 InBoundsPos(Vector2 position, out bool changed)
         {
             changed = false;
+
+            if (bounds == null)
+                return position;
+
             if ((bounds.Contains(position - Platformer.ScreenSize / 2 * ZoomLevel) && bounds.Contains(position + Platformer.ScreenSize / 2 * ZoomLevel)) || bounds == Rectangle.Empty)
             {
                 if(position != Pos)
