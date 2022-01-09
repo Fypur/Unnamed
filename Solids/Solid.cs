@@ -12,24 +12,15 @@ namespace Basic_platformer
     {
         public Texture2D Texture;
 
-        public Collider Collision;
-
-        public bool Collidable = true;
-
         public Solid(Vector2 position, int width, int height, Texture2D texture)
             : base(position, width, height)
         {
             Texture = texture;
-            Collision = new BoxCollider();
-            AddComponent(Collision);
         }
 
         public Solid(Vector2 position, int width, int height, Color color)
             : base(position, width, height)
         {
-            Collision = new BoxCollider();
-            AddComponent(Collision);
-
             Texture = new Texture2D(Platformer.graphics.GraphicsDevice, 1, 1);
             Texture.SetData(new Color[] { color });
         }

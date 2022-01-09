@@ -88,10 +88,10 @@ namespace Basic_platformer
             if(!canMove) return;
 
             #region Checks for Ground and Wall
-            onGround = Collision.CollideAt(Pos + new Vector2(0, 1));
-            onWall = Collision.CollideAt(Pos + new Vector2(1, 0)) ||
-                Collision.CollideAt(Pos + new Vector2(-1, 0));
-            onRightWall = Collision.CollideAt(Pos + new Vector2(Width + 1, 0));
+            onGround = Collider.CollideAt(Pos + new Vector2(0, 1));
+            onWall = Collider.CollideAt(Pos + new Vector2(1, 0)) ||
+                Collider.CollideAt(Pos + new Vector2(-1, 0));
+            onRightWall = Collider.CollideAt(Pos + new Vector2(Width + 1, 0));
             #endregion
 
             #region Component Update

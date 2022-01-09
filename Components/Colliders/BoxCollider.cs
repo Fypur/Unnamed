@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Basic_platformer.Utility;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,101 +8,31 @@ namespace Basic_platformer.Components
 {
     public class BoxCollider : Collider
     {
-        public BoxCollider()
-        { }
+        private float width;
+        private float height;
 
-        public Vector2 Pos { get => parentEntity.Pos; }
-        public int Width { get => parentEntity.Width; }
-        public int Height { get => parentEntity.Height; }
-
-        public Vector2 Center {
-            get => parentEntity.Pos + new Vector2(parentEntity.Width / 2, parentEntity.Height / 2);
-        }
-
-        public Vector2 TopRight {
-            get => parentEntity.Pos + new Vector2(parentEntity.Width, 0);
-        }
-
-        public Vector2 TopLeft {
-            get => parentEntity.Pos;
-        }
-
-        public Vector2 BottomLeft {
-            get => parentEntity.Pos + new Vector2(0, parentEntity.Height);
-        }
-
-        public Vector2 BottomRight {
-            get => parentEntity.Pos + new Vector2(parentEntity.Width, parentEntity.Height);
-        }
-
-        public override bool Overlap(Actor actor)
-            => new Rectangle(Pos.ToPoint(), new Point(Width, Height)).Intersects(new Rectangle(actor.Pos.ToPoint(), new Point(actor.Width, actor.Height)));
-
-        public override bool CollideAt(Vector2 pos)
+        public BoxCollider(Vector2 position, int width, int height)
         {
-            Rectangle actorRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
-
-            foreach (Solid s in Platformer.CurrentMap.Data.Solids)
-                if (actorRect.Intersects(new Rectangle((int)s.Pos.X, (int)s.Pos.Y, s.Width, s.Height)) && s.Collidable)
-                    return true;
-
-            return false;
+            Pos = position;
+            this.width = width;
+            this.height = height;
         }
+        
+        public override bool Collide(BoxCollider other)
+            => Bounds.Intersects(other.Bounds);
 
-        public override bool CollideWithActorsAt(Vector2 pos)
-        {
-            Rectangle actorRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
+        public override bool Collide(CircleCollider other)
+            => Collision.RectCircle(Bounds, other.Pos, other.Radius);
 
-            foreach (Actor e in Platformer.CurrentMap.Data.Actors)
-                if (actorRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e != parentEntity)
-                    return true;
+        public override bool Collide(Vector2 point)
+            => Bounds.Contains(point);
 
-            return false;
-        }
+        public override float Width { get => width; set => width = value; }
+        public override float Height { get => height; set => height = value; }
+        public override float Left { get => Pos.X; set => Pos.X = value; }
+        public override float Right { get => Pos.X + width; set => Pos.X = value - width; }
+        public override float Top { get => Pos.Y; set => Pos.Y = value; }
+        public override float Bottom { get => Pos.Y + height; set => Pos.Y = value - height; }
 
-        public override bool CollideAt(Vector2 pos, out Actor entity)
-        {
-            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
-
-            foreach (Actor e in Platformer.CurrentMap.Data.Actors)
-                if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e != parentEntity)
-                {
-                    entity = e;
-                    return true;
-                }
-            entity = null;
-            return false;
-        }
-
-        public override bool CollidedWithEntityOfType<T>(Vector2 pos, out T collidedEntity)
-        {
-            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
-
-            if (Platformer.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(T)))
-                foreach (Actor e in Platformer.CurrentMap.Data.EntitiesByType[typeof(T)])
-                    if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e is T castedEntity)
-                    {
-                        collidedEntity = castedEntity;
-                        return true;
-                    }
-
-            collidedEntity = null;
-            return false;
-        }
-
-        public override bool CollidedWithEntityOfType<T>(Vector2 pos)
-        {
-            Rectangle playerRect = new Rectangle((int)pos.X, (int)pos.Y, Width, Height);
-
-            if (Platformer.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(T)))
-                foreach (Actor e in Platformer.CurrentMap.Data.EntitiesByType[typeof(T)])
-                    if (playerRect.Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height)) && e is T)
-                        return true;
-
-            return false;
-        }
-
-        public override bool CollidedWithEntity(Actor e, Vector2 pos)
-            => new Rectangle((int)pos.X, (int)pos.Y, Width, Height).Intersects(new Rectangle((int)e.Pos.X, (int)e.Pos.Y, e.Width, e.Height));
     }
 }

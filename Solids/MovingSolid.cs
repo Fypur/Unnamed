@@ -32,7 +32,7 @@ namespace Basic_platformer.Solids
             if (moveX == 0 && moveY == 0) return;
 
             List<Actor> ridingActors = GetAllRidingActors();
-            Collidable = false;
+            Collider.Collidable = false;
 
             if(moveX != 0)
             {
@@ -43,7 +43,7 @@ namespace Basic_platformer.Solids
                 {
                     foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
                     {
-                        if (Collision.Overlap(actor))
+                        if (Collider.Collide(actor))
                         {
                             actor.MoveX(Pos.X + Width - actor.Pos.X, actor.Squish);
                         }
@@ -57,7 +57,7 @@ namespace Basic_platformer.Solids
                 {
                     foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
                     {
-                        if (Collision.Overlap(actor))
+                        if (Collider.Collide(actor))
                         {
                             actor.MoveX(Pos.X - actor.Pos.X - actor.Width, actor.Squish);
                         }
@@ -78,7 +78,7 @@ namespace Basic_platformer.Solids
                 {
                     foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
                     {
-                        if (Collision.Overlap(actor))
+                        if (Collider.Collide(actor))
                         {
                             actor.MoveY(Pos.Y + Height - actor.Pos.Y, actor.Squish);
                         }
@@ -92,7 +92,7 @@ namespace Basic_platformer.Solids
                 {
                     foreach (Actor actor in Platformer.CurrentMap.Data.Actors)
                     {
-                        if (Collision.Overlap(actor))
+                        if (Collider.Collide(actor))
                         {
                             actor.MoveY(Pos.Y - actor.Pos.Y - actor.Height, actor.Squish);
                         }
@@ -104,7 +104,7 @@ namespace Basic_platformer.Solids
                 }
             }
 
-            Collidable = true;
+            Collider.Collidable = true;
         }
 
         protected void MoveTo(Vector2 pos)

@@ -12,6 +12,10 @@ namespace Basic_platformer.Entities
         public int Width;
         public int Height;
 
+        public Vector2 HalfSize { get => new Vector2(Width / 2, Height / 2); }
+
+        public Collider Collider;
+
         public List<Component> components = new List<Component>();
         public List<Renderer> renderers = new List<Renderer>();
 
@@ -20,6 +24,8 @@ namespace Basic_platformer.Entities
             Pos = position;
             Width = width;
             Height = height;
+            Collider = new BoxCollider(Vector2.Zero, width, height);
+            AddComponent(Collider);
         }
 
         public virtual void Update()
@@ -32,6 +38,8 @@ namespace Basic_platformer.Entities
         {
             for (int i = renderers.Count - 1; i >= 0; i--)
                 renderers[i].Render();
+
+            Collider.Render();
         }
 
         public void AddComponent(Component component)

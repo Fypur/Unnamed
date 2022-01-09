@@ -1,27 +1,183 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Basic_platformer.Entities;
+using Basic_platformer.Utility;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Basic_platformer.Components
 {
     public abstract class Collider : Component
     {
-        public bool Collidable;
+        public bool Collidable = true;
 
-        public abstract bool Overlap(Actor actor);
+        public Vector2 Pos;
 
-        public abstract bool CollideAt(Vector2 pos);
+        public abstract bool Collide(Vector2 point);
+        public abstract bool Collide(BoxCollider other);
+        public abstract bool Collide(CircleCollider other);
+        
+        public abstract float Width { get; set; }
+        public abstract float Height { get; set; }
+        
+        public abstract float Left { get; set; }
+        public abstract float Right { get; set; }
+        public abstract float Top { get; set; }
+        public abstract float Bottom { get; set; }
 
-        public abstract bool CollideWithActorsAt(Vector2 pos);
+        public virtual void Render() 
+        {
+            Drawing.DrawEdge(Bounds, 1, Color.White);
+        }
 
-        public abstract bool CollideAt(Vector2 pos, out Actor entity);
+        #region Collide Methods
+        public bool Collide(Collider other)
+        {
+            if (other is BoxCollider box)
+                return Collide(box);
+            else if (other is CircleCollider circle)
+                return Collide(circle);
+            else
+                throw new Exception("Collider type has not been implemented yet.");
+        }
 
-        public abstract bool CollidedWithEntityOfType<T>(Vector2 pos, out T collidedEntity) where T : Actor;
+        public bool Collide(Entity entity)
+            => Collide(entity.Collider);
 
-        public abstract bool CollidedWithEntityOfType<T>(Vector2 pos) where T : Actor;
+        public bool Collide(List<Collider> others)
+        {
+            foreach (Collider other in others)
+                if (Collide(other))
+                    return true;
 
-        public abstract bool CollidedWithEntity(Actor e, Vector2 pos) ;
+            return false;
+        }
 
+        public bool CollideAt(List<Entity> checkedEntities, Vector2 position)
+        {
+            Vector2 oldPos = Pos;
+            Pos = position;
+
+            foreach (Entity e in checkedEntities)
+                if (Collide(e))
+                {
+                    Pos = oldPos;
+                    return true;
+                }
+
+            Pos = oldPos;
+            return false;
+        }
+
+        public bool CollideAt(List<Entity> checkedEntities, Vector2 position, out Entity collidedEntity)
+        {
+            Vector2 oldPos = Pos;
+            Pos = position;
+            collidedEntity = null;
+
+            foreach (Entity e in checkedEntities)
+                if (Collide(e))
+                {
+                    Pos = oldPos;
+                    collidedEntity = e;
+                    return true;
+                }
+
+            Pos = oldPos;
+            return false;
+        }
+
+        public bool CollideAt(Vector2 position)
+            => CollideAt(new List<Entity>(Platformer.CurrentMap.Data.Solids), position);
+
+        public bool CollideWithActorsAt(Vector2 position)
+            => CollideAt(new List<Entity>(Platformer.CurrentMap.Data.Actors), position);
+
+        public bool CollideAt(Vector2 position, out Actor actor)
+        {
+            bool returned = CollideAt(new List<Entity>(Platformer.CurrentMap.Data.Actors), position, out Entity entity);
+            actor = (Actor)entity;
+            return returned;
+        }
+
+        public bool CollidedWithEntityOfType<T>(Vector2 pos, out T collidedEntity) where T : Entity
+        {
+            bool returned = CollideAt(new List<Entity>(Platformer.CurrentMap.Data.EntitiesByType[typeof(T)]), pos, out Entity entity);
+            collidedEntity = (T)entity;
+            return returned;
+        }
+
+        public bool CollidedWithEntityOfType<T>(Vector2 pos)
+            => CollideAt(new List<Entity>(Platformer.CurrentMap.Data.EntitiesByType[typeof(T)]), pos);
+
+        public bool CollideAt(Entity e, Vector2 position)
+            => CollideAt(new List<Entity>() { e }, position);
+        #endregion
+
+        #region Points
+
+        public float CenterX
+        {
+            get => Left + Width / 2;
+            set => Left = value - Width / 2;
+        }
+
+        public float CenterY
+        {
+            get => Top + Height / 2;
+            set => Top = value - Height / 2;
+        }
+
+        public Vector2 TopLeft
+        {
+            get => new Vector2(Left, Top);
+            set { Left = value.X; Top = value.Y; }
+        }
+
+        public Vector2 TopRight
+        {
+            get => new Vector2(Right, Top);
+            set { Right = value.X; Top = value.Y; }
+        }
+
+        public Vector2 BottomLeft
+        {
+            get => new Vector2(Left, Bottom);
+            set { Left = value.X; Bottom = value.Y; }
+        }
+
+        public Vector2 BottomRight
+        {
+            get => new Vector2(Right, Bottom);
+            set { Right = value.X; Bottom = value.Y; }
+        }
+
+        public Vector2 Center
+        {
+            get => new Vector2(Left + Width / 2, Top + Height / 2);
+            set { Left = value.X - Width / 2; Top = value.Y - Height / 2; }
+        }
+
+        public Vector2 Size
+        {
+            get => new Vector2(Width, Height);
+            set { Width = value.X; Height = value.Y; }
+        }
+
+        public Vector2 HalfSize
+        {
+            get => Size * 0.5f; 
+        }
+
+        public float AbsoluteX { get => parentEntity.Pos.X + Pos.X; }
+        public float AbsoluteY { get => parentEntity.Pos.Y + Pos.Y; }
+        public Vector2 AbsolutePosition { get => parentEntity.Pos + Pos; }
+        public Vector2 AbsoluteCenter { get => parentEntity.Pos + parentEntity.HalfSize + Pos + HalfSize; }
+        public float AbsoluteLeft { get => parentEntity.Pos.X + Left; }
+        public float AbsoluteRight { get => parentEntity.Pos.X + Right; }
+        public float AbsoluteTop { get => parentEntity.Pos.Y + Top; }
+        public float AbsoluteBottom { get => parentEntity.Pos.Y + Bottom; }
+        public Rectangle Bounds { get => new Rectangle((int)AbsoluteLeft, (int)AbsoluteTop, (int)Width, (int)Height); }
+
+        #endregion
     }
 }

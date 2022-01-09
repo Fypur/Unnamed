@@ -13,12 +13,8 @@ namespace Basic_platformer
     {
         public Vector2 Velocity;
 
-        protected Vector2 HalfSize { get => new Vector2(Width / 2, Height / 2); }
-
         public float gravityScale;
         public static readonly Vector2 gravityVector = new Vector2(0, 9.81f);
-
-        public Collider Collision;
 
         private float xRemainder;
         private float yRemainder;
@@ -35,9 +31,6 @@ namespace Basic_platformer
             : base(position, width, height)
         {
             this.gravityScale = gravityScale;
-
-            Collision = new BoxCollider();
-            AddComponent(Collision);
 
             #region Entities By Type
             Type t = GetType();
@@ -59,7 +52,7 @@ namespace Basic_platformer
 
                 while (move != 0)
                 {
-                    if (!Collision.CollideAt(Pos + new Vector2(sign, 0)))
+                    if (!Collider.CollideAt(Pos + new Vector2(sign, 0)))
                     {
                         Pos.X += sign;
                         move -= sign;
@@ -85,7 +78,7 @@ namespace Basic_platformer
 
                 while (move != 0)
                 {
-                    if (!Collision.CollideAt(Pos + new Vector2(0, sign)))
+                    if (!Collider.CollideAt(Pos + new Vector2(0, sign)))
                     {
                         Pos.Y += sign;
                         move -= sign;

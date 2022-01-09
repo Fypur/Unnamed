@@ -21,9 +21,9 @@ namespace Basic_platformer
 
         public override void Update()
         {
-            onGround = Collision.CollideAt(Pos + new Vector2(0, 1));
+            onGround = Collider.CollideAt(Pos + new Vector2(0, 1));
 
-            if (Collision.CollideAt(Pos + new Vector2(1, 0)) || Collision.CollideAt(Pos + new Vector2(-1, 0)))
+            if (Collider.CollideAt(Pos + new Vector2(1, 0)) || Collider.CollideAt(Pos + new Vector2(-1, 0)))
                 Velocity.X *= -1;
 
             if (!onGround)
