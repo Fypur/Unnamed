@@ -26,7 +26,8 @@ namespace Basic_platformer.Components
 
         public virtual void Render() 
         {
-            Drawing.DrawEdge(Bounds, 1, Color.White);
+            if(Debug.DebugMode)
+                Drawing.DrawEdge(Bounds, 1, Color.Red);
         }
 
         #region Collide Methods
@@ -54,35 +55,35 @@ namespace Basic_platformer.Components
 
         public bool CollideAt(List<Entity> checkedEntities, Vector2 position)
         {
-            Vector2 oldPos = Pos;
-            Pos = position;
+            Vector2 oldPos = parentEntity.Pos;
+            parentEntity.Pos = position;
 
             foreach (Entity e in checkedEntities)
                 if (Collide(e))
                 {
-                    Pos = oldPos;
+                    parentEntity.Pos = oldPos;
                     return true;
                 }
 
-            Pos = oldPos;
+            parentEntity.Pos = oldPos;
             return false;
         }
 
         public bool CollideAt(List<Entity> checkedEntities, Vector2 position, out Entity collidedEntity)
         {
-            Vector2 oldPos = Pos;
-            Pos = position;
+            Vector2 oldPos = parentEntity.Pos;
+            parentEntity.Pos = position;
             collidedEntity = null;
 
             foreach (Entity e in checkedEntities)
                 if (Collide(e))
                 {
-                    Pos = oldPos;
+                    parentEntity.Pos = oldPos;
                     collidedEntity = e;
                     return true;
                 }
 
-            Pos = oldPos;
+            parentEntity.Pos = oldPos;
             return false;
         }
 
@@ -171,7 +172,6 @@ namespace Basic_platformer.Components
         public float AbsoluteX { get => parentEntity.Pos.X + Pos.X; }
         public float AbsoluteY { get => parentEntity.Pos.Y + Pos.Y; }
         public Vector2 AbsolutePosition { get => parentEntity.Pos + Pos; }
-        public Vector2 AbsoluteCenter { get => parentEntity.Pos + parentEntity.HalfSize + Pos + HalfSize; }
         public float AbsoluteLeft { get => parentEntity.Pos.X + Left; }
         public float AbsoluteRight { get => parentEntity.Pos.X + Right; }
         public float AbsoluteTop { get => parentEntity.Pos.Y + Top; }
