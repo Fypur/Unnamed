@@ -1,6 +1,7 @@
 ﻿using Basic_platformer.Components;
 using Basic_platformer.Mapping;
 using Basic_platformer.Solids;
+using Basic_platformer.Triggers;
 using Basic_platformer.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -89,9 +90,8 @@ namespace Basic_platformer
 
             #region Checks for Ground and Wall
             onGround = Collider.CollideAt(Pos + new Vector2(0, 1));
-            onWall = Collider.CollideAt(Pos + new Vector2(1, 0)) ||
-                Collider.CollideAt(Pos + new Vector2(-1, 0));
             onRightWall = Collider.CollideAt(Pos + new Vector2(Width + 1, 0));
+            onWall = Collider.CollideAt(Pos + new Vector2(-1, 0)) || onRightWall;
             #endregion
 
             #region Component Update
@@ -570,9 +570,6 @@ namespace Basic_platformer
 
             /*Drawing.Draw(idleTexture, Pos + new Vector2(Width / 2, Height / 2), null, Color.White, 0, new Vector2(idleTexture.Width / 2, idleTexture.Height / 2),
                 Vector2.One * 1.5f, facing == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);*/
-
-            if(Debug.DebugMode)
-                Drawing.DrawEdge(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), 1, Color.Red);
         }
     }
 }

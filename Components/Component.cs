@@ -7,7 +7,7 @@ namespace Basic_platformer
 {
     public abstract class Component
     {
-        public Entity parentEntity;
+        public Entity ParentEntity;
 
         public virtual void Added() { }
         public virtual void Removed() { }

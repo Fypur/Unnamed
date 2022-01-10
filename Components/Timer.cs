@@ -36,7 +36,7 @@ namespace Basic_platformer.Components
                     Value = 0;
                     onComplete?.Invoke();
                     if (destroyOnComplete)
-                        parentEntity.RemoveComponent(this);
+                        ParentEntity.RemoveComponent(this);
                 }
                 else
                     updateAction?.Invoke(this);
@@ -52,7 +52,7 @@ namespace Basic_platformer.Components
         public void End()
         {
             onComplete?.Invoke();
-            parentEntity.RemoveComponent(this);
+            ParentEntity.RemoveComponent(this);
         }
 
         public void PauseUntil(Func<bool> pausedUntil)

@@ -9,11 +9,15 @@ namespace Basic_platformer.Components
     public class CircleCollider : Collider
     {
         public float Radius;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position">Position in LOCAL space</param>
+        /// <param name="radius"></param>
         public CircleCollider(Vector2 position, float radius)
         {
             Pos = position;
-            this.Radius = radius;
+            Radius = radius;
         }
 
         public override bool Collide(BoxCollider other)
@@ -24,11 +28,6 @@ namespace Basic_platformer.Components
 
         public override bool Collide(Vector2 point)
             => Vector2.Distance(AbsolutePosition, point) < Radius;
-
-        public override void Render()
-        {
-            
-        }
 
         public override float Width { get => Radius * 2; set => Radius = value * 0.5f; }
         public override float Height { get => Radius * 2; set => Radius = value * 0.5f; }

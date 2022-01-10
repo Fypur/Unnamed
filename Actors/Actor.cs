@@ -31,13 +31,6 @@ namespace Basic_platformer
             : base(position, width, height)
         {
             this.gravityScale = gravityScale;
-
-            #region Entities By Type
-            Type t = GetType();
-            if (!Platformer.CurrentMap.Data.EntitiesByType.ContainsKey(t))
-                Platformer.CurrentMap.Data.EntitiesByType.Add(t, new List<Actor>());
-            Platformer.CurrentMap.Data.EntitiesByType[t].Add(this); 
-            #endregion
         }
 
         public void MoveX(float amount, Action CallbackOnCollision = null)

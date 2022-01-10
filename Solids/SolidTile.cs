@@ -15,13 +15,5 @@ namespace Basic_platformer
 
         public SolidTile(Color color, Vector2 position, int width, int height) : base(position, width, height, color)
         { }
-
-        public override void Render()
-        {
-            base.Render();
-
-            if(Debug.DebugMode)
-                Drawing.DrawEdge(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), 1, Color.Red);
-        }
     }
 }

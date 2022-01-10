@@ -1,4 +1,5 @@
 ﻿using Basic_platformer.Components;
+using Basic_platformer.Utility;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,15 @@ namespace Basic_platformer.Entities
             Pos = position;
             Width = width;
             Height = height;
+
+            #region Entities By Type
+            Type t = GetType();
+            if (!Platformer.CurrentMap.Data.EntitiesByType.ContainsKey(t))
+                Platformer.CurrentMap.Data.EntitiesByType.Add(t, new List<Entity>() { this });
+            else
+                Platformer.CurrentMap.Data.EntitiesByType[t].Add(this);
+            #endregion
+
             Collider = new BoxCollider(Vector2.Zero, width, height);
             AddComponent(Collider);
         }
@@ -39,12 +49,14 @@ namespace Basic_platformer.Entities
             for (int i = renderers.Count - 1; i >= 0; i--)
                 renderers[i].Render();
 
-            Collider.Render();
+            if (Debug.DebugMode)
+                Collider.Render();
         }
 
         public void AddComponent(Component component)
         {
-            component.parentEntity = this;
+            component.ParentEntity = this;
+            component.Added();
             components.Add(component);
 
             if (component.GetType().IsSubclassOf(typeof(Renderer)))

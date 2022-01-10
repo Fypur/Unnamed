@@ -8,7 +8,7 @@ namespace Basic_platformer.Mapping
 {
     public class MapData
     {
-        public Dictionary<Type, List<Actor>> EntitiesByType = new Dictionary<Type, List<Actor>>();
+        public Dictionary<Type, List<Entity>> EntitiesByType = new Dictionary<Type, List<Entity>>();
         
         public List<Entity> Entities = new List<Entity>();
         public List<Solid> Solids = new List<Solid>();

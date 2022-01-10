@@ -26,8 +26,7 @@ namespace Basic_platformer.Components
 
         public virtual void Render() 
         {
-            if(Debug.DebugMode)
-                Drawing.DrawEdge(Bounds, 1, Color.Red);
+            Drawing.DrawEdge(Bounds, 1, Color.Blue);
         }
 
         #region Collide Methods
@@ -55,35 +54,35 @@ namespace Basic_platformer.Components
 
         public bool CollideAt(List<Entity> checkedEntities, Vector2 position)
         {
-            Vector2 oldPos = parentEntity.Pos;
-            parentEntity.Pos = position;
+            Vector2 oldPos = ParentEntity.Pos;
+            ParentEntity.Pos = position;
 
             foreach (Entity e in checkedEntities)
                 if (Collide(e))
                 {
-                    parentEntity.Pos = oldPos;
+                    ParentEntity.Pos = oldPos;
                     return true;
                 }
 
-            parentEntity.Pos = oldPos;
+            ParentEntity.Pos = oldPos;
             return false;
         }
 
         public bool CollideAt(List<Entity> checkedEntities, Vector2 position, out Entity collidedEntity)
         {
-            Vector2 oldPos = parentEntity.Pos;
-            parentEntity.Pos = position;
+            Vector2 oldPos = ParentEntity.Pos;
+            ParentEntity.Pos = position;
             collidedEntity = null;
 
             foreach (Entity e in checkedEntities)
                 if (Collide(e))
                 {
-                    parentEntity.Pos = oldPos;
+                    ParentEntity.Pos = oldPos;
                     collidedEntity = e;
                     return true;
                 }
 
-            parentEntity.Pos = oldPos;
+            ParentEntity.Pos = oldPos;
             return false;
         }
 
@@ -169,13 +168,13 @@ namespace Basic_platformer.Components
             get => Size * 0.5f; 
         }
 
-        public float AbsoluteX { get => parentEntity.Pos.X + Pos.X; }
-        public float AbsoluteY { get => parentEntity.Pos.Y + Pos.Y; }
-        public Vector2 AbsolutePosition { get => parentEntity.Pos + Pos; }
-        public float AbsoluteLeft { get => parentEntity.Pos.X + Left; }
-        public float AbsoluteRight { get => parentEntity.Pos.X + Right; }
-        public float AbsoluteTop { get => parentEntity.Pos.Y + Top; }
-        public float AbsoluteBottom { get => parentEntity.Pos.Y + Bottom; }
+        public float AbsoluteX { get => ParentEntity.Pos.X + Pos.X; }
+        public float AbsoluteY { get => ParentEntity.Pos.Y + Pos.Y; }
+        public Vector2 AbsolutePosition { get => ParentEntity.Pos + Pos; }
+        public float AbsoluteLeft { get => ParentEntity.Pos.X + Left; }
+        public float AbsoluteRight { get => ParentEntity.Pos.X + Right; }
+        public float AbsoluteTop { get => ParentEntity.Pos.Y + Top; }
+        public float AbsoluteBottom { get => ParentEntity.Pos.Y + Bottom; }
         public Rectangle Bounds { get => new Rectangle((int)AbsoluteLeft, (int)AbsoluteTop, (int)Width, (int)Height); }
 
         #endregion

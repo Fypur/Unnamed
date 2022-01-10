@@ -24,14 +24,14 @@ namespace Basic_platformer.Components
             else
             {
                 onComplete?.Invoke();
-                parentEntity.RemoveComponent(this);
+                ParentEntity.RemoveComponent(this);
             }
         }
 
         public void End()
         {
             onComplete?.Invoke();
-            parentEntity.RemoveComponent(this);
+            ParentEntity.RemoveComponent(this);
         }
     }
 }

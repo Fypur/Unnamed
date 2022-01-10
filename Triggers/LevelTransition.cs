@@ -1,4 +1,5 @@
 ﻿using Basic_platformer.Components;
+using Basic_platformer.Entities;
 using Basic_platformer.Mapping;
 using Basic_platformer.Triggers;
 using Basic_platformer.Utility;
@@ -35,7 +36,7 @@ namespace Basic_platformer.Triggers
             direction = dir;
         }
 
-        public override void OnTriggerEnter(Actor actor)
+        public override void OnTriggerEnter(Entity entity)
         {
             toLevel.Load();
 

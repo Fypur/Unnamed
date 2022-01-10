@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Basic_platformer.Entities;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,7 +11,7 @@ namespace Basic_platformer.Triggers
         public DeathTrigger(Vector2 position, Vector2 size)
             : base(position, size, new List<Type> { typeof(Player) }) { }
 
-        public override void OnTriggerEnter(Actor actor)
+        public override void OnTriggerEnter(Entity actor)
         {
             (actor as Player).Death();
         }

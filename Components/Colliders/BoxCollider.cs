@@ -11,6 +11,12 @@ namespace Basic_platformer.Components
         private float width;
         private float height;
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="position">Position in LOCAL space</param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
         public BoxCollider(Vector2 position, int width, int height)
         {
             Pos = position;
@@ -22,7 +28,7 @@ namespace Basic_platformer.Components
             => Bounds.Intersects(other.Bounds);
 
         public override bool Collide(CircleCollider other)
-            => Collision.RectCircle(Bounds, other.Pos, other.Radius);
+            => Collision.RectCircle(Bounds, other.AbsolutePosition, other.Radius);
 
         public override bool Collide(Vector2 point)
             => Bounds.Contains(point);
