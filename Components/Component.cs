@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Basic_platformer.Entities;
 
 namespace Basic_platformer
 {

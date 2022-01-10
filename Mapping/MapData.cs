@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Basic_platformer.Entities;
-using Basic_platformer.Triggers;
 
-namespace Basic_platformer.Mapping
+namespace Basic_platformer
 {
     public class MapData
     {

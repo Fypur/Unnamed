@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Basic_platformer.Utility
+namespace Basic_platformer
 {
     public static class Polygon
     {

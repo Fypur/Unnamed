@@ -1,12 +1,10 @@
-﻿using Basic_platformer.Components;
-using Basic_platformer.Utility;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Basic_platformer.Solids
+namespace Basic_platformer
 {
     public abstract class MovingSolid : Solid
     {

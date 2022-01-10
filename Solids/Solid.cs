@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Basic_platformer.Entities;
 using Microsoft.Xna.Framework.Graphics;
-using Basic_platformer.Components;
 
 namespace Basic_platformer
 {

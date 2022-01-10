@@ -1,10 +1,9 @@
-﻿using Basic_platformer.Utility;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Basic_platformer.Components
+namespace Basic_platformer
 {
     public class BoxCollider : Collider
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Basic_platformer.Components
+namespace Basic_platformer
 {
     public class ConditionalUpdate : Component
     {

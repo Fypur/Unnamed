@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using Basic_platformer.Utility;
 
 namespace Basic_platformer
 {

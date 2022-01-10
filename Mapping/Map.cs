@@ -1,11 +1,8 @@
-﻿using Basic_platformer.Utility;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using Basic_platformer.Solids;
-using Basic_platformer.Entities;
 using Microsoft.Xna.Framework.Input;
 
-namespace Basic_platformer.Mapping
+namespace Basic_platformer
 {
     public class Map
     {

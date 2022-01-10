@@ -1,11 +1,9 @@
-﻿using Basic_platformer.Mapping;
-using Basic_platformer.Solids;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Basic_platformer.Utility
+namespace Basic_platformer
 {
     public class Raycast
     {

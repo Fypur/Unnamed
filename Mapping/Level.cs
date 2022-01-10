@@ -1,14 +1,10 @@
-﻿using Basic_platformer.Solids;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Basic_platformer.Entities;
-using Basic_platformer.Triggers;
-using Basic_platformer.Utility;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Basic_platformer.Mapping
+namespace Basic_platformer
 {
     public class Level
     {

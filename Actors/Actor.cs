@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Basic_platformer.Entities;
-using Basic_platformer.Components;
 
 namespace Basic_platformer
 {

@@ -1,7 +1,4 @@
-﻿using Basic_platformer.Mapping;
-using Basic_platformer.Solids;
-using Basic_platformer.Utility;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;

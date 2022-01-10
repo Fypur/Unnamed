@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Basic_platformer.Utility;
-using Basic_platformer.Components;
 
 namespace Basic_platformer
 {

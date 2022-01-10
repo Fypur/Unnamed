@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Content;
 using System.IO;
-using Basic_platformer.Utility;
 
-namespace Basic_platformer.Mapping
+namespace Basic_platformer
 {
     public static class TileData
     {

@@ -1,13 +1,11 @@
-﻿using Basic_platformer.Utility;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Basic_platformer.Components;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Basic_platformer.Solids
+namespace Basic_platformer
 {
     public class PulledPlatform : MovingSolid
     {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Basic_platformer.Solids
+namespace Basic_platformer
 {
     public class GrapplingPoint : CyclingSolid
     {

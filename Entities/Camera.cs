@@ -1,8 +1,5 @@
-﻿using Basic_platformer.Utility;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
-using Basic_platformer.Components;
-using Basic_platformer.Entities;
 
 namespace Basic_platformer
 {

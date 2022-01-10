@@ -1,10 +1,9 @@
-﻿using Basic_platformer.Entities;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Basic_platformer.Triggers
+namespace Basic_platformer
 {
     public class TriggerEntity : Trigger
     {

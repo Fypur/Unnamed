@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Basic_platformer.Entities;
-using Basic_platformer.Utility;
 
-namespace Basic_platformer.Triggers
+namespace Basic_platformer
 {
     public abstract class Trigger : Entity
     {
