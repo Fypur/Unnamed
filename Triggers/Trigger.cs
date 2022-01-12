@@ -22,6 +22,10 @@ namespace Basic_platformer
             name = GetType().Name;
         }
 
+        public Trigger(Vector2 position, int width, int height, List<Type> triggerers)
+            : this(position, new Vector2(width, height), triggerers)
+        { }
+
         public Trigger(Rectangle triggerRect, List<Type> triggerers)
             : this(triggerRect.Location.ToVector2(), triggerRect.Size.ToVector2(), triggerers)
         { }

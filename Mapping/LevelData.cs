@@ -30,7 +30,10 @@ namespace Basic_platformer
                     };
                 case 3:
                     return new List<Entity>() { FallDeathTrigger(level),
-                    new GrapplingPoint(new Vector2(200, 100))};
+                    new GrapplingPoint(new Vector2(200, 100)),
+                    new Spike(new Vector2(500, Platformer.ScreenSize.Y - 30 - 15), 15, 15)
+                    };
+                    
                 default:
                     throw new Exception("Couldn't find Level");
             }
