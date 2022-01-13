@@ -12,6 +12,8 @@ namespace Basic_platformer
         public MapData Data;
         public Level CurrentLevel;
 
+        public static Map CurrentMap { get => Platformer.CurrentMap; }
+
         /// <summary>
         /// Map constructor
         /// </summary>
@@ -50,10 +52,8 @@ namespace Basic_platformer
             for (int i = Data.Entities.Count - 1; i >= 0; i--)
                 Data.Entities[i].Render();
 
-            #if DEBUG
             for (int i = Data.Triggers.Count - 1; i >= 0; i--)
                 Data.Triggers[i].Render();
-            #endif
         }
 
         public Entity Instantiate(Entity entity)

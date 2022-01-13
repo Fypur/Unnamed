@@ -57,11 +57,13 @@ namespace Basic_platformer
 
         public override void Render() 
         {
-            if (Debug.DebugMode)
+            /*if (Debug.DebugMode)
             {
                 Drawing.DrawString(name, Pos + Size / 2, Color.Aqua, true);
                 Drawing.Draw(new Rectangle(Pos.ToPoint(), Size.ToPoint()), Color.Aqua * 0.2f);
-            }
+            }*/
+
+            base.Render();
         } 
 
         public virtual void OnTriggerEnter(Entity entity) { }

@@ -18,6 +18,9 @@ namespace Basic_platformer
         public List<Component> components = new List<Component>();
         public List<Renderer> renderers = new List<Renderer>();
 
+        public List<Entity> Children = new List<Entity>();
+        private List<Vector2> childrenPositionOffset = new List<Vector2>();
+
         public Entity(Vector2 position, int width, int height)
         {
             Pos = position;
@@ -40,6 +43,12 @@ namespace Basic_platformer
         {
             for (int i = components.Count - 1; i >= 0; i--)
                 components[i].Update();
+
+            for (int i = Children.Count - 1; i >= 0; i--)
+            {
+                Children[i].Pos = Pos + childrenPositionOffset[i];
+                Children[i].Update();
+            }
         }
 
         public virtual void Render()
@@ -47,8 +56,11 @@ namespace Basic_platformer
             for (int i = renderers.Count - 1; i >= 0; i--)
                 renderers[i].Render();
 
+            for (int i = Children.Count - 1; i >= 0; i--)
+                Children[i].Render();
+
             if (Debug.DebugMode)
-                Collider.Render();
+                Collider?.Render();
         }
 
         public void AddComponent(Component component)
@@ -67,6 +79,18 @@ namespace Basic_platformer
 
             if (component.GetType().IsSubclassOf(typeof(Renderer)))
                 renderers.Remove((Renderer)component);
+        }
+
+        public void AddChild(Entity child)
+        {
+            Children.Add(child);
+            childrenPositionOffset.Add(child.Pos - Pos);
+        }
+
+        public void RemoveChild(Entity child)
+        {
+            Children.Remove(child);
+            childrenPositionOffset.Remove(child.Pos - Pos);
         }
     }
 }

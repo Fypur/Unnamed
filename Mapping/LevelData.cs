@@ -20,6 +20,7 @@ namespace Basic_platformer
                     };
                     l.AddRange(DefaultLevelTransitions(level, new Level(2, p + Platformer.ScreenSizeX, level.ParentMap), null, null, null));
                     return l;
+
                 case 2:
                     var pulled = new PulledPlatform(new Vector2(60, 200) + p, 200, 40, new Vector2(60, 200) + p + new Vector2(200, 40), 2, Color.Yellow, Ease.QuintInAndOut);
                     var trig = new GrapplingTrigger(new Vector2(60, 200) + p + new Vector2(200, 40), true, pulled.movingTime, pulled.Pull);
@@ -28,12 +29,13 @@ namespace Basic_platformer
                     new CyclingPlatform(200, 20, Color.YellowGreen, new Vector2[]{ Platformer.ScreenSize / 2 + Platformer.ScreenSizeX * 0.1f, Platformer.ScreenSize / 2 + new Vector2(0 ,-200) }, new float[] { 1.5f }, Ease.QuintInAndOut),
                     new RespawnTrigger(new Vector2(600, 200), new Vector2(200, 300), Vector2.Zero)
                     };
+
                 case 3:
                     return new List<Entity>() { FallDeathTrigger(level),
                     new GrapplingPoint(new Vector2(200, 100)),
-                    new Spike(new Vector2(500, Platformer.ScreenSize.Y - 30 - 15), 15, 15)
+                    new SpikeRow(new Vector2(90, Platformer.ScreenSize.Y - 25), SpikeRow.Direction.Up, 200, SpikeRow.Direction.Left)
                     };
-                    
+
                 default:
                     throw new Exception("Couldn't find Level");
             }
