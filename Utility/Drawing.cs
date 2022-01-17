@@ -31,7 +31,10 @@ namespace Basic_platformer
         public static void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects = SpriteEffects.None, int layerDepth = 0)
             => spriteBatch.Draw(texture, position, sourceRectangle, color, rotation, origin, scale, spriteEffects, layerDepth);
 
-        public static void Draw(Texture2D texture, Rectangle destinationRectangle, Color color)
+        public static void Draw(Texture2D texture, Vector2 position, Vector2 size, float rotation, Vector2 scale, int layerDepth)
+            => spriteBatch.Draw(texture, new Rectangle(position.ToPoint(), size.ToPoint()), null, Color.White, rotation, Vector2.Zero, SpriteEffects.None, layerDepth);
+
+        public static void Draw(Texture2D texture, Rectangle destinationRectangle)
            => spriteBatch.Draw(texture, destinationRectangle, Color.White);
 
         public static void Draw(Rectangle rect, Color color)

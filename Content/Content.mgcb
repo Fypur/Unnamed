@@ -13,7 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin background.png
+#begin Graphics/GrassTileSet/bottom.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,16 +23,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:background.png
+/build:Graphics/GrassTileSet/bottom.png
 
-#begin font.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:font.spritefont
-
-#begin GrassTileSet/bottom.png
+#begin Graphics/GrassTileSet/bottomLeftCorner.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -42,9 +35,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/bottom.png
+/build:Graphics/GrassTileSet/bottomLeftCorner.png
 
-#begin GrassTileSet/bottomLeftCorner.png
+#begin Graphics/GrassTileSet/bottomLeftPoint.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -54,9 +47,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/bottomLeftCorner.png
+/build:Graphics/GrassTileSet/bottomLeftPoint.png
 
-#begin GrassTileSet/bottomLeftPoint.png
+#begin Graphics/GrassTileSet/bottomRightCorner.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -66,9 +59,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/bottomLeftPoint.png
+/build:Graphics/GrassTileSet/bottomRightCorner.png
 
-#begin GrassTileSet/bottomRightCorner.png
+#begin Graphics/GrassTileSet/bottomRightPoint.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -78,9 +71,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/bottomRightCorner.png
+/build:Graphics/GrassTileSet/bottomRightPoint.png
 
-#begin GrassTileSet/bottomRightPoint.png
+#begin Graphics/GrassTileSet/complete.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -90,9 +83,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/bottomRightPoint.png
+/build:Graphics/GrassTileSet/complete.png
 
-#begin GrassTileSet/complete.png
+#begin Graphics/GrassTileSet/downFullCorner.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -102,9 +95,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/complete.png
+/build:Graphics/GrassTileSet/downFullCorner.png
 
-#begin GrassTileSet/downFullCorner.png
+#begin Graphics/GrassTileSet/horizontalPillar.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -114,9 +107,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/downFullCorner.png
+/build:Graphics/GrassTileSet/horizontalPillar.png
 
-#begin GrassTileSet/horizontalPillar.png
+#begin Graphics/GrassTileSet/inside.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -126,9 +119,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/horizontalPillar.png
+/build:Graphics/GrassTileSet/inside.png
 
-#begin GrassTileSet/inside.png
+#begin Graphics/GrassTileSet/left.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -138,9 +131,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/inside.png
+/build:Graphics/GrassTileSet/left.png
 
-#begin GrassTileSet/left.png
+#begin Graphics/GrassTileSet/leftFullCorner.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -150,9 +143,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/left.png
+/build:Graphics/GrassTileSet/leftFullCorner.png
 
-#begin GrassTileSet/leftFullCorner.png
+#begin Graphics/GrassTileSet/right.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -162,9 +155,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/leftFullCorner.png
+/build:Graphics/GrassTileSet/right.png
 
-#begin GrassTileSet/right.png
+#begin Graphics/GrassTileSet/rightFullCorner.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -174,9 +167,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/right.png
+/build:Graphics/GrassTileSet/rightFullCorner.png
 
-#begin GrassTileSet/rightFullCorner.png
+#begin Graphics/GrassTileSet/top.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -186,9 +179,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/rightFullCorner.png
+/build:Graphics/GrassTileSet/top.png
 
-#begin GrassTileSet/top.png
+#begin Graphics/GrassTileSet/topLeftCorner.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -198,9 +191,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/top.png
+/build:Graphics/GrassTileSet/topLeftCorner.png
 
-#begin GrassTileSet/topLeftCorner.png
+#begin Graphics/GrassTileSet/topLeftPoint.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -210,9 +203,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/topLeftCorner.png
+/build:Graphics/GrassTileSet/topLeftPoint.png
 
-#begin GrassTileSet/topLeftPoint.png
+#begin Graphics/GrassTileSet/topRightCorner.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -222,9 +215,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/topLeftPoint.png
+/build:Graphics/GrassTileSet/topRightCorner.png
 
-#begin GrassTileSet/topRightCorner.png
+#begin Graphics/GrassTileSet/topRightPoint.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -234,9 +227,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/topRightCorner.png
+/build:Graphics/GrassTileSet/topRightPoint.png
 
-#begin GrassTileSet/topRightPoint.png
+#begin Graphics/GrassTileSet/upFullCorner.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -246,9 +239,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/topRightPoint.png
+/build:Graphics/GrassTileSet/upFullCorner.png
 
-#begin GrassTileSet/upFullCorner.png
+#begin Graphics/GrassTileSet/verticalPillar.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -258,9 +251,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/upFullCorner.png
+/build:Graphics/GrassTileSet/verticalPillar.png
 
-#begin GrassTileSet/verticalPillar.png
+#begin Graphics/robot.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -270,9 +263,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassTileSet/verticalPillar.png
+/build:Graphics/robot.png
 
-#begin robot.png
+#begin Graphics/SpikeTest.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -282,17 +275,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:robot.png
-
-#begin SpikeTest.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:SpikeTest.png
+/build:Graphics/SpikeTest.png
 

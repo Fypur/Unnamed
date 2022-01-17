@@ -33,7 +33,10 @@ namespace Basic_platformer
                 case 3:
                     return new List<Entity>() { FallDeathTrigger(level),
                     new GrapplingPoint(new Vector2(200, 100)),
-                    new SpikeRow(new Vector2(90, Platformer.ScreenSize.Y - 25), SpikeRow.Direction.Up, 200, SpikeRow.Direction.Left)
+                    new SpikeRow(new Vector2(90, Platformer.ScreenSize.Y - 25), SpikeRow.Direction.Up, 200, SpikeRow.Direction.Right),
+                    new SpikeRow(new Vector2(180, Platformer.ScreenSize.Y - 25), SpikeRow.Direction.Up, 200, SpikeRow.Direction.Up),
+                    new SpikeRow(new Vector2(270, Platformer.ScreenSize.Y - 25), SpikeRow.Direction.Up, 200, SpikeRow.Direction.Left),
+                    new SpikeRow(new Vector2(360, Platformer.ScreenSize.Y - 25), SpikeRow.Direction.Up, 200, SpikeRow.Direction.Down)
                     };
 
                 default:

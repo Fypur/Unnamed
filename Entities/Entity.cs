@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,7 +22,7 @@ namespace Basic_platformer
         public List<Entity> Children = new List<Entity>();
         private List<Vector2> childrenPositionOffset = new List<Vector2>();
 
-        public Entity(Vector2 position, int width, int height)
+        public Entity(Vector2 position, int width, int height, Texture2D texture)
         {
             Pos = position;
             Width = width;

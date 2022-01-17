@@ -27,7 +27,7 @@ namespace Basic_platformer
         {
             base.Render();
 
-            Drawing.Draw(Texture, new Rectangle(Pos.ToPoint(), new Point(Width, Height)), Color.White);
+            Drawing.Draw(Texture, new Rectangle(Pos.ToPoint(), new Point(Width, Height)));
         }
     }
 }
