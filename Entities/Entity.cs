@@ -15,6 +15,7 @@ namespace Basic_platformer
         public Vector2 HalfSize { get => new Vector2(Width / 2, Height / 2); }
 
         public Collider Collider;
+        public Sprite Sprite;
 
         public List<Component> components = new List<Component>();
         public List<Renderer> renderers = new List<Renderer>();
@@ -22,7 +23,7 @@ namespace Basic_platformer
         public List<Entity> Children = new List<Entity>();
         private List<Vector2> childrenPositionOffset = new List<Vector2>();
 
-        public Entity(Vector2 position, int width, int height, Texture2D texture)
+        public Entity(Vector2 position, int width, int height, Sprite sprite)
         {
             Pos = position;
             Width = width;
@@ -38,6 +39,12 @@ namespace Basic_platformer
 
             Collider = new BoxCollider(Vector2.Zero, width, height);
             AddComponent(Collider);
+
+            if(sprite != null)
+            {
+                Sprite = sprite;
+                AddComponent(Sprite);
+            }
         }
 
         public virtual void Update()

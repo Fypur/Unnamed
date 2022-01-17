@@ -13,21 +13,23 @@ namespace Basic_platformer
         private string name;
         private List<Entity> enteredEntities = new List<Entity>();
 
-        public Trigger(Vector2 position, Vector2 size, List<Type> triggerers)
-            : base(position, (int)size.X, (int)size.Y)
+        public Trigger(Vector2 position, Vector2 size, List<Type> triggerers, Sprite sprite)
+            : base(position, (int)size.X, (int)size.Y, sprite)
         {
             Pos = position;
             Size = size;
             Triggerers = triggerers;
             name = GetType().Name;
+
+            RemoveComponent(Collider);
         }
 
-        public Trigger(Vector2 position, int width, int height, List<Type> triggerers)
-            : this(position, new Vector2(width, height), triggerers)
+        public Trigger(Vector2 position, int width, int height, List<Type> triggerers, Sprite sprite)
+            : this(position, new Vector2(width, height), triggerers, sprite)
         { }
 
-        public Trigger(Rectangle triggerRect, List<Type> triggerers)
-            : this(triggerRect.Location.ToVector2(), triggerRect.Size.ToVector2(), triggerers)
+        public Trigger(Rectangle triggerRect, List<Type> triggerers, Sprite sprite)
+            : this(triggerRect.Location.ToVector2(), triggerRect.Size.ToVector2(), triggerers, sprite)
         { }
 
         public override void Update()

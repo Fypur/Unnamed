@@ -12,7 +12,7 @@ namespace Basic_platformer
 
         private bool onGround;
 
-        public Goomba(Vector2 position, int width, int height) : base(position, width, height, constGravityScale)
+        public Goomba(Vector2 position, int width, int height) : base(position, width, height, constGravityScale, new Sprite(Color.Blue))
         {
             Velocity.X = -speed;
         }

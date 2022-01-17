@@ -14,7 +14,7 @@ namespace Basic_platformer
         public event Action OnPulled;
         public float TimeToReactive;
         public bool Active;
-        public GrapplingTrigger(Vector2 position, bool active, float timeToReactive, params Action[] triggeredActions) : base(position, 1, 1, Drawing.pointTexture)
+        public GrapplingTrigger(Vector2 position, bool active, float timeToReactive, params Action[] triggeredActions) : base(position, 1, 1, null)
         {
             Pos = position;
             Active = active;

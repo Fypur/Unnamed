@@ -25,8 +25,8 @@ namespace Basic_platformer
             => Platformer.CurrentMap.Destroy(this);
 
 
-        public Actor(Vector2 position, int width, int height, float gravityScale) 
-            : base(position, width, height)
+        public Actor(Vector2 position, int width, int height, float gravityScale, Sprite sprite) 
+            : base(position, width, height, sprite)
         {
             this.gravityScale = gravityScale;
         }

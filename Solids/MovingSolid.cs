@@ -17,7 +17,7 @@ namespace Basic_platformer
         protected float gravityScale = 0;
         protected static readonly Vector2 gravityVector = new Vector2(0, 9.81f);
 
-        public MovingSolid(Vector2 position, int width, int height, Texture2D texture) : base(position, width, height, texture) { }
+        public MovingSolid(Vector2 position, int width, int height, Sprite sprite) : base(position, width, height, sprite) { }
         public MovingSolid(Vector2 position, int width, int height, Color color) : base(position, width, height, color) { }
 
         public void Move(float x, float y)

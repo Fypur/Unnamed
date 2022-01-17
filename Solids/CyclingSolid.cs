@@ -19,11 +19,11 @@ namespace Basic_platformer
         private bool increment = true;
         private Timer movingTimer;
 
-        public CyclingSolid(Vector2 position, int width, int height, Texture2D texture) : base(position, width, height, texture) { }
+        public CyclingSolid(Vector2 position, int width, int height, Sprite sprite) : base(position, width, height, sprite) { }
         public CyclingSolid(Vector2 position, int width, int height, Color color) : base(position, width, height, color) { }
 
-        public CyclingSolid(int width, int height, Texture2D texture, Vector2[] positions, float[] timesBetweenPositions, Func<float, float> easingfunction)
-            : base(positions[0], width, height, texture)
+        public CyclingSolid(int width, int height, Sprite sprite, Vector2[] positions, float[] timesBetweenPositions, Func<float, float> easingfunction)
+            : base(positions[0], width, height, sprite)
         {
             if (timesBetweenPositions.Length != positions.Length - 1) 
                 throw new Exception("Times between positions and positions amounts are not synced");

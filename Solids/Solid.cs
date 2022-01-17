@@ -8,26 +8,22 @@ namespace Basic_platformer
 {
     public abstract class Solid : Entity
     {
-        public Texture2D Texture;
-
-        public Solid(Vector2 position, int width, int height, Texture2D texture)
-            : base(position, width, height)
+        public Solid(Vector2 position, int width, int height, Sprite sprite)
+            : base(position, width, height, sprite)
         {
-            Texture = texture;
+
         }
 
         public Solid(Vector2 position, int width, int height, Color color)
-            : base(position, width, height)
+            : base(position, width, height, new Sprite(color))
         {
-            Texture = new Texture2D(Platformer.graphics.GraphicsDevice, 1, 1);
-            Texture.SetData(new Color[] { color });
+            Texture2D texture = new Texture2D(Platformer.graphics.GraphicsDevice, 1, 1);
+            texture.SetData(new Color[] { color });
         }
 
         public override void Render()
         {
             base.Render();
-
-            Drawing.Draw(Texture, new Rectangle(Pos.ToPoint(), new Point(Width, Height)));
         }
     }
 }

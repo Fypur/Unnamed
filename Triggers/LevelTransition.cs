@@ -16,7 +16,7 @@ namespace Basic_platformer
         private Direction direction;
 
         public LevelTransition(Vector2 position, Vector2 size, Level fromLevel, Level toLevel, Direction dir)
-            : base(position, size, new List<Type>() { typeof(Player) })
+            : base(position, size, new List<Type>() { typeof(Player) }, null)
         {
             this.fromLevel = fromLevel;
             this.toLevel = toLevel;
@@ -24,7 +24,7 @@ namespace Basic_platformer
         }
 
         public LevelTransition(Rectangle triggerRect, Level fromLevel, Level toLevel, Direction dir)
-            : base(triggerRect, new List<Type>() { typeof(Player) })
+            : base(triggerRect, new List<Type>() { typeof(Player) }, null)
         {
             this.fromLevel = fromLevel;
             this.toLevel = toLevel;

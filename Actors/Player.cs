@@ -68,8 +68,8 @@ namespace Basic_platformer
         private bool collisionY;
 
         #endregion
-         
-        public Player(Vector2 position, int width, int height, Texture2D idleTexture) : base(position, width, height, constGravityScale) 
+        
+        public Player(Vector2 position, int width, int height, Texture2D idleTexture) : base(position, width, height, constGravityScale, new Sprite(Color.Red)) 
         {
             stateMachine = new StateMachine<States>(States.Idle);
             stateMachine.RegisterStateFunctions(States.Jumping, null, () => { if (Velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);

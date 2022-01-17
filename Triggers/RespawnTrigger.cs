@@ -9,7 +9,7 @@ namespace Basic_platformer
     {
         public Vector2 respawnPoint;
         public RespawnTrigger(Vector2 position, Vector2 size, Vector2 respawnPosition)
-            : base(position, size, new List<Type> { typeof(Player) })
+            : base(position, size, new List<Type> { typeof(Player) }, null)
         {
             this.respawnPoint = respawnPosition;
         }

@@ -11,7 +11,7 @@ namespace Basic_platformer
         public enum Direction { Up, Down, Left, Right };
 
         public SpikeRow(Vector2 position, Direction direction, int length, Direction pointingTowards)
-            : base(GetBaseParameter(direction, length, position, out int width, out int height), width, height)
+            : base(GetBaseParameter(direction, length, position, out int width, out int height), width, height, null)
         {
             Collider = null;
 

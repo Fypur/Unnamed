@@ -12,7 +12,7 @@ namespace Basic_platformer
         public Action<Entity> OnTriggerExitAction;
 
         public TriggerEntity(Vector2 position, Vector2 size, List<Type> triggerers, Action<Entity> OnTriggerEnter,
-            Action<Entity> OnTriggerStay, Action<Entity> OnTriggerExit) : base(position, size, triggerers)
+            Action<Entity> OnTriggerStay, Action<Entity> OnTriggerExit) : base(position, size, triggerers, null)
         {
             OnTriggerEnterAction = OnTriggerEnter;
             OnTriggerStayAction = OnTriggerStay;
