@@ -13,25 +13,25 @@ namespace Basic_platformer
 
         private enum States { Idle, Running, Jumping, Falling, Dashing, Swinging, WallSliding, Pulling }
 
-        private const float maxSpeed = 600f; //in Pixel Per Second
-        private const float maxFallingSpeed = 1000f;
-        private const float dashSpeed = 800f;
-
-        private const float acceleration = 200f;
-        private const float airAcceleration = 50f;
+        private const float maxSpeed = 250;
+        private const float maxFallingSpeed = 300;
+        private const float dashSpeed = 200;
+        
+        private const float acceleration = 70f;
+        private const float airAcceleration = 15f;
         private const float swingAcceleration = 10f;
         private const float friction = 0.4f;
         private const float airFriction = 0.1f;
-        private const float constGravityScale = 4f;
-
-        private const float wallJumpSideForce = 620f;
-        private const float jumpForce = 600f;
-
+        
+        private const float wallJumpSideForce = 200f;
+        private const float jumpForce = 200f;
+        private const float constGravityScale = 1.2f;
+        
         private const float maxJumpTime = 0.4f;
         private const float dashTime = 0.2f;
         private const float invinciblityTime = 1.5f;
         private const float unstickTime = 0.1f;
-
+        
         private const float maxGrappleDist = 2000f;
 
         private readonly Texture2D idleTexture;
@@ -81,11 +81,11 @@ namespace Basic_platformer
 
         public override void Update()
         {
-            if(!canMove) return;
+            if (!canMove) return;
 
             #region Checks for Ground and Wall
             onGround = Collider.CollideAt(Pos + new Vector2(0, 1));
-            onRightWall = Collider.CollideAt(Pos + new Vector2(Width + 1, 0));
+            onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
             onWall = Collider.CollideAt(Pos + new Vector2(-1, 0)) || onRightWall;
             #endregion
 
@@ -173,9 +173,9 @@ namespace Basic_platformer
                     Swing();
                 else if(Input.GetKeyUp(Keys.A))
                 {
-                    Velocity.X *= 1.5f;
+                    Velocity.X *= 1.2f;
                     if (Velocity.Y < 0)
-                        Velocity.Y *= 1.4f;
+                        Velocity.Y *= 1.1f;
                     else
                         Velocity.Y *= 0.7f;
 
@@ -230,7 +230,7 @@ namespace Basic_platformer
         public override bool IsRiding(Solid solid)
         {
             return base.IsRiding(solid) 
-                || (new Rectangle(new Point((int)Pos.X - 1, (int)Pos.Y), new Point(solid.Width + 2, solid.Height)).Intersects(new Rectangle(solid.Pos.ToPoint(), new Point(solid.Width, solid.Height))) && stateMachine.Is(States.WallSliding));
+                || ((Collider.CollideAt(solid, Pos + new Vector2(1, 0)) || Collider.CollideAt(solid, Pos + new Vector2(-1, 0))) && stateMachine.Is(States.WallSliding));
         }
 
         private void ThrowRope()
@@ -306,7 +306,7 @@ namespace Basic_platformer
 
                 grapplePositions.Add(grapplingPos);
 
-                AddComponent(new LineRenderer(new List<Vector2> { Pos, grapplingPos }, 4, Color.Blue,
+                AddComponent(new LineRenderer(new List<Vector2> { Pos, grapplingPos }, 2, Color.Blue,
                         (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
                     (line) => {
 
@@ -334,7 +334,7 @@ namespace Basic_platformer
                     stateMachine.Switch(States.Jumping);
                     Velocity.Y = -500; }));
 
-                AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, 4, Color.Blue, 
+                AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, 2, Color.Blue, 
                     (line) => { if (deactivateLine) RemoveComponent(line); },
                     (line) => {
                         line.Positions[0] = Pos + new Vector2(Width / 2, Height / 2);
@@ -380,74 +380,78 @@ namespace Basic_platformer
 
             AddGrapplingPoints(cornersToCheck, grapplePositions[grapplePositions.Count - 1]);
             #endregion
-        }
 
-        private void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
-        {
-            float angle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - Pos - HalfSize - Velocity * Platformer.Deltatime);
+            #region Grappling Methods
 
-            if (angle == 0)
-                return;
-            
-            float distanceFromPoint = Vector2.Distance(Pos + HalfSize + Velocity * Platformer.Deltatime, checkingFrom);
-            
-            float closestAngle = angle;
-            Vector2? closestPoint = null;
-
-            List<Vector2> nextCorners = new List<Vector2>();
-
-            foreach(Vector2 corner in cornersToCheck)
+            void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
             {
-                float cornerDistance = Vector2.Distance(checkingFrom, corner);
-                if (cornerDistance > distanceFromPoint)
-                {
-                    continue;
-                }
+                float angle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - Pos - HalfSize - Velocity * Platformer.Deltatime);
 
-                float pointAngle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - corner);
+                if (angle == 0)
+                    return;
 
-                if (pointAngle * Math.Sign(angle) >= 0 && pointAngle * Math.Sign(angle) <= angle * Math.Sign(angle))
+                float distanceFromPoint = Vector2.Distance(Pos + HalfSize + Velocity * Platformer.Deltatime, checkingFrom);
+
+                float closestAngle = angle;
+                Vector2? closestPoint = null;
+
+                List<Vector2> nextCorners = new List<Vector2>();
+
+                foreach (Vector2 corner in cornersToCheck)
                 {
-                    if (pointAngle * Math.Sign(closestAngle) <= closestAngle * Math.Sign(closestAngle))
+                    float cornerDistance = Vector2.Distance(checkingFrom, corner);
+                    if (cornerDistance > distanceFromPoint)
                     {
-                        closestAngle = pointAngle;
-                        closestPoint = corner;
+                        continue;
                     }
-                    
-                    nextCorners.Add(corner);
-                }
-            }
 
-            if (closestPoint is Vector2 foundCorner)
-            {
-                grapplePositions.Add(foundCorner);
-                grapplePositionsSign.Add(Math.Sign(angle));
-                if (foundCorner == new Vector2(660, 840))
+                    float pointAngle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - corner);
+
+                    if (pointAngle * Math.Sign(angle) >= 0 && pointAngle * Math.Sign(angle) <= angle * Math.Sign(angle))
+                    {
+                        if (pointAngle * Math.Sign(closestAngle) <= closestAngle * Math.Sign(closestAngle))
+                        {
+                            closestAngle = pointAngle;
+                            closestPoint = corner;
+                        }
+
+                        nextCorners.Add(corner);
+                    }
+                }
+
+                if (closestPoint is Vector2 foundCorner)
                 {
-                    //Debug.Pause();
+                    grapplePositions.Add(foundCorner);
+                    grapplePositionsSign.Add(Math.Sign(angle));
+                    if (foundCorner == new Vector2(660, 840))
+                    {
+                        //Debug.Pause();
+                    }
+
+                    nextCorners.Remove(foundCorner);
+
+                    if (nextCorners.Count > 0)
+                        AddGrapplingPoints(nextCorners, foundCorner);
                 }
-
-                nextCorners.Remove(foundCorner);
-
-                if(nextCorners.Count > 0)
-                    AddGrapplingPoints(nextCorners, foundCorner);
             }
-        }
 
-        private void RemoveGrapplingPoints()
-        {
-            for (int i = grapplePositions.Count - 1; i >= 1; i--)
+            void RemoveGrapplingPoints()
             {
-                float grappleAngle = VectorHelper.GetAngle(grapplePositions[i - 1] - Pos - HalfSize, grapplePositions[i - 1] - grapplePositions[i]);
-
-                if (Math.Sign(grappleAngle) == grapplePositionsSign[i])
+                for (int i = grapplePositions.Count - 1; i >= 1; i--)
                 {
-                    grapplePositions.RemoveAt(i);
-                    grapplePositionsSign.RemoveAt(i);
+                    float grappleAngle = VectorHelper.GetAngle(grapplePositions[i - 1] - Pos - HalfSize, grapplePositions[i - 1] - grapplePositions[i]);
+
+                    if (Math.Sign(grappleAngle) == grapplePositionsSign[i])
+                    {
+                        grapplePositions.RemoveAt(i);
+                        grapplePositionsSign.RemoveAt(i);
+                    }
+                    else
+                        break;
                 }
-                else
-                    break;
             }
+
+            #endregion
         }
 
         public void Death()

@@ -12,6 +12,8 @@ namespace Basic_platformer
         public static GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
+        public static RenderTarget2D RenderTarget;
+
         public static bool Paused;
         private bool previousPauseKeyPress;
         public static float Deltatime;
@@ -37,8 +39,8 @@ namespace Basic_platformer
 
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferWidth = 960;
-            graphics.PreferredBackBufferHeight = 540;
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
             graphics.ApplyChanges();
             ScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             ScreenSizeX = new Vector2(ScreenSize.X, 0);
@@ -46,6 +48,7 @@ namespace Basic_platformer
             
             CurrentMap = new Map(Vector2.Zero);
 
+            RenderTarget = new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
             Cam = new Camera(ScreenSize / 2, 0, 1);
 
             base.Initialize();
@@ -57,7 +60,7 @@ namespace Basic_platformer
             Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
             
             player = (Player)CurrentMap.Instantiate(
-                new Player(new Vector2(Platformer.ScreenSize.X / 2, Platformer.ScreenSize.Y - 300), 20, 30, Content.Load<Texture2D>("robot")));
+                new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 7, 10, Content.Load<Texture2D>("robot")));
             CurrentMap.Data.Actors.Add(player);
 
             CurrentMap.LoadMap();
@@ -111,6 +114,7 @@ namespace Basic_platformer
         {
             GraphicsDevice.Clear(Color.Black);
 
+            GraphicsDevice.SetRenderTarget(RenderTarget);
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
             
             CurrentMap.Render();
@@ -118,6 +122,12 @@ namespace Basic_platformer
             Drawing.DebugPoint();
             Drawing.DebugEvents();
 
+            spriteBatch.End();
+
+            GraphicsDevice.SetRenderTarget(null);
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
+            spriteBatch.Draw(RenderTarget, new Rectangle(new Point(0, 0), ScreenSize.ToPoint()), Color.White);
             spriteBatch.End();
 
             spriteBatch.Begin();

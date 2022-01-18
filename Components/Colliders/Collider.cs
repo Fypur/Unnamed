@@ -107,8 +107,8 @@ namespace Basic_platformer
         public bool CollidedWithEntityOfType<T>(Vector2 pos)
             => CollideAt(new List<Entity>(Platformer.CurrentMap.Data.EntitiesByType[typeof(T)]), pos);
 
-        public bool CollideAt(Entity e, Vector2 position)
-            => CollideAt(new List<Entity>() { e }, position);
+        public bool CollideAt(Entity entity, Vector2 position)
+            => CollideAt(new List<Entity>() { entity }, position);
         #endregion
 
         #region Points

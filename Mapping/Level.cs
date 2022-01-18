@@ -8,8 +8,8 @@ namespace Basic_platformer
 {
     public class Level
     {
-        public int TileWidth = 24;
-        public int TileHeight = 24;
+        public int TileWidth = 8;
+        public int TileHeight = 8;
 
         public readonly Vector2 Pos;
 
@@ -187,16 +187,16 @@ namespace Basic_platformer
             if (!bottomBlock && !leftBlock)
                 return tileSet["bottomLeftCorner"];
 
-            if (topBlock && rightBlock)
+            if (topBlock && rightBlock && !topRightBlock)
                 return tileSet["topRightPoint"];
 
-            if (topBlock && leftBlock)
+            if (topBlock && leftBlock && !topLeftBlock)
                 return tileSet["topLeftPoint"];
 
-            if (bottomBlock && rightBlock)
+            if (bottomBlock && rightBlock && !bottomRightBlock)
                 return tileSet["bottomRightPoint"];
 
-            if (bottomBlock && leftBlock)
+            if (bottomBlock && leftBlock && !bottomLeftBlock)
                 return tileSet["bottomLeftPoint"];
 
             return tileSet["inside"];

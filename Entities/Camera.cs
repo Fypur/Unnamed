@@ -227,9 +227,9 @@ namespace Basic_platformer
             => bounds = new Rectangle(position.ToPoint(), size.ToPoint());
 
         public Vector2 WorldToScreenPosition(Vector2 position)
-            => Vector2.Transform(position, ViewMatrix);
+            => Vector2.Transform(position, ViewMatrix) / (Platformer.ScreenSize.X / Platformer.RenderTarget.Width);
 
         public Vector2 ScreenToWorldPosition(Vector2 position)
-            => Vector2.Transform(position, InverseViewMatrix);
+            => Vector2.Transform(position, InverseViewMatrix) / (Platformer.ScreenSize.X / Platformer.RenderTarget.Width);
     }
 }

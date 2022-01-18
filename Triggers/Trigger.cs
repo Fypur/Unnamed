@@ -20,8 +20,6 @@ namespace Basic_platformer
             Size = size;
             Triggerers = triggerers;
             name = GetType().Name;
-
-            RemoveComponent(Collider);
         }
 
         public Trigger(Vector2 position, int width, int height, List<Type> triggerers, Sprite sprite)
