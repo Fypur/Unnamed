@@ -8,8 +8,8 @@ namespace Basic_platformer
 {
     public static class TextureManager
     {
+        public static string contentDirName = new DirectoryInfo(Platformer.instance.Content.RootDirectory).FullName;
         public static Dictionary<string, Texture2D> Textures = GetAllTextures();
-        
         public static Texture2D GetTexture(string textureID)
             => Textures[textureID];
 
@@ -35,15 +35,15 @@ namespace Basic_platformer
                 string key = name.Substring(0, name.Length - 4);
                 d[key] = content.Load<Texture2D>("Graphics/" + key);
             }
-
+            
             foreach (DirectoryInfo direct in dir.GetDirectories())
-                GetAllFiles(direct.FullName.Substring(100), d);
+                GetAllFiles(direct.FullName.Substring(contentDirName.Length + "Graphics\\".Length), d);
         }
 
         public static Dictionary<string, T> LoadAllFilesInFolder<T>(string folderName)
         {
             ContentManager content = Platformer.instance.Content;
-            DirectoryInfo dir = new DirectoryInfo(content.RootDirectory + "\\" + folderName);
+            DirectoryInfo dir = new DirectoryInfo(content.RootDirectory + "\\Graphics\\" + folderName);
 
             Dictionary<string, T> d = new Dictionary<string, T>();
 

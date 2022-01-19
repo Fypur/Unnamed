@@ -58,11 +58,11 @@ namespace Basic_platformer
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
-            
-            player = (Player)CurrentMap.Instantiate(
-                new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 7, 10, Content.Load<Texture2D>("robot")));
-            CurrentMap.Data.Actors.Add(player);
 
+            player = (Player)CurrentMap.Instantiate(
+                new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 7, 10, Content.Load<Texture2D>("Graphics/robot")));
+            CurrentMap.Data.Actors.Add(player);
+            
             CurrentMap.LoadMap();
         }
 
