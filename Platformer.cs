@@ -45,6 +45,9 @@ namespace Basic_platformer
             ScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             ScreenSizeX = new Vector2(ScreenSize.X, 0);
             ScreenSizeY = new Vector2(0, ScreenSize.Y);
+
+            TextureManager.Initialize();
+            Audio.Initialize();
             
             CurrentMap = new Map(Vector2.Zero);
 
@@ -107,6 +110,9 @@ namespace Basic_platformer
 
             Cam.Update();
             Input.UpdateOldState();
+
+            Audio.Update();
+
             base.Update(gameTime);
         }
 
@@ -135,6 +141,12 @@ namespace Basic_platformer
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        protected override void EndRun()
+        {
+            Audio.Finish();
+            base.EndRun();
         }
     }
 }

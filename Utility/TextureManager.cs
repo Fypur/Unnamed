@@ -13,6 +13,8 @@ namespace Basic_platformer
         public static Texture2D GetTexture(string textureID)
             => Textures[textureID];
 
+        public static void Initialize() { }
+
         public static Dictionary<string, Texture2D> GetAllTextures()
         {
             ContentManager content = Platformer.instance.Content;

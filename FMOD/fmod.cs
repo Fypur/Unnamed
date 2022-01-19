@@ -21,7 +21,7 @@ namespace FMOD
     {
         public const int    number = 0x00020205;
 #if !UNITY_2019_4_OR_NEWER
-        public const string dll    = "fmod";
+        public const string dll    = "FMOD/64/fmod";
 #endif
     }
 
