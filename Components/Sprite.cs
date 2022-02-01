@@ -14,15 +14,15 @@ namespace Basic_platformer
         public float Height { get => Texture.Height; }
 
         public Texture2D Texture;
-        public float Rotation;
+        public float Rotation = 0;
 
         public Color Color = Color.White;
         public Vector2 Origin = Vector2.Zero;
         public Vector2 Scale = Vector2.One;
-        public SpriteEffects Effect;
-        public int LayerDepth;
+        public SpriteEffects Effect = SpriteEffects.None;
+        public int LayerDepth = 0;
 
-        public Rectangle Rect;
+        public Rectangle? Rect = null;
 
         public Sprite(Texture2D texture)
         {
@@ -52,13 +52,14 @@ namespace Basic_platformer
         {
             if (Texture == null)
                 return;
-            
-            if(Rect != null)
-                Drawing.Draw(Texture, Rect);
+
+            if (Rect != null)
+                Drawing.Draw(Texture, (Rectangle)Rect);
             else
+            {
                 Drawing.Draw(Texture, ParentEntity.Pos + ParentEntity.HalfSize, null, Color, Rotation, Origin, Scale, Effect, LayerDepth);
-        
-            
+            }
+                
         }
     }
 }

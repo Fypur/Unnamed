@@ -44,9 +44,21 @@ namespace Basic_platformer
             => spriteBatch.DrawString(font, text, position, color, 0, origin,
                 1, SpriteEffects.None, 1);
         
-        public static void DrawString(string text, Vector2 position, Color color, bool centered)
-            => spriteBatch.DrawString(font, text, position, color, 0, centered ? font.MeasureString(text) / 2 : Vector2.Zero,
+        public static void DrawCenteredString(string text, Vector2 position, Color color)
+            => spriteBatch.DrawString(font, text, position, color, 0, font.MeasureString(text) / 2,
                 1, SpriteEffects.None, 1);
+
+        public static void DrawString(string text, Vector2 position, Color color, SpriteFont font)
+            => spriteBatch.DrawString(font, text, position, color, 0, Vector2.Zero,
+                1, SpriteEffects.None, 1);
+
+        public static void DrawString(string text, Vector2 position, Color color, SpriteFont font, Vector2 scale)
+            => spriteBatch.DrawString(font, text, position, color, 0, Vector2.Zero,
+                scale, SpriteEffects.None, 1);
+
+        public static void DrawString(string text, Vector2 position, Color color, SpriteFont font, float scale)
+            => spriteBatch.DrawString(font, text, position, color, 0, Vector2.Zero,
+                scale, SpriteEffects.None, 1);
 
         public static void DrawLine(Vector2 begin, Vector2 end, Color color, int thickness = 1)
         {

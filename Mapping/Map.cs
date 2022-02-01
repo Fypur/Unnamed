@@ -50,19 +50,59 @@ namespace Basic_platformer
         public void Render()
         {
             for (int i = Data.Entities.Count - 1; i >= 0; i--)
-                Data.Entities[i].Render();
+            {
+                if(Data.Entities[i].Tag != Entity.Tags.UI)
+                    Data.Entities[i].Render();
+            }
+                
 
             for (int i = Data.Triggers.Count - 1; i >= 0; i--)
                 Data.Triggers[i].Render();
         }
 
+        public void UIRender()
+        {
+            for (int i = Data.UIElements.Count - 1; i >= 0; i--)
+                Data.UIElements[i].Render();
+        }
+
         public Entity Instantiate(Entity entity)
         {
             Data.Entities.Add(entity);
+
+            if (entity is Solid)
+            {
+                Data.Solids.Add((Solid)entity);
+
+                if (entity is GrapplingTrigger || entity is GrapplingPoint)
+                    Data.GrapplingSolids.Add((Solid)entity);
+            }
+            else if (entity is Actor)
+                Data.Actors.Add((Actor)entity);
+            else if (entity is Trigger)
+                Data.Triggers.Add((Trigger)entity);
+            else if (entity is UIElement)
+                Data.UIElements.Add((UIElement)entity);
             return entity;
         }
 
         public void Destroy(Entity entity)
-            => Data.Entities.Remove(entity);
+        {
+            Data.Entities.Remove(entity);
+
+            if (entity is Solid)
+            {
+                Data.Solids.Remove((Solid)entity);
+
+                if (entity is GrapplingTrigger || entity is GrapplingPoint)
+                    Data.GrapplingSolids.Add((Solid)entity);
+            }
+            else if (entity is Actor)
+                Data.Actors.Remove((Actor)entity);
+            else if (entity is Trigger)
+                Data.Triggers.Remove((Trigger)entity);
+            else if (entity is UIElement)
+                Data.UIElements.Remove((UIElement)entity);
+        }
     }
 }

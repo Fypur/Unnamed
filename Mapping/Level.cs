@@ -56,19 +56,7 @@ namespace Basic_platformer
 
             foreach (Entity e in entityData)
             {
-                ParentMap.Data.Entities.Add(e);
-
-                if (e is Solid)
-                {
-                    ParentMap.Data.Solids.Add((Solid)e);
-
-                    if (e is GrapplingTrigger || e is GrapplingPoint)
-                        ParentMap.Data.GrapplingSolids.Add((Solid)e);
-                }
-                else if (e is Actor)
-                    ParentMap.Data.Actors.Add((Actor)e);
-                else if (e is Trigger)
-                    ParentMap.Data.Triggers.Add((Trigger)e);
+                ParentMap.Instantiate(e);
             }
         }
 
@@ -76,19 +64,7 @@ namespace Basic_platformer
         {
             foreach (Entity e in entityData)
             {
-                ParentMap.Data.Entities.Remove(e);
-
-                if (e is Solid)
-                {
-                    ParentMap.Data.Solids.Remove((Solid)e);
-
-                    if (e is GrapplingTrigger || e is GrapplingPoint)
-                        ParentMap.Data.GrapplingSolids.Add((Solid)e);
-                }
-                else if (e is Actor)
-                    ParentMap.Data.Actors.Remove((Actor)e);
-                else if (e is Trigger)
-                    ParentMap.Data.Triggers.Remove((Trigger)e);
+                ParentMap.Destroy(e);
             }
         }
 
@@ -130,7 +106,7 @@ namespace Basic_platformer
         private Texture2D GetTileTexture(int x, int y) 
         {
             int tileValue = Organisation[y, x];
-            Dictionary<string, Texture2D> tileSet = TileData.TileSets[tileValue];
+            Dictionary<string, Texture2D> tileSet = DataManager.TileSets[tileValue];
 
             bool rightBlock = GetOrganisation(x + 1, y, tileValue) != 0;
             bool leftBlock = GetOrganisation(x - 1, y, tileValue) != 0;

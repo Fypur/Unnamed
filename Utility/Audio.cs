@@ -26,11 +26,12 @@ namespace Basic_platformer
             system.loadBankFile("FMOD/Banks/GamingAvance.bank", LOAD_BANK_FLAGS.NORMAL, out Bank b2);
         }
 
-        public static void PlayEvent(string eventName)
+        public static EventInstance PlayEvent(string eventName)
         {
             EventInstance instance = CreateEventInstance(eventName);
             instance.start();
             instance.release();
+            return instance;
         }
 
         public static void StopEvent(EventInstance eventInstance, bool allowFadeOut = true)

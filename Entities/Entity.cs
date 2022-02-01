@@ -12,6 +12,9 @@ namespace Basic_platformer
         public int Width;
         public int Height;
 
+        public Tags Tag;
+        public enum Tags { Unknown, Actor, Solid, Trigger, UI }
+
         public Vector2 HalfSize { get => new Vector2(Width / 2, Height / 2); }
 
         public Collider Collider;
@@ -35,6 +38,19 @@ namespace Basic_platformer
                 Platformer.CurrentMap.Data.EntitiesByType.Add(t, new List<Entity>() { this });
             else
                 Platformer.CurrentMap.Data.EntitiesByType[t].Add(this);
+            #endregion
+
+            #region Tag set
+
+            Tag = this switch
+            {
+                Actor => Tags.Actor,
+                Solid => Tags.Solid,
+                Trigger => Tags.Trigger,
+                UIElement => Tags.UI,
+                _ => Tags.Unknown
+            };
+
             #endregion
 
             Collider = new BoxCollider(Vector2.Zero, width, height);
@@ -77,16 +93,16 @@ namespace Basic_platformer
             component.Added();
             components.Add(component);
 
-            if (component.GetType().IsSubclassOf(typeof(Renderer)))
-                renderers.Add((Renderer)component);
+            if (component is Renderer renderer)
+                renderers.Add(renderer);
         }
 
         public void RemoveComponent(Component component)
         {
             components.Remove(component);
 
-            if (component.GetType().IsSubclassOf(typeof(Renderer)))
-                renderers.Remove((Renderer)component);
+            if (component is Renderer renderer)
+                renderers.Remove(renderer);
         }
 
         public void AddChild(Entity child)

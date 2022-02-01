@@ -20,6 +20,27 @@
 /processorParam:TextureFormat=Compressed
 /build:font.spritefont
 
+#begin Fonts/Pixel/Bold.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Pixel/Bold.spritefont
+
+#begin Fonts/Pixel/Italic.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Pixel/Italic.spritefont
+
+#begin Fonts/Pixel/Normal.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Pixel/Normal.spritefont
+
 #begin Graphics/GrassTileSet/bottom.png
 /importer:TextureImporter
 /processor:TextureProcessor

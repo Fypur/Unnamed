@@ -464,7 +464,6 @@ namespace Basic_platformer
         private void Jump()
         {
             stateMachine.Switch(States.Jumping);
-            Audio.PlayEvent(AudioData.THUD);
             AddComponent(new Timer(maxJumpTime, true, (timer) =>
             {
                 if (collisionY || hasDashed)

@@ -12,5 +12,8 @@ namespace Basic_platformer
         public virtual void Removed() { }
 
         public virtual void Update() { }
+
+        public void Destroy()
+            => ParentEntity.RemoveComponent(this);
     }
 }

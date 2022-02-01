@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FMOD.Studio;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -28,6 +29,8 @@ namespace Basic_platformer
         public static Map CurrentMap;
         public static Camera Cam;
 
+        private static EventInstance music;
+
         public Platformer()
         {
             instance = this;
@@ -46,7 +49,7 @@ namespace Basic_platformer
             ScreenSizeX = new Vector2(ScreenSize.X, 0);
             ScreenSizeY = new Vector2(0, ScreenSize.Y);
 
-            TextureManager.Initialize();
+            DataManager.Initialize();
             Audio.Initialize();
             
             CurrentMap = new Map(Vector2.Zero);
@@ -55,6 +58,10 @@ namespace Basic_platformer
             Cam = new Camera(ScreenSize / 2, 0, 1);
 
             base.Initialize();
+
+            CurrentMap.Instantiate(new TextBox("Le gaming ou quoi donde cuando je mange des pates a l'aide de mes deux bras gauches " +
+                "car bon nous on est pas des zemmouriens tu vois ce que je dire lol des barres zfhbeqrfy tgiustg ozerihuierg", "Pixel", 0.1f, Vector2.One * 40, 500, 200));
+
         }
 
         protected override void LoadContent()
@@ -104,6 +111,12 @@ namespace Basic_platformer
                 player.Pos = Cam.ScreenToWorldPosition(new Vector2(mousePos.X, mousePos.Y));
             }
 
+            if (Input.GetKeyDown(Keys.Z))
+                music.setParameterByName("Parameter 1", 0.2f);
+
+            if (Input.GetKeyDown(Keys.M))
+                music.setParameterByName("Parameter 1", 1);
+
             #endif
 
             CurrentMap.Update();
@@ -132,12 +145,19 @@ namespace Basic_platformer
 
             GraphicsDevice.SetRenderTarget(null);
 
+
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
+
             spriteBatch.Draw(RenderTarget, new Rectangle(new Point(0, 0), ScreenSize.ToPoint()), Color.White);
+            CurrentMap.UIRender();
+
             spriteBatch.End();
 
+
             spriteBatch.Begin();
+
             Drawing.DebugString();
+
             spriteBatch.End();
 
             base.Draw(gameTime);

@@ -10,7 +10,7 @@ namespace Basic_platformer
     {
         public const int size = 16;
         public float Rotation;
-        public static Texture2D texture = TextureManager.GetTexture("SpikeTest");
+        public static Texture2D texture = DataManager.GetTexture("SpikeTest");
 
         public Spike(Vector2 position, float rotation)
             : base(position, size, size)

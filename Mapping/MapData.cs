@@ -12,6 +12,8 @@ namespace Basic_platformer
         public List<Solid> Solids = new List<Solid>();
         public List<Actor> Actors = new List<Actor>();
         public List<Trigger> Triggers = new List<Trigger>();
+        public List<UIElement> UIElements = new List<UIElement>();
+
         public List<Solid> GrapplingSolids = new List<Solid>();
     }
 }
