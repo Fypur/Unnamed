@@ -12,7 +12,6 @@ namespace Basic_platformer
         public string Text;
         public string FontID;
         public float TextScale;
-        IEnumerator enumerator;
         public enum Style { Normal, Bold, Italic }
 
         public TextBox(string text, string fontID, Vector2 position, int width, int height)

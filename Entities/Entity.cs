@@ -12,6 +12,8 @@ namespace Basic_platformer
         public int Width;
         public int Height;
 
+        public bool Active = true;
+
         public Tags Tag;
         public enum Tags { Unknown, Actor, Solid, Trigger, UI }
 

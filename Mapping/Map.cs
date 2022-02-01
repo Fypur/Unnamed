@@ -37,33 +37,38 @@ namespace Basic_platformer
         public void Update()
         {
             for (int i = Data.Entities.Count - 1; i >= 0; i--)
-                Data.Entities[i].Update();
+                if (Data.Entities[i].Active)
+                    Data.Entities[i].Update();
 
+#if DEBUG
             if (Input.GetKeyDown(Keys.L))
             {
                 CurrentLevel.Unload();
                 CurrentLevel = new Level(CurrentLevel.Index, CurrentLevel.Pos, this);
                 CurrentLevel.Load();
             }
+#endif
         }
 
         public void Render()
         {
             for (int i = Data.Entities.Count - 1; i >= 0; i--)
             {
-                if(Data.Entities[i].Tag != Entity.Tags.UI)
+                if(Data.Entities[i].Active && Data.Entities[i].Tag != Entity.Tags.UI)
                     Data.Entities[i].Render();
             }
                 
 
             for (int i = Data.Triggers.Count - 1; i >= 0; i--)
-                Data.Triggers[i].Render();
+                if (Data.Triggers[i].Active)
+                    Data.Triggers[i].Render();
         }
 
         public void UIRender()
         {
             for (int i = Data.UIElements.Count - 1; i >= 0; i--)
-                Data.UIElements[i].Render();
+                if (Data.UIElements[i].Active)
+                    Data.UIElements[i].Render();
         }
 
         public Entity Instantiate(Entity entity)

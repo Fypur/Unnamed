@@ -60,7 +60,7 @@ namespace Basic_platformer
             base.Initialize();
 
             CurrentMap.Instantiate(new TextBox("Le gaming ou quoi donde cuando je mange des pates a l'aide de mes deux bras gauches " +
-                "car bon nous on est pas des zemmouriens tu vois ce que je dire lol des barres zfhbeqrfy tgiustg ozerihuierg", "Pixel", 0.1f, Vector2.One * 40, 500, 200));
+                "car bon nous on est pas des zemmouriens tu vois ce que je dire lol des barres zfhbeqrfy tgiustg ozerihuierg", "Pixel", 0.01f, Vector2.One * 40, 500, 200));
 
         }
 
