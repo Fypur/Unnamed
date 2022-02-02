@@ -8,7 +8,7 @@ namespace Basic_platformer
 {
     public class Sprite : Renderer
     {
-        public enum DrawingMode { Centered, TopLeft, ScaledTopLeft }
+        public enum DrawMode { Centered, TopLeft, ScaledTopLeft }
 
         public float Width { get => Texture.Width; }
         public float Height { get => Texture.Height; }
@@ -20,9 +20,15 @@ namespace Basic_platformer
         public Vector2 Origin = Vector2.Zero;
         public Vector2 Scale = Vector2.One;
         public SpriteEffects Effect = SpriteEffects.None;
-        public int LayerDepth = 0;
+        public float LayerDepth = 0;
 
         public Rectangle? Rect = null;
+
+        public override string ToString()
+        {
+            return $"Sprite: {Texture.Name}, {Color}, layerDepth: {LayerDepth}, Rect: {Rect}, Origin {Origin}, " +
+                $"Scale: {Scale}, Rotation {Rotation}, SpriteEffects: {Effect}";
+        }
 
         public Sprite(Texture2D texture)
         {
@@ -42,6 +48,14 @@ namespace Basic_platformer
             Color = color;
         }
 
+        public Sprite(Color color, Rectangle? rect, float layerDepth = 0)
+        {
+            Texture = Drawing.pointTexture;
+            Rect = rect;
+            Color = color;
+            LayerDepth = layerDepth;
+        }
+
         public Sprite(Texture2D texture, Rectangle rect)
         {
             Texture = texture;
@@ -53,11 +67,11 @@ namespace Basic_platformer
             if (Texture == null)
                 return;
 
-            if (Rect != null)
-                Drawing.Draw(Texture, (Rectangle)Rect);
+            if (Rect is Rectangle rect)
+                Drawing.Draw(Texture, rect, Color, Rotation, Origin, Scale, Effect, LayerDepth);
             else
             {
-                Drawing.Draw(Texture, ParentEntity.Pos + ParentEntity.HalfSize, null, Color, Rotation, Origin, Scale, Effect, LayerDepth);
+                Drawing.Draw(Texture, ParentEntity.Pos, null, Color, Rotation, Origin, Scale, Effect, LayerDepth);
             }
                 
         }

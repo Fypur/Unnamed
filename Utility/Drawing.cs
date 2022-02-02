@@ -28,14 +28,17 @@ namespace Basic_platformer
         public static void Draw(Texture2D texture, Vector2 position, Color color)
            => spriteBatch.Draw(texture, position, Color.White);
 
-        public static void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects = SpriteEffects.None, int layerDepth = 0)
+        public static void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects spriteEffects = SpriteEffects.None, float layerDepth = 0)
             => spriteBatch.Draw(texture, position, sourceRectangle, color, rotation, origin, scale, spriteEffects, layerDepth);
 
-        public static void Draw(Texture2D texture, Vector2 position, Vector2 size, float rotation, Vector2 scale, int layerDepth)
+        public static void Draw(Texture2D texture, Vector2 position, Vector2 size, float rotation, Vector2 scale, float layerDepth)
             => spriteBatch.Draw(texture, new Rectangle(position.ToPoint(), size.ToPoint()), null, Color.White, rotation, Vector2.Zero, SpriteEffects.None, layerDepth);
 
         public static void Draw(Texture2D texture, Rectangle destinationRectangle)
            => spriteBatch.Draw(texture, destinationRectangle, Color.White);
+
+        public static void Draw(Texture2D texture, Rectangle destinationRectangle, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effect = SpriteEffects.None, float layerDepth = 0)
+           => spriteBatch.Draw(texture, destinationRectangle, null, color, rotation, origin, effect, layerDepth);
 
         public static void Draw(Rectangle rect, Color color)
             => spriteBatch.Draw(pointTexture, rect, color);
@@ -46,19 +49,19 @@ namespace Basic_platformer
         
         public static void DrawCenteredString(string text, Vector2 position, Color color)
             => spriteBatch.DrawString(font, text, position, color, 0, font.MeasureString(text) / 2,
-                1, SpriteEffects.None, 1);
+                1, SpriteEffects.None, 0.5f);
 
         public static void DrawString(string text, Vector2 position, Color color, SpriteFont font)
             => spriteBatch.DrawString(font, text, position, color, 0, Vector2.Zero,
-                1, SpriteEffects.None, 1);
+                1, SpriteEffects.None, 0.5f);
 
         public static void DrawString(string text, Vector2 position, Color color, SpriteFont font, Vector2 scale)
             => spriteBatch.DrawString(font, text, position, color, 0, Vector2.Zero,
-                scale, SpriteEffects.None, 1);
+                scale, SpriteEffects.None, 0.5f);
 
         public static void DrawString(string text, Vector2 position, Color color, SpriteFont font, float scale)
             => spriteBatch.DrawString(font, text, position, color, 0, Vector2.Zero,
-                scale, SpriteEffects.None, 1);
+                scale, SpriteEffects.None, 0.5f);
 
         public static void DrawLine(Vector2 begin, Vector2 end, Color color, int thickness = 1)
         {

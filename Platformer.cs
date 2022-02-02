@@ -59,9 +59,11 @@ namespace Basic_platformer
 
             base.Initialize();
 
-            CurrentMap.Instantiate(new TextBox("Le gaming ou quoi donde cuando je mange des pates a l'aide de mes deux bras gauches " +
+            /*CurrentMap.Instantiate(new TextBox("Le gaming ou quoi donde cuando je mange des pates a l'aide de mes deux bras gauches " +
                 "car bon nous on est pas des zemmouriens tu vois ce que je dire lol des barres zfhbeqrfy tgiustg ozerihuierg", "Pixel", 0.01f, Vector2.One * 40, 500, 200));
-
+            */
+            CurrentMap.Instantiate(new DialogueBox("Grand Gameur", "Le gaming c zefouhnzeofhzef zefoijzefzoeifze fzeoiufnzefezf J AODRE LE GAMING" +
+                " TA3 LEWANDOSKI ATTAQUE PAR LA GAUCHE YELM que mon,kley kebhzja type je zeipozefjze jfzeoinfzeif ze fze ze f ze fez f tres cool wsh"));
         }
 
         protected override void LoadContent()
@@ -140,22 +142,26 @@ namespace Basic_platformer
 
             Drawing.DebugPoint();
             Drawing.DebugEvents();
-
+            
             spriteBatch.End();
 
             GraphicsDevice.SetRenderTarget(null);
 
-
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
 
             spriteBatch.Draw(RenderTarget, new Rectangle(new Point(0, 0), ScreenSize.ToPoint()), Color.White);
+
+            spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.BackToFront, null, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+
             CurrentMap.UIRender();
 
             spriteBatch.End();
 
 
             spriteBatch.Begin();
-
+            
             Drawing.DebugString();
 
             spriteBatch.End();

@@ -120,7 +120,7 @@ namespace Basic_platformer
         {
             changed = false;
 
-            if (bounds == null)
+            if (bounds == Rectangle.Empty)
                 return position;
 
             if ((bounds.Contains(position - Platformer.ScreenSize / 2 * ZoomLevel) && bounds.Contains(position + Platformer.ScreenSize / 2 * ZoomLevel)) || bounds == Rectangle.Empty)

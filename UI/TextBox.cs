@@ -15,21 +15,19 @@ namespace Basic_platformer
         public enum Style { Normal, Bold, Italic }
 
         public TextBox(string text, string fontID, Vector2 position, int width, int height)
-            : base(position, width, height, new Sprite(Color.White))
+            : base(position, width, height, null)
         {
             FontID = fontID;
             TextScale = 2;
             Text = SetText(text);
-            Sprite.Rect = new Rectangle(Pos.ToPoint(), new Point(Width, Height));
         }
 
         public TextBox(string text, string fontID, float timePerCharacter, Vector2 position, int width, int height)
-            : base(position, width, height, new Sprite(Color.White))
+            : base(position, width, height, null)
         {
             FontID = fontID;
             TextScale = 2;
             AddComponent(new Coroutine(TextDraw(SetText(text), timePerCharacter)));
-            Sprite.Rect = new Rectangle(Pos.ToPoint(), new Point(Width, Height));
         }
 
         IEnumerator TextDraw(string text, float timePerCharacter)
@@ -64,9 +62,7 @@ namespace Basic_platformer
                 newText += word + " ";
                 lineSize += spaceSize;
             }
-
-            Sprite.Scale = DataManager.Fonts[FontID]["Normal"].MeasureString(newText) * TextScale + new Vector2(20, 20);
-
+            
             return newText;
         }
 
@@ -74,7 +70,7 @@ namespace Basic_platformer
         {
             base.Render();
             if(Text != null)
-                Drawing.DrawString(Text, Pos, Color.Black, DataManager.Fonts[FontID]["Normal"], TextScale);
+                Drawing.DrawString(Text, Pos, Color.White, DataManager.Fonts[FontID]["Normal"], TextScale);
         }
     }
 }
