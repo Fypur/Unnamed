@@ -31,8 +31,14 @@ namespace Basic_platformer
             base.Update();
             if(Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.Space))
             {
-                if (TextBox.Text == currentGeneratedString && currentTextIndex + 1 < Dialogue.Length)
+                if (TextBox.Text == currentGeneratedString)
                 {
+                    if(currentTextIndex + 1 >= Dialogue.Length)
+                    {
+                        Platformer.CurrentMap.Destroy(this);
+                        return;
+                    }
+
                     currentTextIndex++;
                     currentGeneratedString = TextBox.GenerateText(Dialogue[currentTextIndex]);
                     TextBox.Reset();
