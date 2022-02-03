@@ -109,6 +109,19 @@ namespace Basic_platformer
                 renderers.Remove(renderer);
         }
 
+        public bool GetComponent<T>(out T component)
+        {
+            foreach(Component c in components)
+                if(c is T t)
+                {
+                    component = t;
+                    return true;
+                }
+
+            component = default(T);
+            return false;
+        }
+
         public void AddChild(Entity child)
         {
             Children.Add(child);

@@ -62,8 +62,11 @@ namespace Basic_platformer
             /*CurrentMap.Instantiate(new TextBox("Le gaming ou quoi donde cuando je mange des pates a l'aide de mes deux bras gauches " +
                 "car bon nous on est pas des zemmouriens tu vois ce que je dire lol des barres zfhbeqrfy tgiustg ozerihuierg", "Pixel", 0.01f, Vector2.One * 40, 500, 200));
             */
-            CurrentMap.Instantiate(new DialogueBox("Grand Gameur", "Le gaming c zefouhnzeofhzef zefoijzefzoeifze fzeoiufnzefezf J AODRE LE GAMING" +
-                " TA3 LEWANDOSKI ATTAQUE PAR LA GAUCHE YELM que mon,kley kebhzja type je zeipozefjze jfzeoinfzeif ze fze ze f ze fez f tres cool wsh"));
+            CurrentMap.Instantiate(new DialogueBox(new string[] { "Le gaming c zefouhnzeofhzef zefoijzefzoeifze fzeoiufnzefezf J AODRE LE GAMING" +
+                " TA3 LEWANDOSKI ATTAQUE PAR LA GAUCHE YELM que mon,kley kuboiu hzeohfo ziehfoizehfoize hoizeh ozef" +
+                "zefozefezfhjbzef zefh zejhf zejh jezf ze fkzfnkzlefkjlzefkef kzef zejf zkjef kjez fkzejf kzejf zkej kzjef ze" +
+                " ze zefzef" +
+                " ez ze ze zeze ze zeloizefoibezfkjzebkujezbiuzehjk fziekjhf ezfkjh ezfhi ezfihj zejhf ezf", "wesh ca marche" }));
         }
 
         protected override void LoadContent()

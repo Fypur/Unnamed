@@ -14,23 +14,32 @@ namespace Basic_platformer
         public float TextScale;
         public enum Style { Normal, Bold, Italic }
 
-        public TextBox(string text, string fontID, Vector2 position, int width, int height)
+        public TextBox(string text, string fontID, Vector2 position, int width, int height, int fontSize = 3)
             : base(position, width, height, null)
         {
             FontID = fontID;
-            TextScale = 2;
-            Text = SetText(text);
+            TextScale = fontSize;
+            Text = GenerateText(text);
         }
 
-        public TextBox(string text, string fontID, float timePerCharacter, Vector2 position, int width, int height)
+        public TextBox(string text, string fontID, float timePerCharacter, Vector2 position, int width, int height, int fontSize = 3)
             : base(position, width, height, null)
         {
             FontID = fontID;
-            TextScale = 2;
-            AddComponent(new Coroutine(TextDraw(SetText(text), timePerCharacter)));
+            TextScale = fontSize;
+            ProgressiveDraw(GenerateText(text), timePerCharacter);
         }
 
-        IEnumerator TextDraw(string text, float timePerCharacter)
+        public void ProgressiveDraw(string text, float timePerCharacter, bool pregeneratedString = false)
+            => AddComponent(new Coroutine(TextDraw(pregeneratedString ? text : GenerateText(text), timePerCharacter))); 
+
+        public void StopProgressiveDraw()
+        {
+            if (GetComponent(out Coroutine couroutine))
+                RemoveComponent(couroutine);
+        }
+
+        private IEnumerator TextDraw(string text, float timePerCharacter)
         {
             foreach(char c in text)
             {
@@ -39,7 +48,10 @@ namespace Basic_platformer
             }
         }
 
-        public string SetText(string text)
+        public void SetText(string text)
+            => Text = GenerateText(text);
+
+        public string GenerateText(string text)
         {
             string[] words = text.Split(" ");
             string newText = "";
@@ -62,8 +74,14 @@ namespace Basic_platformer
                 newText += word + " ";
                 lineSize += spaceSize;
             }
-            
-            return newText;
+
+            return newText.TrimEnd();
+        }
+
+        public void Reset()
+        {
+            StopProgressiveDraw();
+            Text = "";
         }
 
         public override void Render()
