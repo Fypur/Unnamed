@@ -108,13 +108,13 @@ namespace Basic_platformer
             Debug.Clear();
         }
 
-        public static void DebugPoint()
+        public static void DebugPoint(int scale)
         {
             foreach(Tuple<Vector2, Color> pos in DebugPos)
-                DrawPoint(pos.Item1, 1, pos.Item2);
+                DrawPoint(pos.Item1 * scale, 1, pos.Item2);
 
             foreach (Tuple<Vector2, Color> pos in DebugPosUpdate)
-                DrawPoint(pos.Item1, 1, pos.Item2);
+                DrawPoint(pos.Item1 * scale, 1, pos.Item2);
 
             DebugPosUpdate.Clear();
         }

@@ -138,7 +138,6 @@ namespace Basic_platformer
             
             CurrentMap.Render();
 
-            Drawing.DebugPoint();
             Drawing.DebugEvents();
             
             spriteBatch.End();
@@ -148,6 +147,7 @@ namespace Basic_platformer
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
 
             spriteBatch.Draw(RenderTarget, new Rectangle(new Point(0, 0), ScreenSize.ToPoint()), Color.White);
+            Drawing.DebugPoint(4);
 
             spriteBatch.End();
 

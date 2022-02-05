@@ -19,7 +19,7 @@ namespace Basic_platformer
         
         private const float acceleration = 70f;
         private const float airAcceleration = 15f;
-        private const float swingAcceleration = 10f;
+        private const float swingAcceleration = 3f;
         private const float friction = 0.4f;
         private const float airFriction = 0.1f;
         
@@ -222,8 +222,6 @@ namespace Basic_platformer
             else if (onGround && !stateMachine.Is(States.Swinging) && normalMouvement)
                 stateMachine.Switch(States.Running);
 
-            /*if (stateMachine.Is(States.Swinging))
-                Debug.Log(Velocity);*/
             collisionX = collisionY = false;
             MoveX(Velocity.X * Platformer.Deltatime, CollisionX);
             MoveY(Velocity.Y * Platformer.Deltatime, CollisionY);
@@ -355,20 +353,19 @@ namespace Basic_platformer
             for (int i = 0; i < grapplePositions.Count - 1; i++)
                 ropeLength -= Vector2.Distance(grapplePositions[i], grapplePositions[i + 1]);
 
-            Vector2 testPos = Pos + HalfSize + Velocity * Platformer.Deltatime;
+            Vector2 testPos = ExactPos + HalfSize + Velocity * Platformer.Deltatime;
             
             if ((grapplePos - testPos).Length() > ropeLength)
             {
                 testPos = grapplePos + Vector2.Normalize(testPos - grapplePos) * ropeLength;
-                Debug.PointUpdate(Color.Blue, testPos);
-                Velocity = (testPos - Pos - HalfSize) / Platformer.Deltatime;
+                Velocity = (testPos - ExactPos - HalfSize) / Platformer.Deltatime;
                 isAtSwingEnd = true;
             }
             else
                 isAtSwingEnd = false;
             
             #endregion
-
+            
             #region Determining the right position to Swing to (Rope colliding with terrain)
 
             grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
