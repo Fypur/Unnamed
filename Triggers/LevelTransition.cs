@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Fiourp;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,58 +12,56 @@ namespace Basic_platformer
         public enum Direction { Up, Down, Left, Right }
 
         private Camera cam = Platformer.Cam;
-        private Level fromLevel;
         private Level toLevel;
         private Direction direction;
 
-        public LevelTransition(Vector2 position, Vector2 size, Level fromLevel, Level toLevel, Direction dir)
+        public LevelTransition(Vector2 position, Vector2 size, Level toLevel, Direction dir)
             : base(position, size, new List<Type>() { typeof(Player) }, null)
         {
-            this.fromLevel = fromLevel;
             this.toLevel = toLevel;
             direction = dir;
         }
 
-        public LevelTransition(Rectangle triggerRect, Level fromLevel, Level toLevel, Direction dir)
+        public LevelTransition(Rectangle triggerRect, Level toLevel, Direction dir)
             : base(triggerRect, new List<Type>() { typeof(Player) }, null)
         {
-            this.fromLevel = fromLevel;
             this.toLevel = toLevel;
             direction = dir;
         }
 
         public override void OnTriggerEnter(Entity entity)
         {
+            Level oldLevel = Engine.CurrentMap.CurrentLevel;
             toLevel.Load();
 
-            Player p = Platformer.player;
+            Player p = (Player)entity;
             p.canMove = false;
 
             switch (direction)
             {
                 case Direction.Up:
-                    cam.MoveTo(cam.Pos - new Vector2(0, Platformer.ScreenSize.Y), transitionTime, Ease.QuintInAndOut);
+                    cam.MoveTo(cam.Pos - new Vector2(0, Engine.ScreenSize.Y), transitionTime, Ease.QuintInAndOut);
                     p.Pos.Y = Pos.Y - p.Height;
                     p.Velocity.Y = Math.Min(p.Velocity.Y, -300);
                     break;
                 case Direction.Down:
-                    cam.MoveTo(cam.Pos + new Vector2(0, Platformer.ScreenSize.Y), transitionTime, Ease.QuintInAndOut);
+                    cam.MoveTo(cam.Pos + new Vector2(0, Engine.ScreenSize.Y), transitionTime, Ease.QuintInAndOut);
                     p.Pos.Y = Pos.Y;
                     break;
                 case Direction.Left:
-                    cam.MoveTo(cam.Pos - new Vector2(Platformer.ScreenSize.X, 0), transitionTime, Ease.QuintInAndOut);
+                    cam.MoveTo(cam.Pos - new Vector2(Engine.ScreenSize.X, 0), transitionTime, Ease.QuintInAndOut);
                     p.Pos.X = Pos.X - p.Width;
                     break;
                 case Direction.Right:
-                    cam.MoveTo(cam.Pos + new Vector2(Platformer.ScreenSize.X, 0), transitionTime, Ease.QuintInAndOut);
+                    cam.MoveTo(cam.Pos + new Vector2(Engine.ScreenSize.X, 0), transitionTime, Ease.QuintInAndOut);
                     p.Pos.X = Pos.X;
                     break;
             }
 
             AddComponent(new Timer(transitionTime, true, null, () => {
                 p.canMove = true;
-                Platformer.CurrentMap.CurrentLevel = toLevel;
-                fromLevel.Unload();
+                Engine.CurrentMap.CurrentLevel = toLevel;
+                oldLevel.Unload();
             }));
         }
     }

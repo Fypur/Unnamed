@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31727.386
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic platformer", "Basic platformer.csproj", "{15250715-1042-486C-81CA-FA639FC45AFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic platformer", "Basic platformer.csproj", "{15250715-1042-486C-81CA-FA639FC45AFB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiourp", "..\Fiourp\Fiourp\Fiourp.csproj", "{37CE11A4-0167-4000-870A-7F2BC67BEA3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37CE11A4-0167-4000-870A-7F2BC67BEA3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37CE11A4-0167-4000-870A-7F2BC67BEA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37CE11A4-0167-4000-870A-7F2BC67BEA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37CE11A4-0167-4000-870A-7F2BC67BEA3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

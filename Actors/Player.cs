@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Fiourp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -71,6 +72,7 @@ namespace Basic_platformer
         
         public Player(Vector2 position, int width, int height, Texture2D idleTexture) : base(position, width, height, constGravityScale, new Sprite(Color.Red)) 
         {
+            Engine.Player = this;
             stateMachine = new StateMachine<States>(States.Idle);
             stateMachine.RegisterStateFunctions(States.Jumping, null, () => { if (Velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);
             AddComponent(stateMachine);
@@ -188,14 +190,14 @@ namespace Basic_platformer
             #endregion
 
             #region Entity Collisions
-            /*if (CollideAt(Platformer.CurrentMap.Data.Solids, Pos))
+            /*if (CollideAt(Engine.CurrentMap.Data.Solids, Pos))
                 Death();
 
             if (CollidedWithEntityOfType(Pos + new Vector2(0, 7), out Goomba goomba) &&
                 !CollidedWithEntity(goomba, Pos + new Vector2(1, 0)) &&
                 !CollidedWithEntity(goomba, Pos + new Vector2(-1, 0)))
             {
-                Platformer.CurrentMap.Destroy(goomba);
+                Engine.CurrentMap.Destroy(goomba);
                 Jump();
             }
             else if (!invicible)
@@ -223,8 +225,8 @@ namespace Basic_platformer
                 stateMachine.Switch(States.Running);
 
             collisionX = collisionY = false;
-            MoveX(Velocity.X * Platformer.Deltatime, CollisionX);
-            MoveY(Velocity.Y * Platformer.Deltatime, CollisionY);
+            MoveX(Velocity.X * Engine.Deltatime, CollisionX);
+            MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
         }
 
         public override bool IsRiding(Solid solid)
@@ -239,7 +241,7 @@ namespace Basic_platformer
             float distance = maxGrappleDist;
             float reserveDistance = maxGrappleDist;
 
-            foreach(Solid g in Platformer.CurrentMap.Data.GrapplingSolids)
+            foreach(Solid g in GrapplingPoint.GrapplingSolids)
             {
                 float d = Vector2.Distance(Pos + new Vector2(Width / 2, Height / 2), g.Pos);
 
@@ -353,12 +355,12 @@ namespace Basic_platformer
             for (int i = 0; i < grapplePositions.Count - 1; i++)
                 ropeLength -= Vector2.Distance(grapplePositions[i], grapplePositions[i + 1]);
 
-            Vector2 testPos = ExactPos + HalfSize + Velocity * Platformer.Deltatime;
+            Vector2 testPos = ExactPos + HalfSize + Velocity * Engine.Deltatime;
             
             if ((grapplePos - testPos).Length() > ropeLength)
             {
                 testPos = grapplePos + Vector2.Normalize(testPos - grapplePos) * ropeLength;
-                Velocity = (testPos - ExactPos - HalfSize) / Platformer.Deltatime;
+                Velocity = (testPos - ExactPos - HalfSize) / Engine.Deltatime;
                 isAtSwingEnd = true;
             }
             else
@@ -372,7 +374,7 @@ namespace Basic_platformer
 
             RemoveGrapplingPoints();
 
-            List<Vector2> cornersToCheck = new List<Vector2>(Platformer.CurrentMap.CurrentLevel.Corners);
+            List<Vector2> cornersToCheck = new List<Vector2>(Engine.CurrentMap.CurrentLevel.Corners);
             foreach (Vector2 point in grapplePositions)
                 cornersToCheck.Remove(point);
 
@@ -383,12 +385,12 @@ namespace Basic_platformer
 
             void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
             {
-                float angle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - Pos - HalfSize - Velocity * Platformer.Deltatime);
+                float angle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - Pos - HalfSize - Velocity * Engine.Deltatime);
 
                 if (angle == 0)
                     return;
 
-                float distanceFromPoint = Vector2.Distance(Pos + HalfSize + Velocity * Platformer.Deltatime, checkingFrom);
+                float distanceFromPoint = Vector2.Distance(Pos + HalfSize + Velocity * Engine.Deltatime, checkingFrom);
 
                 float closestAngle = angle;
                 Vector2? closestPoint = null;

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using Fiourp;
 
 namespace Basic_platformer
 {
@@ -13,7 +14,6 @@ namespace Basic_platformer
     {
         public event Action OnPulled;
         public float TimeToReactive;
-        public bool Active;
         public GrapplingTrigger(Vector2 position, bool active, float timeToReactive, params Action[] triggeredActions) : base(position, 1, 1, null)
         {
             Pos = position;
@@ -21,6 +21,8 @@ namespace Basic_platformer
             TimeToReactive = timeToReactive;
             foreach (Action action in triggeredActions)
                 OnPulled += action;
+
+            GrapplingPoint.GrapplingSolids.Add(this);
         }
 
         public void Pulled()

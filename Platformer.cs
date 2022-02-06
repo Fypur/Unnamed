@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using Fiourp;
 
 namespace Basic_platformer
 {
@@ -13,20 +14,15 @@ namespace Basic_platformer
         public static GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        public static RenderTarget2D RenderTarget;
+        public static RenderTarget2D RenderTarget => Engine.RenderTarget;
 
         public static bool Paused;
         private bool previousPauseKeyPress;
         public static float Deltatime;
         public static float TimeScale = 1;
 
-        public static Vector2 ScreenSize;
-        public static Vector2 ScreenSizeX;
-        public static Vector2 ScreenSizeY;
-
         public static Player player;
 
-        public static Map CurrentMap;
         public static Camera Cam;
 
         private static EventInstance music;
@@ -42,20 +38,9 @@ namespace Basic_platformer
 
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 720;
-            graphics.ApplyChanges();
-            ScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-            ScreenSizeX = new Vector2(ScreenSize.X, 0);
-            ScreenSizeY = new Vector2(0, ScreenSize.Y);
+            Engine.Initialize(graphics, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24));
 
-            DataManager.Initialize();
-            Audio.Initialize();
-            
-            CurrentMap = new Map(Vector2.Zero);
-
-            RenderTarget = new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-            Cam = new Camera(ScreenSize / 2, 0, 1);
+            Cam = new Camera(Engine.ScreenSize / 2, 0, 1);
 
             base.Initialize();
 
@@ -69,19 +54,20 @@ namespace Basic_platformer
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
 
-            player = (Player)CurrentMap.Instantiate(
+            var map = new Map(Vector2.Zero);
+            Engine.CurrentMap = map;
+
+            player = (Player)Engine.CurrentMap.Instantiate(
                 new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 7, 10, Content.Load<Texture2D>("Graphics/robot")));
-            CurrentMap.Data.Actors.Add(player);
-            
-            CurrentMap.LoadMap();
+            Engine.CurrentMap.Data.Actors.Add(player);
+
+            map.LoadMap(new Level(Levels.GetLevelData(1, Vector2.Zero)));
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            Input.UpdateState();
 
             #region Pausing
 
@@ -116,15 +102,14 @@ namespace Basic_platformer
 
             if (Input.GetKeyDown(Keys.M))
                 music.setParameterByName("Parameter 1", 1);
+#endif
 
-            #endif
-
-            CurrentMap.Update();
+            Engine.CurrentMap.Update();
 
             Cam.Update();
             Input.UpdateOldState();
 
-            Audio.Update();
+            
 
             base.Update(gameTime);
         }
@@ -135,8 +120,8 @@ namespace Basic_platformer
 
             GraphicsDevice.SetRenderTarget(RenderTarget);
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
-            
-            CurrentMap.Render();
+
+            Engine.CurrentMap.Render();
 
             Drawing.DebugEvents();
             
@@ -146,14 +131,14 @@ namespace Basic_platformer
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
 
-            spriteBatch.Draw(RenderTarget, new Rectangle(new Point(0, 0), ScreenSize.ToPoint()), Color.White);
+            spriteBatch.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
             Drawing.DebugPoint(4);
 
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.BackToFront, null, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
-            CurrentMap.UIRender();
+            Engine.CurrentMap.UIRender();
 
             spriteBatch.End();
 
@@ -166,6 +151,9 @@ namespace Basic_platformer
 
             base.Draw(gameTime);
         }
+
+        public static void Pause()
+            => Paused = true;
 
         protected override void EndRun()
         {

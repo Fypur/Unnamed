@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Fiourp;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,8 +30,8 @@ namespace Basic_platformer
             else if (Velocity.Y > 0)
                 Velocity.Y = 0;
 
-            MoveX(Velocity.X * Platformer.Deltatime, null);
-            MoveY(Velocity.Y * Platformer.Deltatime, null);
+            MoveX(Velocity.X * Engine.Deltatime, null);
+            MoveY(Velocity.Y * Engine.Deltatime, null);
         }
 
         public override void Render()
