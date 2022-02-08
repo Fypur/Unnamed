@@ -18,8 +18,6 @@ namespace Basic_platformer
 
         public static bool Paused;
         private bool previousPauseKeyPress;
-        public static float Deltatime;
-        public static float TimeScale = 1;
 
         public static Player player;
 
@@ -38,7 +36,7 @@ namespace Basic_platformer
 
         protected override void Initialize()
         {
-            Engine.Initialize(graphics, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24));
+            Engine.Initialize(graphics, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24));
 
             Cam = new Camera(Engine.ScreenSize / 2, 0, 1);
 
@@ -59,16 +57,16 @@ namespace Basic_platformer
 
             player = (Player)Engine.CurrentMap.Instantiate(
                 new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 7, 10, Content.Load<Texture2D>("Graphics/robot")));
-            Engine.CurrentMap.Data.Actors.Add(player);
+            
 
-            map.LoadMap(new Level(Levels.GetLevelData(1, Vector2.Zero)));
+            map.LoadMap(new Level(Levels.GetLevelData(3, Vector2.Zero)));
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            Debug.LogUpdate(player.Pos);
             #region Pausing
 
             if (Input.GetKey(Keys.X) && !previousPauseKeyPress)
@@ -80,8 +78,6 @@ namespace Basic_platformer
                 return;
 
             #endregion
-
-            Deltatime = (float) gameTime.ElapsedGameTime.TotalSeconds * TimeScale;
 
             #if DEBUG
 
@@ -103,13 +99,10 @@ namespace Basic_platformer
             if (Input.GetKeyDown(Keys.M))
                 music.setParameterByName("Parameter 1", 1);
 #endif
-
-            Engine.CurrentMap.Update();
+            Engine.Update(gameTime);
 
             Cam.Update();
             Input.UpdateOldState();
-
-            
 
             base.Update(gameTime);
         }
