@@ -66,7 +66,9 @@ namespace Basic_platformer
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            Debug.LogUpdate(player.Pos);
+
+            Engine.Update(gameTime);
+
             #region Pausing
 
             if (Input.GetKey(Keys.X) && !previousPauseKeyPress)
@@ -79,7 +81,7 @@ namespace Basic_platformer
 
             #endregion
 
-            #if DEBUG
+#if DEBUG
 
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
@@ -99,7 +101,6 @@ namespace Basic_platformer
             if (Input.GetKeyDown(Keys.M))
                 music.setParameterByName("Parameter 1", 1);
 #endif
-            Engine.Update(gameTime);
 
             Cam.Update();
             Input.UpdateOldState();

@@ -53,7 +53,8 @@ namespace Basic_platformer
 
                 case 3:
                     return new List<Entity>() { FallDeathTrigger(position, size),
-                    new GrapplingPoint(new Vector2(200, 20))
+                    new GrapplingPoint(new Vector2(200, 20)),
+                    new FallingPlatform(new Vector2(150, 100), 20, 7),
                     };
 
                 default:
