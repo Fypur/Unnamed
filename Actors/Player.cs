@@ -225,13 +225,15 @@ namespace Basic_platformer
                 stateMachine.Switch(States.Running);
 
             collisionX = collisionY = false;
+            Debug.LogUpdate(LiftSpeed);
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
         }
 
         public override bool IsRiding(Solid solid)
-            => base.IsRiding(solid) 
-                || ((Collider.CollideAt(solid, Pos + new Vector2(1, 0)) || Collider.CollideAt(solid, Pos + new Vector2(-1, 0))) && stateMachine.Is(States.WallSliding));
+            => (base.IsRiding(solid)
+                || ((Collider.CollideAt(solid, Pos + new Vector2(1, 0))
+            || Collider.CollideAt(solid, Pos + new Vector2(-1, 0))) && stateMachine.Is(States.WallSliding))) && !stateMachine.Is(States.Jumping);
 
         private void ThrowRope()
         {
@@ -464,6 +466,7 @@ namespace Basic_platformer
         private void Jump()
         {
             stateMachine.Switch(States.Jumping);
+            Velocity.X += LiftBoost.X;
             AddComponent(new Timer(maxJumpTime, true, (timer) =>
             {
                 if (collisionY || hasDashed)
@@ -472,7 +475,7 @@ namespace Basic_platformer
                 if (!Input.GetKey(Keys.Space))
                     timer.TimeScale = 10;
 
-                Velocity.Y = -jumpForce * (timer.Value / maxJumpTime);
+                Velocity.Y = (-jumpForce) * (timer.Value / maxJumpTime) + LiftBoost.Y;
             }, () => { if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Falling); } ));
         }
 
@@ -569,6 +572,18 @@ namespace Basic_platformer
 
             /*Drawing.Draw(idleTexture, Pos + new Vector2(Width / 2, Height / 2), null, Color.White, 0, new Vector2(idleTexture.Width / 2, idleTexture.Height / 2),
                 Vector2.One * 1.5f, facing == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);*/
+        }
+
+        public Vector2 LiftBoost
+        {
+            get
+            {
+                Vector2 boost = LiftSpeed;
+                if(boost.Y < 0)
+                    boost.Y = 0;
+
+                return boost;
+            }
         }
     }
 }

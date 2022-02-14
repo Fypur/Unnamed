@@ -68,7 +68,7 @@ namespace Basic_platformer
                 Exit();
 
             Engine.Update(gameTime);
-
+            
             #region Pausing
 
             if (Input.GetKey(Keys.X) && !previousPauseKeyPress)
