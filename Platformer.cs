@@ -36,10 +36,9 @@ namespace Basic_platformer
 
         protected override void Initialize()
         {
-            Engine.Initialize(graphics, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24));
+            Engine.Initialize(graphics, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24)); ;
 
             Cam = new Camera(Engine.ScreenSize / 2, 0, 1);
-
             base.Initialize();
 
             /*CurrentMap.Instantiate(new TextBox("Le gaming ou quoi donde cuando je mange des pates a l'aide de mes deux bras gauches " +
@@ -82,7 +81,7 @@ namespace Basic_platformer
             #endregion
 
 #if DEBUG
-
+            
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
             
@@ -91,8 +90,7 @@ namespace Basic_platformer
 
             if (Input.GetKeyDown(Keys.V))
             {
-                Point mousePos = Mouse.GetState(Window).Position;
-                player.Pos = Cam.ScreenToWorldPosition(new Vector2(mousePos.X, mousePos.Y));
+                player.Pos = Input.MousePos;
             }
 
             if (Input.GetKeyDown(Keys.Z))

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Basic_platformer
 {
-    public class GrapplingPoint : CyclingSolid
+    public class GrapplingPoint : CyclingSolid, ISwinged
     {
         public static List<Solid> GrapplingSolids = new List<Solid>();
         private const int width = 7;

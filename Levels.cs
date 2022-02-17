@@ -54,7 +54,8 @@ namespace Basic_platformer
                 case 3:
                     return new List<Entity>() { FallDeathTrigger(position, size),
                     new GrapplingPoint(new Vector2(200, 20)),
-                    new CyclingPlatform(70, 10, Color.Yellow, new Vector2[] { new Vector2(90, 100), new Vector2(50, 160) }, new float[] { 0.2f }, Ease.None)
+                    new Button(Vector2.Zero, 200, 40, new Sprite(Color.White), () => Engine.CurrentMap.Destroy(Engine.Player))
+                    
                     };
 
                 default:

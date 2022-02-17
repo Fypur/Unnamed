@@ -10,7 +10,7 @@ namespace Basic_platformer
     /// <summary>
     /// Acts as a Grappling Point that triggers something
     /// </summary>
-    public class GrapplingTrigger : Solid
+    public class GrapplingTrigger : Solid, ISwinged
     {
         public event Action OnPulled;
         public float TimeToReactive;
