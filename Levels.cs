@@ -54,7 +54,7 @@ namespace Basic_platformer
                 case 3:
                     return new List<Entity>() { FallDeathTrigger(position, size),
                     new GrapplingPoint(new Vector2(200, 20)),
-                    new Button(Vector2.Zero, 200, 40, new Sprite(Color.White), () => Engine.CurrentMap.Destroy(Engine.Player))
+                    new RailedPullBlock(new Vector2[] { new Vector2(50, 10), new Vector2(50, 50), new Vector2(100, 50) }, 1, 20, 20)
                     
                     };
 

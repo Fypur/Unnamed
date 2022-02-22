@@ -81,7 +81,6 @@ namespace Basic_platformer
             #endregion
 
 #if DEBUG
-            
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
             

@@ -238,12 +238,12 @@ namespace Basic_platformer
         private void ThrowRope()
         {
             #region Determining grappling point
-            Solid determinedGrappledSolid = null;
-            Solid reserveGrappledSolid = null;
+            Fiourp.Solid determinedGrappledSolid = null;
+            Fiourp.Solid reserveGrappledSolid = null;
             float distance = maxGrappleDist;
             float reserveDistance = maxGrappleDist;
 
-            foreach(Solid g in GrapplingPoint.GrapplingSolids)
+            foreach(Fiourp.Solid g in GrapplingPoint.GrapplingSolids)
             {
                 float d = Vector2.Distance(Pos + new Vector2(Width / 2, Height / 2), g.Pos);
 
@@ -253,7 +253,7 @@ namespace Basic_platformer
                     bool onRightDir = true;
                     int signX = Math.Sign(dir.X), signY = Math.Sign(dir.Y);
 
-                    if ( !( ( xMoving == signX || xMoving == 0 ) && ( yMoving == signY || yMoving == 0 ) ) )
+                    if ( !( (xMoving == signX || xMoving == 0 ) && (yMoving == signY || yMoving == 0 ) ) )
                     {
                         if (d > reserveDistance)
                             continue;
@@ -296,8 +296,9 @@ namespace Basic_platformer
             #endregion
 
             #region Acting Accordingly depending on Grappled Object
-            if (determinedGrappledSolid is GrapplingPoint)
+            if (determinedGrappledSolid is ISwinged swinged)
             {
+                swinged.OnGrapple(this);
                 stateMachine.Switch(States.Swinging);
                 totalRopeLength = distance;
 
