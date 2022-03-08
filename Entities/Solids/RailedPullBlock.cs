@@ -26,6 +26,15 @@ namespace Basic_platformer
             AddComponent(new LineRenderer(RailPositions.ToList(), 3, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
 
+        public RailedPullBlock(Vector2[] positions, Vector2 initPos, int width, int height) : base(DetermineInitPos(initPos, positions, out int initialIndex), width, height, new Sprite(Color.Beige))
+        {
+            RailPositions = positions;
+            currentPosIndex = initialIndex;
+            GrapplingPoint.GrapplingSolids.Add(this);
+
+            AddComponent(new LineRenderer(RailPositions.ToList(), 3, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
+        }
+
         public override void Update()
         {
             base.Update();
@@ -57,6 +66,12 @@ namespace Basic_platformer
                 list.AddRange(SplitVelocity(splitedVelocity - (headedToRailPos - ExactPos)));
 
             return list;
+        }
+
+        private static Vector2 DetermineInitPos(Vector2 position, Vector2[] railPosition, out int currentIndex)
+        {
+            currentIndex = 0;
+            return position;
         }
 
         void ISwinged.OnGrapple(Entity grappledEntity)

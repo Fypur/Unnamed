@@ -1,4 +1,5 @@
 ﻿using Fiourp;
+using Fiourp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -84,7 +85,7 @@ namespace Basic_platformer
         public override void Update()
         {
             if (!canMove) return;
-
+            Debug.LogUpdate(respawnPoint);
             #region Checks for Ground and Wall
             onGround = Collider.CollideAt(Pos + new Vector2(0, 1));
             onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
@@ -234,6 +235,9 @@ namespace Basic_platformer
             => (base.IsRiding(solid)
                 || ((Collider.CollideAt(solid, Pos + new Vector2(1, 0))
             || Collider.CollideAt(solid, Pos + new Vector2(-1, 0))) && stateMachine.Is(States.WallSliding))) && !stateMachine.Is(States.Jumping);
+
+        public override void Squish()
+            => Death();
 
         private void ThrowRope()
         {
