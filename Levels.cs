@@ -1,4 +1,5 @@
 ﻿using Fiourp;
+using LDtk;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -55,8 +56,9 @@ namespace Basic_platformer
                     return new List<Entity>() { FallDeathTrigger(position, size),
                     new GrapplingPoint(new Vector2(200, 20)),
                     new RailedPullBlock(new Vector2[] { new Vector2(50, 10), new Vector2(50, 50), new Vector2(100, 50) }, 1, 20, 20)
-                    
                     };
+                case 4:
+                    return Platformer.Level.GetLevelEntities();
 
                 default:
                     throw new Exception("Couldn't find Level");
@@ -117,6 +119,9 @@ namespace Basic_platformer
                         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
                     };
+                case 4:
+                    return SwitchXAndY(Platformer.Level.GetIntGrid("IntGrid").Values);
+
                 default:
                     throw new Exception("Couldn't find Level");
             }
@@ -126,12 +131,8 @@ namespace Basic_platformer
         {
             switch (index)
             {
-                case 1:
-                case 2:
-                case 3:
-                    return null;
                 default:
-                    throw new Exception("Couldn't find Level");
+                    return null;
             }
         }
 
@@ -174,6 +175,135 @@ namespace Basic_platformer
 
         private static DeathTrigger FallDeathTrigger(Vector2 levelPos, Vector2 levelSize)
             => new DeathTrigger(levelPos + new Vector2(0, levelSize.Y + Platformer.player.Height / 2), new Vector2(levelSize.X, 2));
+
+        private static int[,] SwitchXAndY(int[,] levelOrganisation)
+        {
+            int[,] switched = new int[levelOrganisation.GetLength(1), levelOrganisation.GetLength(0)];
+            for (int i = 0; i < levelOrganisation.GetLength(0); i++)
+            {
+                for (int j = 0; j < levelOrganisation.GetLength(1); j++)
+                {
+                    switched[j, i] = levelOrganisation[i, j];
+                }
+            }
+            return switched;
+        }
+
+        private static List<Entity> GetLevelEntities(this LDtkLevel level)
+        {
+            List<Entity> entities = new List<Entity>();
+            Vector2 lpos = level.Position.ToVector2();
+            Debug.Log(lpos, "19");
+
+            foreach (LDtkTypes.Platform p in level.GetEntities<LDtkTypes.Platform>())
+            {
+                if (p.Positions.Length == 0)
+                    entities.Add(new Platform(p.Position, p.Width(), p.Height(), p.Color));
+                else
+                    entities.Add(new CyclingPlatform(p.Width(), p.Height(), p.Color, p.Positions.ToVector2().AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut));
+            }
+
+            foreach (LDtkTypes.GrapplingPoint p in level.GetEntities<LDtkTypes.GrapplingPoint>())
+            {
+                if (p.Positions.Length == 0)
+                    entities.Add(new GrapplingPoint(p.Position));
+                else
+                    entities.Add(new GrapplingPoint(p.Positions.ToVector2().AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut));
+                Debug.Log("gp pos " + p.Position);
+            }
+
+            foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
+                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height()));
+
+            foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
+                entities.Add(new RailedPullBlock(p.RailPositions.ToVector2(), p.Position, p.Width(), p.Height()));
+
+            foreach (LDtkTypes.RespawnArea p in level.GetEntities<LDtkTypes.RespawnArea>())
+                entities.Add(new RespawnTrigger(p.Position, p.Size, p.RespawnPoint.ToVector2()));
+
+            foreach (LDtkTypes.Spike p in level.GetEntities<LDtkTypes.Spike>())
+                entities.Add(new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToSpikeDirection()));
+
+            entities.Add(new SpikeRow(Vector2.Zero, SpikeRow.Direction.Right, 200, SpikeRow.Direction.Down));
+
+                /*foreach(ILDtkEntity entity in level.GetAllEntities())
+                {
+                    switch (entity)
+                    {
+                        case LDtkTypes.Platform p:
+                            entities.Add(new Platform(p.Position, p.Width(), p.Height(), p.Color))
+                            break;
+                    }
+                }*/
+
+                return entities;
+        }
+
+        private static int Width(this ILDtkEntity entity)
+            => (int)entity.Size.X;
+
+        private static int Height(this ILDtkEntity entity)
+            => (int)entity.Size.Y;
+
+        public static T[] AddAtBeggining<T>(this T[] array, T element)
+        {
+            T[] result = new T[array.Length + 1];
+            result[0] = element;
+
+            for (int i = 0; i < array.Length; i++)
+                result[i + 1] = array[i];
+
+            return result;
+        }
+
+        public static Vector2[] ToVector2(this Point[] points)
+        {
+            Vector2[] result = new Vector2[points.Length];
+            for (int i = 0; i < points.Length; i++)
+                result[i] = points[i].ToVector2();
+            return result;
+        }
+
+        public static SpikeRow.Direction ToSpikeDirection(this LDtkTypes.Direction dir)
+        {
+            switch (dir)
+            {
+                case LDtkTypes.Direction.Up:
+                    return SpikeRow.Direction.Up;
+                case LDtkTypes.Direction.Down:
+                    return SpikeRow.Direction.Down;
+                case LDtkTypes.Direction.Left:
+                    return SpikeRow.Direction.Left;
+                default:
+                    return SpikeRow.Direction.Right;
+            }
+        }
+
+        public static int Length(this LDtkTypes.Spike spike)
+        {
+            switch (spike.GetDirection())
+            {
+                case SpikeRow.Direction.Up: case SpikeRow.Direction.Down:
+                    return spike.Height();
+                default:
+                    return spike.Width();
+            }
+        }
+
+        public static SpikeRow.Direction GetDirection(this LDtkTypes.Spike spike)
+        {
+            if (spike.Width() < spike.Height())
+                return SpikeRow.Direction.Down;
+            else
+                return SpikeRow.Direction.Right;
+        }
+
+        public static Vector2[] Addition(this Vector2[] array, Vector2 addedVector)
+        {
+            Vector2[] result = new Vector2[array.Length];
+            for (int i = 0; i < array.Length; i++)
+                result[i] = array[i] + addedVector;
+            return result;
+        }
     }
 }
-

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
 	  <TargetFramework>net5.0</TargetFramework>
@@ -6,6 +6,9 @@
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
   </PropertyGroup>
+	<Target Name="Codegen" BeforeTargets="BeforeBuild">
+		<Exec Command="ldtkgen -i C:\Users\Administrateur\Documents\Monogame\BasicPlatformer\ltdk\world.ldtk" />
+	</Target>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
@@ -26,13 +29,21 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\obj\DesktopGL\Content\" />
+    <Folder Include="ltdk\" />
     <Folder Include="UI\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="LDtkMonogame" Version="0.4.0" />
+    <PackageReference Include="LDtkMonogame.ContentPipeline" Version="0.4.1" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fiourp\Fiourp\Fiourp.csproj" />
+    <ProjectReference Include="..\Fiourp\Fiourp.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="ltdk\world.ldtk">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

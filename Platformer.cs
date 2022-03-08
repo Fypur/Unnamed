@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using Fiourp;
+using LDtk;
 
 namespace Basic_platformer
 {
@@ -18,6 +19,9 @@ namespace Basic_platformer
 
         public static bool Paused;
         private bool previousPauseKeyPress;
+
+        public static LDtkWorld World;
+        public static LDtkLevel Level;
 
         public static Player player;
 
@@ -39,6 +43,10 @@ namespace Basic_platformer
             Engine.Initialize(graphics, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24)); ;
 
             Cam = new Camera(Engine.ScreenSize / 2, 0, 1);
+
+            World = LDtkWorld.LoadWorld("ltdk/world.ldtk");
+            Level = World.LoadLevel("World_Level_0");
+
             base.Initialize();
 
             /*CurrentMap.Instantiate(new TextBox("Le gaming ou quoi donde cuando je mange des pates a l'aide de mes deux bras gauches " +
@@ -58,7 +66,7 @@ namespace Basic_platformer
                 new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 7, 10, Content.Load<Texture2D>("Graphics/robot")));
             
 
-            map.LoadMap(new Level(Levels.GetLevelData(3, Vector2.Zero)));
+            map.LoadMap(new Level(Levels.GetLevelData(4, Vector2.Zero)));
         }
 
         protected override void Update(GameTime gameTime)

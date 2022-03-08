@@ -8,14 +8,12 @@ namespace Basic_platformer
 {
     public class SpikeRow : Entity
     {
-        public const int defaultSize = 15;
+        public const int defaultSize = 8;
         public enum Direction { Up, Down, Left, Right };
 
         public SpikeRow(Vector2 position, Direction direction, int length, Direction pointingTowards)
             : base(GetBaseParameter(direction, length, position, out int width, out int height), width, height, null)
         {
-            Collider = null;
-
             int spikeNb = length / Spike.size;
 
             Vector2 move = Vector2.Zero;
