@@ -31,6 +31,9 @@ namespace Basic_platformer
             return new LevelData(GetLevelEntities(index, p, GetLevelSize(org)), p, org, Engine.CurrentMap, GetLevelEnterAction(index), null);
         }
 
+        public static LevelData GetLevelData(LDtkLevel ldtk)
+            => new LevelData(ldtk.GetLevelEntities(), ldtk.Position.ToVector2(), SwitchXAndY(ldtk.GetIntGrid("IntGrid").Values), Engine.CurrentMap, null, null);
+
         private static LDtkLevel GetLdtkLevel(int index)
         {
             try
@@ -89,7 +92,39 @@ namespace Basic_platformer
 
             foreach(NeighbourLevel n in level._Neighbours)
             {
-                Debug.Log(Platformer.World.LoadLevel(n.LevelUid).Position);
+                LDtkLevel neigh = Platformer.World.LoadLevel(n.LevelUid);
+                Rectangle lvlRect = new Rectangle(level.Position, level.Size);
+                Rectangle neighRect = new Rectangle(neigh.Position, neigh.Size);
+                
+                if (neighRect.X < lvlRect.X)
+                {
+                    //left
+                    Vector2 pos = new Vector2(level.WorldX - 5, Math.Max(level.WorldY, neigh.WorldY));
+                    Vector2 size = new Vector2(10, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
+                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Left));
+
+                }
+                else if (neighRect.Y < lvlRect.Y)
+                {
+                    //top
+                    Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY - 5);
+                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 10);
+                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Up));
+                }
+                if (neighRect.X + neighRect.Width > lvlRect.X + lvlRect.Width)
+                {
+                    //right
+                    Vector2 pos = new Vector2(level.WorldX + level.Size.X - 5, Math.Max(level.WorldY, neigh.WorldY));
+                    Vector2 size = new Vector2(10, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
+                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Right));
+                }
+                else
+                {
+                    //bottom
+                    Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY + level.Size.Y - 5);
+                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 10);
+                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Down));
+                }
             }
 
             /*foreach(ILDtkEntity entity in level.GetAllEntities())

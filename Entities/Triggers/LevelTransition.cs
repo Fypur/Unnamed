@@ -13,12 +13,20 @@ namespace Basic_platformer
 
         private Camera cam = Platformer.Cam;
         private Level toLevel;
+        private LDtk.LDtkLevel ldtk;
         private Direction direction;
 
         public LevelTransition(Vector2 position, Vector2 size, Level toLevel, Direction dir)
             : base(position, size, new List<Type>() { typeof(Player) }, null)
         {
             this.toLevel = toLevel;
+            direction = dir;
+        }
+
+        public LevelTransition(Vector2 position, Vector2 size, LDtk.LDtkLevel ldtk, Direction dir)
+            : base(position, size, new List<Type>() { typeof(Player) }, null)
+        {
+            this.ldtk = ldtk;
             direction = dir;
         }
 
@@ -32,6 +40,8 @@ namespace Basic_platformer
         public override void OnTriggerEnter(Entity entity)
         {
             Level oldLevel = Engine.CurrentMap.CurrentLevel;
+            if (toLevel == null)
+                toLevel = new Level(Levels.GetLevelData(ldtk));
             toLevel.Load();
 
             Player p = (Player)entity;
@@ -40,21 +50,21 @@ namespace Basic_platformer
             switch (direction)
             {
                 case Direction.Up:
-                    cam.MoveTo(cam.Pos - new Vector2(0, Engine.ScreenSize.Y), transitionTime, Ease.QuintInAndOut);
+                    cam.MoveTo(cam.Pos - new Vector2(0, Engine.RenderTarget.Height), transitionTime, Ease.QuintInAndOut);
                     p.Pos.Y = Pos.Y - p.Height;
                     p.Velocity.Y = Math.Min(p.Velocity.Y, -300);
                     break;
                 case Direction.Down:
-                    cam.MoveTo(cam.Pos + new Vector2(0, Engine.ScreenSize.Y), transitionTime, Ease.QuintInAndOut);
+                    cam.MoveTo(cam.Pos + new Vector2(0, Engine.RenderTarget.Height), transitionTime, Ease.QuintInAndOut);
                     p.Pos.Y = Pos.Y;
                     break;
                 case Direction.Left:
-                    cam.MoveTo(cam.Pos - new Vector2(Engine.ScreenSize.X, 0), transitionTime, Ease.QuintInAndOut);
+                    cam.MoveTo(cam.Pos - new Vector2(Engine.RenderTarget.Width, 0), transitionTime, Ease.QuintInAndOut);
                     p.Pos.X = Pos.X - p.Width;
                     break;
                 case Direction.Right:
-                    cam.MoveTo(cam.Pos + new Vector2(Engine.ScreenSize.X, 0), transitionTime, Ease.QuintInAndOut);
-                    p.Pos.X = Pos.X;
+                    cam.Move(new Vector2(Engine.RenderTarget.Width, 0), transitionTime, Ease.QuintInAndOut);
+                    p.Pos.X = Pos.X + 20;
                     break;
             }
 

@@ -24,7 +24,7 @@ namespace Basic_platformer
 
         public static Player player;
 
-        public static Camera Cam;
+        public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
         private static EventInstance music;
 
@@ -41,7 +41,7 @@ namespace Basic_platformer
         {
             Engine.Initialize(graphics, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24)); ;
 
-            Cam = new Camera(Engine.ScreenSize / 2, 0, 1);
+            Cam = new Camera(new Vector2(Engine.RenderTarget.Width / 2, Engine.RenderTarget.Height / 2), 0, 1);
 
             World = LDtkWorld.LoadWorld("ltdk/world.ldtk");
 
@@ -64,6 +64,7 @@ namespace Basic_platformer
                 new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 7, 10, Content.Load<Texture2D>("Graphics/robot")));
 
             map.LoadMap(new Level(Levels.GetLevelData(0, Vector2.Zero)));
+            Cam.SetBoundaries(Rectangle.Empty);
         }
 
         protected override void Update(GameTime gameTime)
@@ -72,7 +73,7 @@ namespace Basic_platformer
                 Exit();
             
             Engine.Update(gameTime);
-            Debug.LogUpdate(Input.MousePosNoRenderTarget);
+            Debug.LogUpdate(Cam.Pos);
             #region Pausing
 
             if (Input.GetKey(Keys.X) && !previousPauseKeyPress)
@@ -96,6 +97,9 @@ namespace Basic_platformer
             {
                 player.Pos = Input.MousePos;
             }
+
+            if (Input.GetKeyDown(Keys.W))
+                Cam.Move(Vector2.UnitX * 10, 0.2f);
 
             if (Input.GetKeyDown(Keys.Z))
                 music.setParameterByName("Parameter 1", 0.2f);

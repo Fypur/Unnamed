@@ -16,6 +16,7 @@ namespace Basic_platformer
 
         //Indicates the index of positions[] where the platform is inbetween
         private int currentPosIndex;
+        private bool inBetweenIndex;
 
         public RailedPullBlock(Vector2[] positions, int initialIndexPosition, int width, int height) : base(positions[initialIndexPosition], width, height, new Sprite(Color.Beige))
         {
@@ -71,8 +72,13 @@ namespace Basic_platformer
             Debug.LogUpdate(currentPosIndex);
             if (from + splittedVelocity == headedToRailPos && splittedVelocity != Vector2.Zero && currentPosIndex + indexAdd >= 0 && currentPosIndex + indexAdd < RailPositions.Length - 1)
             {
-                currentPosIndex += indexAdd;
-                list.AddRange(SplitVelocity(splittedVelocity, headedToRailPos));
+                if (!inBetweenIndex)
+                {
+                    currentPosIndex += indexAdd;
+                    List<Vector2> v = SplitVelocity(splittedVelocity, headedToRailPos);
+                    inBetweenIndex = v[0] == Vector2.Zero;
+                    list.AddRange(v);
+                }
             }
 
             return list;
