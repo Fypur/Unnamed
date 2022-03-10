@@ -1,5 +1,4 @@
 ﻿using Fiourp;
-using Fiourp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -74,9 +73,24 @@ namespace Basic_platformer
         public Player(Vector2 position, int width, int height, Texture2D idleTexture) : base(position, width, height, constGravityScale, new Sprite(Color.Red)) 
         {
             Engine.Player = this;
+
+            #region StateMachine
+
             stateMachine = new StateMachine<States>(States.Idle);
             stateMachine.RegisterStateFunctions(States.Jumping, null, () => { if (Velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);
+            stateMachine.RegisterStateFunctions(States.Swinging, () =>
+                { 
+                    if (grappledSolid is ISwinged swinged)
+                        swinged.OnGrapple(this); }, null,
+                        () =>
+                {
+                    if (grappledSolid is ISwinged swinged)
+                        swinged.OnStopGrapple(this);
+                });
+
             AddComponent(stateMachine);
+
+            #endregion
 
             this.idleTexture = idleTexture;
             respawnPoint = position;
@@ -183,8 +197,6 @@ namespace Basic_platformer
                         Velocity.Y *= 0.7f;
 
                     grapplePositions.Clear();
-                    if (grappledSolid is ISwinged swinged)
-                        swinged.OnStopGrapple(this);
                     grapplePositionsSign = new List<int> { 0 };
                     stateMachine.Switch(States.Jumping);
                     isAtSwingEnd = false;
@@ -228,7 +240,7 @@ namespace Basic_platformer
                 stateMachine.Switch(States.Running);
 
             collisionX = collisionY = false;
-            Debug.LogUpdate(LiftSpeed);
+            //Debug.LogUpdate(LiftSpeed);
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
         }
@@ -304,7 +316,6 @@ namespace Basic_platformer
             #region Acting Accordingly depending on Grappled Object
             if (determinedGrappledSolid is ISwinged swinged)
             {
-                swinged.OnGrapple(this);
                 stateMachine.Switch(States.Swinging);
                 totalRopeLength = distance;
 

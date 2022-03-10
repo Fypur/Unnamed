@@ -21,7 +21,6 @@ namespace Basic_platformer
         private bool previousPauseKeyPress;
 
         public static LDtkWorld World;
-        public static LDtkLevel Level;
 
         public static Player player;
 
@@ -45,7 +44,6 @@ namespace Basic_platformer
             Cam = new Camera(Engine.ScreenSize / 2, 0, 1);
 
             World = LDtkWorld.LoadWorld("ltdk/world.ldtk");
-            Level = World.LoadLevel("World_Level_0");
 
             base.Initialize();
 
@@ -64,18 +62,17 @@ namespace Basic_platformer
 
             player = (Player)Engine.CurrentMap.Instantiate(
                 new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 7, 10, Content.Load<Texture2D>("Graphics/robot")));
-            
 
-            map.LoadMap(new Level(Levels.GetLevelData(4, Vector2.Zero)));
+            map.LoadMap(new Level(Levels.GetLevelData(0, Vector2.Zero)));
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            Engine.Update(gameTime);
             
+            Engine.Update(gameTime);
+            Debug.LogUpdate(Input.MousePosNoRenderTarget);
             #region Pausing
 
             if (Input.GetKey(Keys.X) && !previousPauseKeyPress)
@@ -94,7 +91,7 @@ namespace Basic_platformer
             
             if(Input.GetKeyDown(Keys.C))
                 Debug.Clear();
-
+            
             if (Input.GetKeyDown(Keys.V))
             {
                 player.Pos = Input.MousePos;

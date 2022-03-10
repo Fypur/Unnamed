@@ -50,11 +50,8 @@ namespace Basic_platformer
                     rotation = 90;
                     break;
             }
-
             for (int i = 0; i < spikeNb; i++)
-            {
                 AddChild(new Spike(position + move * i, rotation));
-            }
         }
 
         public static Vector2 GetBaseParameter(Direction direction, int length, Vector2 position, out int width, out int height)
