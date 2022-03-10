@@ -224,8 +224,6 @@ namespace Basic_platformer
             foreach (LDtkTypes.Spike p in level.GetEntities<LDtkTypes.Spike>())
                 entities.Add(new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToSpikeDirection()));
 
-            entities.Add(new SpikeRow(Vector2.Zero, SpikeRow.Direction.Right, 200, SpikeRow.Direction.Down));
-
                 /*foreach(ILDtkEntity entity in level.GetAllEntities())
                 {
                     switch (entity)

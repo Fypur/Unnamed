@@ -183,6 +183,8 @@ namespace Basic_platformer
                         Velocity.Y *= 0.7f;
 
                     grapplePositions.Clear();
+                    if (grappledSolid is ISwinged swinged)
+                        swinged.OnStopGrapple(this);
                     grapplePositionsSign = new List<int> { 0 };
                     stateMachine.Switch(States.Jumping);
                     isAtSwingEnd = false;

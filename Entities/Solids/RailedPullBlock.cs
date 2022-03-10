@@ -10,7 +10,7 @@ namespace Basic_platformer
 {
     public class RailedPullBlock : MovingSolid, ISwinged
     {
-        private const float amountMoved = 4f;
+        private const float amountMoved = 100f;
         public Vector2[] RailPositions;
         private Entity grappledEntity;
 
@@ -42,6 +42,7 @@ namespace Basic_platformer
                 return;
 
             Velocity = Vector2.Normalize(grappledEntity.Pos - MiddlePos) * amountMoved * Engine.Deltatime;
+            /*Velocity = VectorHelper.ClosestOnSegement(MiddleExactPos + Velocity, RailPositions[currentPosIndex], RailPositions[currentPosIndex + 1]) - MiddleExactPos;*/
             foreach (Vector2 velocity in SplitVelocity(Velocity))
                 Move(velocity);
         }
@@ -49,7 +50,7 @@ namespace Basic_platformer
         private List<Vector2> SplitVelocity(Vector2 splitedVelocity)
         {
             Vector2 axis = RailPositions[currentPosIndex] - RailPositions[currentPosIndex + 1];
-            splitedVelocity = VectorHelper.Projection(splitedVelocity * Engine.Deltatime - ExactPos, axis);
+            splitedVelocity = VectorHelper.ClosestOnSegement(MiddleExactPos + Velocity, RailPositions[currentPosIndex], RailPositions[currentPosIndex + 1]) - MiddleExactPos;
 
             Vector2 headedToRailPos;
             if (Vector2.Dot(splitedVelocity, axis) > 0)
