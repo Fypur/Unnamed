@@ -90,7 +90,7 @@ namespace Basic_platformer
             foreach (LDtkTypes.Spike p in level.GetEntities<LDtkTypes.Spike>())
                 entities.Add(new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToSpikeDirection()));
 
-            foreach(NeighbourLevel n in level._Neighbours)
+            /*foreach(NeighbourLevel n in level._Neighbours)
             {
                 LDtkLevel neigh = Platformer.World.LoadLevel(n.LevelUid);
                 Rectangle lvlRect = new Rectangle(level.Position, level.Size);
@@ -125,7 +125,7 @@ namespace Basic_platformer
                     Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 10);
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Down));
                 }
-            }
+            }*/
 
             /*foreach(ILDtkEntity entity in level.GetAllEntities())
             {

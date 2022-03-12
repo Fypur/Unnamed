@@ -16,7 +16,6 @@ namespace Basic_platformer
 
         //Indicates the index of positions[] where the platform is inbetween
         private int currentPosIndex;
-        private bool inBetweenIndex;
 
         public RailedPullBlock(Vector2[] positions, int initialIndexPosition, int width, int height) : base(positions[initialIndexPosition], width, height, new Sprite(Color.Beige))
         {
@@ -43,42 +42,46 @@ namespace Basic_platformer
                 return;
 
             Velocity = Vector2.Normalize(grappledEntity.MiddleExactPos - MiddleExactPos) * amountMoved * Engine.Deltatime;
-            /*Velocity = VectorHelper.ClosestOnSegement(MiddleExactPos + Velocity, RailPositions[currentPosIndex], RailPositions[currentPosIndex + 1]) - MiddleExactPos;*/
+
             foreach (Vector2 velocity in SplitVelocity(Velocity, MiddleExactPos))
                 Move(velocity);
         }
 
         private List<Vector2> SplitVelocity(Vector2 splittedVelocity, Vector2 from)
         {
-            Vector2 axis = RailPositions[currentPosIndex] - RailPositions[currentPosIndex + 1];
-            splittedVelocity = VectorHelper.ClosestOnSegement(from + Velocity, RailPositions[currentPosIndex], RailPositions[currentPosIndex + 1]) - from;
+            Vector2 old = splittedVelocity;
+            splittedVelocity = VectorHelper.ClosestOnSegment(from + splittedVelocity, RailPositions[currentPosIndex], RailPositions[currentPosIndex + 1]) - from;
 
-            Vector2 headedToRailPos;
-            int indexAdd = 1;            
+            List<Vector2> list = new();
 
-            if (Vector2.Dot(splittedVelocity, axis) > 0)
+            if (currentPosIndex != 0 && from == RailPositions[currentPosIndex])
             {
-                //Going to previous railPos
-                headedToRailPos = RailPositions[currentPosIndex];
-                indexAdd = -1;
-            }
-            else
-            {
-                headedToRailPos = RailPositions[currentPosIndex + 1];
-                indexAdd = 1;
-            }
+                Vector2 other = VectorHelper.ClosestOnSegment(from + old, RailPositions[currentPosIndex - 1], RailPositions[currentPosIndex]) - from;
 
-            List<Vector2> list = new List<Vector2> { splittedVelocity };
-            Debug.LogUpdate(currentPosIndex);
-            if (from + splittedVelocity == headedToRailPos && splittedVelocity != Vector2.Zero && currentPosIndex + indexAdd >= 0 && currentPosIndex + indexAdd < RailPositions.Length - 1)
-            {
-                if (!inBetweenIndex)
+                if ((splittedVelocity == Vector2.Zero || other.LengthSquared() > splittedVelocity.LengthSquared()) && other != Vector2.Zero)
                 {
-                    currentPosIndex += indexAdd;
-                    List<Vector2> v = SplitVelocity(splittedVelocity, headedToRailPos);
-                    inBetweenIndex = v[0] == Vector2.Zero;
-                    list.AddRange(v);
+                    splittedVelocity = other;
+                    currentPosIndex--;
+                } 
+            }
+            else if(currentPosIndex != RailPositions.Length - 2 && from == RailPositions[currentPosIndex + 1])
+            {
+                Vector2 other = VectorHelper.ClosestOnSegment(from + old, RailPositions[currentPosIndex + 1], RailPositions[currentPosIndex + 2]) - from;
+
+                if ((splittedVelocity == Vector2.Zero || other.LengthSquared() > splittedVelocity.LengthSquared()) && other != Vector2.Zero)
+                {
+                    splittedVelocity = other;
+                    currentPosIndex++;
                 }
+            }
+
+            if (splittedVelocity != Vector2.Zero)
+            {
+                list.Add(splittedVelocity);
+                if (from + splittedVelocity == RailPositions[currentPosIndex])
+                    list.AddRange(SplitVelocity(splittedVelocity, RailPositions[currentPosIndex]));
+                else if (from + splittedVelocity == RailPositions[currentPosIndex + 1])
+                    list.AddRange(SplitVelocity(splittedVelocity, RailPositions[currentPosIndex + 1]));
             }
 
             return list;
@@ -92,7 +95,7 @@ namespace Basic_platformer
             Vector2 EndPos = position;
             for(int i = 0; i < railPositions.Length - 1; i++)
             {
-                Vector2 possiblePos = VectorHelper.ClosestOnSegement(position, railPositions[i], railPositions[i + 1]);
+                Vector2 possiblePos = VectorHelper.ClosestOnSegment(position, railPositions[i], railPositions[i + 1]);
                 float distance = Vector2.Distance(possiblePos, position);
                 if (distance < minDistance)
                 {
@@ -104,6 +107,14 @@ namespace Basic_platformer
 
             return EndPos - new Vector2(width / 2, height / 2);
         }
+
+        /*private static float Length(this Vector2[] v)
+        {
+            float length = 0;
+            foreach (Vector2 v1 in v)
+                length += v1.Length();
+            return length;
+        }*/
 
         void ISwinged.OnGrapple(Entity grappledEntity)
         {

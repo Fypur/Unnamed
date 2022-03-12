@@ -74,6 +74,7 @@ namespace Basic_platformer
             
             Engine.Update(gameTime);
             Debug.LogUpdate(Cam.Pos);
+
             #region Pausing
 
             if (Input.GetKey(Keys.X) && !previousPauseKeyPress)
@@ -132,7 +133,7 @@ namespace Basic_platformer
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
 
             spriteBatch.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
-            Drawing.DebugPoint(4);
+            Drawing.DebugPoint((int)Engine.ScreenSize.X / Engine.RenderTarget.Width);
 
             spriteBatch.End();
 
