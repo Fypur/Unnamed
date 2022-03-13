@@ -269,7 +269,7 @@ namespace Basic_platformer
 
             foreach(Fiourp.Solid g in SwingingPoint.SwingingPoints)
             {
-                float d = Vector2.Distance(Pos + new Vector2(Width / 2, Height / 2), g.Pos);
+                float d = Vector2.Distance(MiddleExactPos, g.MiddleExactPos);
 
                 if (d < distance)
                 {
@@ -287,7 +287,7 @@ namespace Basic_platformer
                     if (g is GrapplingTrigger trigger && !trigger.Active)
                         continue;
 
-                    Raycast ray = new Raycast(Pos + new Vector2(Width / 2, Height / 2), g.Pos + new Vector2(g.Width, g.Height));
+                    Raycast ray = new Raycast(MiddleExactPos, g.MiddleExactPos);
                     if (!ray.hit)
                     {
                         if (onRightDir)
@@ -325,10 +325,7 @@ namespace Basic_platformer
                 stateMachine.Switch(States.Swinging);
                 totalRopeLength = distance;
 
-                Vector2 grapplingPos = determinedGrappledSolid.Pos;
-
-                grapplingPos = determinedGrappledSolid.Pos +
-                new Vector2(determinedGrappledSolid.Width / 2, determinedGrappledSolid.Height / 2);
+                Vector2 grapplingPos = determinedGrappledSolid.MiddleExactPos;
 
                 swingPositions.Add(grapplingPos);
 
@@ -336,7 +333,7 @@ namespace Basic_platformer
                         (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
                     (line) => {
 
-                        List<Vector2> linePositions = new List<Vector2>() { Pos + new Vector2(Width / 2, Height / 2) };
+                        List<Vector2> linePositions = new List<Vector2>() { MiddlePos };
                         List<Vector2> reversedPositions = new List<Vector2>(swingPositions);
                         reversedPositions.Reverse();
                         linePositions.AddRange(reversedPositions);
