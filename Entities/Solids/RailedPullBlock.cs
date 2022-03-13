@@ -13,6 +13,7 @@ namespace Basic_platformer
         private const float amountMoved = 100f;
         public Vector2[] RailPositions;
         private Entity grappledEntity;
+        private Func<bool> isAtSwingEnd;
 
         //Indicates the index of positions[] where the platform is inbetween
         private int currentPosIndex;
@@ -21,7 +22,7 @@ namespace Basic_platformer
         {
             RailPositions = positions;
             currentPosIndex = initialIndexPosition;
-            GrapplingPoint.GrapplingSolids.Add(this);
+            SwingingPoint.SwingingPoints.Add(this);
 
             AddComponent(new LineRenderer(RailPositions.ToList(), 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
@@ -30,7 +31,7 @@ namespace Basic_platformer
         {
             RailPositions = positions;
             currentPosIndex = initialIndex;
-            GrapplingPoint.GrapplingSolids.Add(this);
+            SwingingPoint.SwingingPoints.Add(this);
 
             AddComponent(new LineRenderer(RailPositions.ToList(), 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
@@ -41,10 +42,13 @@ namespace Basic_platformer
             if(grappledEntity == null)
                 return;
 
-            Velocity = Vector2.Normalize(grappledEntity.MiddleExactPos - MiddleExactPos) * amountMoved * Engine.Deltatime;
+            if (isAtSwingEnd())
+            {
+                Velocity = Vector2.Normalize(grappledEntity.MiddleExactPos - MiddleExactPos) * amountMoved * Engine.Deltatime;
 
-            foreach (Vector2 velocity in SplitVelocity(Velocity, MiddleExactPos))
-                Move(velocity);
+                foreach (Vector2 velocity in SplitVelocity(Velocity, MiddleExactPos))
+                    Move(velocity);
+            }
         }
 
         private List<Vector2> SplitVelocity(Vector2 splittedVelocity, Vector2 from)
@@ -116,9 +120,10 @@ namespace Basic_platformer
             return length;
         }*/
 
-        void ISwinged.OnGrapple(Entity grappledEntity)
+        void ISwinged.OnGrapple(Entity grappledEntity, Func<bool> atSwingEnd)
         {
             this.grappledEntity = grappledEntity;
+            isAtSwingEnd = atSwingEnd;
         }
 
         void ISwinged.OnStopGrapple(Entity unGrappledEntity)

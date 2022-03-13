@@ -53,8 +53,8 @@ namespace Basic_platformer
 
         private float totalRopeLength;
         private Solid grappledSolid;
-        private List<Vector2> grapplePositions = new List<Vector2>();
-        private List<int> grapplePositionsSign = new List<int>() { 0 };
+        private List<Vector2> swingPositions = new List<Vector2>();
+        private List<int> swingPositionsSign = new List<int>() { 0 };
         private bool isAtSwingEnd;
 
         public Vector2 respawnPoint;
@@ -81,7 +81,7 @@ namespace Basic_platformer
             stateMachine.RegisterStateFunctions(States.Swinging, () =>
                 { 
                     if (grappledSolid is ISwinged swinged)
-                        swinged.OnGrapple(this); }, null,
+                        swinged.OnGrapple(this, () => isAtSwingEnd); }, null,
                         () =>
                 {
                     if (grappledSolid is ISwinged swinged)
@@ -98,8 +98,14 @@ namespace Basic_platformer
 
         public override void Update()
         {
-            if (!canMove) return;
-
+            if (!canMove)
+            {
+                swingPositions.Clear();
+                swingPositionsSign = new List<int> { 0 };
+                stateMachine.Switch(States.Jumping);
+                isAtSwingEnd = false;
+                return; 
+            }
             #region Checks for Ground and Wall
             onGround = Collider.CollideAt(Pos + new Vector2(0, 1));
             onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
@@ -196,8 +202,8 @@ namespace Basic_platformer
                     else
                         Velocity.Y *= 0.7f;
 
-                    grapplePositions.Clear();
-                    grapplePositionsSign = new List<int> { 0 };
+                    swingPositions.Clear();
+                    swingPositionsSign = new List<int> { 0 };
                     stateMachine.Switch(States.Jumping);
                     isAtSwingEnd = false;
                 }
@@ -261,7 +267,7 @@ namespace Basic_platformer
             float distance = maxGrappleDist;
             float reserveDistance = maxGrappleDist;
 
-            foreach(Fiourp.Solid g in GrapplingPoint.GrapplingSolids)
+            foreach(Fiourp.Solid g in SwingingPoint.SwingingPoints)
             {
                 float d = Vector2.Distance(Pos + new Vector2(Width / 2, Height / 2), g.Pos);
 
@@ -324,14 +330,14 @@ namespace Basic_platformer
                 grapplingPos = determinedGrappledSolid.Pos +
                 new Vector2(determinedGrappledSolid.Width / 2, determinedGrappledSolid.Height / 2);
 
-                grapplePositions.Add(grapplingPos);
+                swingPositions.Add(grapplingPos);
 
                 AddComponent(new LineRenderer(new List<Vector2> { Pos, grapplingPos }, 2, Color.Blue,
                         (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
                     (line) => {
 
                         List<Vector2> linePositions = new List<Vector2>() { Pos + new Vector2(Width / 2, Height / 2) };
-                        List<Vector2> reversedPositions = new List<Vector2>(grapplePositions);
+                        List<Vector2> reversedPositions = new List<Vector2>(swingPositions);
                         reversedPositions.Reverse();
                         linePositions.AddRange(reversedPositions);
                         line.Positions = linePositions;
@@ -369,11 +375,11 @@ namespace Basic_platformer
         {
             #region Swinging
 
-            Vector2 grapplePos = grapplePositions[grapplePositions.Count - 1];
+            Vector2 grapplePos = swingPositions[swingPositions.Count - 1];
 
             float ropeLength = totalRopeLength;
-            for (int i = 0; i < grapplePositions.Count - 1; i++)
-                ropeLength -= Vector2.Distance(grapplePositions[i], grapplePositions[i + 1]);
+            for (int i = 0; i < swingPositions.Count - 1; i++)
+                ropeLength -= Vector2.Distance(swingPositions[i], swingPositions[i + 1]);
 
             Vector2 testPos = ExactPos + HalfSize + Velocity * Engine.Deltatime;
             
@@ -390,15 +396,15 @@ namespace Basic_platformer
             
             #region Determining the right position to Swing to (Rope colliding with terrain)
 
-            grapplePositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
+            swingPositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
 
             RemoveGrapplingPoints();
 
             List<Vector2> cornersToCheck = new List<Vector2>(Engine.CurrentMap.CurrentLevel.Corners);
-            foreach (Vector2 point in grapplePositions)
+            foreach (Vector2 point in swingPositions)
                 cornersToCheck.Remove(point);
 
-            AddGrapplingPoints(cornersToCheck, grapplePositions[grapplePositions.Count - 1]);
+            AddGrapplingPoints(cornersToCheck, swingPositions[swingPositions.Count - 1]);
             #endregion
 
             #region Grappling Methods
@@ -441,8 +447,8 @@ namespace Basic_platformer
 
                 if (closestPoint is Vector2 foundCorner)
                 {
-                    grapplePositions.Add(foundCorner);
-                    grapplePositionsSign.Add(Math.Sign(angle));
+                    swingPositions.Add(foundCorner);
+                    swingPositionsSign.Add(Math.Sign(angle));
                     if (foundCorner == new Vector2(660, 840))
                     {
                         //Debug.Pause();
@@ -457,14 +463,14 @@ namespace Basic_platformer
 
             void RemoveGrapplingPoints()
             {
-                for (int i = grapplePositions.Count - 1; i >= 1; i--)
+                for (int i = swingPositions.Count - 1; i >= 1; i--)
                 {
-                    float grappleAngle = VectorHelper.GetAngle(grapplePositions[i - 1] - Pos - HalfSize, grapplePositions[i - 1] - grapplePositions[i]);
+                    float grappleAngle = VectorHelper.GetAngle(swingPositions[i - 1] - Pos - HalfSize, swingPositions[i - 1] - swingPositions[i]);
 
-                    if (Math.Sign(grappleAngle) == grapplePositionsSign[i])
+                    if (Math.Sign(grappleAngle) == swingPositionsSign[i])
                     {
-                        grapplePositions.RemoveAt(i);
-                        grapplePositionsSign.RemoveAt(i);
+                        swingPositions.RemoveAt(i);
+                        swingPositionsSign.RemoveAt(i);
                     }
                     else
                         break;

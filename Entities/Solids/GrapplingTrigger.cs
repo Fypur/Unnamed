@@ -22,7 +22,7 @@ namespace Basic_platformer
             foreach (Action action in triggeredActions)
                 OnPulled += action;
 
-            GrapplingPoint.GrapplingSolids.Add(this);
+            SwingingPoint.SwingingPoints.Add(this);
         }
 
         public void Pulled()

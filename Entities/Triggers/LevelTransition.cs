@@ -8,7 +8,7 @@ namespace Basic_platformer
 {
     public class LevelTransition : Trigger
     {
-        private const float transitionTime = 2f;
+        private const float transitionTime = 1.5f;
         public enum Direction { Up, Down, Left, Right }
 
         private Camera cam = Platformer.Cam;
@@ -40,6 +40,7 @@ namespace Basic_platformer
         public override void OnTriggerEnter(Entity entity)
         {
             Level oldLevel = Engine.CurrentMap.CurrentLevel;
+            SwingingPoint.SwingingPoints.Clear();
             if (toLevel == null)
                 toLevel = new Level(Levels.GetLevelData(ldtk));
             toLevel.Load();
@@ -47,24 +48,22 @@ namespace Basic_platformer
             Player p = (Player)entity;
             p.canMove = false;
 
+            cam.Move(toLevel.Pos - oldLevel.Pos, transitionTime, Ease.QuintInAndOut);
+
             switch (direction)
             {
                 case Direction.Up:
-                    cam.MoveTo(cam.Pos - new Vector2(0, Engine.RenderTarget.Height), transitionTime, Ease.QuintInAndOut);
                     p.Pos.Y = Pos.Y - p.Height;
                     p.Velocity.Y = Math.Min(p.Velocity.Y, -300);
                     break;
                 case Direction.Down:
-                    cam.MoveTo(cam.Pos + new Vector2(0, Engine.RenderTarget.Height), transitionTime, Ease.QuintInAndOut);
-                    p.Pos.Y = Pos.Y;
+                    p.Pos.Y = Pos.Y + Height;
                     break;
                 case Direction.Left:
-                    cam.MoveTo(cam.Pos - new Vector2(Engine.RenderTarget.Width, 0), transitionTime, Ease.QuintInAndOut);
                     p.Pos.X = Pos.X - p.Width;
                     break;
                 case Direction.Right:
-                    cam.Move(new Vector2(Engine.RenderTarget.Width, 0), transitionTime, Ease.QuintInAndOut);
-                    p.Pos.X = Pos.X + 20;
+                    p.Pos.X = Pos.X + Width;
                     break;
             }
 

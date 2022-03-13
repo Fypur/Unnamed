@@ -73,7 +73,8 @@ namespace Basic_platformer
                 Exit();
             
             Engine.Update(gameTime);
-            Debug.LogUpdate(Cam.Pos);
+            Debug.LogUpdate(Cam.WorldToScreenPosition(player.Pos));
+            Debug.LogUpdate(Input.MousePos);
 
             #region Pausing
 
@@ -100,13 +101,8 @@ namespace Basic_platformer
             }
 
             if (Input.GetKeyDown(Keys.W))
-                Cam.Move(Vector2.UnitX * 10, 0.2f);
+                Cam.Move(Vector2.UnitX * -100, 0.2f);
 
-            if (Input.GetKeyDown(Keys.Z))
-                music.setParameterByName("Parameter 1", 0.2f);
-
-            if (Input.GetKeyDown(Keys.M))
-                music.setParameterByName("Parameter 1", 1);
 #endif
 
             Cam.Update();

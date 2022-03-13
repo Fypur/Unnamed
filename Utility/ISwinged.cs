@@ -9,7 +9,7 @@ namespace Basic_platformer
 {
     public interface ISwinged
     {
-        public virtual void OnGrapple(Entity grappledEntity) { }
+        public virtual void OnGrapple(Entity grappledEntity, Func<bool> isAtSwingEnd) { }
 
         public virtual void OnStopGrapple(Entity unGrappledEntity) { }
     }

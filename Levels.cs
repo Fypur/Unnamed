@@ -73,9 +73,9 @@ namespace Basic_platformer
             foreach (LDtkTypes.GrapplingPoint p in level.GetEntities<LDtkTypes.GrapplingPoint>())
             {
                 if (p.Positions.Length == 0)
-                    entities.Add(new GrapplingPoint(p.Position));
+                    entities.Add(new SwingingPoint(p.Position));
                 else
-                    entities.Add(new GrapplingPoint(p.Positions.ToVector2().AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut));
+                    entities.Add(new SwingingPoint(p.Positions.ToVector2().AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut));
             }
 
             foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
@@ -90,7 +90,7 @@ namespace Basic_platformer
             foreach (LDtkTypes.Spike p in level.GetEntities<LDtkTypes.Spike>())
                 entities.Add(new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToSpikeDirection()));
 
-            /*foreach(NeighbourLevel n in level._Neighbours)
+            foreach(NeighbourLevel n in level._Neighbours)
             {
                 LDtkLevel neigh = Platformer.World.LoadLevel(n.LevelUid);
                 Rectangle lvlRect = new Rectangle(level.Position, level.Size);
@@ -125,7 +125,7 @@ namespace Basic_platformer
                     Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 10);
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Down));
                 }
-            }*/
+            }
 
             /*foreach(ILDtkEntity entity in level.GetAllEntities())
             {
@@ -151,7 +151,7 @@ namespace Basic_platformer
             {
                 case 1:
                     var l = new List<Entity> {
-                        new GrapplingPoint(new Vector2[] { new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2(Engine.ScreenSize.X / 2 - 200, 50) }, new float[]{ 1.5f }, Ease.QuintInAndOut),
+                        new SwingingPoint(new Vector2[] { new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2(Engine.ScreenSize.X / 2 - 200, 50) }, new float[]{ 1.5f }, Ease.QuintInAndOut),
                         FallDeathTrigger(p, size)
                     };
                     l.AddRange(DefaultLevelTransitions(p, new Level(GetLevelData(2, p + Engine.ScreenSizeX)), null, null, null));
@@ -168,7 +168,7 @@ namespace Basic_platformer
 
                 case 3:
                     return new List<Entity>() { FallDeathTrigger(position, size),
-                    new GrapplingPoint(new Vector2(200, 20)),
+                    new SwingingPoint(new Vector2(200, 20)),
                     new RailedPullBlock(new Vector2[] { new Vector2(50, 10), new Vector2(50, 50), new Vector2(100, 50) }, 1, 20, 20)
                     };
                 default:
