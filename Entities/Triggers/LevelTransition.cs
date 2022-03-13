@@ -41,6 +41,9 @@ namespace Basic_platformer
         {
             Level oldLevel = Engine.CurrentMap.CurrentLevel;
             SwingingPoint.SwingingPoints.Clear();
+
+            cam.SetBoundaries(Rectangle.Empty);
+
             if (toLevel == null)
                 toLevel = new Level(Levels.GetLevelData(ldtk));
             toLevel.Load();
@@ -70,6 +73,7 @@ namespace Basic_platformer
             AddComponent(new Timer(transitionTime, true, null, () => {
                 p.canMove = true;
                 Engine.CurrentMap.CurrentLevel = toLevel;
+                Engine.Cam.SetBoundaries(toLevel.Pos, toLevel.Size);
                 oldLevel.Unload();
             }));
         }

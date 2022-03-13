@@ -11,6 +11,88 @@ namespace Basic_platformer
 {
     public static class Levels
     {
+        private static List<Entity> GetLevelEntities(this LDtkLevel level)
+        {
+            List<Entity> entities = new List<Entity>();
+
+            foreach (LDtkTypes.Platform p in level.GetEntities<LDtkTypes.Platform>())
+            {
+                if (p.Positions.Length == 0)
+                    entities.Add(new Platform(p.Position, p.Width(), p.Height(), p.Color));
+                else
+                    entities.Add(new CyclingPlatform(p.Width(), p.Height(), p.Color, p.Positions.ToVector2().AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut));
+            }
+
+            foreach (LDtkTypes.GrapplingPoint p in level.GetEntities<LDtkTypes.GrapplingPoint>())
+            {
+                if (p.Positions.Length == 0)
+                    entities.Add(new SwingingPoint(p.Position));
+                else
+                    entities.Add(new SwingingPoint(p.Positions.ToVector2().AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut));
+            }
+
+            foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
+                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height()));
+
+            foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
+                entities.Add(new RailedPullBlock(p.RailPositions.ToVector2(), p.Position, p.Width(), p.Height()));
+
+            foreach (LDtkTypes.RespawnArea p in level.GetEntities<LDtkTypes.RespawnArea>())
+                entities.Add(new RespawnTrigger(p.Position, p.Size, GridToWorldCoords(p.RespawnPoint)));
+
+            foreach (LDtkTypes.Spike p in level.GetEntities<LDtkTypes.Spike>())
+                entities.Add(new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToSpikeDirection()));
+
+            foreach (LDtkTypes.DeathTrigger p in level.GetEntities<LDtkTypes.DeathTrigger>())
+                entities.Add(new DeathTrigger(p.Position, p.Size));
+
+            #region Level Transitions
+
+            foreach (NeighbourLevel n in level._Neighbours)
+            {
+                LDtkLevel neigh = Platformer.World.LoadLevel(n.LevelUid);
+                Rectangle lvlRect = new Rectangle(level.Position, level.Size);
+                Rectangle neighRect = new Rectangle(neigh.Position, neigh.Size);
+
+                if (neighRect.X < lvlRect.X)
+                {
+                    //left
+                    Vector2 pos = new Vector2(level.WorldX - 5, Math.Max(level.WorldY, neigh.WorldY));
+                    Vector2 size = new Vector2(10, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
+                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Left));
+
+                }
+                else if (neighRect.Y < lvlRect.Y)
+                {
+                    //top
+                    Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY - 5);
+                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 10);
+                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Up));
+                }
+                if (neighRect.X + neighRect.Width > lvlRect.X + lvlRect.Width)
+                {
+                    //right
+                    Vector2 pos = new Vector2(level.WorldX + level.Size.X - 5, Math.Max(level.WorldY, neigh.WorldY));
+                    Vector2 size = new Vector2(10, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
+                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Right));
+                }
+                else
+                {
+                    //bottom
+                    Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY + level.Size.Y - 5);
+                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 10);
+                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Down));
+                }
+            }
+
+            #endregion
+
+            return entities;
+
+            Vector2 GridToWorldCoords(Point coords)
+                => coords.ToVector2() * 8 + level.Position.ToVector2();
+        }
+
         /// <summary>
         /// Get LDTK level data
         /// </summary>
@@ -56,91 +138,6 @@ namespace Basic_platformer
         {
             var org = GetLevelOrganisation(index);
             return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileWidth, tileHeight)), position, org, Engine.CurrentMap, GetLevelEnterAction(index), null);
-        }
-
-        private static List<Entity> GetLevelEntities(this LDtkLevel level)
-        {
-            List<Entity> entities = new List<Entity>();
-
-            foreach (LDtkTypes.Platform p in level.GetEntities<LDtkTypes.Platform>())
-            {
-                if (p.Positions.Length == 0)
-                    entities.Add(new Platform(p.Position, p.Width(), p.Height(), p.Color));
-                else
-                    entities.Add(new CyclingPlatform(p.Width(), p.Height(), p.Color, p.Positions.ToVector2().AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut));
-            }
-
-            foreach (LDtkTypes.GrapplingPoint p in level.GetEntities<LDtkTypes.GrapplingPoint>())
-            {
-                if (p.Positions.Length == 0)
-                    entities.Add(new SwingingPoint(p.Position));
-                else
-                    entities.Add(new SwingingPoint(p.Positions.ToVector2().AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut));
-            }
-
-            foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
-                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height()));
-
-            foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
-                entities.Add(new RailedPullBlock(p.RailPositions.ToVector2(), p.Position, p.Width(), p.Height()));
-
-            foreach (LDtkTypes.RespawnArea p in level.GetEntities<LDtkTypes.RespawnArea>())
-                entities.Add(new RespawnTrigger(p.Position, p.Size, GridToWorldCoords(p.RespawnPoint)));
-
-            foreach (LDtkTypes.Spike p in level.GetEntities<LDtkTypes.Spike>())
-                entities.Add(new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToSpikeDirection()));
-
-            foreach(NeighbourLevel n in level._Neighbours)
-            {
-                LDtkLevel neigh = Platformer.World.LoadLevel(n.LevelUid);
-                Rectangle lvlRect = new Rectangle(level.Position, level.Size);
-                Rectangle neighRect = new Rectangle(neigh.Position, neigh.Size);
-                
-                if (neighRect.X < lvlRect.X)
-                {
-                    //left
-                    Vector2 pos = new Vector2(level.WorldX - 5, Math.Max(level.WorldY, neigh.WorldY));
-                    Vector2 size = new Vector2(10, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
-                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Left));
-
-                }
-                else if (neighRect.Y < lvlRect.Y)
-                {
-                    //top
-                    Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY - 5);
-                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 10);
-                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Up));
-                }
-                if (neighRect.X + neighRect.Width > lvlRect.X + lvlRect.Width)
-                {
-                    //right
-                    Vector2 pos = new Vector2(level.WorldX + level.Size.X - 5, Math.Max(level.WorldY, neigh.WorldY));
-                    Vector2 size = new Vector2(10, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
-                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Right));
-                }
-                else
-                {
-                    //bottom
-                    Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY + level.Size.Y - 5);
-                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 10);
-                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Down));
-                }
-            }
-
-            /*foreach(ILDtkEntity entity in level.GetAllEntities())
-            {
-                switch (entity)
-                {
-                    case LDtkTypes.Platform p:
-                        entities.Add(new Platform(p.Position, p.Width(), p.Height(), p.Color))
-                        break;
-                }
-            }*/
-
-            return entities;
-
-            Vector2 GridToWorldCoords(Point coords)
-                => coords.ToVector2() * 8 + level.Position.ToVector2();
         }
 
         private static List<Entity> GetLevelEntities(int index, Vector2 position, Vector2 size)

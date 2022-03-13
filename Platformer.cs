@@ -64,7 +64,7 @@ namespace Basic_platformer
                 new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 7, 10, Content.Load<Texture2D>("Graphics/robot")));
 
             map.LoadMap(new Level(Levels.GetLevelData(0, Vector2.Zero)));
-            Cam.SetBoundaries(Rectangle.Empty);
+            Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
         }
 
         protected override void Update(GameTime gameTime)
@@ -73,8 +73,6 @@ namespace Basic_platformer
                 Exit();
             
             Engine.Update(gameTime);
-            Debug.LogUpdate(Cam.WorldToScreenPosition(player.Pos));
-            Debug.LogUpdate(Input.MousePos);
 
             #region Pausing
 

@@ -10,7 +10,7 @@
 	},
 	"jsonVersion": "0.10.0-beta3",
 	"appBuildId": 457078,
-	"nextUid": 29,
+	"nextUid": 31,
 	"identifierStyle": "Capitalize",
 	"worldLayout": "Free",
 	"worldGridWidth": 256,
@@ -433,14 +433,14 @@
 		{
 			"identifier": "Spike",
 			"uid": 17,
-			"tags": [],
+			"tags": ["Attachable"],
 			"width": 8,
 			"height": 8,
 			"resizableX": true,
 			"resizableY": true,
 			"keepAspectRatio": false,
-			"tileOpacity": 0.08,
-			"fillOpacity": 0.08,
+			"tileOpacity": 1,
+			"fillOpacity": 0.24,
 			"lineOpacity": 0,
 			"hollow": false,
 			"color": "#707874",
@@ -486,6 +486,33 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "DeathTrigger",
+			"uid": 29,
+			"tags": ["Trigger"],
+			"width": 8,
+			"height": 8,
+			"resizableX": true,
+			"resizableY": true,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 1,
+			"lineOpacity": 1,
+			"hollow": true,
+			"color": "#FF0404",
+			"renderMode": "Rectangle",
+			"showName": true,
+			"tilesetId": null,
+			"tileId": null,
+			"tileRenderMode": "FitInside",
+			"tileRect": null,
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 0,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -614,6 +641,72 @@
 							"defUid": 11,
 							"px": [120,104],
 							"fieldInstances": []
+						},
+						{
+							"__identifier": "DeathTrigger",
+							"__grid": [16,23],
+							"__pivot": [0,0],
+							"__tags": ["Trigger"],
+							"__tile": null,
+							"__smartColor": "#FF0404",
+							"iid": "489fe1c0-8dc0-11ec-9947-4780dd0248d9",
+							"width": 80,
+							"height": 8,
+							"defUid": 29,
+							"px": [128,184],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Platform",
+							"__grid": [18,6],
+							"__pivot": [0,0],
+							"__tags": ["Solid"],
+							"__tile": null,
+							"__smartColor": "#9C8453",
+							"iid": "3ee62580-8dc0-11ec-9947-a7bb99c5ef51",
+							"width": 24,
+							"height": 16,
+							"defUid": 2,
+							"px": [144,48],
+							"fieldInstances": [
+								{ "__identifier": "Positions", "__value": [], "__type": "Array<Point>", "__tile": null, "defUid": 3, "realEditorValues": [] },
+								{ "__identifier": "TimeBetweenPositions", "__value": [], "__type": "Array<Float>", "__tile": null, "defUid": 6, "realEditorValues": [] },
+								{ "__identifier": "Color", "__value": "#9C8453", "__type": "Color", "__tile": null, "defUid": 7, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Spike",
+							"__grid": [17,6],
+							"__pivot": [0,0],
+							"__tags": ["Attachable"],
+							"__tile": { "tilesetUid": 20, "x": 24, "y": 0, "w": 8, "h": 8 },
+							"__smartColor": "#707874",
+							"iid": "41107f90-8dc0-11ec-9947-5bdd6f9efb82",
+							"width": 8,
+							"height": 16,
+							"defUid": 17,
+							"px": [136,48],
+							"fieldInstances": [{ "__identifier": "Direction", "__value": "Left", "__type": "LocalEnum.Direction", "__tile": { "tilesetUid": 20, "x": 24, "y": 0, "w": 8, "h": 8 }, "defUid": 21, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Left"]
+							}] }]
+						},
+						{
+							"__identifier": "Spike",
+							"__grid": [21,6],
+							"__pivot": [0,0],
+							"__tags": ["Attachable"],
+							"__tile": { "tilesetUid": 20, "x": 16, "y": 0, "w": 8, "h": 8 },
+							"__smartColor": "#707874",
+							"iid": "6dcea930-8dc0-11ec-9947-756e13cd1926",
+							"width": 8,
+							"height": 16,
+							"defUid": 17,
+							"px": [168,48],
+							"fieldInstances": [{ "__identifier": "Direction", "__value": "Right", "__type": "LocalEnum.Direction", "__tile": { "tilesetUid": 20, "x": 16, "y": 0, "w": 8, "h": 8 }, "defUid": 21, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Right"]
+							}] }]
 						}
 					]
 				},
