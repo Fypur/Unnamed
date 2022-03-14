@@ -10,7 +10,7 @@
 	},
 	"jsonVersion": "0.10.0-beta3",
 	"appBuildId": 457078,
-	"nextUid": 31,
+	"nextUid": 32,
 	"identifierStyle": "Capitalize",
 	"worldLayout": "Free",
 	"worldGridWidth": 256,
@@ -629,20 +629,6 @@
 							} ] }]
 						},
 						{
-							"__identifier": "FallingPlatform",
-							"__grid": [15,13],
-							"__pivot": [0,0],
-							"__tags": ["Solid"],
-							"__tile": null,
-							"__smartColor": "#0A5D2F",
-							"iid": "85c99180-8dc0-11ec-9947-c540ffe1513f",
-							"width": 96,
-							"height": 16,
-							"defUid": 11,
-							"px": [120,104],
-							"fieldInstances": []
-						},
-						{
 							"__identifier": "DeathTrigger",
 							"__grid": [16,23],
 							"__pivot": [0,0],
@@ -707,6 +693,24 @@
 								"id": "V_String",
 								"params": ["Right"]
 							}] }]
+						},
+						{
+							"__identifier": "Platform",
+							"__grid": [15,12],
+							"__pivot": [0,0],
+							"__tags": ["Solid"],
+							"__tile": null,
+							"__smartColor": "#9C8453",
+							"iid": "dc8f6ce0-8dc0-11ec-904f-734d32ae52a9",
+							"width": 72,
+							"height": 16,
+							"defUid": 2,
+							"px": [120,96],
+							"fieldInstances": [
+								{ "__identifier": "Positions", "__value": [], "__type": "Array<Point>", "__tile": null, "defUid": 3, "realEditorValues": [] },
+								{ "__identifier": "TimeBetweenPositions", "__value": [], "__type": "Array<Float>", "__tile": null, "defUid": 6, "realEditorValues": [] },
+								{ "__identifier": "Color", "__value": "#9C8453", "__type": "Color", "__tile": null, "defUid": 7, "realEditorValues": [] }
+							]
 						}
 					]
 				},

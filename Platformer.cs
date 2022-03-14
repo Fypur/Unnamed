@@ -18,6 +18,7 @@ namespace Basic_platformer
         public static RenderTarget2D RenderTarget => Engine.RenderTarget;
 
         public static bool Paused;
+        public static PauseMenu PauseMenu;
         private bool previousPauseKeyPress;
 
         public static LDtkWorld World;
@@ -43,10 +44,11 @@ namespace Basic_platformer
 
             Cam = new Camera(new Vector2(Engine.RenderTarget.Width / 2, Engine.RenderTarget.Height / 2), 0, 1);
 
-            World = LDtkWorld.LoadWorld("ltdk/world.ldtk");
+            World = LDtkWorld.LoadWorld("ldtk/world.ldtk");
 
             base.Initialize();
 
+            PauseMenu = new PauseMenu();
             /*CurrentMap.Instantiate(new TextBox("Le gaming ou quoi donde cuando je mange des pates a l'aide de mes deux bras gauches " +
                 "car bon nous on est pas des zemmouriens tu vois ce que je dire lol des barres zfhbeqrfy tgiustg ozerihuierg", "Pixel", 0.01f, Vector2.One * 40, 500, 200));
             */
@@ -71,8 +73,6 @@ namespace Basic_platformer
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            
-            Engine.Update(gameTime);
 
             #region Pausing
 
@@ -82,9 +82,14 @@ namespace Basic_platformer
             previousPauseKeyPress = Input.GetKey(Keys.X);
 
             if (Paused)
+            {
+                Input.UpdateState();
                 return;
+            }
 
             #endregion
+
+            Engine.Update(gameTime);
 
 #if DEBUG
             if (Input.GetKeyDown(Keys.F3))

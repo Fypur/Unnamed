@@ -322,18 +322,18 @@ namespace Basic_platformer
             return result;
         }
 
-        public static SpikeRow.Direction ToSpikeDirection(this LDtkTypes.Direction dir)
+        public static Spike.Direction ToSpikeDirection(this LDtkTypes.Direction dir)
         {
             switch (dir)
             {
                 case LDtkTypes.Direction.Up:
-                    return SpikeRow.Direction.Up;
+                    return Spike.Direction.Up;
                 case LDtkTypes.Direction.Down:
-                    return SpikeRow.Direction.Down;
+                    return Spike.Direction.Down;
                 case LDtkTypes.Direction.Left:
-                    return SpikeRow.Direction.Left;
+                    return Spike.Direction.Left;
                 default:
-                    return SpikeRow.Direction.Right;
+                    return Spike.Direction.Right;
             }
         }
 
@@ -341,19 +341,19 @@ namespace Basic_platformer
         {
             switch (spike.GetDirection())
             {
-                case SpikeRow.Direction.Up: case SpikeRow.Direction.Down:
+                case Spike.Direction.Up: case Spike.Direction.Down:
                     return spike.Height();
                 default:
                     return spike.Width();
             }
         }
 
-        public static SpikeRow.Direction GetDirection(this LDtkTypes.Spike spike)
+        public static Spike.Direction GetDirection(this LDtkTypes.Spike spike)
         {
             if (spike.Width() < spike.Height())
-                return SpikeRow.Direction.Down;
+                return Spike.Direction.Down;
             else
-                return SpikeRow.Direction.Right;
+                return Spike.Direction.Right;
         }
 
         public static Vector2[] Addition(this Vector2[] array, Vector2 addedVector)

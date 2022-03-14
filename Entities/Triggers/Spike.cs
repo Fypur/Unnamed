@@ -12,13 +12,63 @@ namespace Basic_platformer
         public const int size = 8;
         public float Rotation { get => Sprite.Rotation; set => Sprite.Rotation = MathHelper.ToDegrees(value); }
         public static Texture2D texture = DataManager.GetTexture("SpikeTest");
+        public enum Direction { Up, Down, Left, Right };
 
         public Spike(Vector2 position, float rotation)
+            : this(position, GetDirection(rotation))
+        { }
+
+        public Spike(Vector2 position, Direction direction)
             : base(position, size, size)
         {
+            float rotation = GetRotation(direction);
+
+            Conditions = (player) =>
+            {
+                if (direction == Direction.Up)
+                    return player.Velocity.Y >= 0;
+                else if (direction == Direction.Down)
+                    return player.Velocity.Y <= 0;
+                else if (direction == Direction.Left)
+                    return player.Velocity.X >= 0;
+                else
+                    return player.Velocity.X <= 0;
+            };
+
             Sprite = (Sprite)AddComponent(new Sprite(texture, Rect, rotation));
             Sprite.Origin = HalfSize;
             Sprite.Centered = true;
+        }
+
+        private static float GetRotation(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    return 0;
+                case Direction.Down:
+                    return 180;
+                case Direction.Left:
+                    return 270;
+                default:
+                    return 90;
+            }
+        }
+
+        private static Direction GetDirection(float rotation)
+        {
+            Debug.Log(rotation);
+            switch (rotation)
+            {
+                case 0:
+                    return Direction.Up;
+                case 90:
+                    return Direction.Right;
+                case 180:
+                    return Direction.Down;
+                default:
+                    return Direction.Left;
+            }
         }
     }
 }

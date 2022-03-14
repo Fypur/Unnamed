@@ -9,57 +9,38 @@ namespace Basic_platformer
     public class SpikeRow : Entity
     {
         public const int defaultSize = 8;
-        public enum Direction { Up, Down, Left, Right };
 
-        public SpikeRow(Vector2 position, Direction direction, int length, Direction pointingTowards)
+        public SpikeRow(Vector2 position, Spike.Direction direction, int length, Spike.Direction pointingTowards)
             : base(GetBaseParameter(direction, length, position, out int width, out int height), width, height, null)
         {
             int spikeNb = length / Spike.size;
-
             Vector2 move = Vector2.Zero;
-
             switch (direction)
             {
-                case Direction.Up:
+                case Spike.Direction.Up:
                     move = new Vector2(0, -Spike.size);
                     break;
-                case Direction.Down:
+                case Spike.Direction.Down:
                     move = new Vector2(0, Spike.size);
                     break;
-                case Direction.Left:
+                case Spike.Direction.Left:
                     move = new Vector2(-Spike.size, 0);
                     break;
-                case Direction.Right:
+                case Spike.Direction.Right:
                     move = new Vector2(Spike.size, 0);
                     break;
             }
 
-            float rotation = 0;
-            switch (pointingTowards)
-            {
-                case Direction.Up:
-                    rotation = 0;
-                    break;
-                case Direction.Down:
-                    rotation = 180;
-                    break;
-                case Direction.Left:
-                    rotation = 270;
-                    break;
-                case Direction.Right:
-                    rotation = 90;
-                    break;
-            }
             for (int i = 0; i < spikeNb; i++)
-                AddChild(new Spike(position + move * i, rotation));
+                AddChild(new Spike(position + move * i, pointingTowards));
         }
 
-        public static Vector2 GetBaseParameter(Direction direction, int length, Vector2 position, out int width, out int height)
+        public static Vector2 GetBaseParameter(Spike.Direction direction, int length, Vector2 position, out int width, out int height)
         {
             width = defaultSize;
             height = defaultSize;
 
-            if (direction == Direction.Up || direction == Direction.Down)
+            if (direction == Spike.Direction.Up || direction == Spike.Direction.Down)
                 height = length;
             else
                 width = length;

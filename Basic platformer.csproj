@@ -7,7 +7,7 @@
     <TieredCompilation>false</TieredCompilation>
   </PropertyGroup>
 	<Target Name="Codegen" BeforeTargets="BeforeBuild">
-		<Exec Command="ldtkgen -i C:\Users\zddng\Documents\Monogame\BasicPlatformer\ltdk\world.ldtk" />
+		<Exec Command="ldtkgen -i C:\Users\zddng\Documents\Monogame\BasicPlatformer\ldtk\world.ldtk" />
 	</Target>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -42,6 +42,9 @@
     <ProjectReference Include="..\Fiourp\Fiourp.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="ldtk\world.ldtk">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="ltdk\world.ldtk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
