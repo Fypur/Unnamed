@@ -17,9 +17,9 @@ namespace Basic_platformer
 
         public static RenderTarget2D RenderTarget => Engine.RenderTarget;
 
-        public static bool Paused;
+        private static bool Paused;
         public static PauseMenu PauseMenu;
-        private bool previousPauseKeyPress;
+        private static Input.State PreviousPauseOldState;
 
         public static LDtkWorld World;
 
@@ -74,22 +74,23 @@ namespace Basic_platformer
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            #region Pausing
+            Input.UpdateState();
+            Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (Input.GetKey(Keys.X) && !previousPauseKeyPress)
-                Paused = !Paused;
-
-            previousPauseKeyPress = Input.GetKey(Keys.X);
-
-            if (Paused)
+            if (Input.GetKeyDown(Keys.X))
             {
-                Input.UpdateState();
-                return;
+                Paused = !Paused;
+                if (Paused)
+                    PreviousPauseOldState = Input.OldState;
+                else
+                    Input.OldState = PreviousPauseOldState;
             }
 
-            #endregion
+            if (Paused)
+                PauseMenu.Update();
 
-            Engine.Update(gameTime);
+            if (!Paused)
+                Engine.CurrentMap.Update();
 
 #if DEBUG
             if (Input.GetKeyDown(Keys.F3))
@@ -142,6 +143,12 @@ namespace Basic_platformer
 
             spriteBatch.End();
 
+            spriteBatch.Begin(SpriteSortMode.BackToFront, null, SamplerState.PointClamp, null, null, null, null);
+
+            if (Paused)
+                PauseMenu.Render();
+
+            spriteBatch.End();
 
             spriteBatch.Begin();
             
@@ -152,8 +159,33 @@ namespace Basic_platformer
             base.Draw(gameTime);
         }
 
+        public static void PauseOrUnpause()
+        {
+            if (!Paused)
+                Pause();
+            else
+                Unpause();
+        }
+
         public static void Pause()
-            => Paused = true;
+        {
+            if (Paused)
+                return;
+
+            Paused = true;
+            if (PreviousPauseOldState == null)
+                PreviousPauseOldState = Input.OldState;
+        }
+
+        public static void Unpause()
+        {
+            if (!Paused)
+                return;
+
+            Paused = false;
+            Input.OldState = PreviousPauseOldState;
+            PreviousPauseOldState = null;
+        }
 
         protected override void EndRun()
         {

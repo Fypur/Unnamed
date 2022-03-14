@@ -16,8 +16,8 @@ namespace Basic_platformer
         public PauseMenu()
             : base (Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, Sprite.None)
         {
-            ResumeButton = (Button)AddChild(new Button(new Vector2(200, 200), 400, 50, Sprite.None, () => Platformer.Paused = false));
-            QuitButton = (Button)AddChild(new Button(new Vector2(200, 300), 400, 50, Sprite.None, () => Platformer.instance.Exit()));
+            ResumeButton = (Button)AddChild(new Button(new Vector2(200, 200), 400, 50, new Sprite(Color.White), () => Platformer.Unpause()));
+            QuitButton = (Button)AddChild(new Button(new Vector2(200, 300), 400, 50, new Sprite(Color.White), () => Platformer.instance.Exit()));
         }
     }
 }
