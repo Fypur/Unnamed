@@ -479,9 +479,11 @@ namespace Basic_platformer
 
         public void Death()
         {
-            Pos = respawnPoint;
+            ExactPos = respawnPoint;
             Velocity = Vector2.Zero;
             stateMachine.Switch(States.Idle);
+
+            Levels.ReloadLastLevelFetched();
         }
 
         private void Jump()

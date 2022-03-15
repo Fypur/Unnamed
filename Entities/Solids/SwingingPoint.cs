@@ -21,5 +21,8 @@ namespace Basic_platformer
         {
             Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, width, height), Color.Blue);
         }
+
+        public override void OnDestroy()
+            => SwingingPoints.Remove(this);
     }
 }

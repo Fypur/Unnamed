@@ -39,7 +39,7 @@ namespace Basic_platformer
         public override void Update()
         {
             base.Update();
-            if(grappledEntity == null)
+            if(grappledEntity == null || grappledEntity.Collider.CollideAt(this, grappledEntity.Pos + new Vector2(0, 1)))
                 return;
 
             if (isAtSwingEnd())
@@ -119,6 +119,9 @@ namespace Basic_platformer
                 length += v1.Length();
             return length;
         }*/
+
+        public override void OnDestroy()
+            => SwingingPoint.SwingingPoints.Remove(this);
 
         void ISwinged.OnGrapple(Entity grappledEntity, Func<bool> atSwingEnd)
         {

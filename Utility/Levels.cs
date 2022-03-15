@@ -11,6 +11,16 @@ namespace Basic_platformer
 {
     public static class Levels
     {
+        private static int levelIndex;
+        public static LevelData LastLevelData { 
+            get  {
+                var ldtk = GetLdtkLevel(levelIndex);
+                if (ldtk != null)
+                    return GetLevelData(ldtk);
+                else
+                    return GetLevelData(levelIndex);
+            } }
+
         private static List<Entity> GetLevelEntities(this LDtkLevel level)
         {
             List<Entity> entities = new List<Entity>();
@@ -100,10 +110,12 @@ namespace Basic_platformer
         /// <returns></returns>
         public static LevelData GetLevelData(int index, Vector2? position = null)
         {
+            levelIndex = index;
             LDtkLevel ldtk = GetLdtkLevel(index);
-
             if (ldtk != null)
-                return new LevelData(ldtk.GetLevelEntities(), ldtk.Position.ToVector2(), SwitchXAndY(ldtk.GetIntGrid("IntGrid").Values), Engine.CurrentMap, GetLevelEnterAction(index), null);
+            {
+                return GetLevelData(ldtk);
+            }
 
             if (position == null)
                 throw new Exception("Must Specify a Position for a Hard Coded Level");
@@ -118,14 +130,14 @@ namespace Basic_platformer
 
         private static LDtkLevel GetLdtkLevel(int index)
         {
-            try
-            {
-                return Platformer.World.LoadLevel($"World_Level_{index}");
-            }
-            catch
-            {
-                return null;
-            }
+            try { return Platformer.World.LoadLevel($"World_Level_{index}"); }
+            catch { return null; }
+        }
+
+        private static LDtkLevel GetLdtkLevel(string id)
+        {
+            try { return Platformer.World.LoadLevel(id); }
+            catch { return null; }
         }
 
         public static LevelData GetLevelData(int index, Vector2 position, int tileSize)
@@ -229,7 +241,7 @@ namespace Basic_platformer
                     };
 
                 default:
-                    throw new Exception("Couldn't find Level");
+                    throw new Exception($"Couldn't find Level of index {index}");
             }
         }
 
@@ -295,7 +307,10 @@ namespace Basic_platformer
             return switched;
         }
 
-        
+        public static void ReloadLastLevelFetched()
+        {
+            Engine.CurrentMap.CurrentLevel.Unload();
+            new Level(LastLevelData).Load();        }
 
         private static int Width(this ILDtkEntity entity)
             => (int)entity.Size.X;
