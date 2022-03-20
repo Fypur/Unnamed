@@ -59,11 +59,13 @@ namespace Basic_platformer
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
 
+            Sprite.LoadAnimationXML("SpriteData.xml");
+
             var map = new Map(Vector2.Zero);
             Engine.CurrentMap = map;
 
             player = (Player)Engine.CurrentMap.Instantiate(
-                new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 7, 10, Content.Load<Texture2D>("Graphics/robot")));
+                new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
 
             map.LoadMap(new Level(Levels.GetLevelData(0, Vector2.Zero)));
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
@@ -117,9 +119,8 @@ namespace Basic_platformer
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
-
             GraphicsDevice.SetRenderTarget(RenderTarget);
+            GraphicsDevice.Clear(Color.White);
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.Render();

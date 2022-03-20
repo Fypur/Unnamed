@@ -7,7 +7,7 @@
     <TieredCompilation>false</TieredCompilation>
   </PropertyGroup>
 	<Target Name="Codegen" BeforeTargets="BeforeBuild">
-		<Exec Command="ldtkgen -i C:\Users\zddng\Documents\Monogame\BasicPlatformer\ldtk\world.ldtk" />
+		<Exec Command="ldtkgen -i C:\Users\Administrateur\Documents\Monogame\BasicPlatformer\ldtk\world.ldtk" />
 	</Target>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -46,6 +46,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="ltdk\world.ldtk">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SpriteData.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

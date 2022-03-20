@@ -34,8 +34,6 @@ namespace Basic_platformer
         private const float unstickTime = 0.1f;
         
         private const float maxGrappleDist = 2000f;
-
-        private readonly Texture2D idleTexture;
         #endregion
 
         #region variables
@@ -70,14 +68,44 @@ namespace Basic_platformer
 
         #endregion
         
-        public Player(Vector2 position, int width, int height, Texture2D idleTexture) : base(position, width, height, constGravityScale, new Sprite(Color.Red)) 
+        public Player(Vector2 position, int width, int height) : base(position, width, height, constGravityScale, new Sprite(Color.White)) 
         {
             Engine.Player = this;
+
+            #region Sprite Animations
+            Sprite.Rect = Rectangle.Empty;
+
+            Sprite.Add(Sprite.AllAnimData["Player"]);
+
+            /*Sprite.Add("idle", new Sprite.Animation(
+                new Texture2D[] { DataManager.Textures["Player/idle1"], DataManager.Textures["Player/idle2"] }, 1, "idle"));
+
+            Sprite.Add("run", new Sprite.Animation(
+                new Texture2D[] { DataManager.Textures["Player/run1"], DataManager.Textures["Player/run2"], DataManager.Textures["Player/run3"], DataManager.Textures["Player/run4"] }, 0.1f, "run"));
+
+            Sprite.Add("jump", new Sprite.Animation(
+                new Texture2D[] { DataManager.Textures["Player/jump1"], DataManager.Textures["Player/jump2"], DataManager.Textures["Player/jump3"] }, 0.2f, "ascend"));
+
+            Sprite.Add("ascend", new Sprite.Animation(new Texture2D[] { DataManager.Textures["Player/ascend"] }, 1, "ascend"));
+
+            Sprite.Add("fall", new Sprite.Animation(new Texture2D[] { DataManager.Textures["Player/fall"] }, 1, "fall"));*/
+
+            Sprite.Play("idle");
+            Sprite.Offset = new Vector2(-3, -1);
+            //Sprite.Origin = HalfSize;
+
+            #endregion
 
             #region StateMachine
 
             stateMachine = new StateMachine<States>(States.Idle);
-            stateMachine.RegisterStateFunctions(States.Jumping, null, () => { if (Velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);
+
+            stateMachine.RegisterStateFunctions(States.Running, () => Sprite.Play("run"), null, null);
+            stateMachine.RegisterStateFunctions(States.Jumping, () => Sprite.Play("jump"), () => { if (Velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);
+            stateMachine.RegisterStateFunctions(States.Falling, () => Sprite.Play("fall"), null, null);
+            stateMachine.RegisterStateFunctions(States.Idle, () => Sprite.Play("idle"), null, null);
+            stateMachine.RegisterStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), null, null);
+
             stateMachine.RegisterStateFunctions(States.Swinging, () =>
                 { 
                     if (grappledSolid is ISwinged swinged)
@@ -92,7 +120,6 @@ namespace Basic_platformer
 
             #endregion
 
-            this.idleTexture = idleTexture;
             respawnPoint = position;
         }
 
@@ -106,6 +133,9 @@ namespace Basic_platformer
                 isAtSwingEnd = false;
                 return; 
             }
+
+            Debug.LogUpdate(stateMachine.CurrentState);
+
             #region Checks for Ground and Wall
             onGround = Collider.CollideAt(Pos + new Vector2(0, 1));
             onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
@@ -137,6 +167,11 @@ namespace Basic_platformer
             }
 
             #endregion
+
+            if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping))
+                stateMachine.Switch(States.Idle);
+            else if (onGround && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && normalMouvement)
+                stateMachine.Switch(States.Running);
 
             #region Horizontal
 
@@ -239,11 +274,6 @@ namespace Basic_platformer
                     Damage(1);
             }*/
             #endregion
-
-            if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging))
-                stateMachine.Switch(States.Idle);
-            else if (onGround && !stateMachine.Is(States.Swinging) && normalMouvement)
-                stateMachine.Switch(States.Running);
 
             collisionX = collisionY = false;
             //Debug.LogUpdate(LiftSpeed);
@@ -499,7 +529,7 @@ namespace Basic_platformer
                     timer.TimeScale = 10;
 
                 Velocity.Y = (-jumpForce) * (timer.Value / maxJumpTime) + LiftBoost.Y;
-            }, () => { if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Falling); } ));
+            }, null));
         }
 
         private void Dash()
@@ -588,10 +618,25 @@ namespace Basic_platformer
 
         public override void Render()
         {
+            if (stateMachine.Is(States.WallSliding))
+            {
+                if (facing == -1)
+                    Sprite.Effect = SpriteEffects.None;
+                else if (facing == 1)
+                    Sprite.Effect = SpriteEffects.FlipHorizontally;
+            }
+            else
+            {
+                if (facing == 1)
+                    Sprite.Effect = SpriteEffects.None;
+                else if (facing == -1)
+                    Sprite.Effect = SpriteEffects.FlipHorizontally;
+            }
+
             //Renderer components
             base.Render();
 
-            Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), Color.Red);
+            //Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), Color.Red);
 
             /*Drawing.Draw(idleTexture, Pos + new Vector2(Width / 2, Height / 2), null, Color.White, 0, new Vector2(idleTexture.Width / 2, idleTexture.Height / 2),
                 Vector2.One * 1.5f, facing == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);*/
