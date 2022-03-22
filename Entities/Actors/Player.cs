@@ -77,19 +77,6 @@ namespace Basic_platformer
 
             Sprite.Add(Sprite.AllAnimData["Player"]);
 
-            /*Sprite.Add("idle", new Sprite.Animation(
-                new Texture2D[] { DataManager.Textures["Player/idle1"], DataManager.Textures["Player/idle2"] }, 1, "idle"));
-
-            Sprite.Add("run", new Sprite.Animation(
-                new Texture2D[] { DataManager.Textures["Player/run1"], DataManager.Textures["Player/run2"], DataManager.Textures["Player/run3"], DataManager.Textures["Player/run4"] }, 0.1f, "run"));
-
-            Sprite.Add("jump", new Sprite.Animation(
-                new Texture2D[] { DataManager.Textures["Player/jump1"], DataManager.Textures["Player/jump2"], DataManager.Textures["Player/jump3"] }, 0.2f, "ascend"));
-
-            Sprite.Add("ascend", new Sprite.Animation(new Texture2D[] { DataManager.Textures["Player/ascend"] }, 1, "ascend"));
-
-            Sprite.Add("fall", new Sprite.Animation(new Texture2D[] { DataManager.Textures["Player/fall"] }, 1, "fall"));*/
-
             Sprite.Play("idle");
             Sprite.Offset = new Vector2(-3, -1);
             //Sprite.Origin = HalfSize;
@@ -104,7 +91,7 @@ namespace Basic_platformer
             stateMachine.RegisterStateFunctions(States.Jumping, () => Sprite.Play("jump"), () => { if (Velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);
             stateMachine.RegisterStateFunctions(States.Falling, () => Sprite.Play("fall"), null, null);
             stateMachine.RegisterStateFunctions(States.Idle, () => Sprite.Play("idle"), null, null);
-            stateMachine.RegisterStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), null, null);
+            stateMachine.RegisterStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Jumping); }, null);
 
             stateMachine.RegisterStateFunctions(States.Swinging, () =>
                 { 
@@ -125,6 +112,8 @@ namespace Basic_platformer
 
         public override void Update()
         {
+            #region Can't Move
+
             if (!canMove)
             {
                 swingPositions.Clear();
@@ -134,7 +123,7 @@ namespace Basic_platformer
                 return; 
             }
 
-            Debug.LogUpdate(stateMachine.CurrentState);
+            #endregion
 
             #region Checks for Ground and Wall
             onGround = Collider.CollideAt(Pos + new Vector2(0, 1));
@@ -146,7 +135,7 @@ namespace Basic_platformer
             base.Update();
             #endregion
 
-            #region calulating the moving direction and the facing direction
+            #region Moving direction
             {
                 if (Input.GetKey(Keys.Right) || Input.GetKey(Keys.D))
                     xMoving = 1;
@@ -161,17 +150,18 @@ namespace Basic_platformer
                     yMoving = 1;
                 if (!((Input.GetKey(Keys.Up) || Input.GetKey(Keys.Z)) ^ (Input.GetKey(Keys.Down) || Input.GetKey(Keys.S))))
                     yMoving = 0;
-
-                if (xMoving != 0)
-                    facing = xMoving;
             }
 
             #endregion
+
+            #region Premoving StateMachine Update
 
             if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping))
                 stateMachine.Switch(States.Idle);
             else if (onGround && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && normalMouvement)
                 stateMachine.Switch(States.Running);
+
+            #endregion
 
             #region Horizontal
 
@@ -275,11 +265,23 @@ namespace Basic_platformer
             }*/
             #endregion
 
+            #region Post Update StateMachine Update and Facing
+
+            if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !Collider.CollideAt(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
+                stateMachine.Switch(States.Jumping);
+
+            if (xMoving != 0 && !isUnsticking)
+                facing = xMoving;
+
+            #endregion
+
             collisionX = collisionY = false;
             //Debug.LogUpdate(LiftSpeed);
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
         }
+
+        #region IsRiding and Squish
 
         public override bool IsRiding(Solid solid)
             => (base.IsRiding(solid)
@@ -289,6 +291,12 @@ namespace Basic_platformer
         public override void Squish()
             => Death();
 
+        #endregion
+
+        #region Movement
+
+        #region Rope Movement
+
         private void ThrowRope()
         {
             #region Determining grappling point
@@ -297,7 +305,7 @@ namespace Basic_platformer
             float distance = maxGrappleDist;
             float reserveDistance = maxGrappleDist;
 
-            foreach(Fiourp.Solid g in SwingingPoint.SwingingPoints)
+            foreach (Fiourp.Solid g in SwingingPoint.SwingingPoints)
             {
                 float d = Vector2.Distance(MiddleExactPos, g.MiddleExactPos);
 
@@ -307,7 +315,7 @@ namespace Basic_platformer
                     bool onRightDir = true;
                     int signX = Math.Sign(dir.X), signY = Math.Sign(dir.Y);
 
-                    if ( !( (xMoving == signX || xMoving == 0 ) && (yMoving == signY || yMoving == 0 ) ) )
+                    if (!((xMoving == signX || xMoving == 0) && (yMoving == signY || yMoving == 0)))
                     {
                         if (d > reserveDistance)
                             continue;
@@ -371,23 +379,24 @@ namespace Basic_platformer
 
                     }));
             }
-            else if(determinedGrappledSolid is GrapplingTrigger trigger)
+            else if (determinedGrappledSolid is GrapplingTrigger trigger)
             {
                 stateMachine.Switch(States.Pulling);
                 trigger.Active = false;
                 bool deactivateLine = false;
 
-                AddComponent(new Timer(0.1f, true, 
+                AddComponent(new Timer(0.1f, true,
                     (timer) => {
                         Velocity.Y *= 0.5f;
                     },
                     () => {
-                    trigger.Pulled();
-                    deactivateLine = true;
-                    stateMachine.Switch(States.Jumping);
-                    Velocity.Y = -500; }));
+                        trigger.Pulled();
+                        deactivateLine = true;
+                        stateMachine.Switch(States.Jumping);
+                        Velocity.Y = -500;
+                    }));
 
-                AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, 2, Color.Blue, 
+                AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, 2, Color.Blue,
                     (line) => { if (deactivateLine) RemoveComponent(line); },
                     (line) => {
                         line.Positions[0] = Pos + new Vector2(Width / 2, Height / 2);
@@ -409,7 +418,7 @@ namespace Basic_platformer
                 ropeLength -= Vector2.Distance(swingPositions[i], swingPositions[i + 1]);
 
             Vector2 testPos = ExactPos + HalfSize + Velocity * Engine.Deltatime;
-            
+
             if ((grapplePos - testPos).Length() > ropeLength)
             {
                 testPos = grapplePos + Vector2.Normalize(testPos - grapplePos) * ropeLength;
@@ -418,9 +427,9 @@ namespace Basic_platformer
             }
             else
                 isAtSwingEnd = false;
-            
+
             #endregion
-            
+
             #region Determining the right position to Swing to (Rope colliding with terrain)
 
             swingPositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
@@ -507,14 +516,9 @@ namespace Basic_platformer
             #endregion
         }
 
-        public void Death()
-        {
-            ExactPos = respawnPoint;
-            Velocity = Vector2.Zero;
-            stateMachine.Switch(States.Idle);
+        #endregion
 
-            Levels.ReloadLastLevelFetched();
-        }
+        #region Jump
 
         private void Jump()
         {
@@ -530,26 +534,6 @@ namespace Basic_platformer
 
                 Velocity.Y = (-jumpForce) * (timer.Value / maxJumpTime) + LiftBoost.Y;
             }, null));
-        }
-
-        private void Dash()
-        {
-            hasDashed = true;
-            stateMachine.Switch(States.Dashing);
-
-            int dir = facing;
-            Velocity.X += dashSpeed * dir;
-
-            AddComponent(new Timer(dashTime, true, (timer) => {
-                if (collisionX)
-                    timer.End();
-                else
-                {
-                    Velocity.Y = 0;
-                    normalMouvement = false;
-                }
-            } 
-            , () => normalMouvement = true));
         }
 
         private void WallJump()
@@ -574,6 +558,10 @@ namespace Basic_platformer
             }, () => { if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Falling); } ));
         }
 
+        #endregion
+
+        #region WallSlide
+
         private void WallSlide()
         {
             stateMachine.Switch(States.WallSliding);
@@ -590,9 +578,64 @@ namespace Basic_platformer
                         isUnsticking = false;
                         RemoveComponent(timer);
                     }
-                }, () => { Velocity.X += xMoving * 4; isUnsticking = false; stateMachine.Switch(States.Falling); }));
+                }, () => { Velocity.X += xMoving * 4; isUnsticking = false; Debug.Log("wallslide func"); }));
             }
         }
+
+        #endregion
+
+        #region Dash
+
+        private void Dash()
+        {
+            hasDashed = true;
+            stateMachine.Switch(States.Dashing);
+
+            int dir = facing;
+            Velocity.X += dashSpeed * dir;
+
+            AddComponent(new Timer(dashTime, true, (timer) => {
+                if (collisionX)
+                    timer.End();
+                else
+                {
+                    Velocity.Y = 0;
+                    normalMouvement = false;
+                }
+            }
+            , () => normalMouvement = true));
+        }
+
+        #endregion
+
+        public Vector2 LiftBoost
+        {
+            get
+            {
+                Vector2 boost = LiftSpeed;
+                if (boost.Y < 0)
+                    boost.Y = 0;
+
+                return boost;
+            }
+        }
+
+        #endregion
+
+        #region Death
+
+        public void Death()
+        {
+            ExactPos = respawnPoint;
+            Velocity = Vector2.Zero;
+            stateMachine.Switch(States.Idle);
+
+            Levels.ReloadLastLevelFetched();
+        }
+
+        #endregion
+
+        #region OnCollision
 
         void CollisionX()
         {
@@ -606,18 +649,12 @@ namespace Basic_platformer
             collisionY = true;
         }
 
-        /*public void Damage(int direction)
-        {
-            Death();
-            Velocity.X += 300 * direction;
-            Velocity.Y -= 200;
-            invicible = true;
-            Timer timer = new Timer(invinciblityTime, true, null, () => invicible = false);
-            AddComponent(timer);
-        }*/
+        #endregion
 
         public override void Render()
         {
+            #region SpriteEffects Facing
+
             if (stateMachine.Is(States.WallSliding))
             {
                 if (facing == -1)
@@ -633,25 +670,10 @@ namespace Basic_platformer
                     Sprite.Effect = SpriteEffects.FlipHorizontally;
             }
 
+            #endregion
+
             //Renderer components
             base.Render();
-
-            //Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), Color.Red);
-
-            /*Drawing.Draw(idleTexture, Pos + new Vector2(Width / 2, Height / 2), null, Color.White, 0, new Vector2(idleTexture.Width / 2, idleTexture.Height / 2),
-                Vector2.One * 1.5f, facing == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);*/
-        }
-
-        public Vector2 LiftBoost
-        {
-            get
-            {
-                Vector2 boost = LiftSpeed;
-                if(boost.Y < 0)
-                    boost.Y = 0;
-
-                return boost;
-            }
         }
     }
 }

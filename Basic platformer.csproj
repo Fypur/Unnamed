@@ -28,6 +28,7 @@
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Graphics\Player\" />
     <Folder Include="Content\obj\DesktopGL\Content\" />
     <Folder Include="ltdk\" />
     <Folder Include="UI\" />
