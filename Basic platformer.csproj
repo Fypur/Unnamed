@@ -28,6 +28,7 @@
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Graphics\Objects\" />
     <Folder Include="Content\Graphics\Player\" />
     <Folder Include="Content\obj\DesktopGL\Content\" />
     <Folder Include="ltdk\" />
@@ -49,7 +50,7 @@
     <None Update="ltdk\world.ldtk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="SpriteData.xml">
+    <None Update="Utility\SpriteData.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

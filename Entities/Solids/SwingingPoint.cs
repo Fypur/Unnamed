@@ -12,15 +12,15 @@ namespace Basic_platformer
         private const int width = 7;
         private const int height = 7;
 
-        public SwingingPoint(Vector2 position) : base(position, width, height, Color.Blue) { SwingingPoints.Add(this); }
+        public SwingingPoint(Vector2 position) : base(position, width, height, new Sprite(DataManager.Textures["Objects/swingingPoint"])) 
+        { 
+            SwingingPoints.Add(this); 
+            Collider.Collidable = false;
+            Sprite.Centered = true;
+        }
 
         public SwingingPoint(Vector2[] positions, float[] timesBetweenPositions, Func<float, float> easeFunction = null)
             : base(width, height, new Sprite(Color.Blue), positions, timesBetweenPositions, easeFunction) { SwingingPoints.Add(this); }
-
-        public override void Render()
-        {
-            Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, width, height), Color.Blue);
-        }
 
         public override void OnDestroy()
             => SwingingPoints.Remove(this);

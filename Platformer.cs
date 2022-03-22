@@ -59,7 +59,7 @@ namespace Basic_platformer
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
 
-            Sprite.LoadAnimationXML("SpriteData.xml");
+            Sprite.LoadAnimationXML("Utility/SpriteData.xml");
 
             var map = new Map(Vector2.Zero);
             Engine.CurrentMap = map;

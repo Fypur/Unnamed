@@ -67,30 +67,30 @@ namespace Basic_platformer
                 if (neighRect.X < lvlRect.X)
                 {
                     //left
-                    Vector2 pos = new Vector2(level.WorldX - 5, Math.Max(level.WorldY, neigh.WorldY));
-                    Vector2 size = new Vector2(10, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
+                    Vector2 pos = new Vector2(level.WorldX - 1, Math.Max(level.WorldY, neigh.WorldY));
+                    Vector2 size = new Vector2(2, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Left));
 
                 }
                 else if (neighRect.Y < lvlRect.Y)
                 {
                     //top
-                    Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY - 5);
-                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 10);
+                    Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY - 1);
+                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 2);
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Up));
                 }
                 if (neighRect.X + neighRect.Width > lvlRect.X + lvlRect.Width)
                 {
                     //right
-                    Vector2 pos = new Vector2(level.WorldX + level.Size.X - 5, Math.Max(level.WorldY, neigh.WorldY));
-                    Vector2 size = new Vector2(10, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
+                    Vector2 pos = new Vector2(level.WorldX + level.Size.X - 1, Math.Max(level.WorldY, neigh.WorldY));
+                    Vector2 size = new Vector2(2, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Right));
                 }
                 else
                 {
                     //bottom
-                    Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY + level.Size.Y - 5);
-                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 10);
+                    Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY + level.Size.Y - 1);
+                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 2);
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Down));
                 }
             }

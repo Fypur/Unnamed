@@ -88,7 +88,7 @@ namespace Basic_platformer
             stateMachine = new StateMachine<States>(States.Idle);
 
             stateMachine.RegisterStateFunctions(States.Running, () => Sprite.Play("run"), null, null);
-            stateMachine.RegisterStateFunctions(States.Jumping, () => Sprite.Play("jump"), () => { if (Velocity.Y > 0) stateMachine.Switch(States.Falling); }, null);
+            stateMachine.RegisterStateFunctions(States.Jumping, () => Sprite.Play("jump"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
             stateMachine.RegisterStateFunctions(States.Falling, () => Sprite.Play("fall"), null, null);
             stateMachine.RegisterStateFunctions(States.Idle, () => Sprite.Play("idle"), null, null);
             stateMachine.RegisterStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Jumping); }, null);
@@ -118,7 +118,8 @@ namespace Basic_platformer
             {
                 swingPositions.Clear();
                 swingPositionsSign = new List<int> { 0 };
-                stateMachine.Switch(States.Jumping);
+                if (stateMachine.Is(States.Swinging))
+                    stateMachine.Switch(States.Jumping);
                 isAtSwingEnd = false;
                 return; 
             }
