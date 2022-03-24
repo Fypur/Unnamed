@@ -10,6 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:C:\Users\Administrateur\.nuget\packages\ldtkmonogame.contentpipeline\0.4.1\lib\netcoreapp3.1\LDtk.ContentPipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -281,18 +282,6 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/GrassTileSet/verticalPillar.png
 
-#begin Graphics/Objects/swingingPoint.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Graphics/Objects/swingingPoint.png
-
 #begin Graphics/Player/ascend.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -460,4 +449,21 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Graphics/SpikeTest.png
+
+#begin Graphics/swingingPoint.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/swingingPoint.png
+
+#begin world.ldtk
+/importer:LDtkWorldImporter
+/processor:LDtkWorldProcessor
+/build:world.ldtk
 

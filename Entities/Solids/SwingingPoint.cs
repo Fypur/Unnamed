@@ -12,11 +12,10 @@ namespace Basic_platformer
         private const int width = 7;
         private const int height = 7;
 
-        public SwingingPoint(Vector2 position) : base(position, width, height, new Sprite(DataManager.Textures["Objects/swingingPoint"])) 
-        { 
-            SwingingPoints.Add(this); 
+        public SwingingPoint(Vector2 position) : base(position, width, height, new Sprite(DataManager.Textures["swingingPoint"].CropTo(new Vector2(0, 16), new Vector2(8, 8)), new Rectangle(position.ToPoint(), new Point(width, height)))) 
+        {
+            SwingingPoints.Add(this);
             Collider.Collidable = false;
-            Sprite.Centered = true;
         }
 
         public SwingingPoint(Vector2[] positions, float[] timesBetweenPositions, Func<float, float> easeFunction = null)

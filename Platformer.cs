@@ -44,7 +44,7 @@ namespace Basic_platformer
 
             Cam = new Camera(new Vector2(Engine.RenderTarget.Width / 2, Engine.RenderTarget.Height / 2), 0, 1);
 
-            World = LDtkWorld.LoadWorld("ldtk/world.ldtk");
+            World = LDtkWorld.LoadWorld("Content/world.ldtk");
 
             base.Initialize();
 

@@ -1,6 +1,7 @@
 ﻿using Fiourp;
 using LDtk;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,6 +96,24 @@ namespace Basic_platformer
                 }
             }
 
+            foreach(LayerInstance l in level.LayerInstances)
+            {
+                if (l._Type == LayerType.Tiles)
+                {
+                    Texture2D tileSet = Engine.Content.Load<Texture2D>(System.IO.Path.ChangeExtension(l._TilesetRelPath, null));
+
+                    foreach (TileInstance t in l.GridTiles)
+                    {
+                        Texture2D texture = tileSet.CropTo(t.Src.ToVector2(), new Vector2(l._GridSize, l._GridSize));
+
+                        Sprite s = new Sprite(texture);
+                        s.Effect = (SpriteEffects)t.F;
+                        s.Origin = Vector2.Zero;
+                        entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX, t.Px.Y + l._PxTotalOffsetY), l._GridSize, l._GridSize, s));
+                    }
+                }
+            }
+
             #endregion
 
             return entities;
@@ -113,9 +132,7 @@ namespace Basic_platformer
             levelIndex = index;
             LDtkLevel ldtk = GetLdtkLevel(index);
             if (ldtk != null)
-            {
                 return GetLevelData(ldtk);
-            }
 
             if (position == null)
                 throw new Exception("Must Specify a Position for a Hard Coded Level");
@@ -286,7 +303,6 @@ namespace Basic_platformer
             if (upLevel != null)
                 transitions.Add(new LevelTransition(new Vector2(0, -2) + p, new Vector2(Engine.ScreenSize.X, 4),
                             upLevel, LevelTransition.Direction.Up));
-
 
             return transitions;
         }
