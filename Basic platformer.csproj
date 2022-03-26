@@ -7,7 +7,7 @@
     <TieredCompilation>false</TieredCompilation>
   </PropertyGroup>
 	<Target Name="Codegen" BeforeTargets="BeforeBuild">
-		<Exec Command="ldtkgen -i C:\Users\Administrateur\Documents\Monogame\BasicPlatformer\Content\world.ldtk" />
+		<Exec Command="ldtkgen -i C:\Users\zddng\Documents\Monogame\BasicPlatformer\Content\world.ldtk" />
 	</Target>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>

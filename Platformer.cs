@@ -40,7 +40,7 @@ namespace Basic_platformer
 
         protected override void Initialize()
         {
-            Engine.Initialize(graphics, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24)); ;
+            Engine.Initialize(graphics, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24), "Utility/SpriteData.xml");
 
             Cam = new Camera(new Vector2(Engine.RenderTarget.Width / 2, Engine.RenderTarget.Height / 2), 0, 1);
 
@@ -58,8 +58,6 @@ namespace Basic_platformer
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
-
-            Sprite.LoadAnimationXML("Utility/SpriteData.xml");
 
             var map = new Map(Vector2.Zero);
             Engine.CurrentMap = map;

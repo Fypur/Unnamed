@@ -1,15 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Sprites>
 	
-	<Player path="Player" start="idle">
+	<Tilesets>
+		<OneOfEach id="1" path="grass" tileSize="8"/>
+	</Tilesets>
+	
+	<Animations>
+	
+		<Player path="Player" start="idle">
 		
-		<Loop id="idle" path="idle" delay="1" goto="idle"/>
-		<Loop id="run" path="run" delay="0.1" goto="run"/>
-		<Anim id="jump" path="jump" delay="0.1" goto="ascend"/>
-		<Loop id="ascend" path="ascend" delay="1" goto="ascend"/>
-		<Loop id="fall" path="fall" delay="1" goto="fall"/>
-		<Loop id="wallSlide" path="wallSlide" delay="1" goto="wallSlide"/>
+			<Loop id="idle" path="idle" delay="1"/>
+			<Loop id="run" path="run" delay="0.1"/>
+			<Anim id="jump" path="jump" delay="0.1" goto="ascend"/>
+			<Loop id="ascend" path="ascend" delay="1"/>
+			<Loop id="fall" path="fall" delay="1"/>
+			<Loop id="wallSlide" path="wallSlide" delay="1"/>
 		
-	</Player>
+		</Player>
+	
+	</Animations>
 	
 </Sprites>
