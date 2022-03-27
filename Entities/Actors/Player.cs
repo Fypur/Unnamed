@@ -579,7 +579,7 @@ namespace Basic_platformer
                         isUnsticking = false;
                         RemoveComponent(timer);
                     }
-                }, () => { Velocity.X += xMoving * 4; isUnsticking = false; Debug.Log("wallslide func"); }));
+                }, () => { Velocity.X += xMoving * 4; isUnsticking = false; }));
             }
         }
 
