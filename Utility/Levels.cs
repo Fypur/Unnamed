@@ -57,7 +57,10 @@ namespace Basic_platformer
             foreach (LDtkTypes.DeathTrigger p in level.GetEntities<LDtkTypes.DeathTrigger>())
                 entities.Add(new DeathTrigger(p.Position, p.Size));
 
-            #region Level Transitions
+            foreach (LDtkTypes.InitPlayerSpawn p in level.GetEntities<LDtkTypes.InitPlayerSpawn>())
+                Engine.CurrentMap.Instantiate(new Player(p.Position, 9, 18));
+
+                #region Level Transitions
 
             foreach (NeighbourLevel n in level._Neighbours)
             {

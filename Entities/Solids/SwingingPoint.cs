@@ -9,8 +9,8 @@ namespace Basic_platformer
     public class SwingingPoint : CyclingSolid, ISwinged
     {
         public static List<Solid> SwingingPoints = new List<Solid>();
-        private const int width = 7;
-        private const int height = 7;
+        private const int width = 8;
+        private const int height = 8;
 
         public SwingingPoint(Vector2 position) : base(position, width, height, new Sprite(DataManager.Textures["swingingPoint"].CropTo(new Vector2(0, 16), new Vector2(8, 8)), new Rectangle(position.ToPoint(), new Point(width, height)))) 
         {

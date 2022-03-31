@@ -23,11 +23,11 @@ namespace Basic_platformer
 
         public static LDtkWorld World;
 
-        public static Player player;
+        public static Player player => (Player)Engine.Player;
 
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
-        private static EventInstance music;
+        public static ParticleSystem pS;
 
         public Platformer()
         {
@@ -49,6 +49,7 @@ namespace Basic_platformer
             base.Initialize();
 
             PauseMenu = new PauseMenu();
+            pS = new ParticleSystem();
             /*CurrentMap.Instantiate(new TextBox("Le gaming ou quoi donde cuando je mange des pates a l'aide de mes deux bras gauches " +
                 "car bon nous on est pas des zemmouriens tu vois ce que je dire lol des barres zfhbeqrfy tgiustg ozerihuierg", "Pixel", 0.01f, Vector2.One * 40, 500, 200));
             */
@@ -62,8 +63,8 @@ namespace Basic_platformer
             var map = new Map(Vector2.Zero);
             Engine.CurrentMap = map;
 
-            player = (Player)Engine.CurrentMap.Instantiate(
-                new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
+            //player = (Player)Engine.CurrentMap.Instantiate(
+                //new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
 
             map.LoadMap(new Level(Levels.GetLevelData(0, Vector2.Zero)));
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
@@ -104,10 +105,29 @@ namespace Basic_platformer
                 player.Pos = Input.MousePos;
             }
 
-            if (Input.GetKeyDown(Keys.W))
-                Cam.Move(Vector2.UnitX * -100, 0.2f);
+            if (Input.GetKey(Keys.W))
+            {
+                var PT = new ParticleType();
+                PT.Color = Color.Red;
+                PT.Color = Color.Yellow;
+                PT.Color2 = Color.Orange;
+                PT.Size = 4;
+                PT.SizeRange = 3;
+                PT.LifeMin = 1;
+                PT.LifeMax = 2;
+                PT.SpeedMin = 70;
+                PT.SpeedMax = 100;
+                PT.Direction = -90;
+                PT.DirectionRange = 90;
+                PT.Acceleration = Vector2.UnitY * 100;
+                PT.Friction = 0.1f;
+                PT.FadeMode = ParticleType.FadeModes.EndLinear;
+                PT.SizeChange = ParticleType.FadeModes.EndSmooth;
+                pS.Emit(PT, 100, Input.MousePos, null, -90, Color.White);
+            }
 
 #endif
+            pS.Update();
 
             Cam.Update();
             Input.UpdateOldState();
@@ -118,8 +138,10 @@ namespace Basic_platformer
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.SetRenderTarget(RenderTarget);
-            GraphicsDevice.Clear(Color.White);
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+            GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+
+            pS.Render();
 
             Engine.CurrentMap.Render();
 
@@ -129,20 +151,20 @@ namespace Basic_platformer
 
             GraphicsDevice.SetRenderTarget(null);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
             spriteBatch.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
             Drawing.DebugPoint((int)Engine.ScreenSize.X / Engine.RenderTarget.Width);
 
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.BackToFront, null, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.UIRender();
 
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.BackToFront, null, SamplerState.PointClamp, null, null, null, null);
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
             if (Paused)
                 PauseMenu.Render();

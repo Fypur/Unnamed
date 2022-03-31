@@ -34,6 +34,8 @@ namespace Basic_platformer
         private const float unstickTime = 0.1f;
         
         private const float maxGrappleDist = 2000f;
+
+        private readonly ParticleType Dust;
         #endregion
 
         #region variables
@@ -67,8 +69,8 @@ namespace Basic_platformer
         private bool collisionY;
 
         #endregion
-        
-        public Player(Vector2 position, int width, int height) : base(position, width, height, constGravityScale, new Sprite(Color.White)) 
+
+        public Player(Vector2 position, int width, int height) : base(position, width, height, constGravityScale, new Sprite(Color.White))
         {
             Engine.Player = this;
 
@@ -94,7 +96,7 @@ namespace Basic_platformer
             stateMachine.RegisterStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Jumping); }, null);
 
             stateMachine.RegisterStateFunctions(States.Swinging, () =>
-                { 
+                {
                     if (grappledSolid is ISwinged swinged)
                         swinged.OnGrapple(this, () => isAtSwingEnd); }, null,
                         () =>
@@ -104,6 +106,23 @@ namespace Basic_platformer
                 });
 
             AddComponent(stateMachine);
+
+            #endregion
+
+            #region Dust Particle
+
+            Dust = new ParticleType() {
+                LifeMin = 0.3f,
+                LifeMax = 0.4f,
+                Color = Color.White,
+                Size = 0.7f,
+                SizeRange = 0.2f,
+                SizeChange = ParticleType.FadeModes.Linear,
+                Direction = 1.5f,
+                DirectionRange = 0.5f,
+                SpeedMin = 5,
+                SpeedMax = 15,
+            };
 
             #endregion
 
@@ -236,36 +255,6 @@ namespace Basic_platformer
             }
             #endregion
 
-            #region Entity Collisions
-            /*if (CollideAt(Engine.CurrentMap.Data.Solids, Pos))
-                Death();
-
-            if (CollidedWithEntityOfType(Pos + new Vector2(0, 7), out Goomba goomba) &&
-                !CollidedWithEntity(goomba, Pos + new Vector2(1, 0)) &&
-                !CollidedWithEntity(goomba, Pos + new Vector2(-1, 0)))
-            {
-                Engine.CurrentMap.Destroy(goomba);
-                Jump();
-            }
-            else if (!invicible)
-            {
-                if (CollidedWithEntityOfType(Pos + new Vector2(1, 0), out goomba))
-                {
-                    if (!CollidedWithEntity(goomba, Pos + new Vector2(-1, 0)))
-                        Damage(-1);
-                    else
-                    {
-                        if (Pos.X - goomba.Pos.X < 0)
-                            Damage(-1);
-                        else
-                            Damage(1);
-                    }
-                }
-                else if (CollidedWithEntityOfType<Goomba>(Pos + new Vector2(-1, 0)))
-                    Damage(1);
-            }*/
-            #endregion
-
             #region Post Update StateMachine Update and Facing
 
             if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !Collider.CollideAt(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
@@ -276,8 +265,22 @@ namespace Basic_platformer
 
             #endregion
 
+
+            Dust.LifeMin = 0.3f;
+            Dust.LifeMax = 0.4f;
+            Dust.Color = Color.White;
+            Dust.Size = 1.5f;
+            Dust.SizeRange = 0.2f;
+            Dust.SizeChange = ParticleType.FadeModes.Linear;
+            Dust.Direction = 0;
+            Dust.DirectionRange = 0.5f;
+            Dust.SpeedMin = 5;
+            Dust.SpeedMax = 15;
+
+            if (Input.GetKeyDown(Keys.C))
+                Platformer.pS.Emit(Dust, -Vector2.One * 5, this, 1000);
+
             collisionX = collisionY = false;
-            //Debug.LogUpdate(LiftSpeed);
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
         }
@@ -365,7 +368,6 @@ namespace Basic_platformer
                 totalRopeLength = distance;
 
                 Vector2 grapplingPos = determinedGrappledSolid.MiddleExactPos;
-
                 swingPositions.Add(grapplingPos);
 
                 AddComponent(new LineRenderer(new List<Vector2> { Pos, grapplingPos }, 2, Color.Blue,
@@ -568,6 +570,8 @@ namespace Basic_platformer
             stateMachine.Switch(States.WallSliding);
             if(Velocity.Y > 0)
                 gravityScale = 0.5f * constGravityScale;
+
+            Platformer.pS.Emit(Dust.Create(this, new Vector2(0, 0)), 1000);
 
             if (!isUnsticking && xMoving != 0 && (xMoving < 0) == onRightWall)
             {
