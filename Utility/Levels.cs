@@ -12,26 +12,46 @@ namespace Basic_platformer
 {
     public static class Levels
     {
-        private static int levelIndex;
+        public static int LevelIndex;
         public static LevelData LastLevelData { 
             get  {
-                var ldtk = GetLdtkLevel(levelIndex);
+                var ldtk = GetLdtkLevel(LevelIndex);
                 if (ldtk != null)
                     return GetLevelData(ldtk);
                 else
-                    return GetLevelData(levelIndex);
+                    return GetLevelData(LevelIndex);
             } }
 
         private static List<Entity> GetLevelEntities(this LDtkLevel level)
         {
             List<Entity> entities = new List<Entity>();
 
-            foreach (LDtkTypes.Platform p in level.GetEntities<LDtkTypes.Platform>())
+            foreach (LDtkTypes.Platform p in
+                level.GetEntities<LDtkTypes.Platform>())
             {
+                Entity plat;
                 if (p.Positions.Length == 0)
-                    entities.Add(new Platform(p.Position, p.Width(), p.Height(), p.Color));
+                    plat = new Platform(p.Position, p.Width(), p.Height(), p.Color);
                 else
-                    entities.Add(new CyclingPlatform(p.Width(), p.Height(), p.Color, p.Positions.ToVector2().AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut));
+                    plat = new CyclingPlatform(p.Width(), p.Height(), p.Color, ArrayCenteredToTile(p.Positions).AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut);
+
+                entities.Add(plat);
+
+                switch (p.SpikeDirection)
+                {
+                    case LDtkTypes.Direction.Up:
+                        plat.AddChild(new SpikeRow(new Vector2(0, -Spike.DefaultSize) + plat.Pos, Spike.Direction.Right, plat.Width, Spike.Direction.Up));
+                        break;
+                    case LDtkTypes.Direction.Down:
+                        plat.AddChild(new SpikeRow(new Vector2(0, plat.Height) + plat.Pos, Spike.Direction.Right, plat.Width, Spike.Direction.Down));
+                        break;
+                    case LDtkTypes.Direction.Left:
+                        plat.AddChild(new SpikeRow(new Vector2(-Spike.DefaultSize, 0) + plat.Pos, Spike.Direction.Down, plat.Height, Spike.Direction.Left));
+                        break;
+                    case LDtkTypes.Direction.Right:
+                        plat.AddChild(new SpikeRow(new Vector2(plat.Width, 0) + plat.Pos, Spike.Direction.Down, plat.Height, Spike.Direction.Right));
+                        break;
+                }
             }
 
             foreach (LDtkTypes.GrapplingPoint p in level.GetEntities<LDtkTypes.GrapplingPoint>())
@@ -57,10 +77,14 @@ namespace Basic_platformer
             foreach (LDtkTypes.DeathTrigger p in level.GetEntities<LDtkTypes.DeathTrigger>())
                 entities.Add(new DeathTrigger(p.Position, p.Size));
 
-            foreach (LDtkTypes.InitPlayerSpawn p in level.GetEntities<LDtkTypes.InitPlayerSpawn>())
-                Engine.CurrentMap.Instantiate(new Player(p.Position, 9, 18));
+            if (Engine.Player == null)
+                foreach (LDtkTypes.InitPlayerSpawn p in level.GetEntities<LDtkTypes.InitPlayerSpawn>())
+                    Engine.CurrentMap.Instantiate(new Player(p.Position));
 
-                #region Level Transitions
+            foreach (LDtkTypes.SwingTriggered p in level.GetEntities<LDtkTypes.SwingTriggered>())
+                entities.Add(new SwingTriggeredBlock(p.Position, p.Positions.ToVector2(), p.Width(), p.Height()));
+            
+            #region Level Transitions
 
             foreach (NeighbourLevel n in level._Neighbours)
             {
@@ -99,7 +123,7 @@ namespace Basic_platformer
                 }
             }
 
-            foreach(LayerInstance l in level.LayerInstances)
+            foreach (LayerInstance l in level.LayerInstances)
             {
                 if (l._Type == LayerType.Tiles)
                 {
@@ -123,6 +147,20 @@ namespace Basic_platformer
 
             Vector2 GridToWorldCoords(Point coords)
                 => coords.ToVector2() * 8 + level.Position.ToVector2();
+
+            Vector2[] ArrayCenteredToTile(Point[] v)
+            {
+                Vector2[] w = new Vector2[v.Length];
+                for (int i = 0; i < v.Length; i++)
+                    w[i] = (CenteredToTile(v[i].ToVector2()));
+                return w;
+            }
+
+            Vector2 CenteredToTile(Vector2 v)
+            {
+                v -= new Vector2(level.GetIntGrid("IntGrid").TileSize / 2);
+                return v;
+            }
         }
 
         /// <summary>
@@ -132,7 +170,7 @@ namespace Basic_platformer
         /// <returns></returns>
         public static LevelData GetLevelData(int index, Vector2? position = null)
         {
-            levelIndex = index;
+            LevelIndex = index;
             LDtkLevel ldtk = GetLdtkLevel(index);
             if (ldtk != null)
                 return GetLevelData(ldtk);

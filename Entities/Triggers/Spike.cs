@@ -9,7 +9,7 @@ namespace Basic_platformer
 {
     public class Spike : DeathTrigger
     {
-        public const int size = 8;
+        public const int DefaultSize = 8;
         public float Rotation { get => Sprite.Rotation; set => Sprite.Rotation = MathHelper.ToDegrees(value); }
         public static Texture2D texture = DataManager.GetTexture("SpikeTest");
         public enum Direction { Up, Down, Left, Right };
@@ -19,7 +19,7 @@ namespace Basic_platformer
         { }
 
         public Spike(Vector2 position, Direction direction)
-            : base(position, size, size)
+            : base(position, DefaultSize, DefaultSize)
         {
             float rotation = GetRotation(direction);
 

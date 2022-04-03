@@ -5,6 +5,7 @@ namespace LDtkTypes
 {
     public enum Direction
     {
+        Null,
         Up,
         Left,
         Right,

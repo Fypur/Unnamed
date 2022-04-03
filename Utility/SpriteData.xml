@@ -3,6 +3,7 @@
 	
 	<Tilesets>
 		<OneOfEach id="1" path="grass" tileSize="8"/>
+		<OneOfEach id="2" path="grass2" tileSize="8"/>
 	</Tilesets>
 	
 	<Animations>

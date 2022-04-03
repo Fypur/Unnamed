@@ -13,21 +13,21 @@ namespace Basic_platformer
         public SpikeRow(Vector2 position, Spike.Direction direction, int length, Spike.Direction pointingTowards)
             : base(GetBaseParameter(direction, length, position, out int width, out int height), width, height, null)
         {
-            int spikeNb = length / Spike.size;
+            int spikeNb = length / Spike.DefaultSize;
             Vector2 move = Vector2.Zero;
             switch (direction)
             {
                 case Spike.Direction.Up:
-                    move = new Vector2(0, -Spike.size);
+                    move = new Vector2(0, -Spike.DefaultSize);
                     break;
                 case Spike.Direction.Down:
-                    move = new Vector2(0, Spike.size);
+                    move = new Vector2(0, Spike.DefaultSize);
                     break;
                 case Spike.Direction.Left:
-                    move = new Vector2(-Spike.size, 0);
+                    move = new Vector2(-Spike.DefaultSize, 0);
                     break;
                 case Spike.Direction.Right:
-                    move = new Vector2(Spike.size, 0);
+                    move = new Vector2(Spike.DefaultSize, 0);
                     break;
             }
 

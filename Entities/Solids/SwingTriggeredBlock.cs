@@ -6,17 +6,23 @@ using System.Threading.Tasks;
 using Fiourp;
 using Microsoft.Xna.Framework;
 
-namespace Basic_platformer.Entities.Solids
+namespace Basic_platformer
 {
     public class SwingTriggeredBlock : MovingSolid, ISwinged
     {
+        public  float MaxSpeed = 1000;
+        public  float Acceleration = 10;
+        public  float friction = 0.1f;
+
         public Vector2[] Positions;
         
         private int currentPosIndex;
         private bool movingForwards;
+        private Vector2 normalizedDir;
+        private Vector2 nextPos;
         private bool isMoving;
 
-        public SwingTriggeredBlock(Vector2 position, Vector2[] positions, int width, int height, Sprite sprite) : base(DetermineInitPos(position, positions, out int initIndex), width, height, sprite)
+        public SwingTriggeredBlock(Vector2 position, Vector2[] positions, int width, int height) : base(DetermineInitPos(position, positions, out int initIndex), width, height, new Sprite(Color.LightBlue))
         {
             Positions = positions;
             currentPosIndex = initIndex;
@@ -28,6 +34,9 @@ namespace Basic_platformer.Entities.Solids
             if (grappledEntity is Player player)
                 Trigger();
         }
+
+        void ISwinged.OnStopGrapple(Entity unGrappledEntity)
+            => isMoving = false;
 
         public void Trigger()
         {
@@ -41,7 +50,35 @@ namespace Basic_platformer.Entities.Solids
             else if(currentPosIndex == 0)
                 movingForwards = true;
 
+            if(movingForwards)
+                nextPos = Positions[currentPosIndex + 1];
+            else
+                nextPos = Positions[currentPosIndex - 1];
 
+            normalizedDir = Vector2.Normalize(nextPos - ExactPos);
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            if (isMoving)
+                Velocity += normalizedDir * Acceleration;
+
+            Velocity -= Velocity * friction;
+            Velocity = Vector2.Clamp(Velocity, -new Vector2(MaxSpeed), new Vector2(MaxSpeed));
+            Velocity = (VectorHelper.ClosestOnSegment(ExactPos + Velocity * Engine.Deltatime, Positions[currentPosIndex], nextPos) - ExactPos) / Engine.Deltatime;
+
+            if (Vector2.DistanceSquared(ExactPos + Velocity * Engine.Deltatime, nextPos) < 2)
+            {
+                isMoving = false;
+                Velocity = Vector2.Zero;
+                if (movingForwards)
+                    currentPosIndex++;
+                else
+                    currentPosIndex--;
+            }
+
+            Move(Velocity * Engine.Deltatime);
         }
 
         private static Vector2 DetermineInitPos(Vector2 position, Vector2[] positions, out int index)

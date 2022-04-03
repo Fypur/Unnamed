@@ -14,7 +14,7 @@ namespace Basic_platformer
 
         private enum States { Idle, Running, Jumping, Falling, Dashing, Swinging, WallSliding, Pulling }
 
-        private const float maxSpeed = 250;
+        private const float maxSpeed = 150;
         private const float maxFallingSpeed = 300;
         private const float dashSpeed = 200;
         
@@ -70,7 +70,7 @@ namespace Basic_platformer
 
         #endregion
 
-        public Player(Vector2 position, int width, int height) : base(position, width, height, constGravityScale, new Sprite(Color.White))
+        public Player(Vector2 position) : base(position, 9, 15, constGravityScale, new Sprite(Color.White))
         {
             Engine.Player = this;
 
@@ -174,7 +174,7 @@ namespace Basic_platformer
 
             #endregion
 
-            #region Premoving StateMachine Update
+            #region Pre Moving StateMachine Update
 
             if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping))
                 stateMachine.Switch(States.Idle);
@@ -185,21 +185,19 @@ namespace Basic_platformer
 
             #region Horizontal
 
-            #region Velocity calculation and clamping
-            {
-                if (normalMouvement && onGround)
-                    Velocity.X += xMoving * acceleration - friction * Velocity.X;
-                else if (normalMouvement && isAtSwingEnd)
-                    Velocity.X += xMoving * swingAcceleration;
-                else if (normalMouvement && !onWall)
-                    Velocity.X += xMoving * airAcceleration - airFriction * Velocity.X;
+            //Velocity calculation and clamping
 
-                if (normalMouvement && !stateMachine.Is(States.Swinging))
-                    Velocity.X = Math.Clamp(Velocity.X, -maxSpeed, maxSpeed);
-                if (Velocity.X <= 1 && Velocity.X >= -1)
-                    Velocity.X = 0;
-            }
-            #endregion
+            if (normalMouvement && onGround)
+                Velocity.X += xMoving * acceleration - friction * Velocity.X;
+            else if (normalMouvement && isAtSwingEnd)
+                Velocity.X += xMoving * swingAcceleration;
+            else if (normalMouvement && !onWall)
+                Velocity.X += xMoving * airAcceleration - airFriction * Velocity.X;
+
+            if (normalMouvement && !stateMachine.Is(States.Swinging))
+                Velocity.X = Math.Clamp(Velocity.X, -maxSpeed, maxSpeed);
+            if (Velocity.X <= 1 && Velocity.X >= -1)
+                Velocity.X = 0;
 
             #endregion
 
@@ -255,7 +253,7 @@ namespace Basic_platformer
             }
             #endregion
 
-            #region Post Update StateMachine Update and Facing
+            #region Post Moving StateMachine Update and Facing
 
             if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !Collider.CollideAt(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
                 stateMachine.Switch(States.Jumping);

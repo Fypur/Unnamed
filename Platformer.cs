@@ -66,8 +66,9 @@ namespace Basic_platformer
             //player = (Player)Engine.CurrentMap.Instantiate(
                 //new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
 
-            map.LoadMap(new Level(Levels.GetLevelData(0, Vector2.Zero)));
-            Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
+            map.LoadMap(new Level(Levels.GetLevelData(1, Vector2.Zero)));
+            Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size - new Vector2(0, 4));
+            Cam.FollowsPlayer = true;
         }
 
         protected override void Update(GameTime gameTime)
@@ -138,7 +139,7 @@ namespace Basic_platformer
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.SetRenderTarget(RenderTarget);
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.Black * 0.5f);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             pS.Render();

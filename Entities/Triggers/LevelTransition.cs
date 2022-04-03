@@ -45,7 +45,10 @@ namespace Basic_platformer
             cam.SetBoundaries(Rectangle.Empty);
 
             if (toLevel == null)
+            {
                 toLevel = new Level(Levels.GetLevelData(ldtk));
+                Levels.LevelIndex = int.Parse(ldtk.Identifier[^1..]);
+            }
             toLevel.Load();
 
             Player p = (Player)entity;
@@ -73,7 +76,7 @@ namespace Basic_platformer
             AddComponent(new Timer(transitionTime, true, null, () => {
                 p.canMove = true;
                 Engine.CurrentMap.CurrentLevel = toLevel;
-                Engine.Cam.SetBoundaries(toLevel.Pos, toLevel.Size);
+                Engine.Cam.SetBoundaries(toLevel.Pos, toLevel.Size - new Vector2(0, 4));
                 oldLevel.Unload();
             }));
         }
