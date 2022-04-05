@@ -17,14 +17,18 @@ namespace Basic_platformer
         public Vector2[] Positions;
         
         private int currentPosIndex;
-        private bool movingForwards;
+        private bool movingForwards = true;
         private Vector2 normalizedDir;
         private Vector2 nextPos;
         private bool isMoving;
+        private bool looped;
 
         public SwingTriggeredBlock(Vector2 position, Vector2[] positions, int width, int height) : base(DetermineInitPos(position, positions, out int initIndex), width, height, new Sprite(Color.LightBlue))
         {
             Positions = positions;
+            if (Positions[0] == Positions[Positions.Length - 1])
+                looped = true;
+
             currentPosIndex = initIndex;
             SwingingPoint.SwingingPoints.Add(this);
         }
@@ -32,7 +36,10 @@ namespace Basic_platformer
         void ISwinged.OnGrapple(Entity grappledEntity, Func<bool> isAtSwingEnd)
         {
             if (grappledEntity is Player player)
+            {
+                isMoving = true;
                 Trigger();
+            }
         }
 
         void ISwinged.OnStopGrapple(Entity unGrappledEntity)
@@ -40,10 +47,8 @@ namespace Basic_platformer
 
         public void Trigger()
         {
-            if (isMoving)
-                return;
-
-            isMoving = true;
+            if(looped && currentPosIndex == Positions.Length - 1)
+                currentPosIndex = 0;
 
             if(currentPosIndex == Positions.Length - 1)
                 movingForwards = false;
@@ -70,12 +75,14 @@ namespace Basic_platformer
 
             if (Vector2.DistanceSquared(ExactPos + Velocity * Engine.Deltatime, nextPos) < 2)
             {
-                isMoving = false;
                 Velocity = Vector2.Zero;
+
                 if (movingForwards)
                     currentPosIndex++;
                 else
                     currentPosIndex--;
+
+                Trigger();
             }
 
             Move(Velocity * Engine.Deltatime);

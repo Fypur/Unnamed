@@ -54,7 +54,7 @@ namespace Basic_platformer
             Player p = (Player)entity;
             p.canMove = false;
 
-            cam.Move(toLevel.Pos - oldLevel.Pos, transitionTime, Ease.QuintInAndOut);
+            cam.Move(toLevel.Pos + new Vector2(Engine.RenderTarget.Width / 2, Engine.RenderTarget.Height / 2) - cam.Pos, transitionTime, Ease.QuintInAndOut);
 
             switch (direction)
             {
@@ -73,10 +73,13 @@ namespace Basic_platformer
                     break;
             }
 
-            AddComponent(new Timer(transitionTime, true, null, () => {
+            AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () => {
                 p.canMove = true;
                 Engine.CurrentMap.CurrentLevel = toLevel;
-                Engine.Cam.SetBoundaries(toLevel.Pos, toLevel.Size - new Vector2(0, 4));
+                Vector2 size = toLevel.Size;
+                size.Y -= 4;
+                Debug.Log(size);
+                Engine.Cam.SetBoundaries(toLevel.Pos, size);
                 oldLevel.Unload();
             }));
         }
