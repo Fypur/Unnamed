@@ -33,7 +33,7 @@ namespace Basic_platformer
         private const float invinciblityTime = 1.5f;
         private const float unstickTime = 0.1f;
         
-        private const float maxGrappleDist = 2000f;
+        private const float maxGrappleDist = 1000f;
 
         private readonly ParticleType Dust;
         #endregion
@@ -70,7 +70,7 @@ namespace Basic_platformer
 
         #endregion
 
-        public Player(Vector2 position) : base(position, 9, 15, constGravityScale, new Sprite(Color.White))
+        public Player(Vector2 position) : base(position, 9, 14, constGravityScale, new Sprite(Color.White))
         {
             Engine.Player = this;
 
@@ -80,7 +80,7 @@ namespace Basic_platformer
             Sprite.Add(Sprite.AllAnimData["Player"]);
 
             Sprite.Play("idle");
-            Sprite.Offset = new Vector2(-3, -1);
+            Sprite.Offset = new Vector2(-3, -2);
             //Sprite.Origin = HalfSize;
 
             #endregion
@@ -262,7 +262,6 @@ namespace Basic_platformer
                 facing = xMoving;
 
             #endregion
-
 
             Dust.LifeMin = 0.3f;
             Dust.LifeMax = 0.4f;
@@ -519,8 +518,6 @@ namespace Basic_platformer
 
         #endregion
 
-        #region Jump
-
         private void Jump()
         {
             stateMachine.Switch(States.Jumping);
@@ -559,10 +556,6 @@ namespace Basic_platformer
             }, () => { if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Falling); } ));
         }
 
-        #endregion
-
-        #region WallSlide
-
         private void WallSlide()
         {
             stateMachine.Switch(States.WallSliding);
@@ -585,10 +578,6 @@ namespace Basic_platformer
             }
         }
 
-        #endregion
-
-        #region Dash
-
         private void Dash()
         {
             hasDashed = true;
@@ -608,8 +597,6 @@ namespace Basic_platformer
             }
             , () => normalMouvement = true));
         }
-
-        #endregion
 
         public Vector2 LiftBoost
         {

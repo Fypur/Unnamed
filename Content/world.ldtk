@@ -10,7 +10,7 @@
 	},
 	"jsonVersion": "1.1.1",
 	"appBuildId": 458076,
-	"nextUid": 90,
+	"nextUid": 91,
 	"identifierStyle": "Capitalize",
 	"worldLayout": "Free",
 	"worldGridWidth": 256,
@@ -894,6 +894,34 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "JumpThru",
+			"uid": 90,
+			"tags": ["Solid"],
+			"width": 8,
+			"height": 1,
+			"resizableX": true,
+			"resizableY": false,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 1,
+			"lineOpacity": 1,
+			"hollow": false,
+			"color": "#4A4031",
+			"renderMode": "Rectangle",
+			"showName": true,
+			"tilesetId": null,
+			"tileId": null,
+			"tileRenderMode": "FitInside",
+			"tileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 1,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -1473,7 +1501,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "Platform",
-							"__grid": [5,17],
+							"__grid": [14,17],
 							"__pivot": [0,0],
 							"__tags": ["Solid"],
 							"__tile": null,
@@ -1482,7 +1510,7 @@
 							"width": 32,
 							"height": 8,
 							"defUid": 2,
-							"px": [40,136],
+							"px": [112,136],
 							"fieldInstances": [
 								{ "__identifier": "Positions", "__value": [{ "cx": 31, "cy": 17 }], "__type": "Array<Point>", "__tile": null, "defUid": 3, "realEditorValues": [{
 									"id": "V_String",
@@ -1577,6 +1605,48 @@
 								"id": "V_String",
 								"params": ["3,14"]
 							}] }]
+						},
+						{
+							"__identifier": "FallingPlatform",
+							"__grid": [18,12],
+							"__pivot": [0,0],
+							"__tags": ["Solid"],
+							"__tile": null,
+							"__smartColor": "#0A5D2F",
+							"iid": "a65f6680-b4d0-11ec-bf86-9fd175002a8b",
+							"width": 32,
+							"height": 16,
+							"defUid": 11,
+							"px": [144,96],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "JumpThru",
+							"__grid": [11,13],
+							"__pivot": [0,1],
+							"__tags": ["Solid"],
+							"__tile": null,
+							"__smartColor": "#4A4031",
+							"iid": "7f4aa030-b4d0-11ec-9513-2ffd86472d64",
+							"width": 24,
+							"height": 1,
+							"defUid": 90,
+							"px": [88,112],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "JumpThru",
+							"__grid": [11,9],
+							"__pivot": [0,1],
+							"__tags": ["Solid"],
+							"__tile": null,
+							"__smartColor": "#4A4031",
+							"iid": "6fab0880-b4d0-11ec-bcfa-57a66c625570",
+							"width": 104,
+							"height": 1,
+							"defUid": 90,
+							"px": [88,80],
+							"fieldInstances": []
 						}
 					]
 				},
@@ -1725,68 +1795,17 @@
 							"fieldInstances": []
 						},
 						{
-							"__identifier": "GrapplingPoint",
-							"__grid": [19,7],
-							"__pivot": [0,0],
-							"__tags": [ "Solid", "Swing" ],
-							"__tile": { "tilesetUid": 61, "x": 0, "y": 16, "w": 8, "h": 8 },
-							"__smartColor": "#485EFF",
-							"iid": "711bbd30-b4d0-11ec-8e8b-c5f994079f42",
-							"width": 8,
-							"height": 8,
-							"defUid": 8,
-							"px": [152,56],
-							"fieldInstances": [
-								{ "__identifier": "Positions", "__value": [], "__type": "Array<Point>", "__tile": null, "defUid": 9, "realEditorValues": [] },
-								{ "__identifier": "TimeBetweenPositions", "__value": [], "__type": "Array<Float>", "__tile": null, "defUid": 10, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "GrapplingPoint",
-							"__grid": [53,7],
-							"__pivot": [0,0],
-							"__tags": [ "Solid", "Swing" ],
-							"__tile": { "tilesetUid": 61, "x": 0, "y": 16, "w": 8, "h": 8 },
-							"__smartColor": "#485EFF",
-							"iid": "28378080-b4d0-11ec-8e8b-ed33d7ca4631",
-							"width": 8,
-							"height": 8,
-							"defUid": 8,
-							"px": [424,56],
-							"fieldInstances": [
-								{ "__identifier": "Positions", "__value": [], "__type": "Array<Point>", "__tile": null, "defUid": 9, "realEditorValues": [] },
-								{ "__identifier": "TimeBetweenPositions", "__value": [], "__type": "Array<Float>", "__tile": null, "defUid": 10, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "GrapplingPoint",
-							"__grid": [70,2],
-							"__pivot": [0,0],
-							"__tags": [ "Solid", "Swing" ],
-							"__tile": { "tilesetUid": 61, "x": 0, "y": 16, "w": 8, "h": 8 },
-							"__smartColor": "#485EFF",
-							"iid": "3be0c420-b4d0-11ec-8e8b-b5eff2f8c4f6",
-							"width": 8,
-							"height": 8,
-							"defUid": 8,
-							"px": [560,16],
-							"fieldInstances": [
-								{ "__identifier": "Positions", "__value": [], "__type": "Array<Point>", "__tile": null, "defUid": 9, "realEditorValues": [] },
-								{ "__identifier": "TimeBetweenPositions", "__value": [], "__type": "Array<Float>", "__tile": null, "defUid": 10, "realEditorValues": [] }
-							]
-						},
-						{
 							"__identifier": "Spike",
-							"__grid": [76,3],
+							"__grid": [76,6],
 							"__pivot": [0,0],
 							"__tags": ["Attachable"],
 							"__tile": { "tilesetUid": 20, "x": 24, "y": 0, "w": 8, "h": 8 },
 							"__smartColor": "#707874",
 							"iid": "43e97f90-b4d0-11ec-8e8b-03593dd0b654",
 							"width": 8,
-							"height": 128,
+							"height": 104,
 							"defUid": 17,
-							"px": [608,24],
+							"px": [608,48],
 							"fieldInstances": [{ "__identifier": "Direction", "__value": "Left", "__type": "LocalEnum.Direction", "__tile": { "tilesetUid": 20, "x": 24, "y": 0, "w": 8, "h": 8 }, "defUid": 21, "realEditorValues": [{
 								"id": "V_String",
 								"params": ["Left"]
@@ -1825,6 +1844,23 @@
 								"id": "V_String",
 								"params": ["Up"]
 							}] }]
+						},
+						{
+							"__identifier": "GrapplingPoint",
+							"__grid": [58,2],
+							"__pivot": [0,0],
+							"__tags": [ "Solid", "Swing" ],
+							"__tile": { "tilesetUid": 61, "x": 0, "y": 16, "w": 8, "h": 8 },
+							"__smartColor": "#485EFF",
+							"iid": "0a0ccc50-b4d0-11ec-8026-dda7418beb15",
+							"width": 8,
+							"height": 8,
+							"defUid": 8,
+							"px": [464,16],
+							"fieldInstances": [
+								{ "__identifier": "Positions", "__value": [], "__type": "Array<Point>", "__tile": null, "defUid": 9, "realEditorValues": [] },
+								{ "__identifier": "TimeBetweenPositions", "__value": [], "__type": "Array<Float>", "__tile": null, "defUid": 10, "realEditorValues": [] }
+							]
 						}
 					]
 				},
@@ -1856,27 +1892,27 @@
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,
 						1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 						0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,
 						1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,
 						0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,1,
 						1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

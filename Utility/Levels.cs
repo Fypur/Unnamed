@@ -77,6 +77,9 @@ namespace Basic_platformer
             foreach (LDtkTypes.DeathTrigger p in level.GetEntities<LDtkTypes.DeathTrigger>())
                 entities.Add(new DeathTrigger(p.Position, p.Size));
 
+            foreach (LDtkTypes.JumpThru p in level.GetEntities<LDtkTypes.JumpThru>())
+                entities.Add(new JumpThru(p.Position, p.Width(), 1, new Sprite(Color.Brown)));
+
             if (Engine.Player == null)
                 foreach (LDtkTypes.InitPlayerSpawn p in level.GetEntities<LDtkTypes.InitPlayerSpawn>())
                     Engine.CurrentMap.Instantiate(new Player(p.Position));

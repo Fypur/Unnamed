@@ -28,7 +28,7 @@ namespace Basic_platformer
 
         public IEnumerator Fall(float shakeTime)
         {
-            AddComponent(new Shaker(shakeTime, 0.6f));
+            AddComponent(new Shaker(shakeTime, 1.2f, true));
             yield return new Coroutine.WaitForSeconds(shakeTime);
             gravityScale = constGravityScale;
         }
