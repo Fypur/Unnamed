@@ -13,21 +13,22 @@ namespace Basic_platformer
     public static class Levels
     {
         public static int LevelIndex;
+        public static LDtkLevel LastLDtkLevel;
         public static LevelData LastLevelData { 
             get  {
-                var ldtk = GetLdtkLevel(LevelIndex);
-                if (ldtk != null)
-                    return GetLevelData(ldtk);
+                if (LastLDtkLevel != null)
+                    return GetLevelData(LastLDtkLevel);
                 else
                     return GetLevelData(LevelIndex);
-            } }
+            }
+        }
 
         private static List<Entity> GetLevelEntities(this LDtkLevel level)
         {
             List<Entity> entities = new List<Entity>();
+            LDtkIntGrid intGrid = level.GetIntGrid("IntGrid");
 
-            foreach (LDtkTypes.Platform p in
-                level.GetEntities<LDtkTypes.Platform>())
+            foreach (LDtkTypes.Platform p in level.GetEntities<LDtkTypes.Platform>())
             {
                 Entity plat;
                 if (p.Positions.Length == 0)
@@ -78,7 +79,9 @@ namespace Basic_platformer
                 entities.Add(new DeathTrigger(p.Position, p.Size));
 
             foreach (LDtkTypes.JumpThru p in level.GetEntities<LDtkTypes.JumpThru>())
-                entities.Add(new JumpThru(p.Position, p.Width(), 1, new Sprite(Color.Brown)));
+                entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), new Sprite(Color.Brown)));
+            foreach (LDtkTypes.JumpThru2 p in level.GetEntities<LDtkTypes.JumpThru2>())
+                entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), new Sprite(Color.Brown)));
 
             if (Engine.Player == null)
                 foreach (LDtkTypes.InitPlayerSpawn p in level.GetEntities<LDtkTypes.InitPlayerSpawn>())
@@ -86,7 +89,12 @@ namespace Basic_platformer
 
             foreach (LDtkTypes.SwingTriggered p in level.GetEntities<LDtkTypes.SwingTriggered>())
                 entities.Add(new SwingTriggeredBlock(p.Position, p.Positions.ToVector2(), p.Width(), p.Height()));
-            
+
+            foreach (LDtkTypes.TextSpawn p in level.GetEntities<LDtkTypes.TextSpawn>())
+                entities.Add(new TextSpawn(p.Position, p.Size, GridToWorldCoords(p.TextPos), p.Text));
+
+            bool downNeighbours = false;
+
             #region Level Transitions
 
             foreach (NeighbourLevel n in level._Neighbours)
@@ -95,7 +103,7 @@ namespace Basic_platformer
                 Rectangle lvlRect = new Rectangle(level.Position, level.Size);
                 Rectangle neighRect = new Rectangle(neigh.Position, neigh.Size);
 
-                if (neighRect.X < lvlRect.X)
+                if (neighRect.X + neighRect.Width == lvlRect.X)
                 {
                     //left
                     Vector2 pos = new Vector2(level.WorldX - 1, Math.Max(level.WorldY, neigh.WorldY));
@@ -103,14 +111,14 @@ namespace Basic_platformer
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Left));
 
                 }
-                else if (neighRect.Y < lvlRect.Y)
+                else if (neighRect.Y + neighRect.Height == lvlRect.Y)
                 {
                     //top
                     Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY - 1);
                     Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 2);
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Up));
                 }
-                if (neighRect.X + neighRect.Width > lvlRect.X + lvlRect.Width)
+                else if (neighRect.X == lvlRect.X + lvlRect.Width)
                 {
                     //right
                     Vector2 pos = new Vector2(level.WorldX + level.Size.X - 1, Math.Max(level.WorldY, neigh.WorldY));
@@ -120,6 +128,7 @@ namespace Basic_platformer
                 else
                 {
                     //bottom
+                    downNeighbours = true;
                     Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY + level.Size.Y - 1);
                     Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 2);
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Down));
@@ -135,16 +144,20 @@ namespace Basic_platformer
                     foreach (TileInstance t in l.GridTiles)
                     {
                         Texture2D texture = tileSet.CropTo(t.Src.ToVector2(), new Vector2(l._GridSize, l._GridSize));
+                        texture.Name = tileSet.Name + t.T.ToString();
 
                         Sprite s = new Sprite(texture);
                         s.Effect = (SpriteEffects)t.F;
                         s.Origin = Vector2.Zero;
-                        entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX, t.Px.Y + l._PxTotalOffsetY), l._GridSize, l._GridSize, s));
+                        entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
                     }
                 }
             }
 
             #endregion
+
+            if (!downNeighbours)
+                entities.Add(new DeathTrigger(level.Position.ToVector2() + level.Size.ToVector2().OnlyY(), new Vector2(level.Size.X, intGrid.TileSize)));
 
             return entities;
 
@@ -161,7 +174,7 @@ namespace Basic_platformer
 
             Vector2 CenteredToTile(Vector2 v)
             {
-                v -= new Vector2(level.GetIntGrid("IntGrid").TileSize / 2);
+                v -= new Vector2(intGrid.TileSize / 2);
                 return v;
             }
         }
@@ -176,7 +189,10 @@ namespace Basic_platformer
             LevelIndex = index;
             LDtkLevel ldtk = GetLdtkLevel(index);
             if (ldtk != null)
+            {
+                LastLDtkLevel = ldtk;
                 return GetLevelData(ldtk);
+            }
 
             if (position == null)
                 throw new Exception("Must Specify a Position for a Hard Coded Level");
@@ -187,7 +203,10 @@ namespace Basic_platformer
         }
 
         public static LevelData GetLevelData(LDtkLevel ldtk)
-            => new LevelData(ldtk.GetLevelEntities(), ldtk.Position.ToVector2(), SwitchXAndY(ldtk.GetIntGrid("IntGrid").Values), Engine.CurrentMap, null, null);
+        {
+            LastLDtkLevel = ldtk;
+            return new LevelData(ldtk.GetLevelEntities(), ldtk.Position.ToVector2(), SwitchXAndY(ldtk.GetIntGrid("IntGrid").Values), Engine.CurrentMap, null, null);
+        }
 
         private static LDtkLevel GetLdtkLevel(int index)
         {
@@ -369,8 +388,10 @@ namespace Basic_platformer
 
         public static void ReloadLastLevelFetched()
         {
+            Debug.LogUpdate(LastLevelData.Pos);
             Engine.CurrentMap.CurrentLevel.Unload();
-            new Level(LastLevelData).Load();        }
+            new Level(LastLevelData).Load();
+        }
 
         private static int Width(this ILDtkEntity entity)
             => (int)entity.Size.X;

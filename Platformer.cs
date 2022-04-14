@@ -66,20 +66,21 @@ namespace Basic_platformer
             //player = (Player)Engine.CurrentMap.Instantiate(
                 //new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
 
-            map.LoadMap(new Level(Levels.GetLevelData(1, Vector2.Zero)));
+            map.LoadMap(new Level(Levels.GetLevelData(0, Vector2.Zero)));
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size - new Vector2(0, 4));
             Cam.FollowsPlayer = true;
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            Input.UpdateState();
+
+            if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
                 Exit();
 
-            Input.UpdateState();
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (Input.GetKeyDown(Keys.X))
+            if (Input.GetKeyDown(Keys.Escape))
             {
                 Paused = !Paused;
                 if (Paused)
@@ -98,12 +99,17 @@ namespace Basic_platformer
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
             
-            if(Input.GetKeyDown(Keys.C))
+            if(Input.GetKeyDown(Keys.N))
                 Debug.Clear();
             
             if (Input.GetKeyDown(Keys.V))
             {
                 player.Pos = Input.MousePos;
+            }
+
+            if (Input.GetKeyDown(Keys.R))
+            {
+                Levels.ReloadLastLevelFetched();
             }
 
             if (Input.GetKey(Keys.W))
@@ -126,7 +132,7 @@ namespace Basic_platformer
                 PT.SizeChange = ParticleType.FadeModes.EndSmooth;
                 pS.Emit(PT, 100, Input.MousePos, null, -90, Color.White);
             }
-
+            //TODO: Glass Breakable wall
 #endif
             pS.Update();
 

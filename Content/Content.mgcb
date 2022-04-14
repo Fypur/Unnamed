@@ -21,6 +21,13 @@
 /processorParam:TextureFormat=Compressed
 /build:font.spritefont
 
+#begin Fonts/LexendDeca/File.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/LexendDeca/File.spritefont;Fonts/LexendDeca/Normal.spritefont
+
 #begin Fonts/Pixel/Bold.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

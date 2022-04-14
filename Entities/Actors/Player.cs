@@ -12,11 +12,15 @@ namespace Basic_platformer
     {
         #region constants
 
-        private enum States { Idle, Running, Jumping, Falling, Dashing, Swinging, WallSliding, Pulling }
+        private enum States { Idle, Running, Jumping, Ascending, Falling, Dashing, Swinging, WallSliding, Pulling, Jetpack }
 
-        private const float maxSpeed = 150;
+        private const float maxSpeed = 100;
         private const float maxFallingSpeed = 300;
         private const float dashSpeed = 200;
+
+        private const float jetpackPowerX = 10;
+        private const float jetpackPowerY = 15;
+        private const float maxJetpackTime = 0.5f;
         
         private const float acceleration = 70f;
         private const float airAcceleration = 15f;
@@ -36,20 +40,27 @@ namespace Basic_platformer
         private const float maxGrappleDist = 1000f;
 
         private readonly ParticleType Dust;
+        private readonly ParticleType JetpackParticle;
+
         #endregion
 
         #region variables
+
         private readonly StateMachine<States> stateMachine;
 
         public bool canMove = true;
+        public bool Jetpacking;
 
         private int xMoving;
         private int yMoving;
         private int facing = 1;
+
         private bool normalMouvement = true;
-        //private bool invicible;
+        private bool cancelJump;
         private bool hasDashed;
         private bool isUnsticking;
+        private float jetpackTime;
+        private Vector2 AddedJetpackSpeed;
 
         private float totalRopeLength;
         private Solid grappledSolid;
@@ -70,7 +81,7 @@ namespace Basic_platformer
 
         #endregion
 
-        public Player(Vector2 position) : base(position, 9, 14, constGravityScale, new Sprite(Color.White))
+        public Player(Vector2 position) : base(position, 8, 14, constGravityScale, new Sprite(Color.White))
         {
             Engine.Player = this;
 
@@ -90,10 +101,12 @@ namespace Basic_platformer
             stateMachine = new StateMachine<States>(States.Idle);
 
             stateMachine.RegisterStateFunctions(States.Running, () => Sprite.Play("run"), null, null);
-            stateMachine.RegisterStateFunctions(States.Jumping, () => Sprite.Play("jump"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
+            stateMachine.RegisterStateFunctions(States.Jumping, () => Sprite.Play("jump"), null, null);
+            stateMachine.RegisterStateFunctions(States.Ascending, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
             stateMachine.RegisterStateFunctions(States.Falling, () => Sprite.Play("fall"), null, null);
             stateMachine.RegisterStateFunctions(States.Idle, () => Sprite.Play("idle"), null, null);
-            stateMachine.RegisterStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Jumping); }, null);
+            stateMachine.RegisterStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Ascending); }, null);
+            stateMachine.RegisterStateFunctions(States.Jetpack, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
 
             stateMachine.RegisterStateFunctions(States.Swinging, () =>
                 {
@@ -109,8 +122,6 @@ namespace Basic_platformer
 
             #endregion
 
-            #region Dust Particle
-
             Dust = new ParticleType() {
                 LifeMin = 0.3f,
                 LifeMax = 0.4f,
@@ -124,7 +135,19 @@ namespace Basic_platformer
                 SpeedMax = 15,
             };
 
-            #endregion
+            JetpackParticle = new ParticleType()
+            {
+                LifeMin = 0.2f,
+                LifeMax = 0.4f,
+                Color = Color.Orange,
+                Color2 = Color.Yellow,
+                Size = 4,
+                SizeRange = 3,
+                SizeChange = ParticleType.FadeModes.Linear,
+                Direction = 180,
+                SpeedMin = 2,
+                SpeedMax = 5
+            };
 
             respawnPoint = position;
         }
@@ -138,7 +161,7 @@ namespace Basic_platformer
                 swingPositions.Clear();
                 swingPositionsSign = new List<int> { 0 };
                 if (stateMachine.Is(States.Swinging))
-                    stateMachine.Switch(States.Jumping);
+                    stateMachine.Switch(States.Ascending);
                 isAtSwingEnd = false;
                 return; 
             }
@@ -151,9 +174,7 @@ namespace Basic_platformer
             onWall = Collider.CollideAt(Pos + new Vector2(-1, 0)) || onRightWall;
             #endregion
 
-            #region Component Update
             base.Update();
-            #endregion
 
             #region Moving direction
             {
@@ -176,9 +197,9 @@ namespace Basic_platformer
 
             #region Pre Moving StateMachine Update
 
-            if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping))
+            if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack))
                 stateMachine.Switch(States.Idle);
-            else if (onGround && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && normalMouvement)
+            else if (onGround && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack) && normalMouvement)
                 stateMachine.Switch(States.Running);
 
             #endregion
@@ -194,10 +215,16 @@ namespace Basic_platformer
             else if (normalMouvement && !onWall)
                 Velocity.X += xMoving * airAcceleration - airFriction * Velocity.X;
 
-            if (normalMouvement && !stateMachine.Is(States.Swinging))
-                Velocity.X = Math.Clamp(Velocity.X, -maxSpeed, maxSpeed);
+            if (normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jetpack))
+                Velocity.X = Math.Clamp(Velocity.X, -maxSpeed, maxSpeed);            
+
             if (Velocity.X <= 1 && Velocity.X >= -1)
                 Velocity.X = 0;
+            
+            AddedJetpackSpeed.X = Math.Clamp(AddedJetpackSpeed.X, -jetpackPowerX * 5, jetpackPowerX * 5);
+
+            if (AddedJetpackSpeed.X <= 1 && AddedJetpackSpeed.X >= -1)
+                AddedJetpackSpeed.X = 0;
 
             #endregion
 
@@ -208,9 +235,9 @@ namespace Basic_platformer
                 else
                     gravityScale = constGravityScale;
 
-                if (Input.GetKeyDown(Keys.Space) && onGround)
+                if ((Input.GetKeyDown(Keys.Space) || Input.GetKeyDown(Keys.C)) && onGround)
                     Jump();
-                else if (Input.GetKeyDown(Keys.Space) && onWall)
+                else if ((Input.GetKeyDown(Keys.Space) || Input.GetKeyDown(Keys.C)) && onWall)
                     WallJump();
 
                 if (onGround)
@@ -227,11 +254,20 @@ namespace Basic_platformer
 
             #region Horizontal and Vertical
             {
-                if (Input.GetKeyDown(Keys.E) && !hasDashed)
-                    Dash();
+                if (!onGround && Input.GetKey(Keys.X) && jetpackTime > 0)
+                    Jetpack();
+                else
+                {
+                    AddedJetpackSpeed = Vector2.Zero;
+                    Jetpacking = false;
+                }
 
-                if(onGround || onWall)
-                    hasDashed = false;
+                if((onGround || onWall) && !stateMachine.Is(States.Jetpack))
+                {
+                    cancelJump = false;
+                    jetpackTime = maxJetpackTime;
+                    AddedJetpackSpeed.X = 0;
+                }
 
                 if (Input.GetKeyDown(Keys.A))
                     ThrowRope();
@@ -247,7 +283,7 @@ namespace Basic_platformer
 
                     swingPositions.Clear();
                     swingPositionsSign = new List<int> { 0 };
-                    stateMachine.Switch(States.Jumping);
+                    stateMachine.Switch(States.Ascending);
                     isAtSwingEnd = false;
                 }
             }
@@ -256,7 +292,7 @@ namespace Basic_platformer
             #region Post Moving StateMachine Update and Facing
 
             if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !Collider.CollideAt(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
-                stateMachine.Switch(States.Jumping);
+                stateMachine.Switch(States.Ascending);
 
             if (xMoving != 0 && !isUnsticking)
                 facing = xMoving;
@@ -274,9 +310,11 @@ namespace Basic_platformer
             Dust.SpeedMin = 5;
             Dust.SpeedMax = 15;
 
-            if (Input.GetKeyDown(Keys.C))
-                Platformer.pS.Emit(Dust, -Vector2.One * 5, this, 1000);
+            /*if (Input.GetKeyDown(Keys.C))
+                Platformer.pS.Emit(Dust, -Vector2.One * 5, this, 1000);*/
 
+            Debug.LogUpdate(stateMachine.CurrentState);
+            Velocity += AddedJetpackSpeed;
             collisionX = collisionY = false;
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
@@ -293,8 +331,6 @@ namespace Basic_platformer
             => Death();
 
         #endregion
-
-        #region Movement
 
         #region Rope Movement
 
@@ -392,7 +428,7 @@ namespace Basic_platformer
                     () => {
                         trigger.Pulled();
                         deactivateLine = true;
-                        stateMachine.Switch(States.Jumping);
+                        stateMachine.Switch(States.Ascending);
                         Velocity.Y = -500;
                     }));
 
@@ -518,20 +554,35 @@ namespace Basic_platformer
 
         #endregion
 
+        #region Basic Moves
+
         private void Jump()
         {
             stateMachine.Switch(States.Jumping);
             Velocity.X += LiftBoost.X;
             AddComponent(new Timer(maxJumpTime, true, (timer) =>
             {
-                if (collisionY || hasDashed)
+                if (collisionY || hasDashed || cancelJump)
+                {
                     timer.End();
+                    return;
+                }
 
-                if (!Input.GetKey(Keys.Space))
+                if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C)))
                     timer.TimeScale = 10;
 
-                Velocity.Y = (-jumpForce) * (timer.Value / maxJumpTime) + LiftBoost.Y;
-            }, null));
+                if (Jetpacking && AddedJetpackSpeed.Y < 0)
+                    timer.TimeScale = 3;
+                else
+                    timer.TimeScale = 1;
+
+                Velocity.Y = -jumpForce * (timer.Value / maxJumpTime) + LiftBoost.Y;
+            }, () => {
+                cancelJump = false;
+                AddedJetpackSpeed.X += 0.1f;
+                if (stateMachine.Is(States.Jumping))
+                    stateMachine.Switch(States.Ascending); 
+            }));
         }
 
         private void WallJump()
@@ -544,17 +595,26 @@ namespace Basic_platformer
 
             AddComponent(new Timer(maxJumpTime, true, (timer) =>
             {
-                if (collisionY || hasDashed)
+                if (collisionY || hasDashed || cancelJump)
+                {
                     timer.End();
+                    return;
+                }
 
-                if (!Input.GetKey(Keys.Space))
+                if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C)))
                     timer.TimeScale = 2;
 
-                if(!collisionY)
+                if (Jetpacking && AddedJetpackSpeed.Y < 0)
+                    timer.TimeScale = 3;
+
+                if (!collisionY)
                     Velocity.Y = -jumpForce * timer.Value / maxJumpTime;
 
-            }, () => { if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Falling); } ));
+            }, () => { cancelJump = false;  if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Ascending); } ));
         }
+
+        public void CancelJump()
+            => cancelJump = true;
 
         private void WallSlide()
         {
@@ -578,6 +638,22 @@ namespace Basic_platformer
             }
         }
 
+        public Vector2 LiftBoost
+        {
+            get
+            {
+                Vector2 boost = LiftSpeed;
+                if (boost.Y < 0)
+                    boost.Y = 0;
+
+                return boost;
+            }
+        }
+
+        #endregion
+
+        #region Advancement Moves
+
         private void Dash()
         {
             hasDashed = true;
@@ -598,21 +674,39 @@ namespace Basic_platformer
             , () => normalMouvement = true));
         }
 
-        public Vector2 LiftBoost
+        public void Jetpack()
         {
-            get
-            {
-                Vector2 boost = LiftSpeed;
-                if (boost.Y < 0)
-                    boost.Y = 0;
+            Vector2 dir = new Vector2(xMoving, yMoving);
 
-                return boost;
-            }
+            jetpackTime -= Engine.Deltatime;
+            if (jetpackTime <= 0)
+                return;
+
+            //stateMachine.Switch(States.Jetpack);
+
+            if (dir == Vector2.Zero)
+                dir = -Vector2.UnitY;
+
+            if (normalMouvement && onGround)
+                AddedJetpackSpeed.X += dir.X * jetpackPowerX - friction * AddedJetpackSpeed.X;
+            else if (normalMouvement && isAtSwingEnd)
+                AddedJetpackSpeed.X += dir.X * swingAcceleration;
+            else if (normalMouvement && !onWall)
+                AddedJetpackSpeed.X += dir.X * jetpackPowerX - airFriction * AddedJetpackSpeed.X;
+
+            if (stateMachine.Is(States.Jumping) && Jetpacking)
+                AddedJetpackSpeed.Y += dir.Y * jetpackPowerY * 0.5f;
+            else
+                AddedJetpackSpeed.Y = dir.Y * jetpackPowerY;
+
+            Jetpacking = true;
+
+            Platformer.pS.Emit(JetpackParticle, MiddlePos);
         }
 
         #endregion
 
-        #region Death
+        #region Events
 
         public void Death()
         {
@@ -622,10 +716,6 @@ namespace Basic_platformer
 
             Levels.ReloadLastLevelFetched();
         }
-
-        #endregion
-
-        #region OnCollision
 
         void CollisionX()
         {

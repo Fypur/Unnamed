@@ -47,20 +47,22 @@ namespace Basic_platformer
             if (toLevel == null)
             {
                 toLevel = new Level(Levels.GetLevelData(ldtk));
-                Levels.LevelIndex = int.Parse(ldtk.Identifier[^1..]);
             }
             toLevel.Load();
+
+            Engine.CurrentMap.CurrentLevel = toLevel;
+            Vector2 size = toLevel.Size;
+            size.Y -= 4;
 
             Player p = (Player)entity;
             p.canMove = false;
 
-            cam.Move(toLevel.Pos + new Vector2(Engine.RenderTarget.Width / 2, Engine.RenderTarget.Height / 2) - cam.Pos, transitionTime, Ease.QuintInAndOut);
+            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(toLevel.Pos.ToPoint(), size.ToPoint())) - cam.Pos, transitionTime, Ease.QuintInAndOut);
 
             switch (direction)
             {
                 case Direction.Up:
                     p.Pos.Y = Pos.Y - p.Height;
-                    p.Velocity.Y = Math.Min(p.Velocity.Y, -300);
                     break;
                 case Direction.Down:
                     p.Pos.Y = Pos.Y + Height;
@@ -75,10 +77,9 @@ namespace Basic_platformer
 
             AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () => {
                 p.canMove = true;
-                Engine.CurrentMap.CurrentLevel = toLevel;
-                Vector2 size = toLevel.Size;
-                size.Y -= 4;
-                Debug.Log(size);
+                p.CancelJump();
+                if(direction == Direction.Up)
+                       p.Velocity.Y = Math.Min(p.Velocity.Y, -250);
                 Engine.Cam.SetBoundaries(toLevel.Pos, size);
                 oldLevel.Unload();
             }));
