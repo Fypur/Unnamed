@@ -568,13 +568,16 @@ namespace Basic_platformer
                     return;
                 }
 
+                float JumpScale = 0;
                 if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C)))
-                    timer.TimeScale = 10;
+                    JumpScale = 10;
 
                 if (Jetpacking && AddedJetpackSpeed.Y < 0)
                     timer.TimeScale = 3;
                 else
                     timer.TimeScale = 1;
+
+                timer.TimeScale += JumpScale;
 
                 Velocity.Y = -jumpForce * (timer.Value / maxJumpTime) + LiftBoost.Y;
             }, () => {
@@ -601,11 +604,16 @@ namespace Basic_platformer
                     return;
                 }
 
+                float JumpScale = 0;
                 if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C)))
-                    timer.TimeScale = 2;
+                    JumpScale = 2;
 
                 if (Jetpacking && AddedJetpackSpeed.Y < 0)
                     timer.TimeScale = 3;
+                else
+                    timer.TimeScale = 1;
+
+                timer.TimeScale += JumpScale;
 
                 if (!collisionY)
                     Velocity.Y = -jumpForce * timer.Value / maxJumpTime;
@@ -694,10 +702,14 @@ namespace Basic_platformer
             else if (normalMouvement && !onWall)
                 AddedJetpackSpeed.X += dir.X * jetpackPowerX - airFriction * AddedJetpackSpeed.X;
 
+            float coef = 1;
+            if (Velocity.Y > 0)
+                coef = 2;
+
             if (stateMachine.Is(States.Jumping) && Jetpacking)
-                AddedJetpackSpeed.Y += dir.Y * jetpackPowerY * 0.5f;
+                AddedJetpackSpeed.Y += dir.Y * jetpackPowerY * 0.5f * coef;
             else
-                AddedJetpackSpeed.Y = dir.Y * jetpackPowerY;
+                AddedJetpackSpeed.Y = dir.Y * jetpackPowerY * coef;
 
             Jetpacking = true;
 

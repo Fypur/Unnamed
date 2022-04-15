@@ -16,9 +16,8 @@ namespace Basic_platformer
         public TextSpawn(Vector2 position, Vector2 size, Vector2 textPos, string text) : base(position, size, Sprite.None)
         {
             Text = text;
-            TextBox = new TextBox(text, "LexendDeca", Engine.Cam.RenderTargetToScreenPosition(textPos), int.MaxValue, int.MaxValue, 2);
+            TextBox = new TextBox(text, "LexendDeca", Engine.Cam.RenderTargetToScreenPosition(textPos), int.MaxValue, int.MaxValue, 0.7f);
             TextBox.Active = false;
-            Debug.Log($"position: {Engine.Cam.RenderTargetToScreenPosition(textPos)}, {text}");
             AddChild(TextBox);
         }
 
@@ -32,6 +31,8 @@ namespace Basic_platformer
         public override void OnTriggerExit(Entity entity)
         {
             TextBox.Active = false;
+            TextBox.StopProgressiveDraw();
+            TextBox.ClearText();
         }
     }
 }
