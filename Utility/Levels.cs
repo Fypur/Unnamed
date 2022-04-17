@@ -27,14 +27,14 @@ namespace Basic_platformer
         {
             List<Entity> entities = new List<Entity>();
             LDtkIntGrid intGrid = level.GetIntGrid("IntGrid");
-
+            Debug.Log(level.Position);
             foreach (LDtkTypes.Platform p in level.GetEntities<LDtkTypes.Platform>())
             {
                 Entity plat;
                 if (p.Positions.Length == 0)
                     plat = new Platform(p.Position, p.Width(), p.Height(), p.Color);
                 else
-                    plat = new CyclingPlatform(p.Width(), p.Height(), p.Color, ArrayCenteredToTile(p.Positions).AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut);
+                    plat = new CyclingPlatform(p.Position, p.Width(), p.Height(), p.Color, p.GoingForwards, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, Ease.QuintInAndOut);
 
                 entities.Add(plat);
 
@@ -93,6 +93,16 @@ namespace Basic_platformer
             foreach (LDtkTypes.TextSpawn p in level.GetEntities<LDtkTypes.TextSpawn>())
                 entities.Add(new TextSpawn(p.Position, p.Size, GridToWorldCoords(p.TextPos), p.Text));
 
+            foreach(LDtkTypes.SpecialTrigger p in level.GetEntities<LDtkTypes.SpecialTrigger>())
+            {
+                switch (p.Index)
+                {
+                    case 1:
+                        entities.Add(new JetpackActivator(p.Position, p.Size));
+                        break;
+                }
+            }
+
             bool downNeighbours = false;
 
             #region Level Transitions
@@ -107,7 +117,11 @@ namespace Basic_platformer
                 {
                     //left
                     Vector2 pos = new Vector2(level.WorldX - 1, Math.Max(level.WorldY, neigh.WorldY));
-                    Vector2 size = new Vector2(2, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
+                    Vector2 size;
+                    if (level.WorldY + level.Size.Y <= neigh.WorldY + neigh.Size.Y)
+                        size = new Vector2(2, level.WorldY + level.Size.Y - pos.Y);
+                    else
+                        size = new Vector2(2, neigh.WorldY + neigh.Size.Y - pos.Y);
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Left));
 
                 }
@@ -115,14 +129,22 @@ namespace Basic_platformer
                 {
                     //top
                     Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY - 1);
-                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 2);
+                    Vector2 size;
+                    if (level.WorldX + level.Size.X < neigh.WorldX + neigh.Size.X)
+                        size = new Vector2(level.WorldX + level.Size.X - neigh.WorldX, 2);
+                    else
+                        size = new Vector2(neigh.WorldX + neigh.Size.X - level.WorldX, 2);
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Up));
                 }
                 else if (neighRect.X == lvlRect.X + lvlRect.Width)
                 {
                     //right
                     Vector2 pos = new Vector2(level.WorldX + level.Size.X - 1, Math.Max(level.WorldY, neigh.WorldY));
-                    Vector2 size = new Vector2(2, Math.Min(level.WorldY + level.Size.Y, neigh.WorldY + neigh.Size.Y));
+                    Vector2 size;
+                    if (level.WorldY + level.Size.Y <= neigh.WorldY + neigh.Size.Y)
+                        size = new Vector2(2, level.WorldY + level.Size.Y - pos.Y);
+                    else
+                        size = new Vector2(2, neigh.WorldY + neigh.Size.Y - pos.Y);
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Right));
                 }
                 else
@@ -130,7 +152,14 @@ namespace Basic_platformer
                     //bottom
                     downNeighbours = true;
                     Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY + level.Size.Y - 1);
-                    Vector2 size = new Vector2(Math.Min(level.WorldX + level.Size.X, neigh.WorldX + neigh.Size.X), 2);
+
+                    Vector2 size;
+
+                    if (level.WorldX + level.Size.X < neigh.WorldX + neigh.Size.X)
+                        size = new Vector2(level.WorldX + level.Size.X - neigh.WorldX, 2);
+                    else
+                        size = new Vector2(neigh.WorldX + neigh.Size.X - level.WorldX, 2);
+
                     entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Down));
                 }
             }

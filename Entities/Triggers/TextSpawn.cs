@@ -16,14 +16,17 @@ namespace Basic_platformer
         public TextSpawn(Vector2 position, Vector2 size, Vector2 textPos, string text) : base(position, size, Sprite.None)
         {
             Text = text;
-            TextBox = new TextBox(text, "LexendDeca", Engine.Cam.RenderTargetToScreenPosition(textPos), int.MaxValue, int.MaxValue, 0.7f);
+            Vector2 offset = Engine.Cam.WorldToScreenPosition(textPos) + Engine.Cam.ScreenToWorldPosition(Vector2.Zero);
+            TextBox = new TextBox(text, "LexendDeca", offset, int.MaxValue, int.MaxValue, 0.7f);
             TextBox.Active = false;
             AddChild(TextBox);
         }
 
         public override void OnTriggerEnter(Entity entity)
         {
+            //TODO: Progressive Text Removing
             TextBox.Active = true;
+            Debug.Log(TextBox);
             TextBox.ClearText();
             TextBox.ProgressiveDraw(Text, 0.01f, true);
         }

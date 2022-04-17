@@ -9,6 +9,7 @@ namespace LDtkTypes
         Left,
         Right,
         Down,
+        Null,
     }
 }
 #pragma warning restore

@@ -13,7 +13,7 @@ namespace Basic_platformer
     {
         private const float constGravityScale = 0.7f;
         private const float maxFallingSpeed = 160;
-        private const float shakeTime = 1f;
+        private const float shakeTime = 0.5f;
 
         public FallingPlatform(Vector2 position, int width, int height)
             : base(position, width, height, new Sprite(Color.White))

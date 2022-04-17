@@ -50,6 +50,7 @@ namespace Basic_platformer
 
         public bool canMove = true;
         public bool Jetpacking;
+        public bool canJetpack = true;
 
         private int xMoving;
         private int yMoving;
@@ -154,7 +155,6 @@ namespace Basic_platformer
 
         public override void Update()
         {
-            #region Can't Move
 
             if (!canMove)
             {
@@ -166,17 +166,12 @@ namespace Basic_platformer
                 return; 
             }
 
-            #endregion
-
-            #region Checks for Ground and Wall
             onGround = Collider.CollideAt(Pos + new Vector2(0, 1));
             onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
             onWall = Collider.CollideAt(Pos + new Vector2(-1, 0)) || onRightWall;
-            #endregion
 
             base.Update();
 
-            #region Moving direction
             {
                 if (Input.GetKey(Keys.Right) || Input.GetKey(Keys.D))
                     xMoving = 1;
@@ -193,18 +188,10 @@ namespace Basic_platformer
                     yMoving = 0;
             }
 
-            #endregion
-
-            #region Pre Moving StateMachine Update
-
             if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack))
                 stateMachine.Switch(States.Idle);
             else if (onGround && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack) && normalMouvement)
                 stateMachine.Switch(States.Running);
-
-            #endregion
-
-            #region Horizontal
 
             //Velocity calculation and clamping
 
@@ -226,9 +213,7 @@ namespace Basic_platformer
             if (AddedJetpackSpeed.X <= 1 && AddedJetpackSpeed.X >= -1)
                 AddedJetpackSpeed.X = 0;
 
-            #endregion
 
-            #region Vertical
             {
                 if (onWall && !onGround && !stateMachine.Is(States.Swinging))
                     WallSlide();
@@ -250,11 +235,9 @@ namespace Basic_platformer
 
                 Velocity.Y = Math.Min(Velocity.Y, maxFallingSpeed);
             }
-            #endregion
 
-            #region Horizontal and Vertical
             {
-                if (!onGround && Input.GetKey(Keys.X) && jetpackTime > 0)
+                if (!onGround && canJetpack && Input.GetKey(Keys.X) && jetpackTime > 0)
                     Jetpack();
                 else
                 {
@@ -287,9 +270,6 @@ namespace Basic_platformer
                     isAtSwingEnd = false;
                 }
             }
-            #endregion
-
-            #region Post Moving StateMachine Update and Facing
 
             if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !Collider.CollideAt(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
                 stateMachine.Switch(States.Ascending);
@@ -297,7 +277,6 @@ namespace Basic_platformer
             if (xMoving != 0 && !isUnsticking)
                 facing = xMoving;
 
-            #endregion
 
             Dust.LifeMin = 0.3f;
             Dust.LifeMax = 0.4f;
@@ -320,8 +299,6 @@ namespace Basic_platformer
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
         }
 
-        #region IsRiding and Squish
-
         public override bool IsRiding(Solid solid)
             => (base.IsRiding(solid)
                 || ((Collider.CollideAt(solid, Pos + new Vector2(1, 0))
@@ -329,10 +306,6 @@ namespace Basic_platformer
 
         public override void Squish()
             => Death();
-
-        #endregion
-
-        #region Rope Movement
 
         private void ThrowRope()
         {
@@ -552,10 +525,6 @@ namespace Basic_platformer
             #endregion
         }
 
-        #endregion
-
-        #region Basic Moves
-
         private void Jump()
         {
             stateMachine.Switch(States.Jumping);
@@ -658,10 +627,6 @@ namespace Basic_platformer
             }
         }
 
-        #endregion
-
-        #region Advancement Moves
-
         private void Dash()
         {
             hasDashed = true;
@@ -716,10 +681,6 @@ namespace Basic_platformer
             Platformer.pS.Emit(JetpackParticle, MiddlePos);
         }
 
-        #endregion
-
-        #region Events
-
         public void Death()
         {
             ExactPos = respawnPoint;
@@ -741,12 +702,8 @@ namespace Basic_platformer
             collisionY = true;
         }
 
-        #endregion
-
         public override void Render()
         {
-            #region SpriteEffects Facing
-
             if (stateMachine.Is(States.WallSliding))
             {
                 if (facing == -1)
@@ -761,8 +718,6 @@ namespace Basic_platformer
                 else if (facing == -1)
                     Sprite.Effect = SpriteEffects.FlipHorizontally;
             }
-
-            #endregion
 
             //Renderer components
             base.Render();
