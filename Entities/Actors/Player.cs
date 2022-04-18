@@ -619,7 +619,7 @@ namespace Basic_platformer
             get
             {
                 Vector2 boost = LiftSpeed;
-                if (boost.Y < 0)
+                if (boost.Y > 0)
                     boost.Y = 0;
 
                 return boost;
