@@ -10,23 +10,29 @@ namespace Basic_platformer
 {
     public class TextSpawn : PlayerTrigger
     {
+        Vector2 initPos;
         public string Text;
         public TextBox TextBox;
 
         public TextSpawn(Vector2 position, Vector2 size, Vector2 textPos, string text) : base(position, size, Sprite.None)
         {
             Text = text;
-            Vector2 offset = Engine.Cam.WorldToScreenPosition(textPos) + Engine.Cam.ScreenToWorldPosition(Vector2.Zero);
-            TextBox = new TextBox(text, "LexendDeca", offset, int.MaxValue, int.MaxValue, 0.7f);
+            initPos = textPos;
+            TextBox = new TextBox(text, "LexendDeca", Engine.Cam.RenderTargetToWorldPosition(textPos), int.MaxValue, int.MaxValue, 0.7f);
             TextBox.Active = false;
             AddChild(TextBox);
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            TextBox.Pos = Engine.Cam.RenderTargetToWorldPosition(initPos);
         }
 
         public override void OnTriggerEnter(Entity entity)
         {
             //TODO: Progressive Text Removing
             TextBox.Active = true;
-            Debug.Log(TextBox);
             TextBox.ClearText();
             TextBox.ProgressiveDraw(Text, 0.01f, true);
         }

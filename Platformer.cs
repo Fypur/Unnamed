@@ -64,9 +64,9 @@ namespace Basic_platformer
             Engine.CurrentMap = map;
 
             //player = (Player)Engine.CurrentMap.Instantiate(
-                //new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
+            //new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
 
-            map.LoadMap(new Level(Levels.GetLevelData(4, Vector2.Zero)));
+            map.LoadMap(new Level(Levels.GetLevelData(2, Vector2.Zero)));
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size - new Vector2(0, 4));
             Cam.FollowsPlayer = true;
 
@@ -149,6 +149,7 @@ namespace Basic_platformer
         {
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(Color.Black * 0.5f);
+
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             pS.Render();
@@ -158,31 +159,27 @@ namespace Basic_platformer
             Drawing.DebugEvents();
             
             spriteBatch.End();
-
             GraphicsDevice.SetRenderTarget(null);
-
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+
 
             spriteBatch.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
 
-            spriteBatch.End();
 
+            spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
+
             Engine.CurrentMap.UIRender();
-            Vector2 pos = Input.MousePos;
-            Debug.LogUpdate(pos);
-            Drawing.DrawPoint(pos, 5, Color.Red);
+
 
             spriteBatch.End();
-
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
             if (Paused)
                 PauseMenu.Render();
 
             spriteBatch.End();
-
             spriteBatch.Begin();
             
             Drawing.DebugString();

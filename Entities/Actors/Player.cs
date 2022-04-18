@@ -292,7 +292,6 @@ namespace Basic_platformer
             /*if (Input.GetKeyDown(Keys.C))
                 Platformer.pS.Emit(Dust, -Vector2.One * 5, this, 1000);*/
 
-            Debug.LogUpdate(stateMachine.CurrentState);
             Velocity += AddedJetpackSpeed;
             collisionX = collisionY = false;
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);

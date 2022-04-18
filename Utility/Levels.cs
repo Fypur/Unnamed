@@ -25,9 +25,13 @@ namespace Basic_platformer
 
         private static List<Entity> GetLevelEntities(this LDtkLevel level)
         {
+            Rectangle oldCamBounds = Engine.Cam.Bounds;
+            Vector2 oldCamPos = Engine.Cam.Pos;
+            Engine.Cam.SetBoundaries(new Rectangle(level.Position, level.Size));
+
             List<Entity> entities = new List<Entity>();
             LDtkIntGrid intGrid = level.GetIntGrid("IntGrid");
-            Debug.Log(level.Position);
+
             foreach (LDtkTypes.Platform p in level.GetEntities<LDtkTypes.Platform>())
             {
                 Entity plat;
@@ -187,6 +191,9 @@ namespace Basic_platformer
 
             if (!downNeighbours)
                 entities.Add(new DeathTrigger(level.Position.ToVector2() + level.Size.ToVector2().OnlyY(), new Vector2(level.Size.X, intGrid.TileSize)));
+
+            Engine.Cam.SetBoundaries(oldCamBounds);
+            Engine.Cam.Pos = oldCamPos;
 
             return entities;
 
@@ -417,7 +424,6 @@ namespace Basic_platformer
 
         public static void ReloadLastLevelFetched()
         {
-            Debug.LogUpdate(LastLevelData.Pos);
             Engine.CurrentMap.CurrentLevel.Unload();
             new Level(LastLevelData).Load();
         }

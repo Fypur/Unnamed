@@ -1869,16 +1869,16 @@
 						},
 						{
 							"__identifier": "FallingPlatform",
-							"__grid": [31,11],
+							"__grid": [30,17],
 							"__pivot": [0,0],
 							"__tags": ["Solid"],
 							"__tile": null,
 							"__smartColor": "#0A5D2F",
 							"iid": "37fce130-b4d0-11ec-807d-c398beee532f",
-							"width": 24,
+							"width": 40,
 							"height": 16,
 							"defUid": 11,
-							"px": [248,88],
+							"px": [240,136],
 							"fieldInstances": []
 						},
 						{
@@ -1894,6 +1894,40 @@
 							"defUid": 90,
 							"px": [88,128],
 							"fieldInstances": []
+						},
+						{
+							"__identifier": "Spike",
+							"__grid": [27,10],
+							"__pivot": [0,0],
+							"__tags": ["Attachable"],
+							"__tile": { "tilesetUid": 20, "x": 24, "y": 0, "w": 8, "h": 8 },
+							"__smartColor": "#707874",
+							"iid": "233a4930-b4d0-11ec-abac-95213ed4d3e4",
+							"width": 8,
+							"height": 32,
+							"defUid": 17,
+							"px": [216,80],
+							"fieldInstances": [{ "__identifier": "Direction", "__value": "Left", "__type": "LocalEnum.Direction", "__tile": { "tilesetUid": 20, "x": 24, "y": 0, "w": 8, "h": 8 }, "defUid": 21, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Left"]
+							}] }]
+						},
+						{
+							"__identifier": "Spike",
+							"__grid": [28,9],
+							"__pivot": [0,0],
+							"__tags": ["Attachable"],
+							"__tile": { "tilesetUid": 20, "x": 0, "y": 0, "w": 8, "h": 8 },
+							"__smartColor": "#707874",
+							"iid": "2bcd1c30-b4d0-11ec-abac-81fea864c594",
+							"width": 8,
+							"height": 8,
+							"defUid": 17,
+							"px": [224,72],
+							"fieldInstances": [{ "__identifier": "Direction", "__value": "Up", "__type": "LocalEnum.Direction", "__tile": { "tilesetUid": 20, "x": 0, "y": 0, "w": 8, "h": 8 }, "defUid": 21, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Up"]
+							}] }]
 						}
 					]
 				},
@@ -1924,14 +1958,14 @@
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,2,2,
 						2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,
@@ -2349,55 +2383,55 @@
 					"entityInstances": [
 						{
 							"__identifier": "RespawnArea",
-							"__grid": [0,5],
+							"__grid": [0,0],
 							"__pivot": [0,0],
 							"__tags": ["Trigger"],
 							"__tile": null,
 							"__smartColor": "#FF8D00",
 							"iid": "f61d8480-b4d0-11ec-807d-afea8cdc474c",
 							"width": 24,
-							"height": 32,
+							"height": 72,
 							"defUid": 14,
-							"px": [0,40],
-							"fieldInstances": [{ "__identifier": "RespawnPoint", "__value": { "cx": 14, "cy": 17 }, "__type": "Point", "__tile": null, "defUid": 15, "realEditorValues": [{
+							"px": [0,0],
+							"fieldInstances": [{ "__identifier": "RespawnPoint", "__value": { "cx": 18, "cy": 17 }, "__type": "Point", "__tile": null, "defUid": 15, "realEditorValues": [{
 								"id": "V_String",
-								"params": ["14,17"]
+								"params": ["18,17"]
 							}] }]
 						},
 						{
 							"__identifier": "SpecialTrigger",
-							"__grid": [13,12],
+							"__grid": [9,0],
 							"__pivot": [0,0],
 							"__tags": ["Trigger"],
 							"__tile": null,
 							"__smartColor": "#0A43F3",
 							"iid": "a7cb1090-b4d0-11ec-807d-792355ffe8ec",
-							"width": 72,
-							"height": 64,
+							"width": 120,
+							"height": 160,
 							"defUid": 102,
-							"px": [104,96],
+							"px": [72,0],
 							"fieldInstances": [{ "__identifier": "Index", "__value": 1, "__type": "Int", "__tile": null, "defUid": 103, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }]
 						},
 						{
 							"__identifier": "TextSpawn",
-							"__grid": [13,12],
+							"__grid": [9,1],
 							"__pivot": [0,0],
 							"__tags": ["Trigger"],
 							"__tile": null,
 							"__smartColor": "#5EE32D",
 							"iid": "b7b7c160-b4d0-11ec-807d-8fa8f18ad8ed",
-							"width": 88,
-							"height": 64,
+							"width": 120,
+							"height": 152,
 							"defUid": 70,
-							"px": [104,96],
+							"px": [72,8],
 							"fieldInstances": [
 								{ "__identifier": "Text", "__value": "Press X and\na direction to use your jetpack", "__type": "String", "__tile": null, "defUid": 72, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Press X and\na direction to use your jetpack"]
 								}] },
-								{ "__identifier": "TextPos", "__value": { "cx": 35, "cy": 19 }, "__type": "Point", "__tile": null, "defUid": 73, "realEditorValues": [{
+								{ "__identifier": "TextPos", "__value": { "cx": 12, "cy": 8 }, "__type": "Point", "__tile": null, "defUid": 73, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["35,19"]
+									"params": ["12,8"]
 								}] }
 							]
 						},
@@ -2471,13 +2505,13 @@
 					"entityInstances": []
 				}
 			],
-			"__neighbours": [ { "levelIid": "e22be990-b4d0-11ec-99eb-09b957cff8cf", "levelUid": 95, "dir": "w" }, { "levelIid": "e9c37e10-b4d0-11ec-807d-9fc2bd35b950", "levelUid": 104, "dir": "e" } ]
+			"__neighbours": [{ "levelIid": "e22be990-b4d0-11ec-99eb-09b957cff8cf", "levelUid": 95, "dir": "w" }]
 		},
 		{
 			"identifier": "World_Level_5",
 			"iid": "e9c37e10-b4d0-11ec-807d-9fc2bd35b950",
 			"uid": 104,
-			"worldX": 1872,
+			"worldX": 2096,
 			"worldY": -184,
 			"worldDepth": 0,
 			"pxWid": 320,
@@ -2684,7 +2718,7 @@
 					"entityInstances": []
 				}
 			],
-			"__neighbours": [{ "levelIid": "da7e7130-b4d0-11ec-807d-6ff17fc50aa0", "levelUid": 101, "dir": "w" }]
+			"__neighbours": []
 		}
 	],
 	"worlds": []

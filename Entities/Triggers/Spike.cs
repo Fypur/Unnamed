@@ -57,7 +57,6 @@ namespace Basic_platformer
 
         private static Direction GetDirection(float rotation)
         {
-            Debug.Log(rotation);
             switch (rotation)
             {
                 case 0:
