@@ -52,8 +52,10 @@ namespace Basic_platformer
         public bool Jetpacking;
         public bool canJetpack = true;
 
-        private int xMoving;
-        private int yMoving;
+        private float xMoving;
+        private float yMoving;
+        private int xMovingRaw;
+        private int yMovingRaw;
         private int facing = 1;
 
         private bool normalMouvement = true;
@@ -186,9 +188,20 @@ namespace Basic_platformer
                     yMoving = 1;
                 if (!((Input.GetKey(Keys.Up) || Input.GetKey(Keys.Z)) ^ (Input.GetKey(Keys.Down) || Input.GetKey(Keys.S))))
                     yMoving = 0;
+
+                if (Input.GamePadConnected)
+                {
+                    if (xMoving == 0)
+                        xMoving = Input.GetLeftThumbstick().X;
+                    if(yMoving == 0)
+                        yMoving = -Input.GetLeftThumbstick().Y;
+                }
+
+                xMovingRaw = xMoving == 0 ? 0 : xMoving > 0 ? 1 : -1;
+                yMovingRaw = yMovingRaw == 0 ? 0 : yMovingRaw > 0 ? 1 : -1;
             }
 
-            if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack))
+            if (onGround && xMovingRaw == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack))
                 stateMachine.Switch(States.Idle);
             else if (onGround && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack) && normalMouvement)
                 stateMachine.Switch(States.Running);
@@ -220,10 +233,13 @@ namespace Basic_platformer
                 else
                     gravityScale = constGravityScale;
 
-                if ((Input.GetKeyDown(Keys.Space) || Input.GetKeyDown(Keys.C)) && onGround)
-                    Jump();
-                else if ((Input.GetKeyDown(Keys.Space) || Input.GetKeyDown(Keys.C)) && onWall)
-                    WallJump();
+                if(Input.GetKeyDown(Keys.Space) || Input.GetKeyDown(Keys.C) || Input.GetButtonDown(Buttons.A))
+                {
+                    if (onGround)
+                        Jump();
+                    else if(onWall)
+                        WallJump();
+                }
 
                 if (onGround)
                 {
@@ -237,7 +253,7 @@ namespace Basic_platformer
             }
 
             {
-                if (!onGround && canJetpack && Input.GetKey(Keys.X) && jetpackTime > 0)
+                if (!onGround && canJetpack && (Input.GetKey(Keys.X) || Input.GetButton(Buttons.X)) && jetpackTime > 0)
                     Jetpack();
                 else
                 {
@@ -245,18 +261,20 @@ namespace Basic_platformer
                     Jetpacking = false;
                 }
 
-                if((onGround || onWall) && !stateMachine.Is(States.Jetpack))
+                if (onGround)
                 {
-                    cancelJump = false;
                     jetpackTime = maxJetpackTime;
                     AddedJetpackSpeed.X = 0;
                 }
 
-                if (Input.GetKeyDown(Keys.A))
+                if(onGround || onWall)
+                    cancelJump = false;
+
+                if (Input.GetKeyDown(Keys.A) || Input.GetButtonDown(Buttons.LeftTrigger) || Input.GetButtonDown(Buttons.RightTrigger))
                     ThrowRope();
-                if (Input.GetKey(Keys.A) && stateMachine.Is(States.Swinging))
+                if ((Input.GetKey(Keys.A) || Input.GetButton(Buttons.LeftTrigger) || Input.GetButton(Buttons.RightTrigger)) && stateMachine.Is(States.Swinging))
                     Swing();
-                else if(Input.GetKeyUp(Keys.A))
+                else if(Input.GetKeyUp(Keys.A) || Input.GetButtonUp(Buttons.LeftTrigger) || Input.GetButtonUp(Buttons.RightTrigger))
                 {
                     Velocity.X *= 1.2f;
                     if (Velocity.Y < 0)
@@ -274,8 +292,8 @@ namespace Basic_platformer
             if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !Collider.CollideAt(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
                 stateMachine.Switch(States.Ascending);
 
-            if (xMoving != 0 && !isUnsticking)
-                facing = xMoving;
+            if (xMovingRaw != 0 && !isUnsticking)
+                facing = xMovingRaw;
 
 
             Dust.LifeMin = 0.3f;
@@ -324,7 +342,7 @@ namespace Basic_platformer
                     bool onRightDir = true;
                     int signX = Math.Sign(dir.X), signY = Math.Sign(dir.Y);
 
-                    if (!((xMoving == signX || xMoving == 0) && (yMoving == signY || yMoving == 0)))
+                    if (!((xMovingRaw == signX || xMovingRaw == 0) && (yMovingRaw == signY || yMovingRaw == 0)))
                     {
                         if (d > reserveDistance)
                             continue;
@@ -537,7 +555,7 @@ namespace Basic_platformer
                 }
 
                 float JumpScale = 0;
-                if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C)))
+                if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A)))
                     JumpScale = 10;
 
                 if (Jetpacking && AddedJetpackSpeed.Y < 0)
@@ -573,7 +591,7 @@ namespace Basic_platformer
                 }
 
                 float JumpScale = 0;
-                if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C)))
+                if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A)))
                     JumpScale = 2;
 
                 if (Jetpacking && AddedJetpackSpeed.Y < 0)
@@ -600,17 +618,17 @@ namespace Basic_platformer
 
             Platformer.pS.Emit(Dust.Create(this, new Vector2(0, 0)), 1000);
 
-            if (!isUnsticking && xMoving != 0 && (xMoving < 0) == onRightWall)
+            if (!isUnsticking && xMovingRaw != 0 && (xMovingRaw < 0) == onRightWall)
             {
                 isUnsticking = true;
                 AddComponent(new Timer(unstickTime, true, (timer) =>
                 {
-                    if (xMoving != 0 && (xMoving < 0) != onRightWall || !onWall)
+                    if (xMovingRaw != 0 && (xMovingRaw < 0) != onRightWall || !onWall)
                     {
                         isUnsticking = false;
                         RemoveComponent(timer);
                     }
-                }, () => { Velocity.X += xMoving * 4; isUnsticking = false; }));
+                }, () => { Velocity.X += xMovingRaw * 4; isUnsticking = false; }));
             }
         }
 
@@ -648,17 +666,17 @@ namespace Basic_platformer
 
         public void Jetpack()
         {
-            Vector2 dir = new Vector2(xMoving, yMoving);
+            Vector2 dir;
+            if(xMoving == 0 && yMoving == 0)
+                dir = -Vector2.UnitY;
+            else
+                dir = Vector2.Normalize(new Vector2(xMoving, yMoving));
 
             jetpackTime -= Engine.Deltatime;
             if (jetpackTime <= 0)
                 return;
 
             //stateMachine.Switch(States.Jetpack);
-
-            if (dir == Vector2.Zero)
-                dir = -Vector2.UnitY;
-
             if (normalMouvement && onGround)
                 AddedJetpackSpeed.X += dir.X * jetpackPowerX - friction * AddedJetpackSpeed.X;
             else if (normalMouvement && isAtSwingEnd)
@@ -667,7 +685,7 @@ namespace Basic_platformer
                 AddedJetpackSpeed.X += dir.X * jetpackPowerX - airFriction * AddedJetpackSpeed.X;
 
             float coef = 1;
-            if (Velocity.Y > 0)
+            if (Velocity.Y > -15 && dir.Y < 0)
                 coef = 2;
 
             if (stateMachine.Is(States.Jumping) && Jetpacking)

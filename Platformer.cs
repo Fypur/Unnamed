@@ -70,7 +70,7 @@ namespace Basic_platformer
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size - new Vector2(0, 4));
             Cam.FollowsPlayer = true;
 
-            player.canJetpack = false;
+            //player.canJetpack = false;
         }
 
         protected override void Update(GameTime gameTime)
