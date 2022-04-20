@@ -195,10 +195,16 @@ namespace Basic_platformer
                         xMoving = Input.GetLeftThumbstick().X;
                     if(yMoving == 0)
                         yMoving = -Input.GetLeftThumbstick().Y;
+                    xMovingRaw = xMoving > 0.2 ? 1 : xMoving <  -0.2 ? -1 : 0;
+                    yMovingRaw = yMoving > 0.2 ? 1 : yMoving <  -0.2 ? -1 : 0;
                 }
-
-                xMovingRaw = xMoving == 0 ? 0 : xMoving > 0 ? 1 : -1;
-                yMovingRaw = yMovingRaw == 0 ? 0 : yMovingRaw > 0 ? 1 : -1;
+                else
+                {
+                    xMovingRaw = (int)xMoving;
+                    yMovingRaw = (int)yMoving;
+                }
+                
+                Debug.LogUpdate(yMovingRaw);
             }
 
             if (onGround && xMovingRaw == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack))
@@ -558,7 +564,7 @@ namespace Basic_platformer
                 if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A)))
                     JumpScale = 10;
 
-                if (Jetpacking && AddedJetpackSpeed.Y < 0)
+                if (Jetpacking && AddedJetpackSpeed.Y < -10)
                     timer.TimeScale = 3;
                 else
                     timer.TimeScale = 1;
@@ -594,7 +600,7 @@ namespace Basic_platformer
                 if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A)))
                     JumpScale = 2;
 
-                if (Jetpacking && AddedJetpackSpeed.Y < 0)
+                if (Jetpacking && AddedJetpackSpeed.Y < -10)
                     timer.TimeScale = 3;
                 else
                     timer.TimeScale = 1;
@@ -670,7 +676,7 @@ namespace Basic_platformer
             if(xMoving == 0 && yMoving == 0)
                 dir = -Vector2.UnitY;
             else
-                dir = Vector2.Normalize(new Vector2(xMoving, yMoving));
+                dir = new Vector2(xMovingRaw, yMovingRaw);
 
             jetpackTime -= Engine.Deltatime;
             if (jetpackTime <= 0)
@@ -700,11 +706,17 @@ namespace Basic_platformer
 
         public void Death()
         {
-            ExactPos = respawnPoint;
             Velocity = Vector2.Zero;
+            Active = false;
             stateMachine.Switch(States.Idle);
 
-            Levels.ReloadLastLevelFetched();
+            Engine.CurrentMap.Instantiate(new ScreenWipe(1, () =>
+            {
+                ExactPos = respawnPoint;
+                Engine.Cam.Pos = ExactPos;
+                Levels.ReloadLastLevelFetched();
+                Active = true;
+            }));
         }
 
         void CollisionX()

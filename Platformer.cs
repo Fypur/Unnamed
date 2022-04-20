@@ -70,6 +70,7 @@ namespace Basic_platformer
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size - new Vector2(0, 4));
             Cam.FollowsPlayer = true;
 
+            //TODO: Re-enable this depending on which world you load
             //player.canJetpack = false;
         }
 
@@ -105,11 +106,12 @@ namespace Basic_platformer
                 Debug.Clear();
 
             if (Input.GetKeyDown(Keys.V))
-            {
                 player.Pos = Input.MousePos;
-            }
 
-            if (Input.GetKeyDown(Keys.R))
+            if (Input.GetKeyDown(Keys.T))
+                Engine.CurrentMap.Instantiate(new ScreenWipe(2, Levels.ReloadLastLevelFetched));
+
+                if (Input.GetKeyDown(Keys.R))
             {
                 Levels.ReloadLastLevelFetched();
             }
@@ -147,7 +149,7 @@ namespace Basic_platformer
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.SetRenderTarget(RenderTarget);
-            GraphicsDevice.Clear(Color.Black * 0.5f);
+            GraphicsDevice.Clear(new Color(3, 11, 28));
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
@@ -157,10 +159,10 @@ namespace Basic_platformer
 
             Drawing.DebugEvents();
             
+
             spriteBatch.End();
             GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
-
 
             spriteBatch.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
 
@@ -168,13 +170,13 @@ namespace Basic_platformer
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
-
             Engine.CurrentMap.UIRender();
 
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
+            Engine.CurrentMap.UIOverlayRender();
             if (Paused)
                 PauseMenu.Render();
 

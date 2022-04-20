@@ -18,8 +18,7 @@ namespace Basic_platformer
         {
             Text = text;
             initPos = textPos;
-            TextBox = new TextBox(text, "LexendDeca", Engine.Cam.RenderTargetToWorldPosition(textPos), int.MaxValue, int.MaxValue, 0.7f);
-            TextBox.Active = false;
+            TextBox = new TextBox("", "LexendDeca", Engine.Cam.RenderTargetToWorldPosition(textPos), int.MaxValue, int.MaxValue, 0.7f);
             AddChild(TextBox);
         }
 
@@ -31,17 +30,14 @@ namespace Basic_platformer
 
         public override void OnTriggerEnter(Entity entity)
         {
-            //TODO: Progressive Text Removing
-            TextBox.Active = true;
-            TextBox.ClearText();
-            TextBox.ProgressiveDraw(Text, 0.01f, true);
+            TextBox.StopAllCoroutines();
+            TextBox.ProgressiveDraw(Text[TextBox.Text.Length..], 0.01f, true);
         }
 
         public override void OnTriggerExit(Entity entity)
         {
-            TextBox.Active = false;
-            TextBox.StopProgressiveDraw();
-            TextBox.ClearText();
+            TextBox.StopAllCoroutines();
+            TextBox.ProgressiveRemove(0.01f);
         }
     }
 }

@@ -78,8 +78,10 @@ namespace Basic_platformer
             AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () => {
                 p.canMove = true;
                 p.CancelJump();
+
                 if(direction == Direction.Up)
-                       p.Velocity.Y = Math.Min(p.Velocity.Y, -250);
+                    p.Velocity.Y = Math.Min(p.Velocity.Y, -250);
+
                 Engine.Cam.SetBoundaries(toLevel.Pos, size);
                 oldLevel.Unload();
             }));
