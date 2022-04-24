@@ -50,14 +50,10 @@ namespace Basic_platformer
             }
             toLevel.Load();
 
-            Engine.CurrentMap.CurrentLevel = toLevel;
-            Vector2 size = toLevel.Size;
-            size.Y -= 4;
-
             Player p = (Player)entity;
             p.canMove = false;
 
-            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(toLevel.Pos.ToPoint(), size.ToPoint())) - cam.Pos, transitionTime, Ease.QuintInAndOut);
+            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(toLevel.Pos.ToPoint(), toLevel.Size.ToPoint())) - cam.Pos, transitionTime, Ease.QuintInAndOut);
 
             switch (direction)
             {
@@ -82,7 +78,7 @@ namespace Basic_platformer
                 if(direction == Direction.Up)
                     p.Velocity.Y = Math.Min(p.Velocity.Y, -250);
 
-                Engine.Cam.SetBoundaries(toLevel.Pos, size);
+                Engine.Cam.SetBoundaries(toLevel.Pos, toLevel.Size);
                 oldLevel.Unload();
             }));
         }

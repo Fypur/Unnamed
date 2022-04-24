@@ -50,9 +50,6 @@ namespace Basic_platformer
 
             PauseMenu = new PauseMenu();
             pS = new ParticleSystem();
-            /*CurrentMap.Instantiate(new TextBox("Le gaming ou quoi donde cuando je mange des pates a l'aide de mes deux bras gauches " +
-                "car bon nous on est pas des zemmouriens tu vois ce que je dire lol des barres zfhbeqrfy tgiustg ozerihuierg", "Pixel", 0.01f, Vector2.One * 40, 500, 200));
-            */
         }
 
         protected override void LoadContent()
@@ -67,9 +64,12 @@ namespace Basic_platformer
             //new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
 
             map.LoadMap(new Level(Levels.GetLevelData(0, Vector2.Zero)));
-            Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size - new Vector2(0, 4));
+            Debug.Log(Engine.CurrentMap.CurrentLevel.Size);
+            Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
             Cam.FollowsPlayer = true;
 
+            //TODO: Main Menu
+            //TODO: Chase Sequence
             //TODO: Re-enable this depending on which world you load
             //player.canJetpack = false;
         }
@@ -108,9 +108,6 @@ namespace Basic_platformer
             if (Input.GetKeyDown(Keys.V))
                 player.Pos = Input.MousePos;
 
-            if (Input.GetKeyDown(Keys.T))
-                Engine.CurrentMap.Instantiate(new ScreenWipe(2, Levels.ReloadLastLevelFetched));
-
                 if (Input.GetKeyDown(Keys.R))
             {
                 Levels.ReloadLastLevelFetched();
@@ -119,24 +116,21 @@ namespace Basic_platformer
             if (Input.GetKey(Keys.W))
             {
                 var PT = new ParticleType();
-                PT.Color = Color.Red;
-                PT.Color = Color.Yellow;
-                PT.Color2 = Color.Orange;
-                PT.Size = 4;
-                PT.SizeRange = 3;
-                PT.LifeMin = 1;
-                PT.LifeMax = 2;
-                PT.SpeedMin = 70;
-                PT.SpeedMax = 100;
+                PT.Color = Color.White;
+                PT.Size = 2;
+                PT.SizeRange = 1;
+                PT.LifeMin = 0.1f;
+                PT.LifeMax = 0.3f;
+                PT.SpeedMin = 20;
+                PT.SpeedMax = 50;
                 PT.Direction = -90;
-                PT.DirectionRange = 90;
-                PT.Acceleration = Vector2.UnitY * 100;
-                PT.Friction = 0.1f;
+                PT.DirectionRange = 45;
+                //PT.Acceleration = Vector2.UnitY * 100;
+                //PT.Friction = 0.1f;
                 PT.FadeMode = ParticleType.FadeModes.EndLinear;
                 PT.SizeChange = ParticleType.FadeModes.EndSmooth;
-                pS.Emit(PT, 100, Input.MousePos, null, -90, Color.White);
+                pS.Emit(PT, 10, new Rectangle((Input.MousePos - Vector2.One * 3).ToPoint(), (Vector2.One * 6).ToPoint()), null, -90, Color.White);
             }
-            //TODO: Glass Breakable wall
 #endif
             pS.Update();
 
@@ -151,14 +145,13 @@ namespace Basic_platformer
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(new Color(3, 11, 28));
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             pS.Render();
 
             Engine.CurrentMap.Render();
 
-            Drawing.DebugEvents();
-            
+            Drawing.DebugEvents();       
 
             spriteBatch.End();
             GraphicsDevice.SetRenderTarget(null);
@@ -178,7 +171,10 @@ namespace Basic_platformer
 
             Engine.CurrentMap.UIOverlayRender();
             if (Paused)
+            {
                 PauseMenu.Render();
+                PauseMenu.UIChildRender();
+            }
 
             spriteBatch.End();
             spriteBatch.Begin();

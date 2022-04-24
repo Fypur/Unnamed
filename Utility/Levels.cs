@@ -107,6 +107,9 @@ namespace Basic_platformer
                 }
             }
 
+            foreach (LDtkTypes.GlassWall p in level.GetEntities<LDtkTypes.GlassWall>())
+                entities.Add(new GlassWall(p.Position, p.Width(), p.Height(), p.BreakVelocity));
+
             bool downNeighbours = false;
 
             #region Level Transitions
@@ -235,13 +238,13 @@ namespace Basic_platformer
 
             Vector2 p = (Vector2)position;
             var org = GetLevelOrganisation(index);
-            return new LevelData(GetLevelEntities(index, p, GetLevelSize(org)), p, org, Engine.CurrentMap, GetLevelEnterAction(index), null);
+            return new LevelData(GetLevelEntities(index, p, GetLevelSize(org)), p, GetLevelSize(org), org, Engine.CurrentMap, GetLevelEnterAction(index), null);
         }
 
         public static LevelData GetLevelData(LDtkLevel ldtk)
         {
             LastLDtkLevel = ldtk;
-            return new LevelData(ldtk.GetLevelEntities(), ldtk.Position.ToVector2(), SwitchXAndY(ldtk.GetIntGrid("IntGrid").Values), Engine.CurrentMap, null, null);
+            return new LevelData(ldtk.GetLevelEntities(), ldtk.Position.ToVector2(), ldtk.Size.ToVector2(), SwitchXAndY(ldtk.GetIntGrid("IntGrid").Values), Engine.CurrentMap, null, null);
         }
 
         private static LDtkLevel GetLdtkLevel(int index)
@@ -259,13 +262,13 @@ namespace Basic_platformer
         public static LevelData GetLevelData(int index, Vector2 position, int tileSize)
         {
             var org = GetLevelOrganisation(index);
-            return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileSize)), position, org, Engine.CurrentMap, GetLevelEnterAction(index), null);
+            return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileSize)), position, GetLevelSize(org, tileSize, tileSize), org, Engine.CurrentMap, GetLevelEnterAction(index), null);
         }
 
         public static LevelData GetLevelData(int index, Vector2 position, int tileWidth, int tileHeight)
         {
             var org = GetLevelOrganisation(index);
-            return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileWidth, tileHeight)), position, org, Engine.CurrentMap, GetLevelEnterAction(index), null);
+            return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileWidth, tileHeight)), position, GetLevelSize(org, tileWidth, tileHeight), org, Engine.CurrentMap, GetLevelEnterAction(index), null);
         }
 
         private static List<Entity> GetLevelEntities(int index, Vector2 position, Vector2 size)

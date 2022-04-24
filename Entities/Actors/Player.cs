@@ -52,6 +52,13 @@ namespace Basic_platformer
         public bool Jetpacking;
         public bool canJetpack = true;
 
+        private bool onGround;
+        private bool onWall;
+        private bool onRightWall;
+        private bool collisionX;
+        private bool collisionY;
+        private bool previousOnGround = true;
+
         private float xMoving;
         private float yMoving;
         private int xMovingRaw;
@@ -75,14 +82,6 @@ namespace Basic_platformer
 
         #endregion
 
-        #region check variables
-        private bool onGround;
-        private bool onWall;
-        private bool onRightWall;
-        private bool collisionX;
-        private bool collisionY;
-
-        #endregion
 
         public Player(Vector2 position) : base(position, 8, 14, constGravityScale, new Sprite(Color.White))
         {
@@ -126,16 +125,17 @@ namespace Basic_platformer
             #endregion
 
             Dust = new ParticleType() {
-                LifeMin = 0.3f,
-                LifeMax = 0.4f,
                 Color = Color.White,
-                Size = 0.7f,
-                SizeRange = 0.2f,
-                SizeChange = ParticleType.FadeModes.Linear,
-                Direction = 1.5f,
-                DirectionRange = 0.5f,
+                Size = 2,
+                SizeRange = 1,
+                LifeMin = 0.05f,
+                LifeMax = 0.4f,
                 SpeedMin = 5,
-                SpeedMax = 15,
+                SpeedMax = 30,
+                Direction = -90,
+                DirectionRange = 45,
+                FadeMode = ParticleType.FadeModes.EndLinear,
+                SizeChange = ParticleType.FadeModes.EndSmooth
             };
 
             JetpackParticle = new ParticleType()
@@ -271,6 +271,9 @@ namespace Basic_platformer
                 {
                     jetpackTime = maxJetpackTime;
                     AddedJetpackSpeed.X = 0;
+
+                    if (!previousOnGround)
+                        Land();
                 }
 
                 if(onGround || onWall)
@@ -301,8 +304,9 @@ namespace Basic_platformer
             if (xMovingRaw != 0 && !isUnsticking)
                 facing = xMovingRaw;
 
+            Dust.Acceleration = Velocity;
 
-            Dust.LifeMin = 0.3f;
+            /*Dust.LifeMin = 0.3f;
             Dust.LifeMax = 0.4f;
             Dust.Color = Color.White;
             Dust.Size = 1.5f;
@@ -311,13 +315,16 @@ namespace Basic_platformer
             Dust.Direction = 0;
             Dust.DirectionRange = 0.5f;
             Dust.SpeedMin = 5;
-            Dust.SpeedMax = 15;
+            Dust.SpeedMax = 15;*/
 
             /*if (Input.GetKeyDown(Keys.C))
                 Platformer.pS.Emit(Dust, -Vector2.One * 5, this, 1000);*/
 
             Velocity += AddedJetpackSpeed;
+
+            previousOnGround = onGround;
             collisionX = collisionY = false;
+
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
         }
@@ -552,6 +559,10 @@ namespace Basic_platformer
         {
             stateMachine.Switch(States.Jumping);
             Velocity.X += LiftBoost.X;
+
+            Debug.Log();
+            Platformer.pS.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
+
             AddComponent(new Timer(maxJumpTime, true, (timer) =>
             {
                 if (collisionY || hasDashed || cancelJump)
@@ -719,16 +730,38 @@ namespace Basic_platformer
             }));
         }
 
-        void CollisionX()
+        private void CollisionX(Entity collided)
         {
+            if (collided is GlassWall gl && gl.DestroyOnX && Math.Abs(Velocity.X) >= gl.BreakVelocity)
+            {
+                gl.Break(Velocity);
+                return;
+            }
+
             Velocity.X = 0;
             collisionX = true;
         }
 
-        void CollisionY()
+        private void CollisionY(Entity collided)
         {
+            if (collided is GlassWall gl && !gl.DestroyOnX && Math.Abs(Velocity.Y) >= gl.BreakVelocity)
+            {
+                gl.Break(Velocity);
+                return;
+            }
+
             Velocity.Y = 0;
             collisionY = true;
+        }
+
+        void Land()
+        {
+            ParticleType oldDust = Dust.Copy();
+            Dust.LifeMax = 0.4f;
+            Dust.SpeedMax = 10; 
+            Platformer.pS.Emit(Dust, 4, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
+
+            Dust.CopyFrom(oldDust);
         }
 
         public override void Render()
