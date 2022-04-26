@@ -28,6 +28,7 @@ namespace Basic_platformer
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
         public static ParticleSystem pS;
+        Sprite s;
 
         public Platformer()
         {
@@ -50,6 +51,7 @@ namespace Basic_platformer
 
             PauseMenu = new PauseMenu();
             pS = new ParticleSystem();
+            
         }
 
         protected override void LoadContent()
@@ -63,8 +65,7 @@ namespace Basic_platformer
             //player = (Player)Engine.CurrentMap.Instantiate(
             //new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
 
-            map.LoadMap(new Level(Levels.GetLevelData(0, Vector2.Zero)));
-            Debug.Log(Engine.CurrentMap.CurrentLevel.Size);
+            map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(1, Vector2.Zero)));
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
             Cam.FollowsPlayer = true;
 
@@ -83,7 +84,7 @@ namespace Basic_platformer
 
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (Input.GetKeyDown(Keys.Escape))
+            if (Input.GetKeyDown(Keys.U))
             {
                 Paused = !Paused;
                 if (Paused)
@@ -151,7 +152,7 @@ namespace Basic_platformer
 
             Engine.CurrentMap.Render();
 
-            Drawing.DebugEvents();       
+            Drawing.DebugEvents();
 
             spriteBatch.End();
             GraphicsDevice.SetRenderTarget(null);

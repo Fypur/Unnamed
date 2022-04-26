@@ -110,9 +110,9 @@ namespace Basic_platformer
             foreach (LDtkTypes.GlassWall p in level.GetEntities<LDtkTypes.GlassWall>())
                 entities.Add(new GlassWall(p.Position, p.Width(), p.Height(), p.BreakVelocity));
 
-            bool downNeighbours = false;
+            
 
-            #region Level Transitions
+            bool downNeighbours = false;
 
             foreach (NeighbourLevel n in level._Neighbours)
             {
@@ -175,7 +175,7 @@ namespace Basic_platformer
             {
                 if (l._Type == LayerType.Tiles)
                 {
-                    Texture2D tileSet = Engine.Content.Load<Texture2D>(System.IO.Path.ChangeExtension(l._TilesetRelPath, null));
+                    Texture2D tileSet = DataManager.Load(System.IO.Path.ChangeExtension(l._TilesetRelPath, null));
 
                     foreach (TileInstance t in l.GridTiles)
                     {
@@ -188,9 +188,21 @@ namespace Basic_platformer
                         entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
                     }
                 }
-            }
+                else if (l._Type == LayerType.IntGrid)
+                {
+                    Texture2D tileSet = DataManager.Load(System.IO.Path.ChangeExtension(l._TilesetRelPath, null));
 
-            #endregion
+                    foreach (TileInstance t in l.AutoLayerTiles)
+                    {
+                        Texture2D texture = tileSet.CropTo(t.Src.ToVector2(), new Vector2(l._GridSize, l._GridSize));
+                        texture.Name = tileSet.Name + t.T.ToString();
+
+                        Sprite s = new Sprite(texture);
+                        s.Effect = (SpriteEffects)t.F;
+                        entities.Add(new SolidTile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
+                    }
+                }
+            }
 
             if (!downNeighbours)
                 entities.Add(new DeathTrigger(level.Position.ToVector2() + level.Size.ToVector2().OnlyY(), new Vector2(level.Size.X, intGrid.TileSize)));
@@ -428,7 +440,7 @@ namespace Basic_platformer
         public static void ReloadLastLevelFetched()
         {
             Engine.CurrentMap.CurrentLevel.Unload();
-            new Level(LastLevelData).Load();
+            new Level(LastLevelData).LoadNoAutoTile();
         }
 
         private static int Width(this ILDtkEntity entity)

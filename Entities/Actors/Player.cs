@@ -26,7 +26,7 @@ namespace Basic_platformer
         private const float airAcceleration = 15f;
         private const float swingAcceleration = 3f;
         private const float friction = 0.4f;
-        private const float airFriction = 0.1f;
+        private const float airFriction = 0.07f;
         
         private const float wallJumpSideForce = 200f;
         private const float jumpForce = 200f;

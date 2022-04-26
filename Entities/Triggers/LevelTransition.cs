@@ -47,8 +47,10 @@ namespace Basic_platformer
             if (toLevel == null)
             {
                 toLevel = new Level(Levels.GetLevelData(ldtk));
+                toLevel.LoadNoAutoTile();
             }
-            toLevel.Load();
+            else
+                toLevel.Load();
 
             Player p = (Player)entity;
             p.canMove = false;
