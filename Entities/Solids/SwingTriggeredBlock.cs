@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Fiourp;
 using Microsoft.Xna.Framework;
 
-namespace Basic_platformer
+namespace Platformer
 {
     public class SwingTriggeredBlock : MovingSolid, ISwinged
     {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Fiourp;
 using Microsoft.Xna.Framework;
 
-namespace Basic_platformer
+namespace Platformer
 {
     public class FallingPlatform : MovingSolid
     {
@@ -65,6 +65,9 @@ namespace Basic_platformer
 
             Velocity.Y = Math.Min(Velocity.Y, maxFallingSpeed);
             MoveCollideSolids(Velocity * Engine.Deltatime, null, onCollision);
+
+            if (Collided)
+                previousOnGround = Collider.CollideAt(Pos + new Vector2(0, 1));
         }
     }
 }

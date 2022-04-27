@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using Fiourp;
 using LDtk;
 
-namespace Basic_platformer
+namespace Platformer
 {
     public class Platformer : Game
     {

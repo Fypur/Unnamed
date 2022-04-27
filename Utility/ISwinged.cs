@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Basic_platformer
+namespace Platformer
 {
     public interface ISwinged
     {

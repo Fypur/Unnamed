@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Fiourp;
 
-namespace Basic_platformer
+namespace Platformer
 {
     public class PulledPlatform : MovingSolid
     {
