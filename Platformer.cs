@@ -65,7 +65,7 @@ namespace Basic_platformer
             //player = (Player)Engine.CurrentMap.Instantiate(
             //new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
 
-            map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(1, Vector2.Zero)));
+            map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(3, Vector2.Zero)));
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
             Cam.FollowsPlayer = true;
 

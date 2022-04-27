@@ -25,6 +25,7 @@ namespace Basic_platformer
 
         private static List<Entity> GetLevelEntities(this LDtkLevel level)
         {
+            Random levelRandom = new Random(level.Position.X + level.Position.Y);
             Rectangle oldCamBounds = Engine.Cam.Bounds;
             Vector2 oldCamPos = Engine.Cam.Pos;
             Engine.Cam.SetBoundaries(new Rectangle(level.Position, level.Size));
@@ -68,7 +69,7 @@ namespace Basic_platformer
             }
 
             foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
-                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height()));
+                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height(), new NineSliceSettings(Tile("topLeftCorner"), Tile("topRightCorner"), Tile("bottomLeftCorner"), Tile("bottomRightCorner"), Tile("top"), Tile("left"), Tile("right"), Tile("bottom"), Tile("inside"))));
 
             foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
                 entities.Add(new RailedPullBlock(p.RailPositions.ToVector2(), p.Position, p.Width(), p.Height()));
@@ -228,6 +229,9 @@ namespace Basic_platformer
                 v -= new Vector2(intGrid.TileSize / 2);
                 return v;
             }
+
+            Texture2D Tile(string id)
+            => DataManager.GetRandomTilesetTexture(DataManager.Tilesets[1], id, levelRandom);
         }
 
         /// <summary>

@@ -2,8 +2,8 @@
 <Sprites>
 	
 	<Tilesets>
-		<OneOfEach id="1" path="grass" tileSize="8"/>
-		<OneOfEach id="2" path="grass2" tileSize="8"/>
+		<RandomOf4 id="1" path="gray" tileSize="8"/>
+		<OneOfEach id="2" path="grass" tileSize="8"/>
 	</Tilesets>
 	
 	<Animations>

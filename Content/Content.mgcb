@@ -206,7 +206,7 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Tilesets/grass2.aseprite
 
-#begin Graphics/Tilesets/industrial.aseprite
+#begin Graphics/Tilesets/gray.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor
 /processorParam:SheetType=Packed
@@ -216,7 +216,19 @@
 /processorParam:BorderPadding=0
 /processorParam:Spacing=0
 /processorParam:InnerPadding=0
-/build:Graphics/Tilesets/industrial.aseprite
+/build:Graphics/Tilesets/gray.aseprite
+
+#begin Graphics/Tilesets/industrialAll.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Tilesets/industrialAll.aseprite
 
 #begin Graphics/top.png
 /importer:TextureImporter

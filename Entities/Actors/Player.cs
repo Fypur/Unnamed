@@ -39,7 +39,21 @@ namespace Basic_platformer
         
         private const float maxGrappleDist = 1000f;
 
-        private readonly ParticleType Dust;
+        public static readonly ParticleType Dust = new ParticleType()
+        {
+            Color = Color.White,
+            Size = 2,
+            SizeRange = 1,
+            LifeMin = 0.05f,
+            LifeMax = 0.4f,
+            SpeedMin = 5,
+            SpeedMax = 30,
+            Direction = -90,
+            DirectionRange = 45,
+            FadeMode = ParticleType.FadeModes.EndLinear,
+            SizeChange = ParticleType.FadeModes.EndSmooth
+        };
+
         private readonly ParticleType JetpackParticle;
 
         #endregion
@@ -123,20 +137,6 @@ namespace Basic_platformer
             AddComponent(stateMachine);
 
             #endregion
-
-            Dust = new ParticleType() {
-                Color = Color.White,
-                Size = 2,
-                SizeRange = 1,
-                LifeMin = 0.05f,
-                LifeMax = 0.4f,
-                SpeedMin = 5,
-                SpeedMax = 30,
-                Direction = -90,
-                DirectionRange = 45,
-                FadeMode = ParticleType.FadeModes.EndLinear,
-                SizeChange = ParticleType.FadeModes.EndSmooth
-            };
 
             JetpackParticle = new ParticleType()
             {
