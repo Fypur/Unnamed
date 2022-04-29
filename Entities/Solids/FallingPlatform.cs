@@ -48,11 +48,10 @@ namespace Platformer
             {
                 onCollision = () =>
                 {
-                    Vector2 oldAccel = Player.Dust.Acceleration;
-                    Player.Dust.Acceleration = Vector2.UnitY * 10;
-                    Platformer.pS.Emit(Player.Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 0, Color.White);
-                    Platformer.pS.Emit(Player.Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 180, Color.White);
-                    Player.Dust.Acceleration = oldAccel;
+                    ParticleType dust = new ParticleType(Player.Dust);
+                    dust.Acceleration = -Vector2.UnitY * 100;
+                    Platformer.pS.Emit(dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 0, Color.White);
+                    Platformer.pS.Emit(dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 180, Color.White);
                     Collided = true;
                 };
             }

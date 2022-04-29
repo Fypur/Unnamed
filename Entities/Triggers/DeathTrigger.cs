@@ -6,20 +6,28 @@ using System.Text;
 
 namespace Platformer
 {
-    public class DeathTrigger : Trigger
+    public class DeathTrigger : PlayerTrigger
     {
-        public Func<Player, bool> Conditions = (player) => true;
-
         public DeathTrigger(Vector2 position, Vector2 size)
-            : base(position, size, new List<Type> { typeof(Player) }, null) { }
+            : base(position, size, null) { }
+
+        public DeathTrigger(Rectangle bounds)
+            : base(bounds, null) { }
 
         public DeathTrigger(Vector2 position, int width, int height)
-            : base(position, width, height, new List<Type> { typeof(Player) }, null) { }
+            : base(position, width, height, null) { }
 
         public override void OnTriggerEnter(Entity entity)
         {
             Player p = entity as Player;
             if(Conditions(p))
+                p.Death();
+        }
+
+        public override void OnTriggerStay(Entity entity)
+        {
+            Player p = entity as Player;
+            if (Conditions(p))
                 p.Death();
         }
     }

@@ -35,7 +35,7 @@ namespace Platformer
 
         public void Break(Vector2 particleDirection)
         {
-            Platformer.pS.Emit(glass, 200, Rect, null, particleDirection.ToAngleDegrees(), glass.Color);
+            Platformer.pS.Emit(glass, 200, Bounds, null, particleDirection.ToAngleDegrees(), glass.Color);
             Engine.Cam.Shake(0.2f, 5);
             Destroy();
         }

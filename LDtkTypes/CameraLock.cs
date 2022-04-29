@@ -6,7 +6,7 @@ namespace LDtkTypes
     using LDtk;
     using Microsoft.Xna.Framework;
     
-    public class Camera_Lock : ILDtkEntity
+    public class CameraLock : ILDtkEntity
     {
         public long Uid { get; set; }
         public string Identifier { get; set; }

@@ -12,7 +12,6 @@ namespace Platformer
         public const int DefaultSize = 8;
         public float Rotation { get => Sprite.Rotation; set => Sprite.Rotation = MathHelper.ToDegrees(value); }
         public static Texture2D texture = DataManager.GetTexture("SpikeTest");
-        public enum Direction { Up, Down, Left, Right };
 
         public Spike(Vector2 position, float rotation)
             : this(position, GetDirection(rotation))
@@ -35,7 +34,7 @@ namespace Platformer
                     return player.Velocity.X <= 0;
             };
 
-            Sprite = (Sprite)AddComponent(new Sprite(texture, Rect, rotation));
+            Sprite = (Sprite)AddComponent(new Sprite(texture, Bounds, rotation));
             Sprite.Origin = HalfSize;
             Sprite.Centered = true;
         }

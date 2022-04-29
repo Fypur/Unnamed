@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Fiourp;
 
-namespace Platformer.Utility
+namespace Platformer
 {
-    public class Particles
+    public enum Direction
     {
-        public class Dust : ParticleType
-        {
-
-        }
+        Up, Down, Left, Right, Null
     }
 }

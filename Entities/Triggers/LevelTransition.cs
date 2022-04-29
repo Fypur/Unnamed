@@ -9,7 +9,6 @@ namespace Platformer
     public class LevelTransition : Trigger
     {
         private const float transitionTime = 1.5f;
-        public enum Direction { Up, Down, Left, Right }
 
         private Camera cam = Platformer.Cam;
         private Level toLevel;
@@ -76,9 +75,13 @@ namespace Platformer
             AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () => {
                 p.canMove = true;
                 p.CancelJump();
+                p.ResetJetpack();
 
                 if(direction == Direction.Up)
-                    p.Velocity.Y = Math.Min(p.Velocity.Y, -250);
+                {
+                    p.Velocity.Y = Math.Min(p.Velocity.Y, -200);
+                    p.LimitJetpackY(0.5f, 0.4f, () => p.Velocity.Y >= 0);
+                }
 
                 Engine.Cam.SetBoundaries(toLevel.Pos, toLevel.Size);
                 oldLevel.Unload();

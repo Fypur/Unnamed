@@ -6,8 +6,9 @@ namespace LDtkTypes
     using LDtk;
     using Microsoft.Xna.Framework;
     
-    public class Box : ILDtkEntity
+    public class JetpackBooster : ILDtkEntity
     {
+        public Direction Direction { get; set; }
         public long Uid { get; set; }
         public string Identifier { get; set; }
         public Vector2 Size { get; set; }

@@ -10,13 +10,15 @@ namespace Platformer
 {
     public abstract class PlayerTrigger : Trigger
     {
+        public Func<Player, bool> Conditions = (player) => true;
+
         public PlayerTrigger(Vector2 position, Vector2 size, Sprite sprite)
             : base(position, (int)size.X, (int)size.Y, new List<Type> { typeof(Player) }, sprite) { }
 
         public PlayerTrigger(Vector2 position, int width, int height, Sprite sprite)
             : base(position, new Vector2(width, height), new List<Type> { typeof(Player) }, sprite) { }
 
-        public PlayerTrigger(Rectangle triggerRect, Sprite sprite)
-            : base(triggerRect.Location.ToVector2(), triggerRect.Size.ToVector2(), new List<Type> { typeof(Player) }, sprite) { }
+        public PlayerTrigger(Rectangle bounds, Sprite sprite)
+            : base(bounds.Location.ToVector2(), bounds.Size.ToVector2(), new List<Type> { typeof(Player) }, sprite) { }
     }
 }

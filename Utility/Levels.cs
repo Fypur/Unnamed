@@ -46,16 +46,16 @@ namespace Platformer
                 switch (p.SpikeDirection)
                 {
                     case LDtkTypes.Direction.Up:
-                        plat.AddChild(new SpikeRow(new Vector2(0, -Spike.DefaultSize) + plat.Pos, Spike.Direction.Right, plat.Width, Spike.Direction.Up));
+                        plat.AddChild(new SpikeRow(new Vector2(0, -Spike.DefaultSize) + plat.Pos, Direction.Right, plat.Width, Direction.Up));
                         break;
                     case LDtkTypes.Direction.Down:
-                        plat.AddChild(new SpikeRow(new Vector2(0, plat.Height) + plat.Pos, Spike.Direction.Right, plat.Width, Spike.Direction.Down));
+                        plat.AddChild(new SpikeRow(new Vector2(0, plat.Height) + plat.Pos, Direction.Right, plat.Width, Direction.Down));
                         break;
                     case LDtkTypes.Direction.Left:
-                        plat.AddChild(new SpikeRow(new Vector2(-Spike.DefaultSize, 0) + plat.Pos, Spike.Direction.Down, plat.Height, Spike.Direction.Left));
+                        plat.AddChild(new SpikeRow(new Vector2(-Spike.DefaultSize, 0) + plat.Pos, Direction.Down, plat.Height, Direction.Left));
                         break;
                     case LDtkTypes.Direction.Right:
-                        plat.AddChild(new SpikeRow(new Vector2(plat.Width, 0) + plat.Pos, Spike.Direction.Down, plat.Height, Spike.Direction.Right));
+                        plat.AddChild(new SpikeRow(new Vector2(plat.Width, 0) + plat.Pos, Direction.Down, plat.Height, Direction.Right));
                         break;
                 }
             }
@@ -78,7 +78,7 @@ namespace Platformer
                 entities.Add(new RespawnTrigger(p.Position, p.Size, GridToWorldCoords(p.RespawnPoint)));
 
             foreach (LDtkTypes.Spike p in level.GetEntities<LDtkTypes.Spike>())
-                entities.Add(new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToSpikeDirection()));
+                entities.Add(new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToDirection()));
 
             foreach (LDtkTypes.DeathTrigger p in level.GetEntities<LDtkTypes.DeathTrigger>())
                 entities.Add(new DeathTrigger(p.Position, p.Size));
@@ -98,7 +98,10 @@ namespace Platformer
             foreach (LDtkTypes.TextSpawn p in level.GetEntities<LDtkTypes.TextSpawn>())
                 entities.Add(new TextSpawn(p.Position, p.Size, GridToWorldCoords(p.TextPos), p.Text));
 
-            foreach(LDtkTypes.SpecialTrigger p in level.GetEntities<LDtkTypes.SpecialTrigger>())
+            foreach (LDtkTypes.JetpackBooster p in level.GetEntities<LDtkTypes.JetpackBooster>())
+                entities.Add(new JetpackBooster(p.Position, p.Size, p.Direction.ToDirection()));
+
+            foreach (LDtkTypes.SpecialTrigger p in level.GetEntities<LDtkTypes.SpecialTrigger>())
             {
                 switch (p.Index)
                 {
@@ -111,7 +114,8 @@ namespace Platformer
             foreach (LDtkTypes.GlassWall p in level.GetEntities<LDtkTypes.GlassWall>())
                 entities.Add(new GlassWall(p.Position, p.Width(), p.Height(), p.BreakVelocity));
 
-            
+            foreach (LDtkTypes.CameraLock p in level.GetEntities<LDtkTypes.CameraLock>())
+                entities.Add(new CameraLock(p.Position, p.Size));
 
             bool downNeighbours = false;
 
@@ -130,7 +134,7 @@ namespace Platformer
                         size = new Vector2(2, level.WorldY + level.Size.Y - pos.Y);
                     else
                         size = new Vector2(2, neigh.WorldY + neigh.Size.Y - pos.Y);
-                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Left));
+                    entities.Add(new LevelTransition(pos, size, neigh, Direction.Left));
 
                 }
                 else if (neighRect.Y + neighRect.Height == lvlRect.Y)
@@ -142,7 +146,7 @@ namespace Platformer
                         size = new Vector2(level.WorldX + level.Size.X - neigh.WorldX, 2);
                     else
                         size = new Vector2(neigh.WorldX + neigh.Size.X - level.WorldX, 2);
-                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Up));
+                    entities.Add(new LevelTransition(pos, size, neigh, Direction.Up));
                 }
                 else if (neighRect.X == lvlRect.X + lvlRect.Width)
                 {
@@ -153,7 +157,7 @@ namespace Platformer
                         size = new Vector2(2, level.WorldY + level.Size.Y - pos.Y);
                     else
                         size = new Vector2(2, neigh.WorldY + neigh.Size.Y - pos.Y);
-                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Right));
+                    entities.Add(new LevelTransition(pos, size, neigh, Direction.Right));
                 }
                 else
                 {
@@ -168,7 +172,7 @@ namespace Platformer
                     else
                         size = new Vector2(neigh.WorldX + neigh.Size.X - level.WorldX, 2);
 
-                    entities.Add(new LevelTransition(pos, size, neigh, LevelTransition.Direction.Down));
+                    entities.Add(new LevelTransition(pos, size, neigh, Direction.Down));
                 }
             }
 
@@ -255,6 +259,18 @@ namespace Platformer
             Vector2 p = (Vector2)position;
             var org = GetLevelOrganisation(index);
             return new LevelData(GetLevelEntities(index, p, GetLevelSize(org)), p, GetLevelSize(org), org, Engine.CurrentMap, GetLevelEnterAction(index), null);
+        }
+
+        public static LevelData GetLevelData(string ldtkIdentifier, Vector2? position = null)
+        {
+            LDtkLevel ldtk = GetLdtkLevel(ldtkIdentifier);
+
+            if (ldtk == null)
+                throw new Exception("Ldtk level with specified identifier not found");
+
+            LastLDtkLevel = ldtk;
+            return GetLevelData(ldtk);
+            
         }
 
         public static LevelData GetLevelData(LDtkLevel ldtk)
@@ -408,19 +424,19 @@ namespace Platformer
 
             if (rightLevel != null)
                 transitions.Add(new LevelTransition(new Vector2(Engine.ScreenSize.X - 2, 0) + p, new Vector2(4, Engine.ScreenSize.Y),
-                            rightLevel, LevelTransition.Direction.Right));
+                            rightLevel, Direction.Right));
 
             if (leftLevel != null)
                 transitions.Add(new LevelTransition(new Vector2(-2, 0) + p, new Vector2(4, Engine.ScreenSize.Y),
-                            leftLevel, LevelTransition.Direction.Left));
+                            leftLevel, Direction.Left));
 
             if (downLevel != null)
                 transitions.Add(new LevelTransition(new Vector2(0, Engine.ScreenSize.Y - 2) + p, new Vector2(Engine.ScreenSize.X, 4),
-                            downLevel, LevelTransition.Direction.Down));
+                            downLevel, Direction.Down));
 
             if (upLevel != null)
                 transitions.Add(new LevelTransition(new Vector2(0, -2) + p, new Vector2(Engine.ScreenSize.X, 4),
-                            upLevel, LevelTransition.Direction.Up));
+                            upLevel, Direction.Up));
 
             return transitions;
         }
@@ -472,18 +488,20 @@ namespace Platformer
             return result;
         }
 
-        public static Spike.Direction ToSpikeDirection(this LDtkTypes.Direction dir)
+        public static Direction ToDirection(this LDtkTypes.Direction dir)
         {
             switch (dir)
             {
                 case LDtkTypes.Direction.Up:
-                    return Spike.Direction.Up;
+                    return Direction.Up;
                 case LDtkTypes.Direction.Down:
-                    return Spike.Direction.Down;
+                    return Direction.Down;
                 case LDtkTypes.Direction.Left:
-                    return Spike.Direction.Left;
+                    return Direction.Left;
+                case LDtkTypes.Direction.Right:
+                    return Direction.Right;
                 default:
-                    return Spike.Direction.Right;
+                    return Direction.Null;
             }
         }
 
@@ -491,19 +509,19 @@ namespace Platformer
         {
             switch (spike.GetDirection())
             {
-                case Spike.Direction.Up: case Spike.Direction.Down:
+                case Direction.Up: case Direction.Down:
                     return spike.Height();
                 default:
                     return spike.Width();
             }
         }
 
-        public static Spike.Direction GetDirection(this LDtkTypes.Spike spike)
+        public static Direction GetDirection(this LDtkTypes.Spike spike)
         {
             if (spike.Width() < spike.Height())
-                return Spike.Direction.Down;
+                return Direction.Down;
             else
-                return Spike.Direction.Right;
+                return Direction.Right;
         }
 
         public static Vector2[] Addition(this Vector2[] array, Vector2 addedVector)
