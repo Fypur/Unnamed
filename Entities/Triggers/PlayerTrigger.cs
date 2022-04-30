@@ -20,5 +20,17 @@ namespace Platformer
 
         public PlayerTrigger(Rectangle bounds, Sprite sprite)
             : base(bounds.Location.ToVector2(), bounds.Size.ToVector2(), new List<Type> { typeof(Player) }, sprite) { }
+
+        public sealed override void OnTriggerEnter(Entity entity)
+            => OnTriggerEnter(entity as Player);
+        public virtual void OnTriggerEnter(Player player) { }
+
+        public sealed override void OnTriggerStay(Entity entity)
+            => OnTriggerStay(entity as Player);
+        public virtual void OnTriggerStay(Player player) { }
+
+        public sealed override void OnTriggerExit(Entity entity)
+            => OnTriggerExit(entity as Player);
+        public virtual void OnTriggerExit(Player player) { }
     }
 }

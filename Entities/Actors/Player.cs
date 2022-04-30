@@ -12,7 +12,7 @@ namespace Platformer
     {
         #region constants
 
-        private enum States { Idle, Running, Jumping, Ascending, Falling, Dashing, Swinging, WallSliding, Pulling, Jetpack }
+        public enum States { Idle, Running, Jumping, Ascending, Falling, Dashing, Swinging, WallSliding, Pulling, Jetpack, Dead }
 
         private const float maxSpeed = 100;
         private const float maxFallingSpeed = 300;
@@ -103,7 +103,7 @@ namespace Platformer
             Engine.Player = this;
 
             #region Sprite Animations
-            Sprite.Rect = Rectangle.Empty;
+            Sprite.Bounds = Rectangle.Empty;
 
             Sprite.Add(Sprite.AllAnimData["Player"]);
 
@@ -278,11 +278,11 @@ namespace Platformer
                 if(onGround || onWall)
                     cancelJump = false;
 
-                if (Input.GetKeyDown(Keys.A) || Input.GetButtonDown(Buttons.LeftTrigger) || Input.GetButtonDown(Buttons.RightTrigger))
+                if (Input.GetKeyDown(Keys.W) || Input.GetButtonDown(Buttons.LeftTrigger) || Input.GetButtonDown(Buttons.RightTrigger))
                     ThrowRope();
-                if ((Input.GetKey(Keys.A) || Input.GetButton(Buttons.LeftTrigger) || Input.GetButton(Buttons.RightTrigger)) && stateMachine.Is(States.Swinging))
+                if ((Input.GetKey(Keys.W) || Input.GetButton(Buttons.LeftTrigger) || Input.GetButton(Buttons.RightTrigger)) && stateMachine.Is(States.Swinging))
                     Swing();
-                else if(Input.GetKeyUp(Keys.A) || Input.GetButtonUp(Buttons.LeftTrigger) || Input.GetButtonUp(Buttons.RightTrigger))
+                else if(Input.GetKeyUp(Keys.W) || Input.GetButtonUp(Buttons.LeftTrigger) || Input.GetButtonUp(Buttons.RightTrigger))
                 {
                     Velocity.X *= 1.2f;
                     if (Velocity.Y < 0)
@@ -700,8 +700,8 @@ namespace Platformer
             //stateMachine.Switch(States.Jetpack);
             if (normalMouvement && onGround)
                 AddedJetpackSpeed.X += dir.X * jetpackPowerX * jetpackPowerCoef.X - friction * AddedJetpackSpeed.X;
-            else if (normalMouvement && isAtSwingEnd)
-                AddedJetpackSpeed.X += dir.X * swingAcceleration * jetpackPowerCoef.X;
+            /*else if (normalMouvement && isAtSwingEnd)
+                AddedJetpackSpeed.X += dir.X * swingAcceleration * jetpackPowerCoef.X;*/
             else if (normalMouvement && !onWall)
                 AddedJetpackSpeed.X += dir.X * jetpackPowerX * jetpackPowerCoef.X - airFriction * AddedJetpackSpeed.X;
 
@@ -725,14 +725,19 @@ namespace Platformer
         {
             Velocity = Vector2.Zero;
             Active = false;
-            stateMachine.Switch(States.Idle);
+            Visible = false;
+
+            ResetSwing();
+            stateMachine.Switch(States.Dead);
 
             Engine.CurrentMap.Instantiate(new ScreenWipe(1, () =>
             {
+                stateMachine.Switch(States.Idle);
                 ExactPos = respawnPoint;
                 Engine.Cam.Pos = ExactPos;
                 Levels.ReloadLastLevelFetched();
                 Active = true;
+                Visible = true;
             }));
         }
 
@@ -792,9 +797,12 @@ namespace Platformer
         }
 
         public void ResetJetpack()
+            => jetpackTime = maxJetpackTime;
+
+        private void ResetSwing()
         {
-            jetpackTime = maxJetpackTime;
-            AddedJetpackSpeed = Vector2.Zero;
+            swingPositions.Clear();
+            swingPositionsSign = new List<int>() { 0 };
         }
 
         public void LimitJetpackY(float coef, float time, Func<bool> stopLimitting)
@@ -807,5 +815,8 @@ namespace Platformer
                 jetpackPowerCoef.Y = coef;
             }, () => jetpackPowerCoef.Y = 1));
         }
+
+        public bool Is(States state)
+            => stateMachine.Is(state);
     }
 }

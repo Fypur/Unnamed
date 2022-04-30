@@ -28,7 +28,6 @@ namespace Platformer
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
         public static ParticleSystem pS;
-        Sprite s;
 
         public Platformer()
         {
@@ -114,7 +113,7 @@ namespace Platformer
                 Levels.ReloadLastLevelFetched();
             }
 
-            if (Input.GetKey(Keys.W))
+            /*if (Input.GetKey(Keys.W))
             {
                 var PT = new ParticleType();
                 PT.Color = Color.White;
@@ -131,7 +130,7 @@ namespace Platformer
                 PT.FadeMode = ParticleType.FadeModes.EndLinear;
                 PT.SizeChange = ParticleType.FadeModes.EndSmooth;
                 pS.Emit(PT, 10, new Rectangle((Input.MousePos - Vector2.One * 3).ToPoint(), (Vector2.One * 6).ToPoint()), null, -90, Color.White);
-            }
+            }*/
 #endif
             pS.Update();
 

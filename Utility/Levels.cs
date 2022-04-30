@@ -69,7 +69,7 @@ namespace Platformer
             }
 
             foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
-                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height(), new NineSliceSettings(Tile("topLeftCorner"), Tile("topRightCorner"), Tile("bottomLeftCorner"), Tile("bottomRightCorner"), Tile("top"), Tile("left"), Tile("right"), Tile("bottom"), Tile("inside"))));
+                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height(), new NineSliceSettings(Tile("topLeftCorner"), Tile("topRightCorner"), Tile("bottomLeftCorner"), Tile("bottomRightCorner"), Tile("top"), Tile("left"), Tile("right"), Tile("bottom"), DataManager.Tilesets[1]["inside"])));
 
             foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
                 entities.Add(new RailedPullBlock(p.RailPositions.ToVector2(), p.Position, p.Width(), p.Height()));
@@ -101,6 +101,23 @@ namespace Platformer
             foreach (LDtkTypes.JetpackBooster p in level.GetEntities<LDtkTypes.JetpackBooster>())
                 entities.Add(new JetpackBooster(p.Position, p.Size, p.Direction.ToDirection()));
 
+            foreach (LDtkTypes.Refill p in level.GetEntities<LDtkTypes.Refill>())
+                entities.Add(new Refill(p.Position, p.RespawnTime));
+
+            foreach (LDtkTypes.GlassWall p in level.GetEntities<LDtkTypes.GlassWall>())
+                entities.Add(new GlassWall(p.Position, p.Width(), p.Height(), p.BreakVelocity));
+
+            foreach (LDtkTypes.CameraLock p in level.GetEntities<LDtkTypes.CameraLock>())
+                entities.Add(new CameraLock(p.Position, p.Size));
+
+            foreach (LDtkTypes.Sawblade p in level.GetEntities<LDtkTypes.Sawblade>())
+            {
+                if (p.Positions.Length != 0)
+                    entities.Add(new Sawblade(p.Position, p.Width() / 2, ArrayCenteredToTile(p.Positions), p.TimesBetweenPositions, p.GoingForwards));
+                else
+                    entities.Add(new Sawblade(p.Position, p.Width() / 2));
+            }
+
             foreach (LDtkTypes.SpecialTrigger p in level.GetEntities<LDtkTypes.SpecialTrigger>())
             {
                 switch (p.Index)
@@ -110,12 +127,6 @@ namespace Platformer
                         break;
                 }
             }
-
-            foreach (LDtkTypes.GlassWall p in level.GetEntities<LDtkTypes.GlassWall>())
-                entities.Add(new GlassWall(p.Position, p.Width(), p.Height(), p.BreakVelocity));
-
-            foreach (LDtkTypes.CameraLock p in level.GetEntities<LDtkTypes.CameraLock>())
-                entities.Add(new CameraLock(p.Position, p.Size));
 
             bool downNeighbours = false;
 

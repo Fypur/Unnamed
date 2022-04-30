@@ -17,18 +17,16 @@ namespace Platformer
         public DeathTrigger(Vector2 position, int width, int height)
             : base(position, width, height, null) { }
 
-        public override void OnTriggerEnter(Entity entity)
+        public override void OnTriggerEnter(Player player)
         {
-            Player p = entity as Player;
-            if(Conditions(p))
-                p.Death();
+            if (!player.Is(Player.States.Dead) && Conditions(player))
+                player.Death();
         }
 
-        public override void OnTriggerStay(Entity entity)
+        public override void OnTriggerStay(Player player)
         {
-            Player p = entity as Player;
-            if (Conditions(p))
-                p.Death();
+            if (!player.Is(Player.States.Dead) && Conditions(player))
+                player.Death();
         }
     }
 }

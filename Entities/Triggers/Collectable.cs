@@ -16,12 +16,12 @@ namespace Platformer
         public Collectable(Vector2 position, int width, int height, Sprite sprite)
             : base(position, width, height, sprite) { }
 
-        public override void OnTriggerEnter(Entity entity)
+        public override void OnTriggerEnter(Player player)
         {
             if (!collected)
             {
                 collected = true;
-                AddComponent(new Coroutine(OnCollected((Player)entity)));
+                AddComponent(new Coroutine(OnCollected(player)));
             }
         }
 

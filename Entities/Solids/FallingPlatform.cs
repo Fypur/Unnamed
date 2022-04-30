@@ -21,17 +21,12 @@ namespace Platformer
         public FallingPlatform(Vector2 position, int width, int height, NineSliceSettings nineSlice)
             : base(position, width, height, new Sprite())
         {
-            TriggerComponent trig = (TriggerComponent)AddComponent(new TriggerComponent(-Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }, null, null, null));
-            trig.OnTriggerEnter = (entity) =>
-            {
-                AddComponent(new Coroutine(Fall(shakeTime)));
-                RemoveComponent(trig);
-            };
-
+            Trigger trig = (Trigger)AddChild(new Trigger(-Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }, Sprite.None));
+            trig.OnTriggerEnterAction = (entity) => { AddComponent(new Coroutine(Fall(shakeTime))); RemoveChild(trig); };
             Sprite.NineSliceSettings = nineSlice;
         }
 
-        public IEnumerator Fall(float shakeTime)
+        private IEnumerator Fall(float shakeTime)
         {
             AddComponent(new Shaker(shakeTime, 1.2f, null, true));
             yield return new Coroutine.WaitForSeconds(shakeTime);

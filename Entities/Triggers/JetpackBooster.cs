@@ -30,16 +30,14 @@ namespace Platformer
             boostingDir = DirectionToVector2(direction);
         }
 
-        public override void OnTriggerEnter(Entity entity)
+        public override void OnTriggerEnter(Player player)
         {
-            Player p = entity as Player;
-            p.jetpackPowerCoef += boostingDir * new Vector2(0.5f, 0.3f);
+            player.jetpackPowerCoef += boostingDir * new Vector2(0.5f, 0.3f);
         }
 
-        public override void OnTriggerExit(Entity entity)
+        public override void OnTriggerExit(Player player)
         {
-            Player p = entity as Player;
-            p.jetpackPowerCoef -= boostingDir * new Vector2(0.5f, 0.3f);
+            player.jetpackPowerCoef -= boostingDir * new Vector2(0.5f, 0.3f);
         }
 
         public Vector2 DirectionToVector2(Direction direction)

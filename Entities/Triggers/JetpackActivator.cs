@@ -22,9 +22,9 @@ namespace Platformer
         {
         }
 
-        public override void OnTriggerEnter(Entity entity)
+        public override void OnTriggerEnter(Player player)
         {
-            (entity as Player).canJetpack = true;
+            player.canJetpack = true;
         }
     }
 }

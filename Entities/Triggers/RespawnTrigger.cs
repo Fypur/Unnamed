@@ -15,9 +15,9 @@ namespace Platformer
             RespawnPoint = respawnPosition;
         }
 
-        public override void OnTriggerEnter(Entity entity)
+        public override void OnTriggerEnter(Player player)
         {
-            ((Player)entity).respawnPoint = RespawnPoint;
+            player.respawnPoint = RespawnPoint;
         }
     }
 }

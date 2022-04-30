@@ -28,13 +28,13 @@ namespace Platformer
             TextBox.Pos = Engine.Cam.RenderTargetToWorldPosition(initPos);
         }
 
-        public override void OnTriggerEnter(Entity entity)
+        public override void OnTriggerEnter(Player player)
         {
             TextBox.StopAllCoroutines();
             TextBox.ProgressiveDraw(Text[TextBox.Text.Length..], 0.01f, true);
         }
 
-        public override void OnTriggerExit(Entity entity)
+        public override void OnTriggerExit(Player player)
         {
             TextBox.StopAllCoroutines();
             TextBox.ProgressiveRemove(0.01f);

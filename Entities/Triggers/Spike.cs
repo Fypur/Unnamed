@@ -7,36 +7,38 @@ using System.Text;
 
 namespace Platformer
 {
-    public class Spike : DeathTrigger
+    public class Spike : Solid
     {
         public const int DefaultSize = 8;
-        public float Rotation { get => Sprite.Rotation; set => Sprite.Rotation = MathHelper.ToDegrees(value); }
-        public static Texture2D texture = DataManager.GetTexture("SpikeTest");
-
-        public Spike(Vector2 position, float rotation)
-            : this(position, GetDirection(rotation))
-        { }
+        private Direction direction;
 
         public Spike(Vector2 position, Direction direction)
-            : base(position, DefaultSize, DefaultSize)
+            : base(position, DefaultSize, DefaultSize, new Sprite(DataManager.GetTexture("SpikeTest")))
         {
+            this.direction = direction;
             float rotation = GetRotation(direction);
+            Collider.Collidable = false;
 
-            Conditions = (player) =>
-            {
-                if (direction == Direction.Up)
-                    return player.Velocity.Y >= 0;
-                else if (direction == Direction.Down)
-                    return player.Velocity.Y <= 0;
-                else if (direction == Direction.Left)
-                    return player.Velocity.X >= 0;
-                else
-                    return player.Velocity.X <= 0;
-            };
+            var h = new HurtBox(Vector2.Zero, Width, Height);
+            h.DeathConditions = Conditions;
+            AddComponent(h);
 
-            Sprite = (Sprite)AddComponent(new Sprite(texture, Bounds, rotation));
+            Sprite.Bounds = Bounds;
+            Sprite.Rotation = rotation;
             Sprite.Origin = HalfSize;
             Sprite.Centered = true;
+        }
+
+        private bool Conditions(Player player)
+        {
+            if (direction == Direction.Up)
+                return player.Velocity.Y >= 0;
+            else if (direction == Direction.Down)
+                return player.Velocity.Y <= 0;
+            else if (direction == Direction.Left)
+                return player.Velocity.X >= 0;
+            else
+                return player.Velocity.X <= 0;
         }
 
         private static float GetRotation(Direction direction)

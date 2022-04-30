@@ -25,6 +25,7 @@ namespace Platformer
             () =>
             {
                 onTransition?.Invoke();
+
                 AddComponent(new Timer(wipeTime / 2, true, (timer) =>
                 {
                     float reversed = 0.5f + Ease.Reverse((timer.Value) / wipeTime, 0.5f);
@@ -37,11 +38,6 @@ namespace Platformer
                         Engine.CurrentMap.Destroy(this);
                     }));
             }));
-        }
-
-        public override void Render()
-        {
-            base.Render();
         }
     }
 }
