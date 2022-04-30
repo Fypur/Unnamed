@@ -45,8 +45,8 @@ namespace Platformer
                 {
                     ParticleType dust = new ParticleType(Player.Dust);
                     dust.Acceleration = -Vector2.UnitY * 100;
-                    Platformer.pS.Emit(dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 0, Color.White);
-                    Platformer.pS.Emit(dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 180, Color.White);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 0, Color.White);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 180, Color.White);
                     Collided = true;
                 };
             }

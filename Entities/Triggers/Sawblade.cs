@@ -13,9 +13,8 @@ namespace Platformer
         public Sawblade(Vector2 position, float radius)
             : base(position, (int)(radius * 2), (int)(radius * 2), new Sprite(Color.Gray))
         {
-            Sprite.LayerDepth = 1.01f;
             Collider.Collidable = false;
-            AddComponent(new HurtBox(new Vector2(radius / 2), radius));
+            AddComponent(new HurtBox(new Vector2(radius), radius));
         }
 
         public Sawblade(Vector2 position, float radius, Vector2[] positions, float[] timesBetweenPositions, bool goingForwards)

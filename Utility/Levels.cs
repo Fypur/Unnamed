@@ -83,6 +83,9 @@ namespace Platformer
             foreach (LDtkTypes.DeathTrigger p in level.GetEntities<LDtkTypes.DeathTrigger>())
                 entities.Add(new DeathTrigger(p.Position, p.Size));
 
+            foreach (LDtkTypes.Fire p in level.GetEntities<LDtkTypes.Fire>())
+                entities.Add(new Fire(p.Position, p.Size, p.Direction.ToDirection()));
+
             foreach (LDtkTypes.JumpThru p in level.GetEntities<LDtkTypes.JumpThru>())
                 entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), new Sprite(Color.Brown)));
             foreach (LDtkTypes.JumpThru2 p in level.GetEntities<LDtkTypes.JumpThru2>())
@@ -527,9 +530,9 @@ namespace Platformer
             }
         }
 
-        public static Direction GetDirection(this LDtkTypes.Spike spike)
+        public static Direction GetDirection(this ILDtkEntity entity)
         {
-            if (spike.Width() < spike.Height())
+            if (entity.Width() < entity.Height())
                 return Direction.Down;
             else
                 return Direction.Right;

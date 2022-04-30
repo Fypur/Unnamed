@@ -27,8 +27,6 @@ namespace Platformer
 
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
-        public static ParticleSystem pS;
-
         public Platformer()
         {
             instance = this;
@@ -49,7 +47,6 @@ namespace Platformer
             base.Initialize();
 
             PauseMenu = new PauseMenu();
-            pS = new ParticleSystem();
             
         }
 
@@ -132,7 +129,7 @@ namespace Platformer
                 pS.Emit(PT, 10, new Rectangle((Input.MousePos - Vector2.One * 3).ToPoint(), (Vector2.One * 6).ToPoint()), null, -90, Color.White);
             }*/
 #endif
-            pS.Update();
+            Debug.LogUpdate(Engine.CurrentMap.MiddlegroundSystem.Particles.Count);
 
             Cam.Update();
             Input.UpdateOldState();
@@ -147,9 +144,9 @@ namespace Platformer
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
-            pS.Render();
-
             Engine.CurrentMap.Render();
+            
+            Drawing.DebugPoint(1);
 
             Drawing.DebugEvents();
 

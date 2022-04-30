@@ -317,7 +317,7 @@ namespace Platformer
             Dust.SpeedMax = 15;*/
 
             /*if (Input.GetKeyDown(Keys.C))
-                Platformer.pS.Emit(Dust, -Vector2.One * 5, this, 1000);*/
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, -Vector2.One * 5, this, 1000);*/
 
             Velocity += AddedJetpackSpeed;
 
@@ -560,7 +560,7 @@ namespace Platformer
             Velocity.X += LiftBoost.X;
 
             Debug.Log();
-            Platformer.pS.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
             AddComponent(new Timer(maxJumpTime, true, (timer) =>
             {
@@ -637,7 +637,7 @@ namespace Platformer
             if(Velocity.Y > 0)
                 gravityScale = 0.5f * constGravityScale;
 
-            Platformer.pS.Emit(Dust.Create(this, new Vector2(0, 0)), 1000);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Dust.Create(this, new Vector2(0, 0)), 1000);
 
             if (!isUnsticking && xMovingRaw != 0 && (xMovingRaw < 0) == onRightWall)
             {
@@ -718,7 +718,7 @@ namespace Platformer
 
             Jetpacking = true;
 
-            Platformer.pS.Emit(JetpackParticle, MiddlePos);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(JetpackParticle, MiddlePos);
         }
 
         public void Death()
@@ -770,7 +770,7 @@ namespace Platformer
             ParticleType oldDust = Dust.Copy();
             Dust.LifeMax = 0.4f;
             Dust.SpeedMax = 10; 
-            Platformer.pS.Emit(Dust, 4, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 4, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
             Dust.CopyFrom(oldDust);
         }
