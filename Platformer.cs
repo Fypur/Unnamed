@@ -26,8 +26,7 @@ namespace Platformer
         public static Player player => (Player)Engine.Player;
 
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
-
-        private const int initLevel = 4;
+        private const string initLevel = "8";
 
         public Platformer()
         {
@@ -62,8 +61,10 @@ namespace Platformer
 
             //player = (Player)Engine.CurrentMap.Instantiate(
             //new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
-
-            map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(initLevel, Vector2.Zero)));
+            if(int.TryParse(initLevel, out int lvl))
+                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(lvl, Vector2.Zero)));
+            else
+                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(initLevel, Vector2.Zero)));
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
             Cam.FollowsPlayer = true;
 

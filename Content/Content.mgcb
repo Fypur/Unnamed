@@ -74,7 +74,7 @@
 /processorParam:InnerPadding=0
 /build:Graphics/9Slice/Button/top.aseprite
 
-#begin Graphics/Decals.aseprite
+#begin Graphics/Objects/Decals.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor
 /processorParam:SheetType=Packed
@@ -84,7 +84,55 @@
 /processorParam:BorderPadding=0
 /processorParam:Spacing=0
 /processorParam:InnerPadding=0
-/build:Graphics/Decals.aseprite
+/build:Graphics/Objects/Decals.aseprite
+
+#begin Graphics/Objects/JetpackBooster.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Objects/JetpackBooster.aseprite
+
+#begin Graphics/Objects/robot.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Objects/robot.png
+
+#begin Graphics/Objects/SpikeTest.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/Objects/SpikeTest.png
+
+#begin Graphics/Objects/swingingPoint.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Objects/swingingPoint.aseprite
 
 #begin Graphics/Player/ascend.aseprite
 /importer:AsepriteDocumentImporter
@@ -158,42 +206,6 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Player/wallSlide.aseprite
 
-#begin Graphics/robot.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Graphics/robot.png
-
-#begin Graphics/SpikeTest.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Graphics/SpikeTest.png
-
-#begin Graphics/swingingPoint.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
-/build:Graphics/swingingPoint.aseprite
-
 #begin Graphics/Tilesets/grass.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor
@@ -241,18 +253,6 @@
 /processorParam:Spacing=0
 /processorParam:InnerPadding=0
 /build:Graphics/Tilesets/industrialAll.aseprite
-
-#begin Graphics/top.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Graphics/top.png
 
 #begin world.ldtk
 /importer:LDtkWorldImporter

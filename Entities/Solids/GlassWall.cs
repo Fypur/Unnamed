@@ -36,7 +36,7 @@ namespace Platformer
         public void Break(Vector2 particleDirection)
         {
             Engine.CurrentMap.MiddlegroundSystem.Emit(glass, 200, Bounds, null, particleDirection.ToAngleDegrees(), glass.Color);
-            Engine.Cam.Shake(0.2f, 5);
+            Engine.Cam.Shake(0.2f, 1.7f);
             Destroy();
         }
     }

@@ -10,6 +10,7 @@ namespace LDtkTypes
     {
         public Point[] Positions { get; set; }
         public float[] TimeBetweenPositions { get; set; }
+        public bool GoingForwards { get; set; }
         public long Uid { get; set; }
         public string Identifier { get; set; }
         public Vector2 Size { get; set; }

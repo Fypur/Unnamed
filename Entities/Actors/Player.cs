@@ -52,6 +52,7 @@ namespace Platformer
         public bool Jetpacking;
         public bool canJetpack = true;
         public Vector2 jetpackPowerCoef = Vector2.One;
+        public Vector2 jetpackDirectionalPowerCoef = Vector2.Zero;
         public Vector2 respawnPoint;
 
         private bool onGround;
@@ -210,8 +211,10 @@ namespace Platformer
 
             if (Velocity.X <= 1 && Velocity.X >= -1)
                 Velocity.X = 0;
-            
-            AddedJetpackSpeed.X = Math.Clamp(AddedJetpackSpeed.X, -jetpackPowerX * 5, jetpackPowerX * 5);
+
+            Debug.LogUpdate(jetpackDirectionalPowerCoef);
+            float dirPowerMult = Math.Sign(AddedJetpackSpeed.X) == Math.Sign(jetpackDirectionalPowerCoef.X) ? jetpackDirectionalPowerCoef.X * Math.Sign(jetpackDirectionalPowerCoef.X) : 1;
+            AddedJetpackSpeed.X = Math.Clamp(AddedJetpackSpeed.X, -jetpackPowerX * jetpackPowerCoef.X * 5 * dirPowerMult, jetpackPowerX * jetpackPowerCoef.X * 5 * dirPowerMult);
 
             if (AddedJetpackSpeed.X <= 1 && AddedJetpackSpeed.X >= -1)
                 AddedJetpackSpeed.X = 0;
@@ -691,6 +694,11 @@ namespace Platformer
                 coef += Vector2.One;
 
             coef *= jetpackPowerCoef;
+
+            if(jetpackDirectionalPowerCoef.X != 0 && Math.Sign(AddedJetpackSpeed.X) == Math.Sign(jetpackDirectionalPowerCoef.X))
+                coef.X *= jetpackDirectionalPowerCoef.X;
+            if (jetpackDirectionalPowerCoef.Y != 0 && Math.Sign(AddedJetpackSpeed.Y) == Math.Sign(jetpackDirectionalPowerCoef.Y))
+                coef.Y *= jetpackDirectionalPowerCoef.Y;
 
             if (stateMachine.Is(States.Jumping))
                 AddedJetpackSpeed.Y += dir.Y * jetpackPowerY * 0.5f * coef.Y;

@@ -65,7 +65,7 @@ namespace Platformer
                 if (p.Positions.Length == 0)
                     entities.Add(new SwingingPoint(p.Position));
                 else
-                    entities.Add(new SwingingPoint(p.Positions.ToVector2().AddAtBeggining(p.Position), p.TimeBetweenPositions, Ease.QuintInAndOut));
+                    entities.Add(new SwingingPoint(p.Position, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, p.GoingForwards, Ease.QuintInAndOut));
             }
 
             foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
@@ -96,7 +96,7 @@ namespace Platformer
                     Engine.CurrentMap.Instantiate(new Player(p.Position));
 
             foreach (LDtkTypes.SwingTriggered p in level.GetEntities<LDtkTypes.SwingTriggered>())
-                entities.Add(new SwingTriggeredBlock(p.Position, p.Positions.ToVector2(), p.Width(), p.Height()));
+                entities.Add(new SwingTriggered(p.Position, p.Positions.ToVector2(), p.Width(), p.Height()));
 
             foreach (LDtkTypes.TextSpawn p in level.GetEntities<LDtkTypes.TextSpawn>())
                 entities.Add(new TextSpawn(p.Position, p.Size, GridToWorldCoords(p.TextPos), p.Text));
@@ -326,7 +326,7 @@ namespace Platformer
             {
                 case 1:
                     var l = new List<Entity> {
-                        new SwingingPoint(new Vector2[] { new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2(Engine.ScreenSize.X / 2 - 200, 50) }, new float[]{ 1.5f }, Ease.QuintInAndOut),
+                        new SwingingPoint(new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2[] { new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2(Engine.ScreenSize.X / 2 - 200, 50) }, new float[]{ 1.5f }, true, Ease.QuintInAndOut),
                         FallDeathTrigger(p, size)
                     };
                     l.AddRange(DefaultLevelTransitions(p, new Level(GetLevelData(2, p + Engine.ScreenSizeX)), null, null, null));

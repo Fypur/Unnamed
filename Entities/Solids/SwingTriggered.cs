@@ -8,10 +8,10 @@ using Microsoft.Xna.Framework;
 
 namespace Platformer
 {
-    public class SwingTriggeredBlock : MovingSolid, ISwinged
+    public class SwingTriggered : MovingSolid, ISwinged
     {
-        public  float MaxSpeed = 1000;
-        public  float Acceleration = 10;
+        public  float MaxSpeed = 10000;
+        public  float Acceleration = 100;
         public  float friction = 0.1f;
 
         public Vector2[] Positions;
@@ -23,9 +23,11 @@ namespace Platformer
         private bool isMoving;
         private bool looped;
 
-        public SwingTriggeredBlock(Vector2 position, Vector2[] positions, int width, int height) : base(DetermineInitPos(position, positions, out int initIndex), width, height, new Sprite(Color.LightBlue))
+        public SwingTriggered(Vector2 position, Vector2[] positions, int width, int height) : base(DetermineInitPos(position, positions, out int initIndex), width, height, new Sprite(Color.LightBlue))
         {
             Positions = positions;
+            Collider.Collidable = false;
+            Velocity = Vector2.Zero;
             if (Positions[0] == Positions[Positions.Length - 1])
                 looped = true;
 
@@ -66,12 +68,16 @@ namespace Platformer
         public override void Update()
         {
             base.Update();
+            Debug.LogUpdate(Velocity);
+            foreach (Solid s in SwingingPoint.SwingingPoints) Debug.PointUpdate(s.Pos);
+
             if (isMoving)
                 Velocity += normalizedDir * Acceleration;
 
             Velocity -= Velocity * friction;
             Velocity = Vector2.Clamp(Velocity, -new Vector2(MaxSpeed), new Vector2(MaxSpeed));
-            Velocity = (VectorHelper.ClosestOnSegment(ExactPos + Velocity * Engine.Deltatime, Positions[currentPosIndex], nextPos) - ExactPos) / Engine.Deltatime;
+            if(Engine.Deltatime != 0)
+                Velocity = (VectorHelper.ClosestOnSegment(ExactPos + Velocity * Engine.Deltatime, Positions[currentPosIndex], nextPos) - ExactPos) / Engine.Deltatime;
 
             if (Vector2.DistanceSquared(ExactPos + Velocity * Engine.Deltatime, nextPos) < 2)
             {
@@ -86,6 +92,12 @@ namespace Platformer
             }
 
             Move(Velocity * Engine.Deltatime);
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            SwingingPoint.SwingingPoints.Remove(this);
         }
 
         private static Vector2 DetermineInitPos(Vector2 position, Vector2[] positions, out int index)
