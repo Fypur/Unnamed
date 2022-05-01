@@ -34,25 +34,11 @@ namespace Platformer
         
         private const float maxJumpTime = 0.4f;
         private const float dashTime = 0.2f;
-        private const float invinciblityTime = 1.5f;
         private const float unstickTime = 0.1f;
         
         private const float maxGrappleDist = 1000f;
 
-        public static readonly ParticleType Dust = new ParticleType()
-        {
-            Color = Color.White,
-            Size = 2,
-            SizeRange = 1,
-            LifeMin = 0.05f,
-            LifeMax = 0.4f,
-            SpeedMin = 5,
-            SpeedMax = 30,
-            Direction = -90,
-            DirectionRange = 45,
-            FadeMode = ParticleType.FadeModes.EndLinear,
-            SizeChange = ParticleType.FadeModes.EndSmooth
-        };
+        public static readonly ParticleType Dust = Particles.Dust.Copy();
 
         private readonly ParticleType JetpackParticle;
 
@@ -73,7 +59,6 @@ namespace Platformer
         private bool onRightWall;
         private bool collisionX;
         private bool collisionY;
-        private bool previousOnGround = true;
 
         private float xMoving;
         private float yMoving;
@@ -270,9 +255,6 @@ namespace Platformer
                 {
                     jetpackTime = maxJetpackTime;
                     AddedJetpackSpeed.X = 0;
-
-                    if (!previousOnGround)
-                        Land();
                 }
 
                 if(onGround || onWall)
@@ -321,7 +303,6 @@ namespace Platformer
 
             Velocity += AddedJetpackSpeed;
 
-            previousOnGround = onGround;
             collisionX = collisionY = false;
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
@@ -727,13 +708,24 @@ namespace Platformer
             Active = false;
             Visible = false;
 
+            ResetJetpack();
             ResetSwing();
             stateMachine.Switch(States.Dead);
 
             Engine.CurrentMap.Instantiate(new ScreenWipe(1, () =>
             {
                 stateMachine.Switch(States.Idle);
-                ExactPos = respawnPoint;
+                onGround = true;
+                
+                Vector2 groundedRespawnPos = respawnPoint;
+                for (int i = 0; i < 100; i++)
+                    if (!Collider.CollideAt(groundedRespawnPos + new Vector2(0, 1)))
+                        groundedRespawnPos += new Vector2(0, 1);
+                    else
+                        break;
+
+                ExactPos = groundedRespawnPos;
+
                 Engine.Cam.Pos = ExactPos;
                 Levels.ReloadLastLevelFetched();
                 Active = true;
@@ -760,6 +752,9 @@ namespace Platformer
                 gl.Break(Velocity);
                 return;
             }
+
+            if (Velocity.Y > 0)
+                Land();
 
             Velocity.Y = 0;
             collisionY = true;
@@ -792,12 +787,21 @@ namespace Platformer
                     Sprite.Effect = SpriteEffects.FlipHorizontally;
             }
 
+            Sprite.Color = Color.Lerp(Color.OrangeRed, Color.White, jetpackTime / maxJetpackTime);
+
             //Renderer components
             base.Render();
         }
 
-        public void ResetJetpack()
+        public void RefillJetpack()
             => jetpackTime = maxJetpackTime;
+
+        private void ResetJetpack()
+        {
+            jetpackTime = maxJetpackTime;
+            AddedJetpackSpeed = Vector2.Zero;
+            jetpackPowerCoef = Vector2.One;
+        }
 
         private void ResetSwing()
         {
@@ -810,10 +814,12 @@ namespace Platformer
             AddComponent(new Timer(time, true, (timer) =>
             {
                 if (stopLimitting())
-                    timer.Destroy();
+                    timer.End();
 
                 jetpackPowerCoef.Y = coef;
-            }, () => jetpackPowerCoef.Y = 1));
+            }, 
+            () => 
+            jetpackPowerCoef.Y = 1));
         }
 
         public bool Is(States state)

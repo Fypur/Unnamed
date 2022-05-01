@@ -25,7 +25,7 @@ namespace Platformer
             if (!canActivate)
                 return;
 
-            player.ResetJetpack();
+            player.RefillJetpack();
             canActivate = false;
 
             //Remove this once you add animations

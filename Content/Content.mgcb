@@ -74,6 +74,18 @@
 /processorParam:InnerPadding=0
 /build:Graphics/9Slice/Button/top.aseprite
 
+#begin Graphics/Decals.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Decals.aseprite
+
 #begin Graphics/Player/ascend.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor

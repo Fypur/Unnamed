@@ -16,7 +16,7 @@ namespace Platformer
             : base(position, DefaultSize, DefaultSize, new Sprite(DataManager.GetTexture("SpikeTest")))
         {
             this.direction = direction;
-            float rotation = GetRotation(direction);
+            float rotation = MathHelper.ToRadians(GetRotation(direction));
             Collider.Collidable = false;
 
             var h = new HurtBox(Vector2.Zero, Width, Height);

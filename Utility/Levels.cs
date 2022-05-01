@@ -69,7 +69,7 @@ namespace Platformer
             }
 
             foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
-                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height(), new NineSliceSettings(Tile("topLeftCorner"), Tile("topRightCorner"), Tile("bottomLeftCorner"), Tile("bottomRightCorner"), Tile("top"), Tile("left"), Tile("right"), Tile("bottom"), DataManager.Tilesets[1]["inside"])));
+                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height(), new NineSliceSettings(Tile("topLeftCorner"), Tile("topRightCorner"), Tile("bottomLeftCorner"), Tile("bottomRightCorner"), Tile("top"), Tile("left"), Tile("right"), Tile("bottom"), DataManager.Tilesets[1]["inside"], true)));
 
             foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
                 entities.Add(new RailedPullBlock(p.RailPositions.ToVector2(), p.Position, p.Width(), p.Height()));
@@ -196,8 +196,9 @@ namespace Platformer
                 {
                     Texture2D tileSet = DataManager.Load(System.IO.Path.ChangeExtension(l._TilesetRelPath, null));
 
-                    foreach (TileInstance t in l.GridTiles)
+                    for(int i = l.GridTiles.Length - 1; i >= 0; i--)
                     {
+                        TileInstance t = l.GridTiles[i];
                         Texture2D texture = tileSet.CropTo(t.Src.ToVector2(), new Vector2(l._GridSize, l._GridSize));
                         texture.Name = tileSet.Name + t.T.ToString();
 

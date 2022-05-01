@@ -75,7 +75,7 @@ namespace Platformer
             AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () => {
                 p.canMove = true;
                 p.CancelJump();
-                p.ResetJetpack();
+                p.RefillJetpack();
 
                 if(direction == Direction.Up)
                 {

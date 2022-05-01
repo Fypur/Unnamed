@@ -14,6 +14,7 @@ namespace Platformer
         private const float constGravityScale = 0.7f;
         private const float maxFallingSpeed = 160;
         private const float shakeTime = 0.5f;
+        private static readonly ParticleType Dust = Particles.Dust.Copy();
 
         private bool Collided;
         private bool previousOnGround;
@@ -21,9 +22,10 @@ namespace Platformer
         public FallingPlatform(Vector2 position, int width, int height, NineSliceSettings nineSlice)
             : base(position, width, height, new Sprite())
         {
-            Trigger trig = (Trigger)AddChild(new Trigger(-Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }, Sprite.None));
+            Trigger trig = (Trigger)AddChild(new Trigger(Pos - Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }, Sprite.None));
             trig.OnTriggerEnterAction = (entity) => { AddComponent(new Coroutine(Fall(shakeTime))); RemoveChild(trig); };
             Sprite.NineSliceSettings = nineSlice;
+            Dust.Acceleration = -Vector2.UnitY * 100;
         }
 
         private IEnumerator Fall(float shakeTime)
@@ -43,10 +45,8 @@ namespace Platformer
             {
                 onCollision = () =>
                 {
-                    ParticleType dust = new ParticleType(Player.Dust);
-                    dust.Acceleration = -Vector2.UnitY * 100;
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 0, Color.White);
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 180, Color.White);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 0, Color.White);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 180, Color.White);
                     Collided = true;
                 };
             }
