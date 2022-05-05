@@ -212,7 +212,6 @@ namespace Platformer
             if (Velocity.X <= 1 && Velocity.X >= -1)
                 Velocity.X = 0;
 
-            Debug.LogUpdate(jetpackDirectionalPowerCoef);
             float dirPowerMult = Math.Sign(AddedJetpackSpeed.X) == Math.Sign(jetpackDirectionalPowerCoef.X) ? jetpackDirectionalPowerCoef.X * Math.Sign(jetpackDirectionalPowerCoef.X) : 1;
             AddedJetpackSpeed.X = Math.Clamp(AddedJetpackSpeed.X, -jetpackPowerX * jetpackPowerCoef.X * 5 * dirPowerMult, jetpackPowerX * jetpackPowerCoef.X * 5 * dirPowerMult);
 
@@ -543,7 +542,6 @@ namespace Platformer
             stateMachine.Switch(States.Jumping);
             Velocity.X += LiftBoost.X;
 
-            Debug.Log();
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
             AddComponent(new Timer(maxJumpTime, true, (timer) =>
@@ -681,24 +679,24 @@ namespace Platformer
             if (jetpackTime <= 0)
                 return;
 
-            //stateMachine.Switch(States.Jetpack);
-            if (normalMouvement && onGround)
-                AddedJetpackSpeed.X += dir.X * jetpackPowerX * jetpackPowerCoef.X - friction * AddedJetpackSpeed.X;
-            /*else if (normalMouvement && isAtSwingEnd)
-                AddedJetpackSpeed.X += dir.X * swingAcceleration * jetpackPowerCoef.X;*/
-            else if (normalMouvement && !onWall)
-                AddedJetpackSpeed.X += dir.X * jetpackPowerX * jetpackPowerCoef.X - airFriction * AddedJetpackSpeed.X;
-
             Vector2 coef = Vector2.One;
             if (Velocity.Y > -15 && dir.Y < 0)
                 coef += Vector2.One;
 
             coef *= jetpackPowerCoef;
 
-            if(jetpackDirectionalPowerCoef.X != 0 && Math.Sign(AddedJetpackSpeed.X) == Math.Sign(jetpackDirectionalPowerCoef.X))
-                coef.X *= jetpackDirectionalPowerCoef.X;
-            if (jetpackDirectionalPowerCoef.Y != 0 && Math.Sign(AddedJetpackSpeed.Y) == Math.Sign(jetpackDirectionalPowerCoef.Y))
-                coef.Y *= jetpackDirectionalPowerCoef.Y;
+            if (jetpackDirectionalPowerCoef.X != 0 && Math.Sign(AddedJetpackSpeed.X) == Math.Sign(jetpackDirectionalPowerCoef.X))
+                coef.X *= Math.Abs(jetpackDirectionalPowerCoef.X);
+            if (jetpackDirectionalPowerCoef.Y != 0 && Math.Sign(AddedJetpackSpeed.Y) == -Math.Sign(jetpackDirectionalPowerCoef.Y))
+                coef.Y *= Math.Abs(jetpackDirectionalPowerCoef.Y);
+
+            //stateMachine.Switch(States.Jetpack);
+            if (normalMouvement && onGround)
+                AddedJetpackSpeed.X += dir.X * jetpackPowerX * coef.X - friction * AddedJetpackSpeed.X;
+            /*else if (normalMouvement && isAtSwingEnd)
+                AddedJetpackSpeed.X += dir.X * swingAcceleration * jetpackPowerCoef.X;*/
+            else if (normalMouvement && !onWall)
+                AddedJetpackSpeed.X += dir.X * jetpackPowerX * coef.X - airFriction * AddedJetpackSpeed.X;
 
             if (stateMachine.Is(States.Jumping))
                 AddedJetpackSpeed.Y += dir.Y * jetpackPowerY * 0.5f * coef.Y;
@@ -720,6 +718,15 @@ namespace Platformer
             ResetSwing();
             stateMachine.Switch(States.Dead);
 
+            foreach (Trigger trig in Engine.CurrentMap.Data.Triggers)
+            {
+                if (trig.Contains(this))
+                {
+                    trig.OnTriggerExit(this);
+                    trig.OnTriggerEnter(this);
+                }
+            }
+
             Engine.CurrentMap.Instantiate(new ScreenWipe(1, () =>
             {
                 stateMachine.Switch(States.Idle);
@@ -734,7 +741,18 @@ namespace Platformer
 
                 ExactPos = groundedRespawnPos;
 
-                Engine.Cam.Pos = ExactPos;
+                bool changedCamPos = false;
+                foreach (CameraLock camLock in Engine.CurrentMap.Data.GetEntities<CameraLock>())
+                    if (camLock.Contains(this)) 
+                    {
+                        Debug.Log(camLock.Pos);
+                        Engine.Cam.NoBoundsPos = Engine.Cam.InBoundsPos(Pos, camLock.Bounds);
+                        changedCamPos = true;
+                    }
+
+                if(!changedCamPos)
+                    Engine.Cam.Pos = ExactPos;
+
                 Levels.ReloadLastLevelFetched();
                 Active = true;
                 Visible = true;

@@ -11,19 +11,22 @@ namespace Platformer
 {
     public class JetpackBooster : PlayerTrigger
     {
+        private float boostX = 4f;
+        private float boostY = 1.5f;
         private Vector2 boostingDir;
 
-        #region NineSlice Textures
-
-        private static readonly NineSliceSettings defaultNineSlice = 
-            new NineSliceSettings(DataManager.Objects["JetpackBooster"].CropTo(Vector2.Zero, new Vector2(8)),
-                DataManager.Objects["JetpackBooster"].CropTo(new Vector2(8, 0), new Vector2(8)),
-                null, true);
+        #region NineSlice Textures 
 
         private static Texture2D fillUp = DataManager.Objects["JetpackBooster"].CropTo(new Vector2(8), new Vector2(16));
         private static Texture2D fillDown = fillUp.FlipY();
         private static Texture2D fillRight = fillUp.Rotate90();
         private static Texture2D fillLeft = fillRight.FlipX();
+
+        private static readonly NineSliceSettings defaultNineSlice =
+            new NineSliceSettings(DataManager.Objects["JetpackBooster"].CropTo(Vector2.Zero, new Vector2(8)),
+                DataManager.Objects["JetpackBooster"].CropTo(new Vector2(8, 0), new Vector2(8)),
+                null, true);
+
         private static Dictionary<Direction, Texture2D> Fill = new() { { Direction.Up, fillUp }, { Direction.Down, fillDown }, { Direction.Left, fillLeft }, { Direction.Right, fillRight } };
 
         #endregion
@@ -51,12 +54,12 @@ namespace Platformer
 
         public override void OnTriggerEnter(Player player)
         {
-            player.jetpackDirectionalPowerCoef += boostingDir * new Vector2(10, 1.3f);
+            player.jetpackDirectionalPowerCoef += boostingDir * new Vector2(boostX, boostY);
         }
 
         public override void OnTriggerExit(Player player)
         {
-            player.jetpackDirectionalPowerCoef -= boostingDir * new Vector2(10, 1.3f);
+            player.jetpackDirectionalPowerCoef -= boostingDir * new Vector2(boostX, boostY);
         }
 
         public Vector2 DirectionToVector2(Direction direction)

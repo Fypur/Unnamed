@@ -22,6 +22,9 @@ namespace Platformer
             : base(position, width, height, new Sprite(DataManager.Objects["swingingPoint"]), goingForwards, positions, timesBetweenPositions, easeFunction) { SwingingPoints.Add(this); }
 
         public override void OnDestroy()
-            => SwingingPoints.Remove(this);
+        {
+            base.OnDestroy();
+            SwingingPoints.Remove(this); 
+        }
     }
 }

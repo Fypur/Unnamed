@@ -132,7 +132,6 @@ namespace Platformer
                 pS.Emit(PT, 10, new Rectangle((Input.MousePos - Vector2.One * 3).ToPoint(), (Vector2.One * 6).ToPoint()), null, -90, Color.White);
             }*/
 #endif
-            Debug.LogUpdate(Engine.CurrentMap.MiddlegroundSystem.Particles.Count);
 
             Cam.Update();
             Input.UpdateOldState();

@@ -121,7 +121,10 @@ namespace Platformer
         }*/
 
         public override void OnDestroy()
-            => SwingingPoint.SwingingPoints.Remove(this);
+        {
+            base.OnDestroy();
+            SwingingPoint.SwingingPoints.Remove(this);
+        }
 
         void ISwinged.OnGrapple(Entity grappledEntity, Func<bool> atSwingEnd)
         {
