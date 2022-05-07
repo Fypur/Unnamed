@@ -18,8 +18,8 @@ namespace Platformer
         private const float maxFallingSpeed = 300;
         private const float dashSpeed = 200;
 
-        private const float jetpackPowerX = 9;
-        private const float jetpackPowerY = 15;
+        private const float jetpackPowerX = 8;
+        private const float jetpackPowerY = 14;
         private const float maxJetpackTime = 0.5f;
         
         private const float acceleration = 70f;
@@ -84,22 +84,18 @@ namespace Platformer
         #endregion
 
 
-        public Player(Vector2 position) : base(position, 8, 14, constGravityScale, new Sprite(Color.White))
+        public Player(Vector2 position) : base(position, 8, 13, constGravityScale, new Sprite(Color.White))
         {
             Engine.Player = this;
 
-            #region Sprite Animations
             Sprite.Bounds = Rectangle.Empty;
 
             Sprite.Add(Sprite.AllAnimData["Player"]);
 
             Sprite.Play("idle");
-            Sprite.Offset = new Vector2(-3, -2);
+            Debug.Log(Sprite.AllAnimData["Player"].Animations["idle"].Frames.Length);
+            Sprite.Offset = new Vector2(-3, -3);
             //Sprite.Origin = HalfSize;
-
-            #endregion
-
-            #region StateMachine
 
             stateMachine = new StateMachine<States>(States.Idle);
 
@@ -122,8 +118,6 @@ namespace Platformer
                 });
 
             AddComponent(stateMachine);
-
-            #endregion
 
             JetpackParticle = new ParticleType()
             {
@@ -288,20 +282,6 @@ namespace Platformer
                 facing = xMovingRaw;
 
             Dust.Acceleration = Velocity;
-
-            /*Dust.LifeMin = 0.3f;
-            Dust.LifeMax = 0.4f;
-            Dust.Color = Color.White;
-            Dust.Size = 1.5f;
-            Dust.SizeRange = 0.2f;
-            Dust.SizeChange = ParticleType.FadeModes.Linear;
-            Dust.Direction = 0;
-            Dust.DirectionRange = 0.5f;
-            Dust.SpeedMin = 5;
-            Dust.SpeedMax = 15;*/
-
-            /*if (Input.GetKeyDown(Keys.C))
-                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, -Vector2.One * 5, this, 1000);*/
 
             Velocity += AddedJetpackSpeed;
 

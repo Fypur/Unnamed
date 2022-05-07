@@ -11,9 +11,10 @@ namespace Platformer
     {
         public const int DefaultSize = 8;
         private Direction direction;
+        private static Texture2D texture = DataManager.GetTexture("Objects/Decals").CropTo(new Vector2(32, 56), new Vector2(8));
 
         public Spike(Vector2 position, Direction direction)
-            : base(position, DefaultSize, DefaultSize, new Sprite(DataManager.GetTexture("SpikeTest")))
+            : base(position, DefaultSize, DefaultSize, new Sprite(texture))
         {
             this.direction = direction;
             float rotation = MathHelper.ToRadians(GetRotation(direction));

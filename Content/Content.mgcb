@@ -98,6 +98,18 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Objects/JetpackBooster.aseprite
 
+#begin Graphics/Objects/refill/rotate.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Objects/refill/rotate.aseprite
+
 #begin Graphics/Objects/robot.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -158,7 +170,7 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Player/fall.aseprite
 
-#begin Graphics/Player/idle.aseprite
+#begin Graphics/player/idle.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor
 /processorParam:SheetType=Packed
@@ -168,7 +180,7 @@
 /processorParam:BorderPadding=0
 /processorParam:Spacing=0
 /processorParam:InnerPadding=0
-/build:Graphics/Player/idle.aseprite
+/build:Graphics/player/idle.aseprite
 
 #begin Graphics/Player/jump.aseprite
 /importer:AsepriteDocumentImporter

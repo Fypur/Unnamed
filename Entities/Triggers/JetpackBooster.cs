@@ -17,7 +17,7 @@ namespace Platformer
 
         #region NineSlice Textures 
 
-        private static Texture2D fillUp = DataManager.Objects["JetpackBooster"].CropTo(new Vector2(8), new Vector2(16));
+        private static Texture2D fillUp = DataManager.Objects["JetpackBooster"].CropTo(new Vector2(0, 8), new Vector2(16));
         private static Texture2D fillDown = fillUp.FlipY();
         private static Texture2D fillRight = fillUp.Rotate90();
         private static Texture2D fillLeft = fillRight.FlipX();

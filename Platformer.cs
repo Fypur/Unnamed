@@ -26,7 +26,7 @@ namespace Platformer
         public static Player player => (Player)Engine.Player;
 
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
-        private const string initLevel = "8";
+        private const string initLevel = "5";
 
         public Platformer()
         {
@@ -83,7 +83,7 @@ namespace Platformer
 
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (Input.GetKeyDown(Keys.U))
+            if (Input.GetKeyDown(Keys.D1))
             {
                 Paused = !Paused;
                 if (Paused)
