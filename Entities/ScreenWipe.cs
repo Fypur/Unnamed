@@ -24,6 +24,7 @@ namespace Platformer
             },
             () =>
             {
+                Pos = Vector2.Lerp(initPos, endPos, 0.5f);
                 onTransition?.Invoke();
 
                 AddComponent(new Timer(wipeTime / 2, true, (timer) =>

@@ -26,7 +26,7 @@ namespace Platformer
         public static Player player => (Player)Engine.Player;
 
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
-        private const string initLevel = "5";
+        private const string initLevel = "8";
 
         public Platformer()
         {
@@ -147,7 +147,8 @@ namespace Platformer
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.Render();
-            
+            //Drawing.Draw(DataManager.Textures["zed"], player.Pos);
+
             Drawing.DebugPoint(1);
 
             Drawing.DebugEvents();

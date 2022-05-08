@@ -194,28 +194,39 @@ namespace Platformer
             {
                 if (l._Type == LayerType.Tiles)
                 {
-                    Texture2D tileSet = DataManager.Load(System.IO.Path.ChangeExtension(l._TilesetRelPath, null));
-
-                    for(int i = l.GridTiles.Length - 1; i >= 0; i--)
+                    string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
+                    if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
+                    {
+                        Texture2D tileSetTex = DataManager.Load(tileSet);
+                        Dictionary<Point, Texture2D> tiles = DataManager.GetTileSetTextures(tileSetTex, l._GridSize);
+                        foreach (KeyValuePair<Point, Texture2D> tile in tiles)
+                            DataManager.Textures[tileSet + tile.Key] = tile.Value;
+                    }
+                    for (int i = l.GridTiles.Length - 1; i >= 0; i--)
                     {
                         TileInstance t = l.GridTiles[i];
-                        Texture2D texture = tileSet.CropTo(t.Src.ToVector2(), new Vector2(l._GridSize, l._GridSize));
-                        texture.Name = tileSet.Name + t.T.ToString();
-
+                        Texture2D texture = DataManager.Textures[tileSet + t.Src];
+                        texture.Name = tileSet + t.T.ToString();
                         Sprite s = new Sprite(texture);
                         s.Effect = (SpriteEffects)t.F;
-                        s.Origin = Vector2.Zero;
                         entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
                     }
                 }
                 else if (l._Type == LayerType.IntGrid)
                 {
-                    Texture2D tileSet = DataManager.Load(System.IO.Path.ChangeExtension(l._TilesetRelPath, null));
+                    string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
+                    if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
+                    {
+                        Texture2D tileSetTex = DataManager.Load(tileSet);
+                        Dictionary<Point, Texture2D> tiles = DataManager.GetTileSetTextures(tileSetTex, l._GridSize);
+                        foreach (KeyValuePair<Point, Texture2D> tile in tiles)
+                            DataManager.Textures[tileSet + tile.Key] = tile.Value;
+                    }
 
                     foreach (TileInstance t in l.AutoLayerTiles)
                     {
-                        Texture2D texture = tileSet.CropTo(t.Src.ToVector2(), new Vector2(l._GridSize, l._GridSize));
-                        texture.Name = tileSet.Name + t.T.ToString();
+                        Texture2D texture = DataManager.Textures[tileSet + t.Src];
+                        texture.Name = tileSet + t.T.ToString();
 
                         Sprite s = new Sprite(texture);
                         s.Effect = (SpriteEffects)t.F;
