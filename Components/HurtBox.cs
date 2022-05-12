@@ -12,10 +12,15 @@ namespace Platformer
     {
         public Func<Player, bool> DeathConditions = (player) => true;
         public HurtBox(Vector2 localPosition, float width, float height) : base(localPosition, width, height)
-        { }
+        { trigger.Collider.DebugColor = Color.Red; }
 
         public HurtBox(Vector2 localPosition, float radius) : base(localPosition, radius)
-        { }
+        { trigger.Collider.DebugColor = Color.Red; }
+
+        public override void Added()
+        {
+            base.Added();
+        }
 
         public override void OnTriggerEnter(Player player)
         {

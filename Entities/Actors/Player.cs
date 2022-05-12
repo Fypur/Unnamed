@@ -18,17 +18,17 @@ namespace Platformer
         private const float maxFallingSpeed = 300;
         private const float dashSpeed = 200;
 
-        private const float jetpackPowerX = 8;
-        private const float jetpackPowerY = 14;
+        private const float jetpackPowerX = 7;
+        private const float jetpackPowerY = 6;
         private const float maxJetpackTime = 0.5f;
         
         private const float acceleration = 70f;
         private const float airAcceleration = 15f;
-        private const float swingAcceleration = 3f;
+        private const float swingAcceleration = 3f; //Swing accel is very low since friction isn't applied
         private const float friction = 0.4f;
-        private const float airFriction = 0.07f;
+        private const float airFriction = 0.1f;
         
-        private const float wallJumpSideForce = 200f;
+        private const float wallJumpSideForce = 160f;
         private const float jumpForce = 200f;
         private const float constGravityScale = 1.2f;
         
@@ -56,6 +56,7 @@ namespace Platformer
         public Vector2 respawnPoint;
 
         private bool onGround;
+        private bool previousOnGround = true;
         private bool onWall;
         private bool onRightWall;
         private bool collisionX;
@@ -194,14 +195,33 @@ namespace Platformer
             //Velocity calculation and clamping
 
             if (normalMouvement && onGround)
-                Velocity.X += xMoving * acceleration - friction * Velocity.X;
+                Velocity.X = VelocityApproach(acceleration, friction);
             else if (normalMouvement && isAtSwingEnd)
                 Velocity.X += xMoving * swingAcceleration;
             else if (normalMouvement && !onWall)
-                Velocity.X += xMoving * airAcceleration - airFriction * Velocity.X;
+                Velocity.X = VelocityApproach(airAcceleration, airFriction);
 
-            if (normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jetpack))
-                Velocity.X = Math.Clamp(Velocity.X, -maxSpeed, maxSpeed);            
+            float VelocityApproach(float acceleration, float friction)
+            {
+                if (Velocity.X == 0 || xMoving != 0)
+                    return Approach(Velocity.X, xMoving * maxSpeed, acceleration);
+                return Approach(Velocity.X, 0, friction * Math.Abs(Velocity.X));
+            }
+
+            float Approach(float value, float approached, float move)
+            {
+                if (value < approached)
+                    return Math.Min(value + move, approached);
+                return Math.Max(value - move, approached);
+            }
+
+            /*if (Math.Abs(Speed.X) > max && Math.Sign(Speed.X) == moveX)
+                Speed.X = Calc.Approach(Speed.X, max * moveX, RunReduce * mult * Engine.DeltaTime);  //Reduce back from beyond the max speed
+            else
+                Speed.X = Calc.Approach(Speed.X, max * moveX, RunAccel * mult * Engine.DeltaTime);   //Approach the max speed*/
+
+            /*if (normalMouvement && !stateMachine.Is(States.Swinging) && !Jetpacking)
+                Velocity.X = Math.Clamp(Velocity.X, -maxSpeed, maxSpeed);*/
 
             if (Velocity.X <= 1 && Velocity.X >= -1)
                 Velocity.X = 0;
@@ -229,6 +249,9 @@ namespace Platformer
 
                 if (onGround)
                 {
+                    /*if(previousOnGround)
+                        LiftSpeed = Vector2.Zero;
+                    Debug.LogUpdate(previousOnGround);*/
                     if (Velocity.Y > 0)
                         Velocity.Y = 0;
                 }
@@ -284,17 +307,12 @@ namespace Platformer
             Dust.Acceleration = Velocity;
 
             Velocity += AddedJetpackSpeed;
-
             collisionX = collisionY = false;
+            previousOnGround = onGround;
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
         }
-
-        public override bool IsRiding(Solid solid)
-            => (base.IsRiding(solid)
-                || ((Collider.CollideAt(solid, Pos + new Vector2(1, 0))
-            || Collider.CollideAt(solid, Pos + new Vector2(-1, 0))) && stateMachine.Is(States.WallSliding))) && !stateMachine.Is(States.Jumping);
 
         public override void Squish()
             => Death();
@@ -448,12 +466,12 @@ namespace Platformer
 
             void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
             {
-                float angle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - Pos - HalfSize - Velocity * Engine.Deltatime);
+                float angle = VectorHelper.GetAngle(checkingFrom - ExactPos - HalfSize, checkingFrom - ExactPos - HalfSize - Velocity * Engine.Deltatime);
 
                 if (angle == 0)
                     return;
 
-                float distanceFromPoint = Vector2.Distance(Pos + HalfSize + Velocity * Engine.Deltatime, checkingFrom);
+                float distanceFromPoint = Vector2.Distance(ExactPos + HalfSize + Velocity * Engine.Deltatime, checkingFrom);
 
                 float closestAngle = angle;
                 Vector2? closestPoint = null;
@@ -468,7 +486,7 @@ namespace Platformer
                         continue;
                     }
 
-                    float pointAngle = VectorHelper.GetAngle(checkingFrom - Pos - HalfSize, checkingFrom - corner);
+                    float pointAngle = VectorHelper.GetAngle(checkingFrom - ExactPos - HalfSize, checkingFrom - corner);
 
                     if (pointAngle * Math.Sign(angle) >= 0 && pointAngle * Math.Sign(angle) <= angle * Math.Sign(angle))
                     {
@@ -502,7 +520,7 @@ namespace Platformer
             {
                 for (int i = swingPositions.Count - 1; i >= 1; i--)
                 {
-                    float grappleAngle = VectorHelper.GetAngle(swingPositions[i - 1] - Pos - HalfSize, swingPositions[i - 1] - swingPositions[i]);
+                    float grappleAngle = VectorHelper.GetAngle(swingPositions[i - 1] - ExactPos - HalfSize, swingPositions[i - 1] - swingPositions[i]); ;
 
                     if (Math.Sign(grappleAngle) == swingPositionsSign[i])
                     {
@@ -521,6 +539,7 @@ namespace Platformer
         {
             stateMachine.Switch(States.Jumping);
             Velocity.X += LiftBoost.X;
+            previousOnGround = false;
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
@@ -544,8 +563,10 @@ namespace Platformer
                 timer.TimeScale += JumpScale;
 
                 Velocity.Y = -jumpForce * (timer.Value / maxJumpTime) + LiftBoost.Y;
+                //Velocity.X -= LiftBoost.X * ((previousTimerValue - timer.Value) / maxJumpTime);
             }, () => {
                 cancelJump = false;
+                LiftSpeed = new Vector2(LiftSpeed.X, 0);
                 AddedJetpackSpeed.X += 0.1f;
                 if (stateMachine.Is(States.Jumping))
                     stateMachine.Switch(States.Ascending); 
@@ -654,18 +675,33 @@ namespace Platformer
                 dir = -Vector2.UnitY;
             else
                 dir = new Vector2(xMovingRaw, yMovingRaw);
+            dir.Normalize();
 
             jetpackTime -= Engine.Deltatime;
             if (jetpackTime <= 0)
                 return;
 
             Vector2 coef = Vector2.One;
-            if (Velocity.Y > -15 && dir.Y < 0)
-                coef += Vector2.One;
+            if (Velocity.Y > 100 * dir.Y)
+            {
+                coef.Y += 4;
+                if(dir.Y < 0 && Velocity.Y > 100 * dir.Y)
+                    dir.Y = -1;
+            }
+            else
+                Debug.LogUpdate("not coefed");
+
+            if (Velocity.X * dir.X < 150)
+            {
+                coef.X += 2;
+                Debug.LogUpdate("xcoef");
+            }
 
             coef *= jetpackPowerCoef;
 
-            if (jetpackDirectionalPowerCoef.X != 0 && Math.Sign(AddedJetpackSpeed.X) == Math.Sign(jetpackDirectionalPowerCoef.X))
+            Velocity += dir * coef * new Vector2(jetpackPowerX, jetpackPowerY);
+
+            /*if (jetpackDirectionalPowerCoef.X != 0 && Math.Sign(AddedJetpackSpeed.X) == Math.Sign(jetpackDirectionalPowerCoef.X))
                 coef.X *= Math.Abs(jetpackDirectionalPowerCoef.X);
             if (jetpackDirectionalPowerCoef.Y != 0 && Math.Sign(AddedJetpackSpeed.Y) == -Math.Sign(jetpackDirectionalPowerCoef.Y))
                 coef.Y *= Math.Abs(jetpackDirectionalPowerCoef.Y);
@@ -674,14 +710,14 @@ namespace Platformer
             if (normalMouvement && onGround)
                 AddedJetpackSpeed.X += dir.X * jetpackPowerX * coef.X - friction * AddedJetpackSpeed.X;
             /*else if (normalMouvement && isAtSwingEnd)
-                AddedJetpackSpeed.X += dir.X * swingAcceleration * jetpackPowerCoef.X;*/
+                AddedJetpackSpeed.X += dir.X * swingAcceleration * jetpackPowerCoef.X;
             else if (normalMouvement && !onWall)
                 AddedJetpackSpeed.X += dir.X * jetpackPowerX * coef.X - airFriction * AddedJetpackSpeed.X;
 
             if (stateMachine.Is(States.Jumping))
                 AddedJetpackSpeed.Y += dir.Y * jetpackPowerY * 0.5f * coef.Y;
             else
-                AddedJetpackSpeed.Y = dir.Y * jetpackPowerY * coef.Y;
+                AddedJetpackSpeed.Y = dir.Y * jetpackPowerY * coef.Y;*/
 
             Jetpacking = true;
 

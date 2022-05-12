@@ -26,7 +26,8 @@ namespace Platformer
         public static Player player => (Player)Engine.Player;
 
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
-        private const string initLevel = "8";
+
+        private const string initLevel = "9";
 
         public Platformer()
         {
@@ -43,7 +44,7 @@ namespace Platformer
 
             Cam = new Camera(new Vector2(Engine.RenderTarget.Width / 2, Engine.RenderTarget.Height / 2), 0, 1);
 
-            World = LDtkWorld.LoadWorld("Content/world.ldtk");
+            World = LDtkFile.FromFile("Content/world.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
 
             base.Initialize();
 
@@ -102,16 +103,14 @@ namespace Platformer
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
             
-            if(Input.GetKeyDown(Keys.N))
+            if(Input.GetKeyDown(Keys.B))
                 Debug.Clear();
 
             if (Input.GetKeyDown(Keys.V))
                 player.Pos = Input.MousePos;
 
-                if (Input.GetKeyDown(Keys.R))
-            {
+            if (Input.GetKeyDown(Keys.R))
                 Levels.ReloadLastLevelFetched();
-            }
 
             /*if (Input.GetKey(Keys.W))
             {

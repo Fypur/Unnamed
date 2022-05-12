@@ -32,18 +32,25 @@ namespace Platformer
 
             List<Entity> entities = new List<Entity>();
             LDtkIntGrid intGrid = level.GetIntGrid("IntGrid");
+            Dictionary<Entity, List<Guid>> IidsChildren = new();
 
             foreach (LDtkTypes.Platform p in level.GetEntities<LDtkTypes.Platform>())
             {
                 Entity plat;
                 if (p.Positions.Length == 0)
-                    plat = new Platform(p.Position, p.Width(), p.Height(), p.Color);
+                    plat = new Platform(p.Position, p.Width(), p.Height(), Color.White);
                 else
-                    plat = new CyclingPlatform(p.Position, p.Width(), p.Height(), p.Color, p.GoingForwards, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, Ease.QuintInAndOut);
-
+                    plat = new CyclingPlatform(p.Position, p.Width(), p.Height(), Color.White, p.GoingForwards, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, Ease.QuintInAndOut);
+                    
                 entities.Add(plat);
 
-                switch (p.SpikeDirection)
+                if (p.Children.Length != 0)
+                    IidsChildren[plat] = new();
+
+                foreach (EntityRef child in p.Children)
+                    IidsChildren[plat].Add(child.EntityIid);
+
+                /*switch (p.SpikeDirection)
                 {
                     case LDtkTypes.Direction.Up:
                         plat.AddChild(new SpikeRow(new Vector2(0, -Spike.DefaultSize) + plat.Pos, Direction.Right, plat.Width, Direction.Up));
@@ -57,7 +64,7 @@ namespace Platformer
                     case LDtkTypes.Direction.Right:
                         plat.AddChild(new SpikeRow(new Vector2(plat.Width, 0) + plat.Pos, Direction.Down, plat.Height, Direction.Right));
                         break;
-                }
+                }*/
             }
 
             foreach (LDtkTypes.GrapplingPoint p in level.GetEntities<LDtkTypes.GrapplingPoint>())
@@ -72,13 +79,25 @@ namespace Platformer
                 entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height(), new NineSliceSettings(Tile("topLeftCorner"), Tile("topRightCorner"), Tile("bottomLeftCorner"), Tile("bottomRightCorner"), Tile("top"), Tile("left"), Tile("right"), Tile("bottom"), DataManager.Tilesets[1]["inside"], true)));
 
             foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
-                entities.Add(new RailedPullBlock(p.RailPositions.ToVector2(), p.Position, p.Width(), p.Height()));
+                entities.Add(new RailedPullBlock(p.RailPositions, p.Position, p.Width(), p.Height()));
 
             foreach (LDtkTypes.RespawnArea p in level.GetEntities<LDtkTypes.RespawnArea>())
-                entities.Add(new RespawnTrigger(p.Position, p.Size, GridToWorldCoords(p.RespawnPoint)));
+                entities.Add(new RespawnTrigger(p.Position, p.Size, p.RespawnPoint));
 
             foreach (LDtkTypes.Spike p in level.GetEntities<LDtkTypes.Spike>())
-                entities.Add(new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToDirection()));
+            {
+                SpikeRow spike = new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToDirection());
+                bool isChild = false;
+                foreach (KeyValuePair<Entity, List<Guid>> parents in IidsChildren)
+                    foreach (Guid guid in parents.Value)
+                        if (p.Iid == guid)
+                        {
+                            parents.Key.AddChild(spike);
+                            isChild = true;
+                        }
+                if(!isChild)
+                    entities.Add(spike);
+            }
 
             foreach (LDtkTypes.DeathTrigger p in level.GetEntities<LDtkTypes.DeathTrigger>())
                 entities.Add(new DeathTrigger(p.Position, p.Size));
@@ -96,10 +115,10 @@ namespace Platformer
                     Engine.CurrentMap.Instantiate(new Player(p.Position));
 
             foreach (LDtkTypes.SwingTriggered p in level.GetEntities<LDtkTypes.SwingTriggered>())
-                entities.Add(new SwingTriggered(p.Position, p.Positions.ToVector2(), p.Width(), p.Height()));
+                entities.Add(new SwingTriggered(p.Position, p.Positions, p.Width(), p.Height()));
 
             foreach (LDtkTypes.TextSpawn p in level.GetEntities<LDtkTypes.TextSpawn>())
-                entities.Add(new TextSpawn(p.Position, p.Size, GridToWorldCoords(p.TextPos), p.Text));
+                entities.Add(new TextSpawn(p.Position, p.Size, p.TextPos, p.Text));
 
             foreach (LDtkTypes.JetpackBooster p in level.GetEntities<LDtkTypes.JetpackBooster>())
                 entities.Add(new JetpackBooster(p.Position, p.Size, p.Direction.ToDirection()));
@@ -135,7 +154,7 @@ namespace Platformer
 
             foreach (NeighbourLevel n in level._Neighbours)
             {
-                LDtkLevel neigh = Platformer.World.LoadLevel(n.LevelUid);
+                LDtkLevel neigh = Platformer.World.LoadLevel(n.LevelIid);
                 Rectangle lvlRect = new Rectangle(level.Position, level.Size);
                 Rectangle neighRect = new Rectangle(neigh.Position, neigh.Size);
 
@@ -243,14 +262,11 @@ namespace Platformer
 
             return entities;
 
-            Vector2 GridToWorldCoords(Point coords)
-                => coords.ToVector2() * 8 + level.Position.ToVector2();
-
-            Vector2[] ArrayCenteredToTile(Point[] v)
+            Vector2[] ArrayCenteredToTile(Vector2[] v)
             {
                 Vector2[] w = new Vector2[v.Length];
                 for (int i = 0; i < v.Length; i++)
-                    w[i] = (CenteredToTile(v[i].ToVector2()));
+                    w[i] = (CenteredToTile(v[i]));
                 return w;
             }
 
@@ -302,16 +318,20 @@ namespace Platformer
         public static LevelData GetLevelData(LDtkLevel ldtk)
         {
             LastLDtkLevel = ldtk;
-            return new LevelData(ldtk.GetLevelEntities(), ldtk.Position.ToVector2(), ldtk.Size.ToVector2(), SwitchXAndY(ldtk.GetIntGrid("IntGrid").Values), Engine.CurrentMap, null, null);
+            return new LevelData(ldtk.GetLevelEntities(), ldtk.Position.ToVector2(), ldtk.Size.ToVector2(), SwitchXAndY(ldtk.GetIntGrid("IntGrid")), Engine.CurrentMap, null, null);
         }
 
-        private static LDtkLevel GetLdtkLevel(int index)
+        public static LDtkLevel GetLdtkLevel(int index)
         {
-            try { return Platformer.World.LoadLevel($"World_Level_{index}"); }
-            catch { return null; }
+            try {
+                return Platformer.World.LoadLevel($"World_Level_{index}");
+            }
+            catch { 
+                return null; }
         }
 
-        private static LDtkLevel GetLdtkLevel(string id)
+
+        public static LDtkLevel GetLdtkLevel(string id)
         {
             try { return Platformer.World.LoadLevel(id); }
             catch { return null; }
@@ -483,6 +503,19 @@ namespace Platformer
             return switched;
         }
 
+        private static int[,] SwitchXAndY(LDtkIntGrid levelOrganisation)
+        {
+            int[,] switched = new int[levelOrganisation.GridSize.Y, levelOrganisation.GridSize.X];
+            for (int i = 0; i < levelOrganisation.GridSize.Y; i++)
+            {
+                for (int j = 0; j < levelOrganisation.GridSize.X; j++)
+                {
+                    switched[i, j] = levelOrganisation.GetValueAt(j, i);
+                }
+            }
+            return switched;
+        }
+
         public static void ReloadLastLevelFetched()
         {
             Engine.CurrentMap.CurrentLevel.Unload();
@@ -530,6 +563,8 @@ namespace Platformer
                     return Direction.Null;
             }
         }
+
+        public static void LoadLevel(this LDtkWorld world) {  }
 
         public static int Length(this LDtkTypes.Spike spike)
         {

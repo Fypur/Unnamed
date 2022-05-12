@@ -7,7 +7,7 @@
     <TieredCompilation>false</TieredCompilation>
   </PropertyGroup>
 	<Target Name="Codegen" BeforeTargets="BeforeBuild">
-		<Exec Command="ldtkgen -i Content\world.ldtk" />
+		<Exec Command="ldtkgen -i Content\world.ldtk --PointAsVector2" />
 	</Target>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -31,7 +31,7 @@
     <Folder Include="UI\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="LDtkMonogame" Version="0.4.0" />
+    <PackageReference Include="LDtkMonogame" Version="0.6.1" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
   </ItemGroup>
