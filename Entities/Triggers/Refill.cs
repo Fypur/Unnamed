@@ -13,9 +13,9 @@ namespace Platformer
         private static readonly ParticleType explosion = new ParticleType()
         {
             LifeMin = 0.2f,
-            LifeMax = 0.6f,
+            LifeMax = 1.5f,
             SpeedMin = 10f,
-            SpeedMax = 40f,
+            SpeedMax = 70f,
             Direction = 0,
             DirectionRange = 360,
             Size = 2,
@@ -45,7 +45,7 @@ namespace Platformer
             player.RefillJetpack();
             canActivate = false;
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, MiddlePos, 90);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, MiddlePos, 30);
             Engine.Cam.LightShake();
             //Remove this once you add animations
             Visible = false;

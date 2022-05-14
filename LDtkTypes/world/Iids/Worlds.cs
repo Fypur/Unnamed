@@ -16,7 +16,10 @@ public static class Worlds
         public static readonly System.Guid World_Level_6 = System.Guid.Parse("619bb270-b4d0-11ec-9250-cd8b3668d1b5");
         public static readonly System.Guid GraphicsTest = System.Guid.Parse("ec5a5ea0-b4d0-11ec-b8d1-519c309d9132");
         public static readonly System.Guid World_Level_8 = System.Guid.Parse("d13d2ad0-b4d0-11ec-a465-0f3a9a657fe5");
-        public static readonly System.Guid World_Level_9 = System.Guid.Parse("8c2a4460-b4d0-11ec-98c2-61243424f45f");
+        public static readonly System.Guid World_Level_9 = System.Guid.Parse("e387d350-b4d0-11ec-b739-31476554c27b");
+        public static readonly System.Guid World_Level_10 = System.Guid.Parse("d2995800-b4d0-11ec-b739-cd978e7a5aee");
+        public static readonly System.Guid World_Level_11 = System.Guid.Parse("cb800850-b4d0-11ec-b0f2-3382dd05a784");
+        public static readonly System.Guid World_Level_12 = System.Guid.Parse("7e723110-b4d0-11ec-b0f2-411a30a31c5b");
     }
 }
 #pragma warning restore

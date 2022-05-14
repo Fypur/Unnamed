@@ -8,7 +8,7 @@ namespace Platformer
 {
     public class LevelTransition : Trigger
     {
-        private const float transitionTime = 1.5f;
+        private const float transitionTime = 1;
 
         private Camera cam = Platformer.Cam;
         private Level toLevel;

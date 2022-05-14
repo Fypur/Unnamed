@@ -16,6 +16,7 @@ namespace Platformer
 
         private const float maxSpeed = 100;
         private const float maxFallingSpeed = 300;
+        private const float maxFallSlidingSpeed = 150; //Max Falling Speed while Wall Sliding
         private const float dashSpeed = 200;
 
         private const float jetpackPowerX = 7;
@@ -25,7 +26,7 @@ namespace Platformer
         private const float acceleration = 70f;
         private const float airAcceleration = 15f;
         private const float swingAcceleration = 3f; //Swing accel is very low since friction isn't applied
-        private const float friction = 0.4f;
+        private const float friction = 0.6f;
         private const float airFriction = 0.1f;
         
         private const float wallJumpSideForce = 160f;
@@ -72,6 +73,7 @@ namespace Platformer
         private bool cancelJump;
         private bool hasDashed;
         private bool isUnsticking;
+        private bool canUnstick;
         private float jetpackTime;
 
         private Vector2 AddedJetpackSpeed;
@@ -135,6 +137,10 @@ namespace Platformer
             };
 
             respawnPoint = position;
+
+#if RELEASE
+            canJetpack = false;
+#endif
         }
 
         public override void Update()
@@ -237,7 +243,10 @@ namespace Platformer
                 if (onWall && !onGround && !stateMachine.Is(States.Swinging))
                     WallSlide();
                 else
+                {
                     gravityScale = constGravityScale;
+                    isUnsticking = false;
+                }
 
                 if(Input.GetKeyDown(Keys.Space) || Input.GetKeyDown(Keys.C) || Input.GetButtonDown(Buttons.A))
                 {
@@ -258,7 +267,10 @@ namespace Platformer
                 else
                     Gravity();
 
-                Velocity.Y = Math.Min(Velocity.Y, maxFallingSpeed);
+                if(stateMachine.Is(States.WallSliding))
+                    Velocity.Y = Math.Min(Velocity.Y, maxFallSlidingSpeed);
+                else
+                    Velocity.Y = Math.Min(Velocity.Y, maxFallingSpeed);
             }
 
             {
@@ -309,6 +321,7 @@ namespace Platformer
             Velocity += AddedJetpackSpeed;
             collisionX = collisionY = false;
             previousOnGround = onGround;
+            Debug.LogUpdate(stateMachine);
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
@@ -543,6 +556,7 @@ namespace Platformer
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
+            //TODO: Min jump height
             AddComponent(new Timer(maxJumpTime, true, (timer) =>
             {
                 if (collisionY || hasDashed || cancelJump)
@@ -616,23 +630,43 @@ namespace Platformer
 
         private void WallSlide()
         {
+            //TODO: PARTICLES
             stateMachine.Switch(States.WallSliding);
             if(Velocity.Y > 0)
                 gravityScale = 0.5f * constGravityScale;
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust.Create(this, new Vector2(0, 0)), 1000);
 
-            if (!isUnsticking && xMovingRaw != 0 && (xMovingRaw < 0) == onRightWall)
+            Action OnUnstick = () => {
+
+                if (xMovingRaw == 0)
+                {
+                    canUnstick = true;
+                    return;
+                }
+
+                MoveX(xMovingRaw);
+                isUnsticking = false;
+                canUnstick = false;
+                gravityScale = constGravityScale;
+                if (stateMachine.Is(States.WallSliding))
+                    stateMachine.Switch(States.Ascending);
+            };
+
+            if (canUnstick && (xMovingRaw < 0) == onRightWall)
+                OnUnstick();
+            else if (!isUnsticking && (xMovingRaw == 0 || (xMovingRaw < 0) == onRightWall))
             {
                 isUnsticking = true;
                 AddComponent(new Timer(unstickTime, true, (timer) =>
                 {
-                    if (xMovingRaw != 0 && (xMovingRaw < 0) != onRightWall || !onWall)
+                    if (!(xMovingRaw == 0 || (xMovingRaw < 0) == onRightWall) || !onWall)
                     {
                         isUnsticking = false;
                         RemoveComponent(timer);
                     }
-                }, () => { Velocity.X += xMovingRaw * 4; isUnsticking = false; }));
+                },
+                OnUnstick));
             }
         }
 
@@ -670,6 +704,7 @@ namespace Platformer
 
         public void Jetpack()
         {
+            //TODO: Down Jetpack dir coef mult
             Vector2 dir;
             if(xMoving == 0 && yMoving == 0)
                 dir = -Vector2.UnitY;
@@ -726,6 +761,7 @@ namespace Platformer
 
         public void Death()
         {
+            //TODO: Don't let player die until end of transition
             Velocity = Vector2.Zero;
             Active = false;
             Visible = false;
@@ -816,9 +852,9 @@ namespace Platformer
         {
             if (stateMachine.Is(States.WallSliding))
             {
-                if (facing == -1)
+                if (!onRightWall)
                     Sprite.Effect = SpriteEffects.None;
-                else if (facing == 1)
+                else
                     Sprite.Effect = SpriteEffects.FlipHorizontally;
             }
             else
@@ -856,7 +892,7 @@ namespace Platformer
             AddComponent(new Timer(time, true, (timer) =>
             {
                 if (stopLimitting())
-                    timer.End();
+                { timer.End(); return; }
 
                 jetpackPowerCoef.Y = coef;
             }, 

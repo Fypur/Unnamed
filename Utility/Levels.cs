@@ -126,6 +126,9 @@ namespace Platformer
             foreach (LDtkTypes.Refill p in level.GetEntities<LDtkTypes.Refill>())
                 entities.Add(new Refill(p.Position, p.RespawnTime));
 
+            foreach (LDtkTypes.Collectable p in level.GetEntities<LDtkTypes.Collectable>())
+                entities.Add(new Collected(p.Position));
+
             foreach (LDtkTypes.GlassWall p in level.GetEntities<LDtkTypes.GlassWall>())
                 entities.Add(new GlassWall(p.Position, p.Width(), p.Height(), p.BreakVelocity));
 

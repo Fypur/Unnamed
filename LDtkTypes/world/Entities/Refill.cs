@@ -19,5 +19,6 @@ public class Refill : ILDtkEntity
     public Color SmartColor { get; set; }
 
     public float RespawnTime { get; set; }
+    public bool Big { get; set; }
 }
 #pragma warning restore

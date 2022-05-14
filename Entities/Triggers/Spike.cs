@@ -20,6 +20,7 @@ namespace Platformer
             float rotation = MathHelper.ToRadians(GetRotation(direction));
             Collider.Collidable = false;
 
+            //TODO: Smaller hitbox depending on direction
             var h = new HurtBox(Vector2.Zero, Width, Height);
             h.DeathConditions = Conditions;
             AddComponent(h);

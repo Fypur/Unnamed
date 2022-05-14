@@ -37,6 +37,7 @@ namespace Platformer
 
         public override void Update()
         {
+            //TODO: Make this Reappear
             base.Update();
             Gravity();
 

@@ -27,7 +27,12 @@ namespace Platformer
 
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
-        private const string initLevel = "9";
+#if RELEASE
+        private const string initLevel = "0";
+#endif
+#if DEBUG
+        private const string initLevel = "11";
+#endif
 
         public Platformer()
         {
@@ -177,7 +182,7 @@ namespace Platformer
 
             spriteBatch.End();
             spriteBatch.Begin();
-            
+
             Drawing.DebugString();
 
             spriteBatch.End();
