@@ -14,18 +14,23 @@ namespace Platformer
         private const float constGravityScale = 0.7f;
         private const float maxFallingSpeed = 160;
         private const float shakeTime = 0.5f;
+        private const float respawnTime = 1f;
         private static readonly ParticleType Dust = Particles.Dust.Copy();
 
+        private Wipe wipe;
         private bool Collided;
         private bool previousOnGround;
+        private Vector2 initPos;
 
         public FallingPlatform(Vector2 position, int width, int height, NineSliceSettings nineSlice)
             : base(position, width, height, new Sprite())
         {
-            Trigger trig = (Trigger)AddChild(new Trigger(Pos - Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }, Sprite.None));
-            trig.OnTriggerEnterAction = (entity) => { AddComponent(new Coroutine(Fall(shakeTime))); RemoveChild(trig); };
+            TriggerComponent trig = (TriggerComponent)AddComponent(new TriggerComponent(-Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }));
+            trig.trigger.OnTriggerEnterAction = (entity) => { AddComponent(new Coroutine(Fall(shakeTime))); trig.trigger.Active = false; };
+            
             Sprite.NineSliceSettings = nineSlice;
             Dust.Acceleration = -Vector2.UnitY * 100;
+            initPos = Pos;
         }
 
         private IEnumerator Fall(float shakeTime)
@@ -33,11 +38,19 @@ namespace Platformer
             AddComponent(new Shaker(shakeTime, 1.2f, null, true));
             yield return new Coroutine.WaitForSeconds(shakeTime);
             gravityScale = constGravityScale;
+
+            AddComponent(new Timer(respawnTime, true, null, () => {
+                wipe = new Wipe(new Rectangle(initPos.ToPoint(), Size.ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
+                {
+                    Pos = initPos; Velocity = Vector2.Zero; gravityScale = 0; previousOnGround = false; Collided = false;
+                    GetComponent<TriggerComponent>().trigger.Active = true;
+                });
+                Engine.CurrentMap.Instantiate(wipe);
+            }));
         }
 
         public override void Update()
         {
-            //TODO: Make this Reappear
             base.Update();
             Gravity();
 

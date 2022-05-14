@@ -91,12 +91,9 @@ namespace Platformer
         {
             Engine.Player = this;
 
-            Sprite.Bounds = Rectangle.Empty;
-
             Sprite.Add(Sprite.AllAnimData["Player"]);
 
             Sprite.Play("idle");
-            Debug.Log(Sprite.AllAnimData["Player"].Animations["idle"].Frames.Length);
             Sprite.Offset = new Vector2(-3, -3);
             //Sprite.Origin = HalfSize;
 
@@ -258,9 +255,6 @@ namespace Platformer
 
                 if (onGround)
                 {
-                    /*if(previousOnGround)
-                        LiftSpeed = Vector2.Zero;
-                    Debug.LogUpdate(previousOnGround);*/
                     if (Velocity.Y > 0)
                         Velocity.Y = 0;
                 }
@@ -321,7 +315,6 @@ namespace Platformer
             Velocity += AddedJetpackSpeed;
             collisionX = collisionY = false;
             previousOnGround = onGround;
-            Debug.LogUpdate(stateMachine);
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
@@ -556,7 +549,6 @@ namespace Platformer
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
-            //TODO: Min jump height
             AddComponent(new Timer(maxJumpTime, true, (timer) =>
             {
                 if (collisionY || hasDashed || cancelJump)
@@ -565,16 +557,16 @@ namespace Platformer
                     return;
                 }
 
-                float JumpScale = 0;
-                if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A)))
-                    JumpScale = 10;
+                float JumpTimeScale = 0;
+                if (timer.Value < maxJumpTime - 0.1f && !(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A)))
+                    JumpTimeScale = 10;
 
                 if (Jetpacking && AddedJetpackSpeed.Y < -10)
                     timer.TimeScale = 3;
                 else
                     timer.TimeScale = 1;
 
-                timer.TimeScale += JumpScale;
+                timer.TimeScale += JumpTimeScale;
 
                 Velocity.Y = -jumpForce * (timer.Value / maxJumpTime) + LiftBoost.Y;
                 //Velocity.X -= LiftBoost.X * ((previousTimerValue - timer.Value) / maxJumpTime);
@@ -630,12 +622,15 @@ namespace Platformer
 
         private void WallSlide()
         {
-            //TODO: PARTICLES
             stateMachine.Switch(States.WallSliding);
             if(Velocity.Y > 0)
                 gravityScale = 0.5f * constGravityScale;
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Dust.Create(this, new Vector2(0, 0)), 1000);
+            if(onRightWall)
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X + Width - 1, (int)Pos.Y, 1, Height), 2);
+            else
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X, (int)Pos.Y, 1, Height), 2);
+            
 
             Action OnUnstick = () => {
 
@@ -704,33 +699,25 @@ namespace Platformer
 
         public void Jetpack()
         {
-            //TODO: Down Jetpack dir coef mult
             Vector2 dir;
             if(xMoving == 0 && yMoving == 0)
                 dir = -Vector2.UnitY;
             else
                 dir = new Vector2(xMovingRaw, yMovingRaw);
-            dir.Normalize();
+            dir.X = dir.Normalized().X;
 
             jetpackTime -= Engine.Deltatime;
             if (jetpackTime <= 0)
                 return;
 
             Vector2 coef = Vector2.One;
-            if (Velocity.Y > 100 * dir.Y)
+            if ((dir.Y < 0 && Velocity.Y > -100) || (dir.Y > 0 && Velocity.Y < 100))
             {
                 coef.Y += 4;
-                if(dir.Y < 0 && Velocity.Y > 100 * dir.Y)
-                    dir.Y = -1;
             }
-            else
-                Debug.LogUpdate("not coefed");
 
             if (Velocity.X * dir.X < 150)
-            {
                 coef.X += 2;
-                Debug.LogUpdate("xcoef");
-            }
 
             coef *= jetpackPowerCoef;
 
@@ -761,7 +748,6 @@ namespace Platformer
 
         public void Death()
         {
-            //TODO: Don't let player die until end of transition
             Velocity = Vector2.Zero;
             Active = false;
             Visible = false;
@@ -782,8 +768,9 @@ namespace Platformer
             Engine.CurrentMap.Instantiate(new ScreenWipe(1, () =>
             {
                 stateMachine.Switch(States.Idle);
+                Sprite.Play("idle");
                 onGround = true;
-                
+
                 Vector2 groundedRespawnPos = respawnPoint;
                 for (int i = 0; i < 100; i++)
                     if (!Collider.CollideAt(groundedRespawnPos + new Vector2(0, 1)))
@@ -795,20 +782,20 @@ namespace Platformer
 
                 bool changedCamPos = false;
                 foreach (CameraLock camLock in Engine.CurrentMap.Data.GetEntities<CameraLock>())
-                    if (camLock.Contains(this)) 
+                    if (camLock.Contains(this))
                     {
-                        Debug.Log(camLock.Pos);
                         Engine.Cam.NoBoundsPos = Engine.Cam.InBoundsPos(Pos, camLock.Bounds);
                         changedCamPos = true;
                     }
 
-                if(!changedCamPos)
+                if (!changedCamPos)
                     Engine.Cam.Pos = ExactPos;
 
                 Levels.ReloadLastLevelFetched();
                 Active = true;
                 Visible = true;
-            }));
+                canMove = false;
+            }, () => canMove = true)); ;
         }
 
         private void CollisionX(Entity collided)

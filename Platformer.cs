@@ -31,7 +31,7 @@ namespace Platformer
         private const string initLevel = "0";
 #endif
 #if DEBUG
-        private const string initLevel = "11";
+        private const string initLevel = "3";
 #endif
 
         public Platformer()
@@ -74,10 +74,11 @@ namespace Platformer
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
             Cam.FollowsPlayer = true;
 
-            //TODO: Main Menu
-            //TODO: Chase Sequence
-            //TODO: Re-enable this depending on which world you load
-            //player.canJetpack = false;
+
+#if RELEASE
+            if (World.Iid == LDtkTypes.Worlds.World.Iid)
+                player.canJetpack = false;
+#endif
         }
 
         protected override void Update(GameTime gameTime)
@@ -112,7 +113,7 @@ namespace Platformer
                 Debug.Clear();
 
             if (Input.GetKeyDown(Keys.V))
-                player.Pos = Input.MousePos;
+                player.ExactPos = Input.MousePos;
 
             if (Input.GetKeyDown(Keys.R))
                 Levels.ReloadLastLevelFetched();

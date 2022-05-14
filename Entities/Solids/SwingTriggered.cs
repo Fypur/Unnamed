@@ -68,7 +68,6 @@ namespace Platformer
         public override void Update()
         {
             base.Update();
-            Debug.LogUpdate(Velocity);
             foreach (Solid s in SwingingPoint.SwingingPoints) Debug.PointUpdate(s.Pos);
 
             if (isMoving)
