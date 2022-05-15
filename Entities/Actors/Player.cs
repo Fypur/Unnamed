@@ -36,6 +36,7 @@ namespace Platformer
         private const float maxJumpTime = 0.4f;
         private const float dashTime = 0.2f;
         private const float unstickTime = 0.1f;
+        private const float safeTime = 1.0f;
         
         private const float maxGrappleDist = 1000f;
 
@@ -49,12 +50,15 @@ namespace Platformer
 
         private readonly StateMachine<States> stateMachine;
 
-        public bool canMove = true;
+        public bool CanMove = true;
+        public bool Safe = true;
+        public float SafePercentage = 0;
         public bool Jetpacking;
-        public bool canJetpack = true;
-        public Vector2 jetpackPowerCoef = Vector2.One;
-        public Vector2 jetpackDirectionalPowerCoef = Vector2.Zero;
-        public Vector2 respawnPoint;
+        public bool CanJetpack = true;
+        public Vector2 JetpackPowerCoef = Vector2.One;
+        public Vector2 JetpackDirectionalPowerCoef = Vector2.Zero;
+        public Vector2 RespawnPoint;
+        public event Action OnDeath = delegate { };
 
         private bool onGround;
         private bool previousOnGround = true;
@@ -67,7 +71,7 @@ namespace Platformer
         private float yMoving;
         private int xMovingRaw;
         private int yMovingRaw;
-        private int facing = 1;
+        public int Facing = 1;
 
         private bool normalMouvement = true;
         private bool cancelJump;
@@ -133,7 +137,7 @@ namespace Platformer
                 SpeedMax = 5
             };
 
-            respawnPoint = position;
+            RespawnPoint = position;
 
 #if RELEASE
             canJetpack = false;
@@ -142,8 +146,7 @@ namespace Platformer
 
         public override void Update()
         {
-
-            if (!canMove)
+            if (!CanMove)
             {
                 swingPositions.Clear();
                 swingPositionsSign = new List<int> { 0 };
@@ -158,6 +161,29 @@ namespace Platformer
             onWall = Collider.CollideAt(Pos + new Vector2(-1, 0)) || onRightWall;
 
             base.Update();
+
+            if(!Safe && SafePercentage == 0)
+            {
+                SafePercentage = 0.01f;
+                AddComponent(new Timer(safeTime, true, (timer) =>
+                {
+                    SafePercentage = Ease.Reverse(timer.Value / timer.MaxValue);
+                    if(!onGround || xMovingRaw != 0)
+                    {
+                        SafePercentage = 0;
+                        RemoveComponent(timer);
+                    }
+                },
+                () => { SafePercentage = 1; Safe = true;  })); ;
+            }
+
+            if(!onGround || xMovingRaw != 0)
+            {
+                Safe = false;
+                SafePercentage = 0;
+            }
+
+            Debug.LogUpdate(Safe);
 
             {
                 if (Input.GetKey(Keys.Right) || Input.GetKey(Keys.D))
@@ -218,6 +244,7 @@ namespace Platformer
                 return Math.Max(value - move, approached);
             }
 
+            //Celeste code this is inspired from
             /*if (Math.Abs(Speed.X) > max && Math.Sign(Speed.X) == moveX)
                 Speed.X = Calc.Approach(Speed.X, max * moveX, RunReduce * mult * Engine.DeltaTime);  //Reduce back from beyond the max speed
             else
@@ -229,8 +256,8 @@ namespace Platformer
             if (Velocity.X <= 1 && Velocity.X >= -1)
                 Velocity.X = 0;
 
-            float dirPowerMult = Math.Sign(AddedJetpackSpeed.X) == Math.Sign(jetpackDirectionalPowerCoef.X) ? jetpackDirectionalPowerCoef.X * Math.Sign(jetpackDirectionalPowerCoef.X) : 1;
-            AddedJetpackSpeed.X = Math.Clamp(AddedJetpackSpeed.X, -jetpackPowerX * jetpackPowerCoef.X * 5 * dirPowerMult, jetpackPowerX * jetpackPowerCoef.X * 5 * dirPowerMult);
+            float dirPowerMult = Math.Sign(AddedJetpackSpeed.X) == Math.Sign(JetpackDirectionalPowerCoef.X) ? JetpackDirectionalPowerCoef.X * Math.Sign(JetpackDirectionalPowerCoef.X) : 1;
+            AddedJetpackSpeed.X = Math.Clamp(AddedJetpackSpeed.X, -jetpackPowerX * JetpackPowerCoef.X * 5 * dirPowerMult, jetpackPowerX * JetpackPowerCoef.X * 5 * dirPowerMult);
 
             if (AddedJetpackSpeed.X <= 1 && AddedJetpackSpeed.X >= -1)
                 AddedJetpackSpeed.X = 0;
@@ -268,7 +295,7 @@ namespace Platformer
             }
 
             {
-                if ((!onGround || onWall) && canJetpack && (Input.GetKey(Keys.X) || Input.GetButton(Buttons.X)) && jetpackTime > 0)
+                if ((!onGround || onWall) && CanJetpack && (Input.GetKey(Keys.X) || Input.GetButton(Buttons.X)) && jetpackTime > 0)
                     Jetpack();
                 else
                 {
@@ -308,7 +335,7 @@ namespace Platformer
                 stateMachine.Switch(States.Ascending);
 
             if (xMovingRaw != 0 && !isUnsticking)
-                facing = xMovingRaw;
+                Facing = xMovingRaw;
 
             Dust.Acceleration = Velocity;
 
@@ -510,10 +537,6 @@ namespace Platformer
                 {
                     swingPositions.Add(foundCorner);
                     swingPositionsSign.Add(Math.Sign(angle));
-                    if (foundCorner == new Vector2(660, 840))
-                    {
-                        //Debug.Pause();
-                    }
 
                     nextCorners.Remove(foundCorner);
 
@@ -588,7 +611,7 @@ namespace Platformer
             if (Velocity.Y < -250)
                 coef += 0.5f;
 
-            facing = -facing;
+            Facing = -Facing;
             Velocity.X = wallJumpSideForce * wallJumpingDirection * coef;
             Velocity.Y -= jumpForce * 0.5f;
 
@@ -682,7 +705,7 @@ namespace Platformer
             hasDashed = true;
             stateMachine.Switch(States.Dashing);
 
-            int dir = facing;
+            int dir = Facing;
             Velocity.X += dashSpeed * dir;
 
             AddComponent(new Timer(dashTime, true, (timer) => {
@@ -719,16 +742,16 @@ namespace Platformer
             if (Velocity.X * dir.X < 150)
                 coef.X += 2;
 
-            coef *= jetpackPowerCoef;
+            coef *= JetpackPowerCoef;
+
+            if (JetpackDirectionalPowerCoef.X != 0 && Math.Sign(AddedJetpackSpeed.X) == Math.Sign(JetpackDirectionalPowerCoef.X))
+                coef.X *= Math.Abs(JetpackDirectionalPowerCoef.X);
+            if (JetpackDirectionalPowerCoef.Y != 0 && Math.Sign(AddedJetpackSpeed.Y) == -Math.Sign(JetpackDirectionalPowerCoef.Y))
+                coef.Y *= Math.Abs(JetpackDirectionalPowerCoef.Y);
 
             Velocity += dir * coef * new Vector2(jetpackPowerX, jetpackPowerY);
 
-            /*if (jetpackDirectionalPowerCoef.X != 0 && Math.Sign(AddedJetpackSpeed.X) == Math.Sign(jetpackDirectionalPowerCoef.X))
-                coef.X *= Math.Abs(jetpackDirectionalPowerCoef.X);
-            if (jetpackDirectionalPowerCoef.Y != 0 && Math.Sign(AddedJetpackSpeed.Y) == -Math.Sign(jetpackDirectionalPowerCoef.Y))
-                coef.Y *= Math.Abs(jetpackDirectionalPowerCoef.Y);
-
-            //stateMachine.Switch(States.Jetpack);
+            /*//stateMachine.Switch(States.Jetpack);
             if (normalMouvement && onGround)
                 AddedJetpackSpeed.X += dir.X * jetpackPowerX * coef.X - friction * AddedJetpackSpeed.X;
             /*else if (normalMouvement && isAtSwingEnd)
@@ -754,6 +777,8 @@ namespace Platformer
 
             ResetJetpack();
             ResetSwing();
+            OnDeath?.Invoke();
+            OnDeath = delegate { };
             stateMachine.Switch(States.Dead);
 
             foreach (Trigger trig in Engine.CurrentMap.Data.Triggers)
@@ -771,7 +796,7 @@ namespace Platformer
                 Sprite.Play("idle");
                 onGround = true;
 
-                Vector2 groundedRespawnPos = respawnPoint;
+                Vector2 groundedRespawnPos = RespawnPoint;
                 for (int i = 0; i < 100; i++)
                     if (!Collider.CollideAt(groundedRespawnPos + new Vector2(0, 1)))
                         groundedRespawnPos += new Vector2(0, 1);
@@ -794,8 +819,8 @@ namespace Platformer
                 Levels.ReloadLastLevelFetched();
                 Active = true;
                 Visible = true;
-                canMove = false;
-            }, () => canMove = true)); ;
+                CanMove = false;
+            }, () => CanMove = true)); ;
         }
 
         private void CollisionX(Entity collided)
@@ -846,9 +871,9 @@ namespace Platformer
             }
             else
             {
-                if (facing == 1)
+                if (Facing == 1)
                     Sprite.Effect = SpriteEffects.None;
-                else if (facing == -1)
+                else if (Facing == -1)
                     Sprite.Effect = SpriteEffects.FlipHorizontally;
             }
 
@@ -865,7 +890,7 @@ namespace Platformer
         {
             jetpackTime = maxJetpackTime;
             AddedJetpackSpeed = Vector2.Zero;
-            jetpackPowerCoef = Vector2.One;
+            JetpackPowerCoef = Vector2.One;
         }
 
         private void ResetSwing()
@@ -881,10 +906,10 @@ namespace Platformer
                 if (stopLimitting())
                 { timer.End(); return; }
 
-                jetpackPowerCoef.Y = coef;
+                JetpackPowerCoef.Y = coef;
             }, 
             () => 
-            jetpackPowerCoef.Y = 1));
+            JetpackPowerCoef.Y = 1));
         }
 
         public bool Is(States state)

@@ -14,7 +14,7 @@ namespace Platformer
         private const float constGravityScale = 0.7f;
         private const float maxFallingSpeed = 160;
         private const float shakeTime = 0.5f;
-        private const float respawnTime = 1f;
+        private const float respawnTime = 3f;
         private static readonly ParticleType Dust = Particles.Dust.Copy();
 
         private Wipe wipe;
@@ -35,12 +35,13 @@ namespace Platformer
 
         private IEnumerator Fall(float shakeTime)
         {
+            GetComponent<TriggerComponent>().trigger.Active = false;
             AddComponent(new Shaker(shakeTime, 1.2f, null, true));
             yield return new Coroutine.WaitForSeconds(shakeTime);
             gravityScale = constGravityScale;
 
             AddComponent(new Timer(respawnTime, true, null, () => {
-                wipe = new Wipe(new Rectangle(initPos.ToPoint(), Size.ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
+                wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
                 {
                     Pos = initPos; Velocity = Vector2.Zero; gravityScale = 0; previousOnGround = false; Collided = false;
                     GetComponent<TriggerComponent>().trigger.Active = true;
@@ -76,6 +77,14 @@ namespace Platformer
 
             if (Collided)
                 previousOnGround = Collider.CollideAt(Pos + new Vector2(0, 1));
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            if(wipe != null)
+                Engine.CurrentMap.Destroy(wipe);
         }
     }
 }

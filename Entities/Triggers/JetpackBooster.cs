@@ -54,12 +54,12 @@ namespace Platformer
 
         public override void OnTriggerEnter(Player player)
         {
-            player.jetpackDirectionalPowerCoef += boostingDir * new Vector2(boostX, boostY);
+            player.JetpackDirectionalPowerCoef += boostingDir * new Vector2(boostX, boostY);
         }
 
         public override void OnTriggerExit(Player player)
         {
-            player.jetpackDirectionalPowerCoef -= boostingDir * new Vector2(boostX, boostY);
+            player.JetpackDirectionalPowerCoef -= boostingDir * new Vector2(boostX, boostY);
         }
 
         public Vector2 DirectionToVector2(Direction direction)

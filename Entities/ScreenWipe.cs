@@ -10,7 +10,7 @@ namespace Platformer
 {
     public class ScreenWipe : UIElement
     {
-        public ScreenWipe(float wipeTime, Action onTransition = null, Action onEnd = null) : base(Engine.ScreenSize.OnlyX(), (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black))
+        public ScreenWipe(float wipeTime, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : base(Engine.ScreenSize.OnlyX(), (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black))
         {
             Overlay = true;
             Vector2 initPos = Pos;
@@ -27,11 +27,18 @@ namespace Platformer
                 Pos = Vector2.Lerp(initPos, endPos, 0.5f);
                 onTransition?.Invoke();
 
+                bool doOnce = false;
                 AddComponent(new Timer(wipeTime / 2, true, (timer) =>
                 {
                     float reversed = 0.5f + Ease.Reverse((timer.Value) / wipeTime, 0.5f);
                     float eased = Ease.QuintInAndOut(reversed);
                     Pos = Vector2.Lerp(initPos, endPos, eased);
+
+                    if (!doOnce && reversed >= 0.75f)
+                    {
+                        onThreeFourths?.Invoke();
+                        doOnce = true;
+                    }
                 },
                 () =>
                     {

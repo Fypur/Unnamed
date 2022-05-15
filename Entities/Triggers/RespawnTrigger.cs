@@ -18,7 +18,7 @@ namespace Platformer
 
         public override void OnTriggerEnter(Player player)
         {
-            player.respawnPoint = RespawnPoint;
+            player.RespawnPoint = RespawnPoint;
         }
     }
 }

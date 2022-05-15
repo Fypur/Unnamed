@@ -27,11 +27,12 @@ namespace Platformer
 
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
+#if DEBUG
+        private const string initLevel = "5";
+#endif
+
 #if RELEASE
         private const string initLevel = "0";
-#endif
-#if DEBUG
-        private const string initLevel = "3";
 #endif
 
         public Platformer()
@@ -106,6 +107,8 @@ namespace Platformer
                 Engine.CurrentMap.Update();
 
 #if DEBUG
+            Debug.LogUpdate(Engine.CurrentMap.MiddlegroundSystem.Particles.Count);
+
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
             

@@ -24,7 +24,7 @@ namespace Platformer
 
         public override void OnTriggerEnter(Player player)
         {
-            player.canJetpack = true;
+            player.CanJetpack = true;
         }
     }
 }

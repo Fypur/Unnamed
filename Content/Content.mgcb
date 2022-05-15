@@ -97,6 +97,18 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Objects/JetpackBooster.aseprite
 
+#begin Graphics/Objects/RAM/rotate.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Objects/RAM/rotate.aseprite
+
 #begin Graphics/Objects/refill/rotate.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor

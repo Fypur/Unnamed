@@ -52,7 +52,7 @@ namespace Platformer
                 toLevel.Load();
 
             Player p = (Player)entity;
-            p.canMove = false;
+            p.CanMove = false;
 
             cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(toLevel.Pos.ToPoint(), toLevel.Size.ToPoint())) - cam.Pos, transitionTime, Ease.QuintInAndOut);
 
@@ -73,7 +73,7 @@ namespace Platformer
             }
 
             AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () => {
-                p.canMove = true;
+                p.CanMove = true;
                 p.CancelJump();
                 p.RefillJetpack();
 

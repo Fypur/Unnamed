@@ -12,6 +12,10 @@ namespace Platformer
 {
     public static class Levels
     {
+        /// <summary>
+        /// The first GUID corresponds to the level, the second correspond to the objects whch doesn't respawn
+        /// </summary>
+        public static Dictionary<Guid, List<Guid>> LevelNonRespawn = new();
         public static int LevelIndex;
         public static LDtkLevel LastLDtkLevel;
         public static LevelData LastLevelData { 
@@ -127,7 +131,10 @@ namespace Platformer
                 entities.Add(new Refill(p.Position, p.RespawnTime));
 
             foreach (LDtkTypes.Collectable p in level.GetEntities<LDtkTypes.Collectable>())
-                entities.Add(new Collected(p.Position));
+                if((!LevelNonRespawn.ContainsKey(level.Iid) || !LevelNonRespawn[level.Iid].Contains(p.Iid)) && 
+                    (!Engine.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(RAM)) ||
+                    Engine.CurrentMap.Data.EntitiesByType[typeof(RAM)].TrueForAll((collected) => ((RAM)collected).iid != p.Iid)))
+                    entities.Add(new RAM(p.Position, p.Iid, level.Iid));
 
             foreach (LDtkTypes.GlassWall p in level.GetEntities<LDtkTypes.GlassWall>())
                 entities.Add(new GlassWall(p.Position, p.Width(), p.Height(), p.BreakVelocity));

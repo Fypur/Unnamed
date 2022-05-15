@@ -27,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Graphics\9Slice\Button\" />
+    <Folder Include="Content\Graphics\Objects\RAM\" />
     <Folder Include="ltdk\" />
     <Folder Include="UI\" />
   </ItemGroup>
