@@ -26,6 +26,7 @@
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Audio\" />
     <Folder Include="Content\Graphics\9Slice\Button\" />
     <Folder Include="Content\Graphics\Objects\RAM\" />
     <Folder Include="ltdk\" />
@@ -40,6 +41,12 @@
     <ProjectReference Include="..\Fiourp\Fiourp.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Content\Audio\Desktop\Master.bank">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Audio\Desktop\Master.strings.bank">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Content\world.ldtk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

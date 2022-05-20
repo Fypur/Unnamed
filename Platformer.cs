@@ -27,8 +27,10 @@ namespace Platformer
 
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
+        public static EventInstance music;
+
 #if DEBUG
-        private const string initLevel = "5";
+        private const string initLevel = "11";
 #endif
 
 #if RELEASE
@@ -75,10 +77,11 @@ namespace Platformer
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
             Cam.FollowsPlayer = true;
 
+            //music = Audio.PlayEvent("event:/music");
 
 #if RELEASE
             if (World.Iid == LDtkTypes.Worlds.World.Iid)
-                player.canJetpack = false;
+                player.CanJetpack = false;
 #endif
         }
 
@@ -121,6 +124,13 @@ namespace Platformer
             if (Input.GetKeyDown(Keys.R))
                 Levels.ReloadLastLevelFetched();
 
+            if (Input.GetKeyDown(Keys.NumPad1))
+                music.setParameterByName("Pitch", 0);
+            if (Input.GetKeyDown(Keys.NumPad2))
+                music.setParameterByName("Pitch", 0.5f);
+            if (Input.GetKeyDown(Keys.NumPad3))
+                music.setParameterByName("Pitch", 1);
+
             /*if (Input.GetKey(Keys.W))
             {
                 var PT = new ParticleType();
@@ -143,6 +153,8 @@ namespace Platformer
 
             Cam.Update();
             Input.UpdateOldState();
+
+            Audio.Update();
 
             base.Update(gameTime);
         }

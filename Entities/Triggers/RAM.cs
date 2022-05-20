@@ -62,7 +62,6 @@ namespace Platformer
 
         public override IEnumerator OnCollected(Player player)
         {
-            //TODO. Turn this into RAM bars
             AddComponent(new Timer(0.2f, true, (timer) =>
             {
                 Sprite.Scale.Y = timer.Value / timer.MaxValue;

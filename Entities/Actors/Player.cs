@@ -140,7 +140,7 @@ namespace Platformer
             RespawnPoint = position;
 
 #if RELEASE
-            canJetpack = false;
+            CanJetpack = false;
 #endif
         }
 
@@ -569,6 +569,8 @@ namespace Platformer
             stateMachine.Switch(States.Jumping);
             Velocity.X += LiftBoost.X;
             previousOnGround = false;
+
+            //Audio.PlayEvent("event:/test");
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
