@@ -37,6 +37,7 @@ namespace Platformer
         private const float dashTime = 0.2f;
         private const float unstickTime = 0.1f;
         private const float safeTime = 1.0f;
+        private const float coyoteTime = 0.07f;
         
         private const float maxGrappleDist = 1000f;
 
@@ -78,6 +79,7 @@ namespace Platformer
         private bool hasDashed;
         private bool isUnsticking;
         private bool canUnstick;
+        private bool inCoyoteTime;
         private float jetpackTime;
 
         private Vector2 AddedJetpackSpeed;
@@ -264,6 +266,13 @@ namespace Platformer
 
 
             {
+                if (previousOnGround && !onGround)
+                {
+                    inCoyoteTime = true;
+                    AddComponent(new Timer(coyoteTime, true, null, () => inCoyoteTime = false));
+                }
+
+
                 if (onWall && !onGround && !stateMachine.Is(States.Swinging))
                     WallSlide();
                 else
@@ -272,9 +281,9 @@ namespace Platformer
                     isUnsticking = false;
                 }
 
-                if(Input.GetKeyDown(Keys.Space) || Input.GetKeyDown(Keys.C) || Input.GetButtonDown(Buttons.A))
+                if(Input.GetKeyDown(Keys.Space) || Input.GetKeyDown(Keys.C) || Input.GetKeyDown(Keys.I) || Input.GetButtonDown(Buttons.A))
                 {
-                    if (onGround)
+                    if (onGround || inCoyoteTime)
                         Jump();
                     else if(onWall)
                         WallJump();
@@ -295,7 +304,7 @@ namespace Platformer
             }
 
             {
-                if ((!onGround || onWall) && CanJetpack && (Input.GetKey(Keys.X) || Input.GetButton(Buttons.X)) && jetpackTime > 0)
+                if ((!onGround || onWall) && CanJetpack && (Input.GetKey(Keys.X) || Input.GetButton(Buttons.X) || Input.GetKey(Keys.O)) && jetpackTime > 0)
                     Jetpack();
                 else
                 {
@@ -583,7 +592,7 @@ namespace Platformer
                 }
 
                 float JumpTimeScale = 0;
-                if (timer.Value < maxJumpTime - 0.1f && !(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A)))
+                if (timer.Value < maxJumpTime - 0.1f && !(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetKey(Keys.I) || Input.GetButton(Buttons.A)))
                     JumpTimeScale = 10;
 
                 if (Jetpacking && AddedJetpackSpeed.Y < -10)
@@ -626,7 +635,7 @@ namespace Platformer
                 }
 
                 float JumpScale = 0;
-                if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A)))
+                if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A) || Input.GetKey(Keys.I)))
                     JumpScale = 2;
 
                 if (Jetpacking && AddedJetpackSpeed.Y < -10)

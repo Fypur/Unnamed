@@ -5,6 +5,7 @@
 	  <LangVersion>latest</LangVersion>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
+    <Platforms>x86;x64</Platforms>
   </PropertyGroup>
 	<Target Name="Codegen" BeforeTargets="BeforeBuild">
 		<Exec Command="ldtkgen -i Content\world.ldtk --PointAsVector2" />
@@ -12,6 +13,18 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DefineConstants>$(DefineConstants)TRACE:WIN64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DefineConstants>$(DefineConstants)TRACE:WIN64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <DefineConstants>$(DefineConstants)TRACE:WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <DefineConstants>$(DefineConstants)TRACE:WIN32</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Icon.bmp" />
@@ -27,10 +40,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Audio\" />
-    <Folder Include="Content\Graphics\9Slice\Button\" />
     <Folder Include="Content\Graphics\Objects\RAM\" />
     <Folder Include="ltdk\" />
-    <Folder Include="UI\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LDtkMonogame" Version="0.6.1" />

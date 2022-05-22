@@ -10,14 +10,14 @@ namespace Platformer
 {
     public class PauseMenu : UIElement
     {
-        public Button ResumeButton;
-        public Button QuitButton;
+        public UIButton ResumeButton;
+        public UIButton QuitButton;
 
         public PauseMenu()
             : base (Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, Sprite.None)
         {
-            ResumeButton = (Button)AddChild(new Button(new Vector2(200, 200), 400, 50, new Sprite(Color.White), () => Platformer.Unpause()));
-            QuitButton = (Button)AddChild(new Button(new Vector2(200, 300), 400, 50, new Sprite(Color.White), () => Platformer.instance.Exit()));
+            ResumeButton = (UIButton)AddChild(new UIButton(new Vector2(200, 200), 400, 50, () => Platformer.Unpause()));
+            QuitButton = (UIButton)AddChild(new UIButton(new Vector2(200, 300), 400, 50, () => Platformer.instance.Exit()));
         }
     }
 }

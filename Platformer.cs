@@ -30,7 +30,7 @@ namespace Platformer
         public static EventInstance music;
 
 #if DEBUG
-        private const string initLevel = "11";
+        private const string initLevel = "4";
 #endif
 
 #if RELEASE
@@ -77,7 +77,9 @@ namespace Platformer
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
             Cam.FollowsPlayer = true;
 
-            //music = Audio.PlayEvent("event:/music");
+            /*music = Audio.PlayEvent("event:/music");
+            music.setVolume(0.2f);
+            music.setParameterByName("Pitch", 0.5f);*/
 
 #if RELEASE
             if (World.Iid == LDtkTypes.Worlds.World.Iid)

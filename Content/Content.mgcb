@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:C:\Users\Administrateur\.nuget\packages\monogame.aseprite\2.0.5\contentFiles\netstandard2.0\MonoGame.Aseprite.ContentPipeline.dll
+/reference:C:\Users\zddng\.nuget\packages\monogame.aseprite\2.0.5\contentFiles\netstandard2.0\MonoGame.Aseprite.ContentPipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -49,7 +49,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Pixel/Normal.spritefont
 
-#begin Graphics/9Slice/Button/corner.aseprite
+#begin Graphics/Objects/Button.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor
 /processorParam:SheetType=Packed
@@ -59,19 +59,7 @@
 /processorParam:BorderPadding=0
 /processorParam:Spacing=0
 /processorParam:InnerPadding=0
-/build:Graphics/9Slice/Button/corner.aseprite
-
-#begin Graphics/9Slice/Button/top.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
-/build:Graphics/9Slice/Button/top.aseprite
+/build:Graphics/Objects/Button.aseprite
 
 #begin Graphics/Objects/Decals.aseprite
 /importer:AsepriteDocumentImporter
