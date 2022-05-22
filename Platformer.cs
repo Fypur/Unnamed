@@ -34,7 +34,7 @@ namespace Platformer
 #endif
 
 #if RELEASE
-        private const string initLevel = "0";
+        private const string initLevel = "8";
 #endif
 
         public Platformer()
@@ -82,8 +82,8 @@ namespace Platformer
             music.setParameterByName("Pitch", 0.5f);*/
 
 #if RELEASE
-            if (World.Iid == LDtkTypes.Worlds.World.Iid)
-                player.CanJetpack = false;
+            /*if (World.Iid == LDtkTypes.Worlds.World.Iid)
+                player.CanJetpack = false;*/
 #endif
         }
 

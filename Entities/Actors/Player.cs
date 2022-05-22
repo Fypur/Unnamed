@@ -60,6 +60,7 @@ namespace Platformer
         public Vector2 JetpackDirectionalPowerCoef = Vector2.Zero;
         public Vector2 RespawnPoint;
         public event Action OnDeath = delegate { };
+        private BoostBar BoostBar;
 
         private bool onGround;
         private bool previousOnGround = true;
@@ -140,6 +141,8 @@ namespace Platformer
             };
 
             RespawnPoint = position;
+
+            BoostBar = (BoostBar)Engine.CurrentMap.Instantiate(new BoostBar(Engine.ScreenSize.OnlyX() + new Vector2(-300, 20), 200, 30, 1));
 
 #if RELEASE
             CanJetpack = false;
@@ -281,7 +284,7 @@ namespace Platformer
                     isUnsticking = false;
                 }
 
-                if(Input.GetKeyDown(Keys.Space) || Input.GetKeyDown(Keys.C) || Input.GetKeyDown(Keys.I) || Input.GetButtonDown(Buttons.A))
+                if(Input.GetKeyDown(Keys.Space) || Input.GetKeyDown(Keys.C) || Input.GetMouseButtonDown(Input.MouseButton.Left) || Input.GetKeyDown(Keys.I) || Input.GetButtonDown(Buttons.A))
                 {
                     if (onGround || inCoyoteTime)
                         Jump();
@@ -304,7 +307,7 @@ namespace Platformer
             }
 
             {
-                if ((!onGround || onWall) && CanJetpack && (Input.GetKey(Keys.X) || Input.GetButton(Buttons.X) || Input.GetKey(Keys.O)) && jetpackTime > 0)
+                if ((!onGround || onWall) && CanJetpack && (Input.GetKey(Keys.X) || Input.GetButton(Buttons.X) || Input.GetMouseButton(Input.MouseButton.Right) || Input.GetKey(Keys.O)) && jetpackTime > 0)
                     Jetpack();
                 else
                 {
@@ -351,6 +354,7 @@ namespace Platformer
             Velocity += AddedJetpackSpeed;
             collisionX = collisionY = false;
             previousOnGround = onGround;
+            BoostBar.Value = jetpackTime / maxJetpackTime; 
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
@@ -592,7 +596,7 @@ namespace Platformer
                 }
 
                 float JumpTimeScale = 0;
-                if (timer.Value < maxJumpTime - 0.1f && !(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetKey(Keys.I) || Input.GetButton(Buttons.A)))
+                if (timer.Value < maxJumpTime - 0.1f && !(Input.GetKey(Keys.Space) || Input.GetMouseButton(Input.MouseButton.Left) || Input.GetKey(Keys.C) || Input.GetKey(Keys.I) || Input.GetButton(Buttons.A)))
                     JumpTimeScale = 10;
 
                 if (Jetpacking && AddedJetpackSpeed.Y < -10)
@@ -635,7 +639,7 @@ namespace Platformer
                 }
 
                 float JumpScale = 0;
-                if (!(Input.GetKey(Keys.Space) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A) || Input.GetKey(Keys.I)))
+                if (!(Input.GetKey(Keys.Space) || Input.GetMouseButton(Input.MouseButton.Left) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A) || Input.GetKey(Keys.I)))
                     JumpScale = 2;
 
                 if (Jetpacking && AddedJetpackSpeed.Y < -10)
