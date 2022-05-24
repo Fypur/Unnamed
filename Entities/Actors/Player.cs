@@ -91,6 +91,8 @@ namespace Platformer
         private List<int> swingPositionsSign = new List<int>() { 0 };
         private bool isAtSwingEnd;
 
+        
+
         #endregion
 
 
@@ -143,10 +145,6 @@ namespace Platformer
             RespawnPoint = position;
 
             BoostBar = (BoostBar)Engine.CurrentMap.Instantiate(new BoostBar(Engine.ScreenSize.OnlyX() + new Vector2(-300, 20), 200, 30, 1));
-
-#if RELEASE
-            CanJetpack = false;
-#endif
         }
 
         public override void Update()
@@ -583,7 +581,7 @@ namespace Platformer
             Velocity.X += LiftBoost.X;
             previousOnGround = false;
 
-            //Audio.PlayEvent("event:/test");
+            //Audio.PlayEvent("event:/Jump");
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 

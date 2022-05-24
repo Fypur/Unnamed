@@ -370,7 +370,7 @@ namespace Platformer
                         new SwingingPoint(new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2[] { new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2(Engine.ScreenSize.X / 2 - 200, 50) }, new float[]{ 1.5f }, true, Ease.QuintInAndOut),
                         FallDeathTrigger(p, size)
                     };
-                    l.AddRange(DefaultLevelTransitions(p, new Level(GetLevelData(2, p + Engine.ScreenSizeX)), null, null, null));
+                    l.AddRange(DefaultLevelTransitions(p, new Level(GetLevelData(2, p + Engine.ScreenSize.OnlyX())), null, null, null));
                     return l;
 
                 case 2:
@@ -378,7 +378,7 @@ namespace Platformer
                     var trig = new GrapplingTrigger(new Vector2(60, 200) + p + new Vector2(200, 40), true, pulled.movingTime, pulled.Pull);
                     return new List<Entity> { pulled, trig,
                     new CyclingPlatform(40, 200, Color.YellowGreen, new Vector2[]{ Engine.ScreenSize / 2, Engine.ScreenSize / 2 + new Vector2(-200 ,0) }, new float[] { 1.5f }, Ease.QuintInAndOut),
-                    new CyclingPlatform(200, 20, Color.YellowGreen, new Vector2[]{ Engine.ScreenSize / 2 + Engine.ScreenSizeX * 0.1f, Engine.ScreenSize / 2 + new Vector2(0 ,-200) }, new float[] { 1.5f }, Ease.QuintInAndOut),
+                    new CyclingPlatform(200, 20, Color.YellowGreen, new Vector2[]{ Engine.ScreenSize / 2 + Engine.ScreenSize.OnlyX() * 0.1f, Engine.ScreenSize / 2 + new Vector2(0 ,-200) }, new float[] { 1.5f }, Ease.QuintInAndOut),
                     new RespawnTrigger(new Vector2(600, 200), new Vector2(200, 300), Vector2.Zero)
                     };
 
