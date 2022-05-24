@@ -12,7 +12,7 @@ namespace Platformer
     public class Platformer : Game
     {
         public static Platformer instance;
-        public static GraphicsDeviceManager graphics;
+        public static GraphicsDeviceManager GraphicsManager;
         private SpriteBatch spriteBatch;
 
         public static RenderTarget2D RenderTarget => Engine.RenderTarget;
@@ -34,13 +34,13 @@ namespace Platformer
 #endif
 
 #if RELEASE
-        private const string initLevel = "8";
+        private const string initLevel = "0";
 #endif
 
         public Platformer()
         {
             instance = this;
-            graphics = new GraphicsDeviceManager(this);
+            GraphicsManager = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -48,8 +48,9 @@ namespace Platformer
 
         protected override void Initialize()
         {
-            Engine.Initialize(graphics, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24), "Utility/SpriteData.xml");
+            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24), "Utility/SpriteData.xml");
 
+            Options.CurrentResolution = Engine.ScreenSize;
             Cam = new Camera(new Vector2(Engine.RenderTarget.Width / 2, Engine.RenderTarget.Height / 2), 0, 1);
 
             World = LDtkFile.FromFile("Content/world.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
@@ -82,8 +83,8 @@ namespace Platformer
             music.setParameterByName("Pitch", 0.5f);*/
 
 #if RELEASE
-            /*if (World.Iid == LDtkTypes.Worlds.World.Iid)
-                player.CanJetpack = false;*/
+            if (World.Iid == LDtkTypes.Worlds.World.Iid)
+                player.CanJetpack = false;
 #endif
         }
 
@@ -108,8 +109,24 @@ namespace Platformer
             if (Paused)
                 PauseMenu.Update();
 
+            if (Input.GetKeyDown(Keys.F11))
+                Options.FullScreen();
+
             if (!Paused)
                 Engine.CurrentMap.Update();
+
+            if (Input.GetKeyDown(Keys.NumPad1))
+                Options.SetSize(1);
+            if (Input.GetKeyDown(Keys.NumPad2))
+                Options.SetSize(2);
+            if (Input.GetKeyDown(Keys.NumPad3))
+                Options.SetSize(3);
+            if (Input.GetKeyDown(Keys.NumPad4))
+                Options.SetSize(4);
+            if (Input.GetKeyDown(Keys.NumPad5))
+                Options.SetSize(5);
+            if (Input.GetKeyDown(Keys.NumPad6))
+                Options.SetSize(6);
 
 #if DEBUG
             Debug.LogUpdate(Engine.CurrentMap.MiddlegroundSystem.Particles.Count);
