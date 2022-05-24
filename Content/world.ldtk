@@ -5025,6 +5025,24 @@
 									"params": ["20,6"]
 								}] }
 							]
+						},
+						{
+							"__identifier": "GrapplingPoint",
+							"__grid": [11,10],
+							"__pivot": [0,0],
+							"__tags": ["Swing"],
+							"__tile": { "tilesetUid": 191, "x": 0, "y": 0, "w": 8, "h": 8 },
+							"__smartColor": "#485EFF",
+							"iid": "56923a00-b4d0-11ec-acfd-57987b324f51",
+							"width": 8,
+							"height": 8,
+							"defUid": 8,
+							"px": [88,80],
+							"fieldInstances": [
+								{ "__identifier": "Positions", "__value": [], "__type": "Array<Point>", "__tile": null, "defUid": 9, "realEditorValues": [] },
+								{ "__identifier": "TimeBetweenPositions", "__value": [], "__type": "Array<Float>", "__tile": null, "defUid": 10, "realEditorValues": [] },
+								{ "__identifier": "GoingForwards", "__value": false, "__type": "Bool", "__tile": null, "defUid": 192, "realEditorValues": [] }
+							]
 						}
 					]
 				},

@@ -91,7 +91,14 @@ namespace Platformer
         private List<int> swingPositionsSign = new List<int>() { 0 };
         private bool isAtSwingEnd;
 
-        
+        //Controls
+        public static ControlList LeftControls = new ControlList(Keys.Left, Keys.A, Keys.Q);
+        public static ControlList RightControls = new ControlList(Keys.Right, Keys.D);
+        public static ControlList UpControls = new ControlList(Keys.Up, Keys.W, Keys.Z);
+        public static ControlList DownControls = new ControlList(Keys.Down, Keys.S);
+        public static ControlList JumpControls = new ControlList(Keys.C, Keys.I, Keys.Space, MouseButton.Left, Buttons.A);
+        public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.X);
+        public static ControlList SwingControls = new ControlList(Keys.W, Keys.P, MouseButton.Middle, Buttons.LeftTrigger, Buttons.RightTrigger);
 
         #endregion
 
@@ -186,22 +193,14 @@ namespace Platformer
                 SafePercentage = 0;
             }
 
-            Debug.LogUpdate(Safe);
-
             {
-                if (Input.GetKey(Keys.Right) || Input.GetKey(Keys.D))
-                    xMoving = 1;
-                if (Input.GetKey(Keys.Left) || Input.GetKey(Keys.Q))
-                    xMoving = -1;
-                if (!((Input.GetKey(Keys.Right) || Input.GetKey(Keys.D)) ^ (Input.GetKey(Keys.Left) || Input.GetKey(Keys.Q))))
-                    xMoving = 0;
+                if (RightControls.Is()) xMoving = 1;
+                if (LeftControls.Is()) xMoving = -1;
+                if (!(RightControls.Is() ^ LeftControls.Is())) xMoving = 0; //Using ^ which means XOR
 
-                if (Input.GetKey(Keys.Up) || Input.GetKey(Keys.Z))
-                    yMoving = -1;
-                if (Input.GetKey(Keys.Down) || Input.GetKey(Keys.S))
-                    yMoving = 1;
-                if (!((Input.GetKey(Keys.Up) || Input.GetKey(Keys.Z)) ^ (Input.GetKey(Keys.Down) || Input.GetKey(Keys.S))))
-                    yMoving = 0;
+                if (UpControls.Is()) yMoving = -1;
+                if (DownControls.Is()) yMoving = 1;
+                if (!(UpControls.Is() ^ DownControls.Is())) yMoving = 0;
 
                 if (Input.GamePadConnected)
                 {
@@ -282,7 +281,7 @@ namespace Platformer
                     isUnsticking = false;
                 }
 
-                if(Input.GetKeyDown(Keys.Space) || Input.GetKeyDown(Keys.C) || Input.GetMouseButtonDown(Input.MouseButton.Left) || Input.GetKeyDown(Keys.I) || Input.GetButtonDown(Buttons.A))
+                if(JumpControls.IsDown())
                 {
                     if (onGround || inCoyoteTime)
                         Jump();
@@ -305,7 +304,7 @@ namespace Platformer
             }
 
             {
-                if ((!onGround || onWall) && CanJetpack && (Input.GetKey(Keys.X) || Input.GetButton(Buttons.X) || Input.GetMouseButton(Input.MouseButton.Right) || Input.GetKey(Keys.O)) && jetpackTime > 0)
+                if ((!onGround || onWall) && CanJetpack && jetpackTime > 0 && JetpackControls.Is())
                     Jetpack();
                 else
                 {
@@ -322,22 +321,25 @@ namespace Platformer
                 if(onGround || onWall)
                     cancelJump = false;
 
-                if (Input.GetKeyDown(Keys.W) || Input.GetButtonDown(Buttons.LeftTrigger) || Input.GetButtonDown(Buttons.RightTrigger))
-                    ThrowRope();
-                if ((Input.GetKey(Keys.W) || Input.GetButton(Buttons.LeftTrigger) || Input.GetButton(Buttons.RightTrigger)) && stateMachine.Is(States.Swinging))
-                    Swing();
-                else if(Input.GetKeyUp(Keys.W) || Input.GetButtonUp(Buttons.LeftTrigger) || Input.GetButtonUp(Buttons.RightTrigger))
+                if (SwingControls.IsDown())
                 {
+                    Console.WriteLine("Down");
+                    ThrowRope();
+                }
+                if (SwingControls.Is() && stateMachine.Is(States.Swinging))
+                {
+                    Swing();
+                }
+                else if(SwingControls.IsUp())
+                {
+                    Console.WriteLine("Up");
                     Velocity.X *= 1.2f;
                     if (Velocity.Y < 0)
                         Velocity.Y *= 1.1f;
                     else
                         Velocity.Y *= 0.7f;
 
-                    swingPositions.Clear();
-                    swingPositionsSign = new List<int> { 0 };
-                    stateMachine.Switch(States.Ascending);
-                    isAtSwingEnd = false;
+                    ResetSwing();
                 }
             }
 
@@ -594,7 +596,7 @@ namespace Platformer
                 }
 
                 float JumpTimeScale = 0;
-                if (timer.Value < maxJumpTime - 0.1f && !(Input.GetKey(Keys.Space) || Input.GetMouseButton(Input.MouseButton.Left) || Input.GetKey(Keys.C) || Input.GetKey(Keys.I) || Input.GetButton(Buttons.A)))
+                if (timer.Value < maxJumpTime - 0.1f && !JumpControls.Is())
                     JumpTimeScale = 10;
 
                 if (Jetpacking && AddedJetpackSpeed.Y < -10)
@@ -637,7 +639,7 @@ namespace Platformer
                 }
 
                 float JumpScale = 0;
-                if (!(Input.GetKey(Keys.Space) || Input.GetMouseButton(Input.MouseButton.Left) || Input.GetKey(Keys.C) || Input.GetButton(Buttons.A) || Input.GetKey(Keys.I)))
+                if (!JumpControls.Is())
                     JumpScale = 2;
 
                 if (Jetpacking && AddedJetpackSpeed.Y < -10)
@@ -910,6 +912,9 @@ namespace Platformer
         {
             swingPositions.Clear();
             swingPositionsSign = new List<int>() { 0 };
+            isAtSwingEnd = false;
+            if (stateMachine.Is(States.Swinging))
+                stateMachine.Switch(States.Ascending);
         }
 
         public void LimitJetpackY(float coef, float time, Func<bool> stopLimitting)

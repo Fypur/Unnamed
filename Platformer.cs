@@ -115,19 +115,6 @@ namespace Platformer
             if (!Paused)
                 Engine.CurrentMap.Update();
 
-            if (Input.GetKeyDown(Keys.NumPad1))
-                Options.SetSize(1);
-            if (Input.GetKeyDown(Keys.NumPad2))
-                Options.SetSize(2);
-            if (Input.GetKeyDown(Keys.NumPad3))
-                Options.SetSize(3);
-            if (Input.GetKeyDown(Keys.NumPad4))
-                Options.SetSize(4);
-            if (Input.GetKeyDown(Keys.NumPad5))
-                Options.SetSize(5);
-            if (Input.GetKeyDown(Keys.NumPad6))
-                Options.SetSize(6);
-
 #if DEBUG
             Debug.LogUpdate(Engine.CurrentMap.MiddlegroundSystem.Particles.Count);
 
