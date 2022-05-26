@@ -322,17 +322,11 @@ namespace Platformer
                     cancelJump = false;
 
                 if (SwingControls.IsDown())
-                {
-                    Console.WriteLine("Down");
                     ThrowRope();
-                }
                 if (SwingControls.Is() && stateMachine.Is(States.Swinging))
-                {
                     Swing();
-                }
                 else if(SwingControls.IsUp())
                 {
-                    Console.WriteLine("Up");
                     Velocity.X *= 1.2f;
                     if (Velocity.Y < 0)
                         Velocity.Y *= 1.1f;

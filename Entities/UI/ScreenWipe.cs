@@ -10,7 +10,7 @@ namespace Platformer
 {
     public class ScreenWipe : UIElement
     {
-        public ScreenWipe(float wipeTime, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : base(Engine.ScreenSize.OnlyX(), (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black))
+        public ScreenWipe(float wipeTime, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : base(Engine.ScreenSize.OnlyX(), (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black), null)
         {
             Overlay = true;
             Vector2 initPos = Pos;

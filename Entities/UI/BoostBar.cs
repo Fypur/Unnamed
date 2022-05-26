@@ -12,7 +12,7 @@ namespace Platformer
     {
         public float Value;
         private Sprite filled;
-        public BoostBar(Vector2 position, int width, int height, float value) : base(position, width, height, new Sprite(Color.Orange))
+        public BoostBar(Vector2 position, int width, int height, float value) : base(position, width, height, new Sprite(Color.Orange), null)
         {
             Overlay = true;
             filled = GetComponent<Sprite>();

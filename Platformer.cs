@@ -66,21 +66,8 @@ namespace Platformer
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
 
-            var map = new Map(Vector2.Zero);
-            Engine.CurrentMap = map;
-
-            //player = (Player)Engine.CurrentMap.Instantiate(
-            //new Player(new Vector2(RenderTarget.Width / 2, RenderTarget.Height - 300), 9, 18));
-            if(int.TryParse(initLevel, out int lvl))
-                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(lvl, Vector2.Zero)));
-            else
-                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(initLevel, Vector2.Zero)));
-            Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
-            Cam.FollowsPlayer = true;
-
-            /*music = Audio.PlayEvent("event:/music");
-            music.setVolume(0.2f);
-            music.setParameterByName("Pitch", 0.5f);*/
+            Engine.CurrentMap = new Map(Vector2.Zero);
+            Engine.CurrentMap.Instantiate(new MainMenu());
 
 #if RELEASE
             if (World.Iid == LDtkTypes.Worlds.World.Iid)
@@ -173,7 +160,6 @@ namespace Platformer
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.Render();
-            //Drawing.Draw(DataManager.Textures["zed"], player.Pos);
 
             Drawing.DebugPoint(1);
 
@@ -210,6 +196,19 @@ namespace Platformer
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        public static void StartGame()
+        {
+            var map = new Map(Vector2.Zero);
+            Engine.CurrentMap = map;
+
+            if (int.TryParse(initLevel, out int lvl))
+                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(lvl, Vector2.Zero)));
+            else
+                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(initLevel, Vector2.Zero)));
+            Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
+            Cam.FollowsPlayer = true;
         }
 
         public static void PauseOrUnpause()

@@ -18,7 +18,7 @@ namespace Platformer
         {
             Text = text;
             initPos = textPos;
-            TextBox = new TextBox("", "LexendDeca", Engine.Cam.RenderTargetToWorldPosition(textPos), int.MaxValue, int.MaxValue, 0.7f);
+            TextBox = new TextBox("", "LexendDeca", Engine.Cam.RenderTargetToWorldPosition(textPos), int.MaxValue, int.MaxValue, Color.White, 0.7f);
             AddChild(TextBox);
         }
 
