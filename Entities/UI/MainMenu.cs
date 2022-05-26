@@ -10,8 +10,9 @@ namespace Platformer
 {
     public class MainMenu : UIElement
     {
-        public SubMenu Main = new SubMenu(Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, 
-            new()
+        public MainMenu() : base(Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black), null)
+        {
+            AddElements(new()
             {
                 new UIImage(Engine.ScreenSize / 2 + new Vector2(0, -250), 700, 200, true, new Sprite(Color.White), new()
                 {
@@ -20,11 +21,7 @@ namespace Platformer
                 new NSButton(Engine.ScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Start", () => { Platformer.StartGame(); }),
                 new NSButton(Engine.ScreenSize / 2 + new Vector2(0, 100), 700, 100, true, "Options", () => { }),
                 new NSButton(Engine.ScreenSize / 2 + new Vector2(0, 250), 700, 100, true, "Quit", () => { Platformer.instance.Exit(); })
-        });
-
-        public MainMenu() : base(Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black), null)
-        {
-            AddElements(Main.Elements);
+            });
         }
 
         public override void Update()
