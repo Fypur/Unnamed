@@ -68,11 +68,6 @@ namespace Platformer
 
             Engine.CurrentMap = new Map(Vector2.Zero);
             Engine.CurrentMap.Instantiate(new MainMenu());
-
-#if RELEASE
-            if (World.Iid == LDtkTypes.Worlds.World.Iid)
-                player.CanJetpack = false;
-#endif
         }
 
         protected override void Update(GameTime gameTime)
@@ -207,6 +202,12 @@ namespace Platformer
                 map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(lvl, Vector2.Zero)));
             else
                 map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(initLevel, Vector2.Zero)));
+
+#if RELEASE
+            if (World.Iid == LDtkTypes.Worlds.World.Iid)
+                player.CanJetpack = false;
+#endif
+
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
             Cam.FollowsPlayer = true;
         }

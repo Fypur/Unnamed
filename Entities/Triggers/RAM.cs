@@ -69,7 +69,7 @@ namespace Platformer
 
                 Engine.Cam.LightShake();
                 Engine.CurrentMap.MiddlegroundSystem.Emit(CollectedParticle, Pos + HalfSize.OnlyX(), 30);
-                Destroy();
+                SelfDestroy();
 
             }));
             yield break;

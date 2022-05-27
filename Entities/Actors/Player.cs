@@ -60,7 +60,6 @@ namespace Platformer
         public Vector2 JetpackDirectionalPowerCoef = Vector2.Zero;
         public Vector2 RespawnPoint;
         public event Action OnDeath = delegate { };
-        private BoostBar BoostBar;
 
         private bool onGround;
         private bool previousOnGround = true;
@@ -92,10 +91,10 @@ namespace Platformer
         private bool isAtSwingEnd;
 
         //Controls
-        public static ControlList LeftControls = new ControlList(Keys.Left, Keys.A, Keys.Q);
-        public static ControlList RightControls = new ControlList(Keys.Right, Keys.D);
-        public static ControlList UpControls = new ControlList(Keys.Up, Keys.W, Keys.Z);
-        public static ControlList DownControls = new ControlList(Keys.Down, Keys.S);
+        public static ControlList LeftControls => Input.LeftControls;
+        public static ControlList RightControls => Input.RightControls;
+        public static ControlList UpControls => Input.UpControls;
+        public static ControlList DownControls => Input.DownControls;
         public static ControlList JumpControls = new ControlList(Keys.C, Keys.I, Keys.Space, MouseButton.Left, Buttons.A);
         public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.X);
         public static ControlList SwingControls = new ControlList(Keys.W, Keys.P, MouseButton.Middle, Buttons.LeftTrigger, Buttons.RightTrigger);
@@ -151,7 +150,7 @@ namespace Platformer
 
             RespawnPoint = position;
 
-            BoostBar = (BoostBar)Engine.CurrentMap.Instantiate(new BoostBar(Engine.ScreenSize.OnlyX() + new Vector2(-300, 20), 200, 30, 1));
+            //BoostBar = (BoostBar)Engine.CurrentMap.Instantiate(new BoostBar(Engine.ScreenSize.OnlyX() + new Vector2(-300, 20), 200, 30, 1));
         }
 
         public override void Update()
@@ -348,7 +347,7 @@ namespace Platformer
             Velocity += AddedJetpackSpeed;
             collisionX = collisionY = false;
             previousOnGround = onGround;
-            BoostBar.Value = jetpackTime / maxJetpackTime; 
+            //BoostBar.Value = jetpackTime / maxJetpackTime; 
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
