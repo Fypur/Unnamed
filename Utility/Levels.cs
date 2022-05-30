@@ -31,7 +31,7 @@ namespace Platformer
         {
             Random levelRandom = new Random(level.Position.X + level.Position.Y);
             Rectangle oldCamBounds = Engine.Cam.Bounds;
-            Vector2 oldCamPos = Engine.Cam.Pos;
+            Vector2 oldCamPos = Engine.Cam.CenteredPos;
             Engine.Cam.SetBoundaries(new Rectangle(level.Position, level.Size));
 
             List<Entity> entities = new List<Entity>();
@@ -268,7 +268,7 @@ namespace Platformer
                 entities.Add(new DeathTrigger(level.Position.ToVector2() + level.Size.ToVector2().OnlyY(), new Vector2(level.Size.X, intGrid.TileSize)));
 
             Engine.Cam.SetBoundaries(oldCamBounds);
-            Engine.Cam.Pos = oldCamPos;
+            Engine.Cam.CenteredPos = oldCamPos;
 
             return entities;
 

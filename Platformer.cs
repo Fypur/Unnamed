@@ -51,11 +51,12 @@ namespace Platformer
             Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24), "Utility/SpriteData.xml");
 
             Options.CurrentResolution = Engine.ScreenSize;
-            Cam = new Camera(new Vector2(Engine.RenderTarget.Width / 2, Engine.RenderTarget.Height / 2), 0, 1);
 
             World = LDtkFile.FromFile("Content/world.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
 
             base.Initialize();
+
+            Cam = new Camera(Vector2.Zero, 0, 1);
 
             PauseMenu = new PauseMenu();
             
@@ -138,8 +139,9 @@ namespace Platformer
                 pS.Emit(PT, 10, new Rectangle((Input.MousePos - Vector2.One * 3).ToPoint(), (Vector2.One * 6).ToPoint()), null, -90, Color.White);
             }*/
 #endif
-
+            
             Cam.Update();
+
             Input.UpdateOldState();
 
             Audio.Update();
@@ -177,6 +179,7 @@ namespace Platformer
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
             Engine.CurrentMap.UIOverlayRender();
+
             if (Paused)
             {
                 PauseMenu.Render();
@@ -197,6 +200,7 @@ namespace Platformer
         {
             var map = new Map(Vector2.Zero);
             Engine.CurrentMap = map;
+            Engine.Cam.RenderTargetMode = true;
 
             if (int.TryParse(initLevel, out int lvl))
                 map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(lvl, Vector2.Zero)));
@@ -210,6 +214,14 @@ namespace Platformer
 
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
             Cam.FollowsPlayer = true;
+        }
+
+        public static void EndGame()
+        {
+            Engine.CurrentMap = new Map(Vector2.Zero);
+            Engine.Cam.SetBoundaries(Rectangle.Empty);
+            Engine.Cam.Pos = Vector2.Zero;
+            Engine.Player = null;
         }
 
         public static void PauseOrUnpause()

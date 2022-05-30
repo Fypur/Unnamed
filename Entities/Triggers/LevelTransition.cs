@@ -54,7 +54,7 @@ namespace Platformer
             Player p = (Player)entity;
             p.CanMove = false;
 
-            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(toLevel.Pos.ToPoint(), toLevel.Size.ToPoint())) - cam.Pos, transitionTime, Ease.QuintInAndOut);
+            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(toLevel.Pos.ToPoint(), toLevel.Size.ToPoint())) - cam.CenteredPos, transitionTime, Ease.QuintInAndOut);
 
             switch (direction)
             {

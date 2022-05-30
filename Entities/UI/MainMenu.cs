@@ -71,7 +71,7 @@ namespace Platformer
             AddElements(ControlsMenu);
             foreach(UIElement ui in ControlsMenu)
             {
-                ui.Active= false;
+                ui.Active = false;
                 ui.Visible = false;
             }
         }
@@ -105,6 +105,19 @@ namespace Platformer
                 }
             }
         }
+
+        /*public class MainSubMenu : SubMenu
+        {
+            public MainSubMenu() : base(null, true)
+            { }
+
+
+        }
+
+        public class OptionsSubMenu : SubMenu
+        {
+            public OptionsSubMenu() : base()
+        }*/
     }
 
     /*public class MainElements : Menu

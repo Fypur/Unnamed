@@ -822,7 +822,7 @@ namespace Platformer
                     }
 
                 if (!changedCamPos)
-                    Engine.Cam.Pos = ExactPos;
+                    Engine.Cam.CenteredPos = ExactPos;
 
                 Levels.ReloadLastLevelFetched();
                 Active = true;
