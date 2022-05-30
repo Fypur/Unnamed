@@ -91,12 +91,12 @@ namespace Platformer
         private bool isAtSwingEnd;
 
         //Controls
-        public static ControlList LeftControls => Input.LeftControls;
-        public static ControlList RightControls => Input.RightControls;
-        public static ControlList UpControls => Input.UpControls;
-        public static ControlList DownControls => Input.DownControls;
-        public static ControlList JumpControls = new ControlList(Keys.C, Keys.I, Keys.Space, MouseButton.Left, Buttons.A);
-        public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.X);
+        public static ControlList LeftControls = Input.LeftControls;
+        public static ControlList RightControls = Input.RightControls;
+        public static ControlList UpControls = Input.UpControls;
+        public static ControlList DownControls = Input.DownControls;
+        public static ControlList JumpControls = new ControlList(Keys.C, Keys.I, Keys.Space, Buttons.A);
+        public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.B);
         public static ControlList SwingControls = new ControlList(Keys.W, Keys.P, MouseButton.Middle, Buttons.LeftTrigger, Buttons.RightTrigger);
 
         #endregion

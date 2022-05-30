@@ -74,8 +74,8 @@ namespace Platformer
         {
             Input.UpdateState();
 
-            if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
-                Exit();
+            /*if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
+                Exit();*/
 
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -106,7 +106,7 @@ namespace Platformer
             if(Input.GetKeyDown(Keys.B))
                 Debug.Clear();
 
-            if (Input.GetKeyDown(Keys.V))
+            if (Input.GetKeyDown(Keys.V) && player != null)
                 player.ExactPos = Input.MousePos;
 
             if (Input.GetKeyDown(Keys.R))

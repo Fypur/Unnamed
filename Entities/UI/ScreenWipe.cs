@@ -10,8 +10,24 @@ namespace Platformer
 {
     public class ScreenWipe : UIElement
     {
-        public ScreenWipe(float wipeTime, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : base(Engine.ScreenSize.OnlyX(), (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black))
+        private float wipeTime;
+        private Action onTransition;
+        private Action onThreeFourths;
+        private Action onEnd;
+
+
+        public ScreenWipe(float wipeTime, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : base(new Vector2(1280, 0), 1280, 720, new Sprite(Color.Black))
         {
+            this.wipeTime = wipeTime;
+            this.onTransition = onTransition;
+            this.onThreeFourths = onThreeFourths;
+            this.onEnd = onEnd;
+        }
+
+        public override void Awake()
+        {
+            base.Awake();
+
             Overlay = true;
             Vector2 initPos = Pos;
             Vector2 endPos = Pos - Engine.ScreenSize.OnlyX() * 2;
@@ -41,11 +57,17 @@ namespace Platformer
                     }
                 },
                 () =>
-                    {
-                        onEnd?.Invoke();
-                        Engine.CurrentMap.Destroy(this);
-                    }));
+                {
+                    onEnd?.Invoke();
+                    Engine.CurrentMap.Destroy(this);
+                }));
             }));
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            Debug.LogUpdate(Pos, Size);
         }
     }
 }

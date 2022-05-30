@@ -12,6 +12,7 @@ namespace Platformer
     {
         public List<UIElement> Main;
         public List<UIElement> OptionsMenu;
+        public List<UIElement> ControlsMenu;
         public enum ScreenSizes { x3, x4, x5, x6, x7 }
         public MainMenu() : base(Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black))
         {
@@ -23,7 +24,7 @@ namespace Platformer
         {
             Main = new();
             var h = new UIImage(Engine.ScreenSize / 2 + new Vector2(0, -250), 700, 200, true, new Sprite(Color.White));
-            h.AddChild(new TextBox("Abandonned", "LexendDeca", h.Pos, h.Width, h.Height, Color.Black, 3, true));
+            h.AddChild(new TextBox("Abandonned", "Pixel", h.Pos, h.Width, h.Height, Color.Black, 12, true));
 
             Main.Add(h);
             List<UIElement> buttons = new();
@@ -37,20 +38,42 @@ namespace Platformer
 
             OptionsMenu = new();
 
-            OptionsMenu.Add(new BoolSwitcher(Engine.ScreenSize / 2 + new Vector2(0, -200), 700, 100, true, "Full Screen", false, () => Options.FullScreen(), () => Options.FullScreen()));
-
-            OptionsMenu.Add(new EnumSwitcher<ScreenSizes>(Engine.ScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Screen Size", ScreenSizes.x4, new()
+            var screenSizeSwitcher = new EnumSwitcher<ScreenSizes>(Engine.ScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Screen Size", ScreenSizes.x4, new()
             {
                 { ScreenSizes.x3, () => Options.SetSize(3) },
                 { ScreenSizes.x4, () => Options.SetSize(4) },
                 { ScreenSizes.x5, () => Options.SetSize(5) },
                 { ScreenSizes.x6, () => Options.SetSize(6) },
                 { ScreenSizes.x7, () => Options.SetSize(7) },
-            }));
+            });
+
+            OptionsMenu.Add(new BoolSwitcher(Engine.ScreenSize / 2 + new Vector2(0, -200), 700, 100, true, "Full Screen", false, 
+                () => { Options.FullScreen(); screenSizeSwitcher.Selectable = false; }, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = true; }));
+
+            OptionsMenu.Add(screenSizeSwitcher);
+
+            OptionsMenu.Add(new NSButton(Engine.ScreenSize / 2 + new Vector2(0, 100), 700, 100, true, "Change Controls", () => SwitchToSubMenu(ControlsMenu)));
 
             OptionsMenu.Add(new NSButton(Engine.ScreenSize / 2 + new Vector2(0, 250), 700, 100, true, "Back", () => { SwitchToSubMenu(Main); }));
-            //TODO: AddControls
+
             MakeList(OptionsMenu, true);
+
+            ControlsMenu = new();
+            ControlsMenu.Add(new TextBox($"{Input.UIAction1.GetAllControlNames(" or ")} : Change controls \n{Input.UIAction1.GetAllControlNames(" or ")} : Clear", "LexendDeca", Engine.ScreenSize / 2 + new Vector2(-500, -300), 1000, 100, Color.White, 1, true));
+
+            ControlsMenu.Add(new ControlTaker(Engine.ScreenSize / 2 + new Vector2(0, -150), 700, 100, true, "Jump", Player.JumpControls, null));
+
+            ControlsMenu.Add(new ControlTaker(Engine.ScreenSize / 2 + new Vector2(0, 0), 700, 100, true, "Jetpack", Player.JetpackControls, null));
+            ControlsMenu.Add(new ControlTaker(Engine.ScreenSize / 2 + new Vector2(0, 150), 700, 100, true, "Rope Swing", Player.SwingControls, null));
+            ControlsMenu.Add(new NSButton(Engine.ScreenSize / 2 + new Vector2(0, 300), 700, 100, true, "Back", () => { SwitchToSubMenu(OptionsMenu); }));
+
+            MakeList(ControlsMenu, true);
+            AddElements(ControlsMenu);
+            foreach(UIElement ui in ControlsMenu)
+            {
+                ui.Active= false;
+                ui.Visible = false;
+            }
         }
 
         public void SwitchToSubMenu(List<UIElement> subMenu)
