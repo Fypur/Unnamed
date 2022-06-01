@@ -30,7 +30,7 @@ namespace Platformer
         public static EventInstance music;
 
 #if DEBUG
-        private const string initLevel = "4";
+        private const string initLevel = "5";
 #endif
 
 #if RELEASE
@@ -99,8 +99,6 @@ namespace Platformer
                 Engine.CurrentMap.Update();
 
 #if DEBUG
-            Debug.LogUpdate(Engine.CurrentMap.MiddlegroundSystem.Particles.Count);
-
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
             
@@ -112,6 +110,9 @@ namespace Platformer
 
             if (Input.GetKeyDown(Keys.R))
                 Levels.ReloadLastLevelFetched();
+
+            if (Input.GetKeyDown(Keys.U))
+                Engine.Cam.NoBoundsPos -= Vector2.One * 100;
 
             if (Input.GetKeyDown(Keys.NumPad1))
                 music.setParameterByName("Pitch", 0);

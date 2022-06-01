@@ -96,7 +96,7 @@ namespace Platformer
         public static ControlList UpControls = Input.UpControls;
         public static ControlList DownControls = Input.DownControls;
         public static ControlList JumpControls = new ControlList(Keys.C, Keys.I, Keys.Space, Buttons.A);
-        public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.B);
+        public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.X);
         public static ControlList SwingControls = new ControlList(Keys.W, Keys.P, MouseButton.Middle, Buttons.LeftTrigger, Buttons.RightTrigger);
 
         #endregion
@@ -165,7 +165,7 @@ namespace Platformer
                 return; 
             }
 
-            onGround = Collider.CollideAt(Pos + new Vector2(0, 1));
+            onGround = Collider.CollideAt(new(Engine.CurrentMap.Data.Solids), Pos + new Vector2(0, 1), out Entity onGroundEntity);
             onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
             onWall = Collider.CollideAt(Pos + new Vector2(-1, 0)) || onRightWall;
 
@@ -174,16 +174,17 @@ namespace Platformer
             if(!Safe && SafePercentage == 0)
             {
                 SafePercentage = 0.01f;
-                AddComponent(new Timer(safeTime, true, (timer) =>
-                {
-                    SafePercentage = Ease.Reverse(timer.Value / timer.MaxValue);
-                    if(!onGround || xMovingRaw != 0)
+                if(onGround && !(onGroundEntity is JumpThru) && xMovingRaw == 0)
+                    AddComponent(new Timer(safeTime, true, (timer) =>
                     {
-                        SafePercentage = 0;
-                        RemoveComponent(timer);
-                    }
-                },
-                () => { SafePercentage = 1; Safe = true;  })); ;
+                        SafePercentage = Ease.Reverse(timer.Value / timer.MaxValue);
+                        if (!(onGround && !(onGroundEntity is JumpThru)) || xMovingRaw != 0)
+                        {
+                            SafePercentage = 0;
+                            RemoveComponent(timer);
+                        }
+                    },
+                    () => { SafePercentage = 1; Safe = true;  })); ;
             }
 
             if(!onGround || xMovingRaw != 0)
