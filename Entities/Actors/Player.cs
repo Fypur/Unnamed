@@ -26,7 +26,7 @@ namespace Platformer
         private const float acceleration = 70f;
         private const float airAcceleration = 15f;
         private const float swingAcceleration = 3f; //Swing accel is very low since friction isn't applied
-        private const float friction = 0.6f;
+        private const float friction = 0.8f;
         private const float airFriction = 0.1f;
         
         private const float wallJumpSideForce = 160f;
@@ -37,7 +37,11 @@ namespace Platformer
         private const float dashTime = 0.2f;
         private const float unstickTime = 0.1f;
         private const float safeTime = 1.0f;
+
         private const float coyoteTime = 0.07f;
+        private const float jumpGraceTime = 0.2f;
+        //Can wall jump if wall is this far away in pixels
+        private const float wallJumpPixelGap = 4;
         
         private const float maxGrappleDist = 1000f;
 
@@ -64,7 +68,9 @@ namespace Platformer
         private bool onGround;
         private bool previousOnGround = true;
         private bool onWall;
+        private bool onFarWall;
         private bool onRightWall;
+        private bool onRightFarWall;
         private bool collisionX;
         private bool collisionY;
 
@@ -168,6 +174,18 @@ namespace Platformer
             onGround = Collider.CollideAt(new(Engine.CurrentMap.Data.Solids), Pos + new Vector2(0, 1), out Entity onGroundEntity);
             onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
             onWall = Collider.CollideAt(Pos + new Vector2(-1, 0)) || onRightWall;
+            if (onWall)
+            {
+                onFarWall = true;
+                onRightFarWall = onRightWall;
+            }
+            else
+            {
+                onRightFarWall = Collider.CollideAt(Pos + new Vector2(wallJumpPixelGap, 0));
+                onFarWall = Collider.CollideAt(Pos + new Vector2(-wallJumpPixelGap, 0)) || onRightFarWall;
+            }
+
+            Debug.LogUpdate(onFarWall);
 
             base.Update();
 
@@ -283,10 +301,36 @@ namespace Platformer
 
                 if(JumpControls.IsDown())
                 {
-                    if (onGround || inCoyoteTime)
-                        Jump();
-                    else if(onWall)
-                        WallJump();
+                    void TestJump(out bool hasJumped)
+                    {
+                        if (onGround || inCoyoteTime)
+                        {
+                            Jump();
+                            hasJumped = true;
+                        }
+                        else if (onFarWall)
+                        {
+                            if (!onWall)
+                                onRightWall = onRightFarWall;
+
+                            WallJump();
+                            hasJumped = true;
+                        }
+
+                        hasJumped = false;
+                    }
+
+                    TestJump(out bool hasJumped);
+                    if(hasJumped)
+                    {
+                        AddComponent(new Timer(jumpGraceTime, true, (timer) =>
+                        {
+                            TestJump(out _);
+                        }, () =>
+                        {
+                            TestJump(out _);
+                        }));
+                    }
                 }
 
                 if (onGround)
