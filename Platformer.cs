@@ -111,9 +111,6 @@ namespace Platformer
             if (Input.GetKeyDown(Keys.R))
                 Levels.ReloadLastLevelFetched();
 
-            if (Input.GetKeyDown(Keys.U))
-                Engine.Cam.NoBoundsPos -= Vector2.One * 100;
-
             if (Input.GetKeyDown(Keys.NumPad1))
                 music.setParameterByName("Pitch", 0);
             if (Input.GetKeyDown(Keys.NumPad2))
