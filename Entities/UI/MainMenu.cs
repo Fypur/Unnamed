@@ -146,7 +146,7 @@ namespace Platformer
             {
                 List<UIElement> returned = new();
 
-                var screenSizeSwitcher = new EnumSwitcher<ScreenSizes>(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Screen Size", ScreenSizes.x4, new()
+                /*var screenSizeSwitcher = new EnumSwitcher<ScreenSizes>(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Screen Size", Options.CurrentScreenSizeMultiplier, new()
                 {
                     { ScreenSizes.x1, () => Options.SetSize(1) },
                     { ScreenSizes.x2, () => Options.SetSize(2) },
@@ -155,10 +155,14 @@ namespace Platformer
                     { ScreenSizes.x5, () => Options.SetSize(5) },
                     { ScreenSizes.x6, () => Options.SetSize(6) },
                     { ScreenSizes.x7, () => Options.SetSize(7) },
-                });
+                });*/
 
-                returned.Add(new BoolSwitcher(Options.DefaultScreenSize / 2 + new Vector2(0, -200), 700, 100, true, "Full Screen", false,
+                var screenSizeSwitcher = new Switcher(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Screen Size", Options.CurrentScreenSizeMultiplier, 3, 8, (size) => Options.SetSize(size));
+
+                returned.Add(new BoolSwitcher(Options.DefaultScreenSize / 2 + new Vector2(0, -200), 700, 100, true, "Full Screen", Engine.Graphics.IsFullScreen,
                     () => { Options.FullScreen(); screenSizeSwitcher.Selectable = false; }, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = true; }));
+                if (Engine.Graphics.IsFullScreen)
+                    screenSizeSwitcher.Selectable = false;
 
                 returned.Add(screenSizeSwitcher);
 
@@ -188,7 +192,7 @@ namespace Platformer
                 List<UIElement> ControlsMenu = new();
                 Vector2 screenSize = Options.DefaultScreenSize;
 
-                ControlsMenu.Add(new TextBox($"{Input.UIAction1.GetAllControlNames(" or ")} : Change controls \n{Input.UIAction1.GetAllControlNames(" or ")} : Clear", "LexendDeca", screenSize / 2 + new Vector2(-500, -300), 1000, 100, Color.White, 1, true));
+                ControlsMenu.Add(new TextBox($"{Input.UIAction1.GetAllControlNames(" or ")} : Change controls \n{Input.UIAction1.GetAllControlNames(" or ")} : Clear", "Recursive", screenSize / 2 + new Vector2(-500, -300), 1000, 100, Color.White, 0.7f, true));
 
                 ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -150), 700, 100, true, "Jump", Player.JumpControls, null));
 
@@ -202,30 +206,6 @@ namespace Platformer
 
                 return ControlsMenu;
             }
-    }
-    }
-
-    /*public class MainElements : Menu
-    {
-        public override List<Entity> GetElements()
-        {
-            var img = new UIImage(Engine.ScreenSize / 2 + new Vector2(0, -250), 700, 200, true, new Sprite(Color.White));
-            return new()
-            {
-                img,
-                new TextBox("Abandonned", "LexendDeca", img.Pos, img.Width, img.Height, Color.Gray, 3, true),
-                new NSButton(Engine.ScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Start", () => { Platformer.StartGame(); }),
-                new NSButton(Engine.ScreenSize / 2 + new Vector2(0, 100), 700, 100, true, "Options", () => { }),
-                new NSButton(Engine.ScreenSize / 2 + new Vector2(0, 250), 700, 100, true, "Quit", () => { Platformer.instance.Exit(); })
-            };
         }
     }
-
-    public class OptionsMenu : Menu
-    {
-        public override List<Entity> GetElements()
-        {
-            return base.GetElements();
-        }
-    }*/
 }

@@ -19,7 +19,7 @@ namespace Platformer
 
         public NSButton(Vector2 position, int width, int height, bool centered, string text, Action onPressed) : base(position, width, height, centered, new Sprite(nineSliceSettings), onPressed)
         {
-            Text = new TextBox(text, "LexendDeca", position - HalfSize, width, height, Color.Black, 1, true);
+            Text = new TextBox(text, "Recursive", position - HalfSize, width, height, Color.Black, 0.5f, true);
             AddChild(Text);
         }
     }
