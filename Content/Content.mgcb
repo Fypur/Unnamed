@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:C:\Users\Administrateur\.nuget\packages\monogame.aseprite\2.0.5\contentFiles\netstandard2.0\MonoGame.Aseprite.ContentPipeline.dll
+/reference:C:\Users\Fypur\.nuget\packages\monogame.aseprite\2.0.5\contentFiles\netstandard2.0\MonoGame.Aseprite.ContentPipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -48,6 +48,13 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Pixel/Normal.spritefont
+
+#begin Fonts/Recursive/Normal.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Recursive/Normal.spritefont
 
 #begin Graphics/Objects/Button.aseprite
 /importer:AsepriteDocumentImporter
