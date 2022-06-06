@@ -19,11 +19,13 @@ namespace Platformer
         private const float maxFallSlidingSpeed = 150; //Max Falling Speed while Wall Sliding
         private const float dashSpeed = 200;
 
-        private const float jetpackPowerX = 7;
-        private const float jetpackPowerY = 6;
+        private const float jetpackPowerX = 20;
+        private const float jetpackPowerY = 20;
+        private const float maxJetpackSpeedX = 170;
+        private const float maxJetpackSpeedY = 120;
         private const float maxJetpackTime = 0.5f;
         
-        private const float acceleration = 70f;
+        private const float acceleration = 50f;
         private const float airAcceleration = 15f;
         private const float swingAcceleration = 3f; //Swing accel is very low since friction isn't applied
         private const float friction = 0.8f;
@@ -40,8 +42,8 @@ namespace Platformer
 
         private const float coyoteTime = 0.07f;
         private const float jumpGraceTime = 0.2f;
-        //Can wall jump if wall is this far away in pixels
-        private const float wallJumpPixelGap = 4;
+        //Can wall jump if wall is this far away from the wall in pixels
+        private const float wallJumpPixelGap = 5;
         
         private const float maxGrappleDist = 1000f;
 
@@ -88,13 +90,12 @@ namespace Platformer
         private bool inCoyoteTime;
         private float jetpackTime;
 
-        private Vector2 AddedJetpackSpeed;
-
         private float totalRopeLength;
         private Solid grappledSolid;
         private List<Vector2> swingPositions = new List<Vector2>();
         private List<int> swingPositionsSign = new List<int>() { 0 };
         private bool isAtSwingEnd;
+        private bool nerfedJetpack;
 
         //Controls
         public static ControlList LeftControls = Input.LeftControls;
@@ -185,8 +186,6 @@ namespace Platformer
                 onFarWall = Collider.CollideAt(Pos + new Vector2(-wallJumpPixelGap, 0)) || onRightFarWall;
             }
 
-            Debug.LogUpdate(onFarWall);
-
             base.Update();
 
             if(!Safe && SafePercentage == 0)
@@ -276,12 +275,6 @@ namespace Platformer
             if (Velocity.X <= 1 && Velocity.X >= -1)
                 Velocity.X = 0;
 
-            float dirPowerMult = Math.Sign(AddedJetpackSpeed.X) == Math.Sign(JetpackDirectionalPowerCoef.X) ? JetpackDirectionalPowerCoef.X * Math.Sign(JetpackDirectionalPowerCoef.X) : 1;
-            AddedJetpackSpeed.X = Math.Clamp(AddedJetpackSpeed.X, -jetpackPowerX * JetpackPowerCoef.X * 5 * dirPowerMult, jetpackPowerX * JetpackPowerCoef.X * 5 * dirPowerMult);
-
-            if (AddedJetpackSpeed.X <= 1 && AddedJetpackSpeed.X >= -1)
-                AddedJetpackSpeed.X = 0;
-
 
             {
                 if (previousOnGround && !onGround)
@@ -348,18 +341,16 @@ namespace Platformer
             }
 
             {
-                if ((!onGround || onWall) && CanJetpack && jetpackTime > 0 && JetpackControls.Is())
+                if (!onGround && CanJetpack && jetpackTime > 0 && JetpackControls.Is())
                     Jetpack();
                 else
                 {
-                    AddedJetpackSpeed = Vector2.Zero;
                     Jetpacking = false;
                 }
 
                 if (onGround)
                 {
                     jetpackTime = maxJetpackTime;
-                    AddedJetpackSpeed.X = 0;
                 }
 
                 if(onGround || onWall)
@@ -389,7 +380,6 @@ namespace Platformer
 
             Dust.Acceleration = Velocity;
 
-            Velocity += AddedJetpackSpeed;
             collisionX = collisionY = false;
             previousOnGround = onGround;
             //BoostBar.Value = jetpackTime / maxJetpackTime; 
@@ -637,19 +627,21 @@ namespace Platformer
                 if (timer.Value < maxJumpTime - 0.1f && !JumpControls.Is())
                     JumpTimeScale = 10;
 
-                if (Jetpacking && AddedJetpackSpeed.Y < -10)
+                /*if (Jetpacking && Velocity.Y < -100)
                     timer.TimeScale = 3;
                 else
-                    timer.TimeScale = 1;
+                    timer.TimeScale = 1;*/
 
                 timer.TimeScale += JumpTimeScale;
 
+                if (Jetpacking && Velocity.Y < -100 && -jumpForce * (timer.Value / maxJumpTime) + LiftBoost.Y > Velocity.Y)
+                    return;
+
                 Velocity.Y = -jumpForce * (timer.Value / maxJumpTime) + LiftBoost.Y;
-                //Velocity.X -= LiftBoost.X * ((previousTimerValue - timer.Value) / maxJumpTime);
+
             }, () => {
                 cancelJump = false;
                 LiftSpeed = new Vector2(LiftSpeed.X, 0);
-                AddedJetpackSpeed.X += 0.1f;
                 if (stateMachine.Is(States.Jumping))
                     stateMachine.Switch(States.Ascending); 
             }));
@@ -668,6 +660,11 @@ namespace Platformer
             Velocity.X = wallJumpSideForce * wallJumpingDirection * coef;
             Velocity.Y -= jumpForce * 0.5f;
 
+            if (onRightWall)
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X + Width - 1, (int)Pos.Y, 1, Height), 7);
+            else
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X, (int)Pos.Y, 1, Height), 7);
+
             AddComponent(new Timer(maxJumpTime + (coef == 1 ? 0 : 0.1f), true, (timer) =>
             {
                 if (collisionY || hasDashed || cancelJump)
@@ -680,10 +677,10 @@ namespace Platformer
                 if (!JumpControls.Is())
                     JumpScale = 2;
 
-                if (Jetpacking && AddedJetpackSpeed.Y < -10)
+                /*if (Jetpacking && Velocity.Y < -100)
                     timer.TimeScale = 1.3f;
                 else
-                    timer.TimeScale = 1;
+                    timer.TimeScale = 1;*/
 
                 timer.TimeScale += JumpScale;
 
@@ -773,7 +770,7 @@ namespace Platformer
             , () => normalMouvement = true));
         }
 
-        public void Jetpack()
+        private void Jetpack()
         {
             Vector2 dir;
             if(xMoving == 0 && yMoving == 0)
@@ -787,35 +784,33 @@ namespace Platformer
                 return;
 
             Vector2 coef = Vector2.One;
-            if ((dir.Y < 0 && Velocity.Y > -100) || (dir.Y > 0 && Velocity.Y < 100))
+
+            if (((dir.Y < 0 && Velocity.Y > -10) || (dir.Y > 0 && Velocity.Y < 10)))
             {
-                coef.Y += 4;
+                coef.Y += 1.5f;
             }
 
+            /*
             if (Velocity.X * dir.X < 150)
-                coef.X += 2;
+            {
+                if (!nerfedJetpack)
+                    coef.X += 2;
+                else
+                    coef.X += 0.7f;
+            }*/
 
             coef *= JetpackPowerCoef;
 
-            if (JetpackDirectionalPowerCoef.X != 0 && Math.Sign(AddedJetpackSpeed.X) == Math.Sign(JetpackDirectionalPowerCoef.X))
+            if (JetpackDirectionalPowerCoef.X != 0 && Math.Sign(Velocity.X) == Math.Sign(JetpackDirectionalPowerCoef.X))
                 coef.X *= Math.Abs(JetpackDirectionalPowerCoef.X);
-            if (JetpackDirectionalPowerCoef.Y != 0 && Math.Sign(AddedJetpackSpeed.Y) == -Math.Sign(JetpackDirectionalPowerCoef.Y))
+            if (JetpackDirectionalPowerCoef.Y != 0 && Math.Sign(Velocity.Y) == -Math.Sign(JetpackDirectionalPowerCoef.Y))
                 coef.Y *= Math.Abs(JetpackDirectionalPowerCoef.Y);
 
-            Velocity += dir * coef * new Vector2(jetpackPowerX, jetpackPowerY);
+            //Velocity.Y = Math.Clamp(Velocity.Y, -140, 140);
 
-            /*//stateMachine.Switch(States.Jetpack);
-            if (normalMouvement && onGround)
-                AddedJetpackSpeed.X += dir.X * jetpackPowerX * coef.X - friction * AddedJetpackSpeed.X;
-            /*else if (normalMouvement && isAtSwingEnd)
-                AddedJetpackSpeed.X += dir.X * swingAcceleration * jetpackPowerCoef.X;
-            else if (normalMouvement && !onWall)
-                AddedJetpackSpeed.X += dir.X * jetpackPowerX * coef.X - airFriction * AddedJetpackSpeed.X;
-
-            if (stateMachine.Is(States.Jumping))
-                AddedJetpackSpeed.Y += dir.Y * jetpackPowerY * 0.5f * coef.Y;
-            else
-                AddedJetpackSpeed.Y = dir.Y * jetpackPowerY * coef.Y;*/
+            Vector2 d = dir * coef *new Vector2(jetpackPowerX, jetpackPowerY);
+            d = Vector2.Clamp(d + Velocity, new Vector2(-maxJetpackSpeedX,  -maxJetpackSpeedY), new Vector2(maxJetpackSpeedX, maxFallingSpeed + maxJetpackSpeedY)) - Velocity;
+            Velocity += d;
 
             Jetpacking = true;
 
@@ -942,7 +937,6 @@ namespace Platformer
         private void ResetJetpack()
         {
             jetpackTime = maxJetpackTime;
-            AddedJetpackSpeed = Vector2.Zero;
             JetpackPowerCoef = Vector2.One;
         }
 

@@ -12,13 +12,14 @@ namespace Platformer
     {
         Vector2 initPos;
         public string Text;
-        public TextBox TextBox;
+        public WritingTextBox TextBox;
 
         public TextSpawn(Vector2 position, Vector2 size, Vector2 textPos, string text) : base(position, size, Sprite.None)
         {
             Text = text;
             initPos = textPos;
-            TextBox = new TextBox("", "LexendDeca", Engine.Cam.RenderTargetToWorldPosition(textPos), int.MaxValue, int.MaxValue, Color.White, 0.7f);
+            Collider.DebugColor = Color.LightGreen;
+            TextBox = new WritingTextBox("", "Recursive", Engine.Cam.RenderTargetToWorldPosition(textPos), int.MaxValue, int.MaxValue, 0.3f, Color.White, false, 0.01f);
             AddChild(TextBox);
         }
 

@@ -26,9 +26,7 @@ namespace Platformer
         public override void Update()
         {
             base.Update();
-            
-            Debug.LogUpdate(Bounds, filled.desinationRectangle, Value);
-            
+                        
             filled.desinationRectangle = new Rectangle(Bounds.Left, Bounds.Top, (int)(Width * Value), Height);
         }
     }

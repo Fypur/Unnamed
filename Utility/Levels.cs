@@ -27,6 +27,12 @@ namespace Platformer
             }
         }
 
+        public static NineSliceSettings FallingPlatformNineSlice1
+            = new NineSliceSettings(T1Cropped(120, 0), T1Cropped(136, 0), T1Cropped(120, 16), T1Cropped(136, 16), T1Cropped(128, 0), T1Cropped(120, 8), T1Cropped(136, 8), T1Cropped(128, 16), T1Cropped(128, 8), true);
+
+        public static Texture2D T1Cropped(int posX, int posY)
+            => DataManager.Textures["Tilesets/industrialAll"].CropTo(new Vector2(posX, posY), new Vector2(8));
+
         private static List<Entity> GetLevelEntities(this LDtkLevel level)
         {
             Random levelRandom = new Random(level.Position.X + level.Position.Y);
@@ -80,7 +86,7 @@ namespace Platformer
             }
 
             foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
-                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height(), new NineSliceSettings(Tile("topLeftCorner"), Tile("topRightCorner"), Tile("bottomLeftCorner"), Tile("bottomRightCorner"), Tile("top"), Tile("left"), Tile("right"), Tile("bottom"), DataManager.Tilesets[1]["inside"], true)));
+                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height(), FallingPlatformNineSlice1));
 
             foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
                 entities.Add(new RailedPullBlock(p.RailPositions, p.Position, p.Width(), p.Height()));
@@ -286,7 +292,7 @@ namespace Platformer
                 return v;
             }
 
-            Texture2D Tile(string id)
+            Texture2D RandomTile(string id)
             => DataManager.GetRandomTilesetTexture(DataManager.Tilesets[1], id, levelRandom);
         }
 

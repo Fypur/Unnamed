@@ -63,11 +63,5 @@ namespace Platformer
                 }));
             }));
         }
-
-        public override void Update()
-        {
-            base.Update();
-            Debug.LogUpdate(Pos, Size);
-        }
     }
 }

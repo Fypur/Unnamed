@@ -30,7 +30,7 @@ namespace Platformer
         public static EventInstance music;
 
 #if DEBUG
-        private const string initLevel = "5";
+        private const string initLevel = "8";
 #endif
 
 #if RELEASE
@@ -59,7 +59,10 @@ namespace Platformer
             Cam = new Camera(Vector2.Zero, 0, 1);
 
             PauseMenu = new PauseMenu();
-            
+
+#if DEBUG
+            StartGame();
+#endif
         }
 
         protected override void LoadContent()
@@ -68,7 +71,11 @@ namespace Platformer
             Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
 
             Engine.CurrentMap = new Map(Vector2.Zero);
+
+#if RELEASE
             Engine.CurrentMap.Instantiate(new MainMenu());
+#endif
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -99,6 +106,7 @@ namespace Platformer
                 Engine.CurrentMap.Update();
 
 #if DEBUG
+            Debug.LogUpdate(Engine.Deltatime);
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
             

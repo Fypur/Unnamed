@@ -45,9 +45,10 @@ namespace Platformer
 
         private float emittedAmount;
 
-        public RAM(Vector2 position, Guid iid, Guid levelIid) : base(position, 10, 10, iid, levelIid, new Sprite())
+        public RAM(Vector2 position, Guid iid, Guid levelIid) : base(position, 10, 15, iid, levelIid, new Sprite())
         {
             Sprite.Add(Sprite.AllAnimData["RAM"]);
+            Sprite.Offset.Y += 1;
             Sprite.Play("rotate");
         }
 

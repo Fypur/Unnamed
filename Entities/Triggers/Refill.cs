@@ -24,7 +24,7 @@ namespace Platformer
             Color = Color.Red,
             Color2 = Color.Orange,
         };
-        private const float size = 10;
+        private const float size = 12;
         public float RespawnTime = 4f;
 
         private bool canActivate = true;
@@ -32,12 +32,13 @@ namespace Platformer
         public Refill(Vector2 position, float respawnTime) : base(position, new Vector2(size), new Sprite()) 
         {
             Sprite.Add(Sprite.AllAnimData["Refill"]);
+            Sprite.Offset.Y += 1;
             Sprite.Play("rotate");
             //Sprite.Scale = Vector2.One * 10;
             RespawnTime = respawnTime;
         }
 
-        public override void OnTriggerEnter(Player player)
+        public override void OnTriggerStay(Player player)
         {
             if (!canActivate)
                 return;
@@ -47,11 +48,17 @@ namespace Platformer
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, MiddlePos, 30);
             Engine.Cam.LightShake();
-            //Remove this once you add animations
             Visible = false;
 
-            //Again remove Visible = true
-            AddComponent(new Timer(RespawnTime, true, null, () => { canActivate = true; Active = true; Visible = true; }));
+            AddComponent(new Timer(RespawnTime, true, null,
+                () => Engine.CurrentMap.Instantiate(new Wipe(Bounds, 0.5f, Color.White, null,
+                    () =>
+                    {
+                        canActivate = true;
+                        Active = true;
+                        Visible = true;
+                    }
+                    , null, null))));
         }
     }
 }

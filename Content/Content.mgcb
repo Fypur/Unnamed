@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:C:\Users\Fypur\.nuget\packages\monogame.aseprite\2.0.5\contentFiles\netstandard2.0\MonoGame.Aseprite.ContentPipeline.dll
+/reference:MonoGame.Aseprite.ContentPipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 

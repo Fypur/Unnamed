@@ -30,7 +30,8 @@ namespace Platformer
 
             this.wiped = wiped;
             this.wipeTime = wipeTime;
-            this.Paused = pausedUntil();
+            if(pausedUntil != null)
+                this.Paused = pausedUntil();
             this.onTransition = onTransition;
             this.onEnd = onEnd;
             this.onThreeFourths = onThreeFourths;
@@ -58,9 +59,12 @@ namespace Platformer
                 bool doOnce = false;
                 AddComponent(new Timer(wipeTime / 2, true, (timer) =>
                 {
-                    timer.PauseUntil(pausedUntil);
-                    if (!pausedUntil())
-                        return;
+                    if(pausedUntil != null)
+                    {
+                        timer.PauseUntil(pausedUntil);
+                        if (!pausedUntil())
+                            return;
+                    }
 
                     if (!hasOnTranstionned)
                     {
