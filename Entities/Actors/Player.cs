@@ -62,6 +62,7 @@ namespace Platformer
         public float SafePercentage = 0;
         public bool Jetpacking;
         public bool CanJetpack = true;
+        public bool CanWallJump = true;
         public Vector2 JetpackPowerCoef = Vector2.One;
         public Vector2 JetpackDirectionalPowerCoef = Vector2.Zero;
         public Vector2 RespawnPoint;
@@ -95,7 +96,6 @@ namespace Platformer
         private List<Vector2> swingPositions = new List<Vector2>();
         private List<int> swingPositionsSign = new List<int>() { 0 };
         private bool isAtSwingEnd;
-        private bool nerfedJetpack;
 
         //Controls
         public static ControlList LeftControls = Input.LeftControls;
@@ -184,6 +184,12 @@ namespace Platformer
             {
                 onRightFarWall = Collider.CollideAt(Pos + new Vector2(wallJumpPixelGap, 0));
                 onFarWall = Collider.CollideAt(Pos + new Vector2(-wallJumpPixelGap, 0)) || onRightFarWall;
+            }
+
+            if (!CanWallJump)
+            {
+                onWall = false;
+                onFarWall = false;
             }
 
             base.Update();
@@ -623,8 +629,8 @@ namespace Platformer
                     return;
                 }
 
-                float JumpTimeScale = 0;
-                if (timer.Value < maxJumpTime - 0.1f && !JumpControls.Is())
+                float JumpTimeScale = 1;
+                if (timer.Value < maxJumpTime - 0.07f && !JumpControls.Is())
                     JumpTimeScale = 10;
 
                 /*if (Jetpacking && Velocity.Y < -100)
@@ -632,9 +638,9 @@ namespace Platformer
                 else
                     timer.TimeScale = 1;*/
 
-                timer.TimeScale += JumpTimeScale;
+                timer.TimeScale = JumpTimeScale;
 
-                if (Jetpacking && Velocity.Y < -100 && -jumpForce * (timer.Value / maxJumpTime) + LiftBoost.Y > Velocity.Y)
+                if (Jetpacking && -jumpForce * (timer.Value / maxJumpTime) + LiftBoost.Y > Velocity.Y)
                     return;
 
                 Velocity.Y = -jumpForce * (timer.Value / maxJumpTime) + LiftBoost.Y;

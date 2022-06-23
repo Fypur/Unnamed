@@ -28,9 +28,10 @@ namespace Platformer
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
         public static EventInstance music;
+        public static Tile BackgroundTile;
 
 #if DEBUG
-        private const string initLevel = "8";
+        private const string initLevel = "15";
 #endif
 
 #if RELEASE
@@ -82,8 +83,10 @@ namespace Platformer
         {
             Input.UpdateState();
 
-            /*if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
-                Exit();*/
+#if DEBUG
+            if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
+                Exit();
+#endif
 
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -105,8 +108,11 @@ namespace Platformer
             if (!Paused)
                 Engine.CurrentMap.Update();
 
+            BackgroundTile.Update();
+
 #if DEBUG
-            Debug.LogUpdate(Engine.Deltatime);
+            /*if(Engine.Deltatime != 0)
+                Debug.LogUpdate(1 / Engine.Deltatime);*/
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
             
@@ -160,6 +166,12 @@ namespace Platformer
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(new Color(3, 11, 28));
 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
+
+            BackgroundTile.Render();
+
+            spriteBatch.End();
+
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.Render();
@@ -169,6 +181,7 @@ namespace Platformer
             Drawing.DebugEvents();
 
             spriteBatch.End();
+
             GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
@@ -212,6 +225,8 @@ namespace Platformer
                 map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(lvl, Vector2.Zero)));
             else
                 map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(initLevel, Vector2.Zero)));
+
+            BackgroundTile = new Tile(Vector2.Zero, Engine.RenderTarget.Width, Engine.RenderTarget.Height,  new Sprite(DataManager.Textures["bg/bg1"]));
 
 #if RELEASE
             if (World.Iid == LDtkTypes.Worlds.World.Iid)
