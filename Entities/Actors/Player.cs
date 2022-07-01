@@ -779,8 +779,8 @@ namespace Platformer
         private void Jetpack()
         {
             Vector2 dir;
-            if(xMoving == 0 && yMoving == 0)
-                dir = -Vector2.UnitY;
+            if (xMoving == 0 && yMoving == 0)
+                return;
             else
                 dir = new Vector2(xMovingRaw, yMovingRaw);
             dir.X = dir.Normalized().X;
@@ -879,6 +879,11 @@ namespace Platformer
 
         private void CollisionX(Entity collided)
         {
+            if (collided is JumpThru)
+            {
+
+            }
+
             if (collided is GlassWall gl && gl.DestroyOnX && Math.Abs(Velocity.X) >= gl.BreakVelocity)
             {
                 gl.Break(Velocity);

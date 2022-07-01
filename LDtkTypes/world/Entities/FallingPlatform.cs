@@ -18,5 +18,6 @@ public class FallingPlatform : ILDtkEntity
 
     public Color SmartColor { get; set; }
 
+    public bool Respawning { get; set; }
 }
 #pragma warning restore

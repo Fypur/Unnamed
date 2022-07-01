@@ -17,12 +17,14 @@ namespace Platformer
         private const float respawnTime = 3f;
         private static readonly ParticleType Dust = Particles.Dust.Copy();
 
+
+        public bool Respawning;
         private Wipe wipe;
         private bool Collided;
         private bool previousOnGround;
         private Vector2 initPos;
 
-        public FallingPlatform(Vector2 position, int width, int height, NineSliceSettings nineSlice)
+        public FallingPlatform(Vector2 position, int width, int height, bool respawning, NineSliceSettings nineSlice)
             : base(position, width, height, new Sprite())
         {
             TriggerComponent trig = (TriggerComponent)AddComponent(new TriggerComponent(-Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }));
@@ -31,6 +33,7 @@ namespace Platformer
             Sprite.NineSliceSettings = nineSlice;
             Dust.Acceleration = -Vector2.UnitY * 100;
             initPos = Pos;
+            Respawning = respawning;
         }
 
         private IEnumerator Fall(float shakeTime)
@@ -40,14 +43,17 @@ namespace Platformer
             yield return new Coroutine.WaitForSeconds(shakeTime);
             gravityScale = constGravityScale;
 
-            AddComponent(new Timer(respawnTime, true, null, () => {
-                wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
-                {
-                    Pos = initPos; Velocity = Vector2.Zero; gravityScale = 0; previousOnGround = false; Collided = false;
-                    GetComponent<TriggerComponent>().trigger.Active = true;
-                });
-                Engine.CurrentMap.Instantiate(wipe);
-            }));
+            if (Respawning)
+            {
+                AddComponent(new Timer(respawnTime, true, null, () => {
+                    wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
+                    {
+                        Pos = initPos; Velocity = Vector2.Zero; gravityScale = 0; previousOnGround = false; Collided = false;
+                        GetComponent<TriggerComponent>().trigger.Active = true;
+                    });
+                    Engine.CurrentMap.Instantiate(wipe);
+                }));
+            }
         }
 
         public override void Update()

@@ -12,12 +12,29 @@ namespace Platformer
     {
         public JumpThru(Vector2 position, int width, int height, Sprite sprite) : base(position, width, height, sprite)
         {
+            Collider.Pos.Y -= 1;
+            Collider.Height += 1;
         }
 
         public override bool CollidingConditions(Collider other)
-            => !(other.ParentEntity is JumpThru && other.AbsoluteTop != Collider.AbsoluteBottom - 1) && 
-            !(Collider.AbsoluteTop != other.AbsoluteBottom - 1) && 
-            !(other.ParentEntity is Actor actor && actor.Velocity.Y < 0) &&
-            !(other.ParentEntity is MovingSolid solid && solid.Velocity.Y < 0);
+        {
+            if (other.ParentEntity is JumpThru && other.AbsoluteTop != Collider.AbsoluteBottom - 1)
+                return false;
+
+            /*Debug.PointUpdate(new Vector2(Collider.AbsolutePosition.X, Collider.AbsoluteTop), new Vector2(other.AbsolutePosition.X, other.AbsoluteBottom));
+
+            Debug.LogUpdate("jumpthru: " + new Vector2(Collider.AbsolutePosition.X, Collider.AbsoluteTop), "other: " + new Vector2(other.AbsolutePosition.X, other.AbsoluteBottom));*/
+
+            if (Collider.AbsoluteTop != other.AbsoluteBottom - 1)
+                return false;
+
+            if(other.ParentEntity is Actor actor && actor.Velocity.Y < 0)
+                return false;
+            
+            if (other.ParentEntity is MovingSolid solid && solid.Velocity.Y < 0)
+                return false;
+
+            return true;
+        }
     }
 }

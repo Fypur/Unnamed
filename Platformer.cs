@@ -31,7 +31,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        private const string initLevel = "15";
+        private const string initLevel = "2";
 #endif
 
 #if RELEASE

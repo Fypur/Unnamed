@@ -86,7 +86,7 @@ namespace Platformer
             }
 
             foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
-                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height(), FallingPlatformNineSlice1));
+                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height(), p.Respawning, FallingPlatformNineSlice1));
 
             foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
                 entities.Add(new RailedPullBlock(p.RailPositions, p.Position, p.Width(), p.Height()));
