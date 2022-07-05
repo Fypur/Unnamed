@@ -8,13 +8,10 @@ using System.Threading.Tasks;
 
 namespace Platformer
 {
-    public class JumpThru : Solid
+    public class JumpThru : Platform
     {
         public JumpThru(Vector2 position, int width, int height, Sprite sprite) : base(position, width, height, sprite)
-        {
-            Collider.Pos.Y -= 1;
-            Collider.Height += 1;
-        }
+        { }
 
         public override bool CollidingConditions(Collider other)
         {

@@ -172,7 +172,7 @@ namespace Platformer
                 return; 
             }
 
-            onGround = Collider.CollideAt(new(Engine.CurrentMap.Data.Solids), Pos + new Vector2(0, 1), out Entity onGroundEntity);
+            onGround = OnGroundCheck(Pos + new Vector2(0, 1), out Entity onGroundEntity);
             onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
             onWall = Collider.CollideAt(Pos + new Vector2(-1, 0)) || onRightWall;
             if (onWall)
@@ -378,7 +378,7 @@ namespace Platformer
                 }
             }
 
-            if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !Collider.CollideAt(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
+            if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !OnGroundCheck(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
                 stateMachine.Switch(States.Ascending);
 
             if (xMovingRaw != 0 && !isUnsticking)
@@ -388,10 +388,9 @@ namespace Platformer
 
             collisionX = collisionY = false;
             previousOnGround = onGround;
-            //BoostBar.Value = jetpackTime / maxJetpackTime; 
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
-            MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
+            MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
         }
 
         public override void Squish()
@@ -852,7 +851,7 @@ namespace Platformer
 
                 Vector2 groundedRespawnPos = RespawnPoint;
                 for (int i = 0; i < 100; i++)
-                    if (!Collider.CollideAt(groundedRespawnPos + new Vector2(0, 1)))
+                    if (!OnGroundCheck(groundedRespawnPos + new Vector2(0, 1)))
                         groundedRespawnPos += new Vector2(0, 1);
                     else
                         break;
@@ -879,11 +878,6 @@ namespace Platformer
 
         private void CollisionX(Entity collided)
         {
-            if (collided is JumpThru)
-            {
-
-            }
-
             if (collided is GlassWall gl && gl.DestroyOnX && Math.Abs(Velocity.X) >= gl.BreakVelocity)
             {
                 gl.Break(Velocity);
@@ -896,6 +890,9 @@ namespace Platformer
 
         private void CollisionY(Entity collided)
         {
+            if (collided is JumpThru)
+                Pos.Y = collided.Pos.Y - Height;
+
             if (collided is GlassWall gl && !gl.DestroyOnX && Math.Abs(Velocity.Y) >= gl.BreakVelocity)
             {
                 gl.Break(Velocity);
@@ -908,6 +905,11 @@ namespace Platformer
             Velocity.Y = 0;
             collisionY = true;
         }
+
+        private bool OnGroundCheck(Vector2 position, out Entity groundedEntity)
+            => Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position, out groundedEntity);
+        private bool OnGroundCheck(Vector2 position)
+            => Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position);
 
         void Land()
         {

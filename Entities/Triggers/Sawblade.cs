@@ -23,5 +23,17 @@ namespace Platformer
             Collider.Collidable = false;
             AddComponent(new HurtBox(new Vector2(radius / 2), radius));
         }
+
+        public override void Awake()
+        {
+            RemoveComponent(Sprite);
+            Sprite = null;
+            base.Awake();
+        }
+
+        public override void Render()
+        {
+            base.Render();
+        }
     }
 }

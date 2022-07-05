@@ -48,7 +48,7 @@ namespace Platformer
             {
                 Entity plat;
                 if (p.Positions.Length == 0)
-                    plat = new Platform(p.Position, p.Width(), p.Height(), Color.White);
+                    plat = new SolidPlatform(p.Position, p.Width(), p.Height(), Color.White);
                 else
                     plat = new CyclingPlatform(p.Position, p.Width(), p.Height(), Color.White, p.GoingForwards, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, Ease.QuintInAndOut);
                     

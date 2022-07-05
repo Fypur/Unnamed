@@ -13,6 +13,7 @@ namespace Platformer
         public enum ScreenSizes { x1, x2, x3, x4, x5, x6, x7 }
         public MainMenu() : base(Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black))
         {
+            Platformer.PauseMenu = null;
             new MainSubMenu().Instantiate();
         }
 
@@ -61,7 +62,6 @@ namespace Platformer
                 returned.Add(h);
 
                 var start = new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "START", () => { Platformer.StartGame(); });
-                start.OnSelected();
                 returned.Add(start);
                 returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 100), 700, 100, true, "OPTIONS", () => { SwitchTo(new OptionsSubMenu()); }));
 
@@ -96,8 +96,10 @@ namespace Platformer
 
                 var screenSizeSwitcher = new Switcher(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Screen Size", Options.CurrentScreenSizeMultiplier, 3, 8, (size) => Options.SetSize(size));
 
-                returned.Add(new BoolSwitcher(Options.DefaultScreenSize / 2 + new Vector2(0, -200), 700, 100, true, "Full Screen", Engine.Graphics.IsFullScreen,
-                    () => { Options.FullScreen(); screenSizeSwitcher.Selectable = false; }, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = true; }));
+                var fullscreenSwitcher = new BoolSwitcher(Options.DefaultScreenSize / 2 + new Vector2(0, -200), 700, 100, true, "Full Screen", Engine.Graphics.IsFullScreen,
+                    () => { Options.FullScreen(); screenSizeSwitcher.Selectable = false; }, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = true; });
+
+                returned.Add(fullscreenSwitcher);
                 if (Engine.Graphics.IsFullScreen)
                     screenSizeSwitcher.Selectable = false;
 
@@ -129,13 +131,13 @@ namespace Platformer
                 List<UIElement> ControlsMenu = new();
                 Vector2 screenSize = Options.DefaultScreenSize;
 
-                ControlsMenu.Add(new TextBox($"Change Controls: {Input.UIAction1.GetAllControlNames(" or ")} \nClear Controls: {Input.UIActionBack.GetAllControlNames(" or ")}", "Recursive", screenSize / 2 + new Vector2(-500, -350), 1000, 200, 0.6f, Color.Black, true));
+                ControlsMenu.Add(new TextBox($"Change Controls: {Input.UIAction1.GetAllControlNames(" or ")} \nClear Controls: {Input.UIActionBack.GetAllControlNames(" or ")}", "Recursive", screenSize / 2 + new Vector2(-500, -550), 1000, 200, 0.6f, Color.Black, true));
 
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -100), 700, 50, true, "Jump", Player.JumpControls, null));
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -200), 700, 100, true, "Jump", Player.JumpControls, null));
 
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, 0), 700, 50, true, "Jetpack", Player.JetpackControls, null));
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, 100), 700, 50, true, "Rope Swing", Player.SwingControls, null));
-                ControlsMenu.Add(new NSButton(screenSize / 2 + new Vector2(0, 250), 700, 100, true, "Back", () => {
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -50), 700, 100, true, "Jetpack", Player.JetpackControls, null));
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, 100), 700, 100, true, "Rope Swing", Player.SwingControls, null));
+                ControlsMenu.Add(new NSButton(screenSize / 2 + new Vector2(0, 250), 700, 50, true, "Back", () => {
                     SwitchTo(new OptionsSubMenu());
                 }));
 

@@ -31,7 +31,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        private const string initLevel = "2";
+        private const string initLevel = "18";
 #endif
 
 #if RELEASE
@@ -59,10 +59,9 @@ namespace Platformer
 
             Cam = new Camera(Vector2.Zero, 0, 1);
 
-            PauseMenu = new PauseMenu();
-
 #if DEBUG
-            StartGame();
+            //StartGame();
+            Engine.CurrentMap.Instantiate(new MainMenu());
 #endif
         }
 
@@ -92,23 +91,21 @@ namespace Platformer
 
             if (Input.GetKeyDown(Keys.D1))
             {
-                Paused = !Paused;
-                if (Paused)
-                    PreviousPauseOldState = Input.OldState;
-                else
-                    Input.OldState = PreviousPauseOldState;
+                PauseOrUnpause();
             }
-
-            if (Paused)
-                PauseMenu.Update();
 
             if (Input.GetKeyDown(Keys.F11))
                 Options.FullScreen();
 
+            PauseMenu?.Update();
             if (!Paused)
+            {
                 Engine.CurrentMap.Update();
+                Cam.Update();
+            } 
 
-            BackgroundTile.Update();
+            if(BackgroundTile != null)
+                BackgroundTile.Update();
 
 #if DEBUG
             /*if(Engine.Deltatime != 0)
@@ -151,8 +148,6 @@ namespace Platformer
                 pS.Emit(PT, 10, new Rectangle((Input.MousePos - Vector2.One * 3).ToPoint(), (Vector2.One * 6).ToPoint()), null, -90, Color.White);
             }*/
 #endif
-            
-            Cam.Update();
 
             Input.UpdateOldState();
 
@@ -168,7 +163,8 @@ namespace Platformer
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
-            BackgroundTile.Render();
+            if(BackgroundTile != null)
+                BackgroundTile.Render();
 
             spriteBatch.End();
 
@@ -199,11 +195,8 @@ namespace Platformer
 
             Engine.CurrentMap.UIOverlayRender();
 
-            if (Paused)
-            {
-                PauseMenu.Render();
-                PauseMenu.UIChildRender();
-            }
+            PauseMenu?.Render();
+            PauseMenu?.UIChildRender();
 
             spriteBatch.End();
             spriteBatch.Begin();
@@ -234,7 +227,10 @@ namespace Platformer
 #endif
 
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
+            //Cam.Pos = player.Pos;
             Cam.FollowsPlayer = true;
+
+            PauseMenu = new PauseMenu();
         }
 
         public static void EndGame()
@@ -255,10 +251,11 @@ namespace Platformer
 
         public static void Pause()
         {
-            if (Paused)
+            if (Paused || Engine.CurrentMap.Data.UIElements.Exists((element) => element is MainMenu))
                 return;
 
             Paused = true;
+            PauseMenu.Show();
             if (PreviousPauseOldState == null)
                 PreviousPauseOldState = Input.OldState;
         }
