@@ -815,6 +815,17 @@ namespace Platformer
 
             Vector2 d = dir * coef *new Vector2(jetpackPowerX, jetpackPowerY);
             d = Vector2.Clamp(d + Velocity, new Vector2(-maxJetpackSpeedX,  -maxJetpackSpeedY), new Vector2(maxJetpackSpeedX, maxFallingSpeed + maxJetpackSpeedY)) - Velocity;
+
+            if (Math.Sign(d.X) != xMovingRaw)
+                d.X = 0;
+            if (Math.Sign(d.Y) != yMovingRaw)
+                d.Y = 0;
+
+            if (isAtSwingEnd && Math.Abs(d.X) < 10)
+                d.X = xMovingRaw * 10;
+            if (isAtSwingEnd && Math.Abs(d.Y) < 10)
+                d.Y = yMovingRaw * 10;
+
             Velocity += d;
 
             Jetpacking = true;

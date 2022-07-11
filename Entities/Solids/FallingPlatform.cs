@@ -58,7 +58,6 @@ namespace Platformer
 
         public override void Update()
         {
-            base.Update();
             Gravity();
 
             Action onCollision;
@@ -83,6 +82,11 @@ namespace Platformer
 
             if (Collided)
                 previousOnGround = Collider.CollideAt(Pos + new Vector2(0, 1));
+
+            base.Update();
+            //Debug.LogUpdate(Pos - PreviousPos);
+            if(Pos - PreviousPos != Vector2.Zero)
+            { }
         }
 
         public override void OnDestroy()

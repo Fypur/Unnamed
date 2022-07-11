@@ -54,7 +54,11 @@ namespace Platformer
             Player p = (Player)entity;
             p.CanMove = false;
 
-            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(toLevel.Pos.ToPoint(), toLevel.Size.ToPoint())) - cam.CenteredPos, transitionTime, Ease.QuintInAndOut);
+            Vector2 size = toLevel.Size;
+            if (size.Y == 184)
+                size.Y = 180;
+
+            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(toLevel.Pos.ToPoint(), size.ToPoint())) - cam.CenteredPos, transitionTime, Ease.QuintInAndOut);
 
             switch (direction)
             {
@@ -80,10 +84,10 @@ namespace Platformer
                 if(direction == Direction.Up)
                 {
                     p.Velocity.Y = Math.Min(p.Velocity.Y, -200);
-                    p.LimitJetpackY(0.5f, 0.4f, () => p.Velocity.Y >= 0);
+                    //p.LimitJetpackY(0.5f, 0.4f, () => p.Velocity.Y >= 0);
                 }
 
-                Engine.Cam.SetBoundaries(toLevel.Pos, toLevel.Size);
+                Engine.Cam.SetBoundaries(toLevel.Pos, size);
                 oldLevel.Unload();
             }));
         }

@@ -31,11 +31,11 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        private const string initLevel = "18";
+        private const string initLevel = "29";
 #endif
 
 #if RELEASE
-        private const string initLevel = "0";
+        private const string initLevel = "18";
 #endif
 
         public Platformer()
@@ -90,24 +90,28 @@ namespace Platformer
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (Input.GetKeyDown(Keys.D1))
-            {
                 PauseOrUnpause();
-            }
 
             if (Input.GetKeyDown(Keys.F11))
                 Options.FullScreen();
 
-            PauseMenu?.Update();
             if (!Paused)
             {
                 Engine.CurrentMap.Update();
                 Cam.Update();
-            } 
+            }
 
-            if(BackgroundTile != null)
+            PauseMenu?.Update();
+
+            if (BackgroundTile != null)
                 BackgroundTile.Update();
 
 #if DEBUG
+            //Debug.LogUpdate(Input.MousePos);
+            SolidTile t = new SolidTile(Input.MousePos, 1, 10, null);
+            /*if(Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Grid), out List<Entity> grids))
+                Debug.LogUpdate(grids[0].Collider.Collide(t.Collider));*/
+
             /*if(Engine.Deltatime != 0)
                 Debug.LogUpdate(1 / Engine.Deltatime);*/
             if (Input.GetKeyDown(Keys.F3))
@@ -219,6 +223,13 @@ namespace Platformer
             else
                 map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(initLevel, Vector2.Zero)));
 
+            int[,] grid = Levels.GetWorldGrid(World, out Vector2 gridPos);
+
+
+            Sprite[,] sp = Levels.GetWorldTileSprites(World, gridPos, grid);
+
+            Engine.CurrentMap.Instantiate(new Grid(gridPos, 8, 8, grid, sp));
+
             BackgroundTile = new Tile(Vector2.Zero, Engine.RenderTarget.Width, Engine.RenderTarget.Height,  new Sprite(DataManager.Textures["bg/bg1"]));
 
 #if RELEASE
@@ -226,7 +237,10 @@ namespace Platformer
                 player.CanJetpack = false;
 #endif
 
-            Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
+            Vector2 lvlSize = Engine.CurrentMap.CurrentLevel.Size;
+            if (lvlSize.Y == 184)
+                lvlSize.Y = 180;
+            Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, lvlSize);
             //Cam.Pos = player.Pos;
             Cam.FollowsPlayer = true;
 
@@ -265,6 +279,7 @@ namespace Platformer
             if (!Paused)
                 return;
 
+            PauseMenu.Children = new();
             Paused = false;
             Input.OldState = PreviousPauseOldState;
             PreviousPauseOldState = null;

@@ -10,9 +10,11 @@ namespace Platformer
 {
     public class SwingTriggered : MovingSolid, ISwinged
     {
-        public  float MaxSpeed = 10000;
-        public  float Acceleration = 100;
-        public  float friction = 0.1f;
+        private readonly float maxSpeed = 100;
+        private readonly float acceleration = 10;
+        private readonly float friction = 0.1f;
+
+        public enum Types { Slow, Normal, Fast, VeryFast }
 
         public Vector2[] Positions;
         
@@ -23,7 +25,7 @@ namespace Platformer
         private bool isMoving;
         private bool looped;
 
-        public SwingTriggered(Vector2 position, Vector2[] positions, int width, int height) : base(DetermineInitPos(position, positions, out int initIndex), width, height, new Sprite(Color.LightBlue))
+        public SwingTriggered(Vector2 position, Vector2[] positions, int width, int height, Types type) : base(DetermineInitPos(position, positions, out int initIndex), width, height, new Sprite(Color.LightBlue))
         {
             Positions = positions;
             Collider.Collidable = false;
@@ -33,6 +35,26 @@ namespace Platformer
 
             currentPosIndex = initIndex;
             SwingingPoint.SwingingPoints.Add(this);
+
+            switch (type)
+            {
+                case Types.Slow:
+                    maxSpeed = 35;
+                    acceleration = 5;
+                    break;
+                case Types.Normal:
+                    maxSpeed = 70;
+                    acceleration = 20;
+                    break;
+                case Types.Fast:
+                    maxSpeed = 130;
+                    acceleration = 20;
+                    break;
+                case Types.VeryFast:
+                    maxSpeed = 200;
+                    acceleration = 50;
+                    break;
+            }
         }
 
         void ISwinged.OnGrapple(Entity grappledEntity, Func<bool> isAtSwingEnd)
@@ -68,13 +90,12 @@ namespace Platformer
         public override void Update()
         {
             base.Update();
-            foreach (Solid s in SwingingPoint.SwingingPoints) Debug.PointUpdate(s.Pos);
 
             if (isMoving)
-                Velocity += normalizedDir * Acceleration;
+                Velocity += normalizedDir * acceleration;
 
             Velocity -= Velocity * friction;
-            Velocity = Vector2.Clamp(Velocity, -new Vector2(MaxSpeed), new Vector2(MaxSpeed));
+            Velocity = Vector2.Clamp(Velocity, -new Vector2(maxSpeed), new Vector2(maxSpeed));
             if(Engine.Deltatime != 0)
                 Velocity = (VectorHelper.ClosestOnSegment(ExactPos + Velocity * Engine.Deltatime, Positions[currentPosIndex], nextPos) - ExactPos) / Engine.Deltatime;
 

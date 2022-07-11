@@ -86,7 +86,17 @@ namespace Platformer
             }
 
             foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
-                entities.Add(new FallingPlatform(p.Position, p.Width(), p.Height(), p.Respawning, FallingPlatformNineSlice1));
+            {
+                FallingPlatform plat = new FallingPlatform(p.Position, p.Width(), p.Height(), p.Respawning, FallingPlatformNineSlice1);
+                entities.Add(plat);
+
+                if (p.Children.Length != 0)
+                    IidsChildren[plat] = new();
+
+                foreach (EntityRef child in p.Children)
+                    IidsChildren[plat].Add(child.EntityIid); 
+            }
+                
 
             foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
                 entities.Add(new RailedPullBlock(p.RailPositions, p.Position, p.Width(), p.Height()));
@@ -125,8 +135,27 @@ namespace Platformer
                     Engine.CurrentMap.Instantiate(new Player(p.Position));
 
             foreach (LDtkTypes.SwingTriggered p in level.GetEntities<LDtkTypes.SwingTriggered>())
-                entities.Add(new SwingTriggered(p.Position, p.Positions, p.Width(), p.Height()));
+            {
+                SwingTriggered.Types speed = SwingTriggered.Types.Normal;
+                switch (p.Speed)
+                {
+                    case LDtkTypes.Speed.Slow:
+                        speed = SwingTriggered.Types.Slow;
+                        break;
+                    case LDtkTypes.Speed.Normal:
+                        speed = SwingTriggered.Types.Normal;
+                        break;
+                    case LDtkTypes.Speed.Fast:
+                        speed = SwingTriggered.Types.Fast;
+                        break;
+                    case LDtkTypes.Speed.VeryFast:
+                        speed = SwingTriggered.Types.VeryFast;
+                        break;
+                }
 
+                entities.Add(new SwingTriggered(p.Position, p.Positions, p.Width(), p.Height(), speed));
+            }
+                
             foreach (LDtkTypes.TextSpawn p in level.GetEntities<LDtkTypes.TextSpawn>())
                 entities.Add(new TextSpawn(p.Position, p.Size, p.TextPos, p.Text));
 
@@ -247,7 +276,7 @@ namespace Platformer
                         entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
                     }
                 }
-                else if (l._Type == LayerType.IntGrid)
+                /*else if (l._Type == LayerType.IntGrid)
                 {
                     string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
                     if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
@@ -267,7 +296,7 @@ namespace Platformer
                         s.Effect = (SpriteEffects)t.F;
                         entities.Add(new SolidTile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
                     }
-                }
+                }*/
             }
 
             if (!downNeighbours)
@@ -294,6 +323,77 @@ namespace Platformer
 
             Texture2D RandomTile(string id)
             => DataManager.GetRandomTilesetTexture(DataManager.Tilesets[1], id, levelRandom);
+        }
+
+        public static int[,] GetWorldGrid(LDtkWorld world, out Vector2 position)
+        {
+            int minx = int.MaxValue;
+            int maxx = int.MinValue;
+            int miny = int.MaxValue;
+            int maxy = int.MinValue;
+            int gridSize = world.LoadLevel(0).GetIntGrid("IntGrid").TileSize;
+
+            foreach (LDtkLevel level in world.Levels)
+            {
+                if(level.WorldX < minx)
+                    minx = level.WorldX;
+                if(level.WorldY < miny)
+                    miny = level.WorldY;
+                if(level.WorldX + level.PxWid > maxx)
+                    maxx = level.WorldX + level.PxWid;
+                if(level.WorldY + level.PxHei > maxy)
+                    maxy = level.WorldY + level.PxHei;
+            }
+
+            int[,] grid = new int[(maxy - miny) / gridSize, (maxx - minx) / gridSize];
+            foreach(LDtkLevel level in world.Levels)
+            {
+                var intg = SwitchXAndY(level.GetIntGrid("IntGrid"));
+                for (int x = 0; x < level.PxWid / gridSize; x++)
+                    for(int y = 0; y < level.PxHei / gridSize; y++)
+                    {
+                        if(intg[y, x] != 0)
+                            grid[(level.WorldY - miny) / gridSize + y, (level.WorldX - minx) / gridSize + x] = 1;
+                    }
+            }
+
+            position = new Vector2(minx, miny);
+            return grid;
+        }
+
+        public static Sprite[,] GetWorldTileSprites(LDtkWorld world, Vector2 gridPos, int[,] worldOrganisation)
+        {
+            Sprite[,] sprites = new Sprite[worldOrganisation.GetLength(0) + 1, worldOrganisation.GetLength(1)];
+            foreach(LDtkLevel level in world.Levels)
+            {
+                foreach (LayerInstance l in level.LayerInstances)
+                {
+                    if(l._Type == LayerType.IntGrid)
+                    {
+                        string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
+                        if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
+                        {
+                            Texture2D tileSetTex = DataManager.Load(tileSet);
+                            Dictionary<Point, Texture2D> tiles = DataManager.GetTileSetTextures(tileSetTex, l._GridSize);
+                            foreach (KeyValuePair<Point, Texture2D> tile in tiles)
+                                DataManager.Textures[tileSet + tile.Key] = tile.Value;
+                        }
+
+                        foreach (TileInstance t in l.AutoLayerTiles)
+                        {
+                            Texture2D texture = DataManager.Textures[tileSet + t.Src];
+                            texture.Name = tileSet + t.T.ToString();
+
+                            Sprite s = new Sprite(texture);
+                            s.Effect = (SpriteEffects)t.F;
+
+                            sprites[(t.Px.Y + l._PxTotalOffsetY + level.Position.Y - (int)gridPos.Y) / l._GridSize, (t.Px.X + l._PxTotalOffsetX + level.Position.X - (int)gridPos.X) / l._GridSize] = s;
+                        }
+                    }
+                }
+            }
+
+            return sprites;
         }
 
         /// <summary>

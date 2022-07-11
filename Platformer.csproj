@@ -43,6 +43,7 @@
   <ItemGroup>
     <Folder Include="Content\Audio\" />
     <Folder Include="Content\Graphics\Objects\RAM\" />
+    <Folder Include="LDtkTypes\world\Iids\" />
     <Folder Include="ltdk\" />
   </ItemGroup>
   <ItemGroup>
