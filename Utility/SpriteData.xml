@@ -8,7 +8,7 @@
 	
 	<Animations>
 	
-		<Player path="player" start="idle">
+		<Player path="Player" start="idle">
 		
 			<Loop id="idle" path="idle" delay="1"/>
 			<Loop id="run" path="run" delay="0.1"/>

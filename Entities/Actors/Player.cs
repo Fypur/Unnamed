@@ -43,7 +43,7 @@ namespace Platformer
         private const float coyoteTime = 0.07f;
         private const float jumpGraceTime = 0.2f;
         //Can wall jump if wall is this far away from the wall in pixels
-        private const float wallJumpPixelGap = 5;
+        private const float wallJumpPixelGap = 4;
         
         private const float maxGrappleDist = 1000f;
 
@@ -424,8 +424,8 @@ namespace Platformer
                     if (g is GrapplingTrigger trigger && !trigger.Active)
                         continue;
 
-                    Raycast ray = new Raycast(MiddleExactPos, g.MiddleExactPos);
-                    if (!ray.hit)
+                    Raycast ray = new Raycast(Raycast.RayTypes.MapTiles, MiddleExactPos, g.MiddleExactPos);
+                    if (!ray.Hit)
                     {
                         if (onRightDir)
                         {

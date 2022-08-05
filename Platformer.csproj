@@ -8,7 +8,7 @@
     <Platforms>x86;x64</Platforms>
   </PropertyGroup>
 	<Target Name="Codegen" BeforeTargets="BeforeBuild">
-		<Exec Command="ldtkgen -i Content\world.ldtk --PointAsVector2" />
+		<Exec Command="ldtkgen -i Content/world.ldtk --PointAsVector2" />
 	</Target>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -27,6 +27,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DefineConstants>$(DefineConstants)TRACE;WIN64</DefineConstants>
     <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunWorkingDirectory>bin/x64/Debug/net5.0</RunWorkingDirectory>  
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Icon.bmp" />

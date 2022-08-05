@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Fiourp;
 using LDtk;
 
@@ -29,13 +30,15 @@ namespace Platformer
 
         public static EventInstance music;
         public static Tile BackgroundTile;
+        private FileSystemWatcher watcher;
+        private bool waitRefresh;
 
 #if DEBUG
-        private const string initLevel = "29";
+        public static string InitLevel = "41";
 #endif
 
 #if RELEASE
-        private const string initLevel = "18";
+        private const string InitLevel = "0";
 #endif
 
         public Platformer()
@@ -60,8 +63,23 @@ namespace Platformer
             Cam = new Camera(Vector2.Zero, 0, 1);
 
 #if DEBUG
-            //StartGame();
-            Engine.CurrentMap.Instantiate(new MainMenu());
+            StartGame();
+
+            watcher = new FileSystemWatcher("/home/f/Documents/Platformer/Content");
+            //watcher.Path = "/home/f/Documents/Platformer/Content";
+            watcher.NotifyFilter = NotifyFilters.LastWrite;
+                                   
+            watcher.Filter = "*.ldtk";
+            //watcher.Deleted += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
+            //watcher.Renamed += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
+            //watcher.Disposed += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
+            //watcher.Error += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
+            //watcher.Created += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
+            watcher.Changed += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
+
+            watcher.EnableRaisingEvents = true;
+
+            //Engine.CurrentMap.Instantiate(new MainMenu());
 #endif
         }
 
@@ -132,6 +150,9 @@ namespace Platformer
                 music.setParameterByName("Pitch", 0.5f);
             if (Input.GetKeyDown(Keys.NumPad3))
                 music.setParameterByName("Pitch", 1);
+            
+            if (Input.GetKeyDown(Keys.D2))
+                RefreshLDtk();
 
             /*if (Input.GetKey(Keys.W))
             {
@@ -176,7 +197,7 @@ namespace Platformer
 
             Engine.CurrentMap.Render();
 
-            Drawing.DebugPoint(1);
+            Drawing.DebugPoint(1,1);
 
             Drawing.DebugEvents();
 
@@ -217,18 +238,13 @@ namespace Platformer
             var map = new Map(Vector2.Zero);
             Engine.CurrentMap = map;
             Engine.Cam.RenderTargetMode = true;
-
-            if (int.TryParse(initLevel, out int lvl))
+                
+            if (int.TryParse(InitLevel, out int lvl))
                 map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(lvl, Vector2.Zero)));
             else
-                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(initLevel, Vector2.Zero)));
+                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(InitLevel, Vector2.Zero)));
 
-            int[,] grid = Levels.GetWorldGrid(World, out Vector2 gridPos);
-
-
-            Sprite[,] sp = Levels.GetWorldTileSprites(World, gridPos, grid);
-
-            Engine.CurrentMap.Instantiate(new Grid(gridPos, 8, 8, grid, sp));
+            Levels.LoadWorldGrid(World);
 
             BackgroundTile = new Tile(Vector2.Zero, Engine.RenderTarget.Width, Engine.RenderTarget.Height,  new Sprite(DataManager.Textures["bg/bg1"]));
 
@@ -290,5 +306,34 @@ namespace Platformer
             Audio.Finish();
             base.EndRun();
         }
+        
+        #if DEBUG
+        private void RefreshLDtk()
+        {
+            if(waitRefresh)
+                return;
+            
+            waitRefresh = true;
+
+            Tile t = (Tile)Engine.CurrentMap.Instantiate(new Tile(Vector2.Zero, 0, 0, Sprite.None));
+            t.AddComponent(new Timer(2, true, null, () =>
+            {
+                waitRefresh = false;
+                File.Copy("/home/f/Documents/Platformer/Content/world.ldtk", "/home/f/Documents/Platformer/bin/x64/Debug/net5.0/Content/world.ldtk", true);
+            
+                World = LDtkFile.FromFile("Content/world.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
+                Engine.CurrentMap.CurrentLevel.Unload();
+                LDtkLevel lvl = World.LoadLevel(Levels.LastLDtkLevel.Iid);
+                new Level(Levels.GetLevelData(lvl)).LoadNoAutoTile();
+            
+                Engine.CurrentMap.Data.EntitiesByType[typeof(Grid)][0].SelfDestroy();
+                Levels.LoadWorldGrid(World);
+            
+                player.Death();
+                t.SelfDestroy();
+            }));
+            
+        }
+        #endif
     }
 }

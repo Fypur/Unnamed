@@ -13,7 +13,7 @@ namespace Platformer
     public static class Levels
     {
         /// <summary>
-        /// The first GUID corresponds to the level, the second correspond to the objects whch doesn't respawn
+        /// The first GUID corresponds to the level, the second correspond to the objects which don't respawn
         /// </summary>
         public static Dictionary<Guid, List<Guid>> LevelNonRespawn = new();
         public static int LevelIndex;
@@ -196,6 +196,7 @@ namespace Platformer
             }
 
             bool downNeighbours = false;
+            List<Rectangle> downNeighboursRect = new();
 
             foreach (NeighbourLevel n in level._Neighbours)
             {
@@ -249,7 +250,8 @@ namespace Platformer
                         size = new Vector2(level.WorldX + level.Size.X - neigh.WorldX, 2);
                     else
                         size = new Vector2(neigh.WorldX + neigh.Size.X - level.WorldX, 2);
-
+                    
+                    downNeighboursRect.Add(new Rectangle(neigh.Position, neigh.Size));
                     entities.Add(new LevelTransition(pos, size, neigh, Direction.Down));
                 }
             }
@@ -301,6 +303,42 @@ namespace Platformer
 
             if (!downNeighbours)
                 entities.Add(new DeathTrigger(level.Position.ToVector2() + level.Size.ToVector2().OnlyY(), new Vector2(level.Size.X, intGrid.TileSize)));
+            else
+            {
+                bool started;
+                int startX = level.Position.X;
+
+                bool inside = false;
+                for (int x = level.Position.X; x < level.Position.X + level.PxWid; x++)
+                {
+                    foreach (Rectangle rect in downNeighboursRect)
+                    {
+                        if (x >= rect.X && x < rect.Right)
+                        {
+                            inside = true;
+                            x = rect.Right - 1;
+                            break;
+                        }
+                    }
+
+                    if (!inside)
+                    {
+                        int minX = int.MaxValue;
+                        foreach (Rectangle rect in downNeighboursRect)
+                        {
+                            if (rect.X < minX && rect.X > x)
+                                minX = rect.X;
+                        }
+
+                        if (minX == int.MaxValue)
+                            minX = x + 1;
+                        
+                        entities.Add(new DeathTrigger(new Vector2(x, level.Position.Y + level.Size.Y), new Vector2(minX - x, intGrid.TileSize)));
+                    }
+                    
+                    inside = false;
+                }
+            }
 
             Engine.Cam.SetBoundaries(oldCamBounds);
             Engine.Cam.CenteredPos = oldCamPos;
@@ -463,6 +501,14 @@ namespace Platformer
         {
             var org = GetLevelOrganisation(index);
             return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileWidth, tileHeight)), position, GetLevelSize(org, tileWidth, tileHeight), org, Engine.CurrentMap, GetLevelEnterAction(index), null);
+        }
+
+        public static void LoadWorldGrid(LDtkWorld world)
+        {
+            int[,] grid = GetWorldGrid(world, out Vector2 gridPos);
+            Sprite[,] sp = GetWorldTileSprites(world, gridPos, grid);
+            int gridSize = world.RawLevels[0].GetIntGrid("IntGrid").TileSize;
+            Engine.CurrentMap.Instantiate(new Grid(gridPos, gridSize, gridSize, grid, sp));
         }
 
         private static List<Entity> GetLevelEntities(int index, Vector2 position, Vector2 size)
