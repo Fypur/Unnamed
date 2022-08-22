@@ -16,7 +16,7 @@ namespace Platformer
         private Action onEnd;
 
 
-        public ScreenWipe(float wipeTime, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : base(new Vector2(1280, 0), 1280, 720, new Sprite(Color.Black))
+        public ScreenWipe(float wipeTime, Color color, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : base(new Vector2(1280, 0), 1280, 720, new Sprite(color))
         {
             this.wipeTime = wipeTime;
             this.onTransition = onTransition;

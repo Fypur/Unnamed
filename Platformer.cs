@@ -30,11 +30,12 @@ namespace Platformer
 
         public static EventInstance music;
         public static Tile BackgroundTile;
-        private FileSystemWatcher watcher;
-        private bool waitRefresh;
 
 #if DEBUG
-        public static string InitLevel = "41";
+        public static string InitLevel = "0";
+        public static int InitWorld = 0;
+        private FileSystemWatcher watcher;
+        private bool waitRefresh;
 #endif
 
 #if RELEASE
@@ -52,20 +53,20 @@ namespace Platformer
 
         protected override void Initialize()
         {
-            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24), "Utility/SpriteData.xml");
+            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24), "Utility\\SpriteData.xml");
 
             Options.CurrentResolution = Engine.ScreenSize;
 
-            World = LDtkFile.FromFile("Content/world.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
+            World = LDtkFile.FromFile("Content\\First.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
 
             base.Initialize();
 
             Cam = new Camera(Vector2.Zero, 0, 1);
 
 #if DEBUG
-            StartGame();
+            //StartGame();
 
-            watcher = new FileSystemWatcher("/home/f/Documents/Platformer/Content");
+            watcher = new FileSystemWatcher("C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\Content");
             //watcher.Path = "/home/f/Documents/Platformer/Content";
             watcher.NotifyFilter = NotifyFilters.LastWrite;
                                    
@@ -90,8 +91,8 @@ namespace Platformer
 
             Engine.CurrentMap = new Map(Vector2.Zero);
 
-#if RELEASE
             Engine.CurrentMap.Instantiate(new MainMenu());
+#if RELEASE
 #endif
 
         }
@@ -101,8 +102,8 @@ namespace Platformer
             Input.UpdateState();
 
 #if DEBUG
-            if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
-                Exit();
+            /*if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
+                Exit();*/
 #endif
 
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -319,9 +320,9 @@ namespace Platformer
             t.AddComponent(new Timer(2, true, null, () =>
             {
                 waitRefresh = false;
-                File.Copy("/home/f/Documents/Platformer/Content/world.ldtk", "/home/f/Documents/Platformer/bin/x64/Debug/net5.0/Content/world.ldtk", true);
+                File.Copy("C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\Content\\First.ldtk", "C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\bin\\x64\\Debug\\net5.0\\Content\\First.ldtk", true);
             
-                World = LDtkFile.FromFile("Content/world.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
+                World = LDtkFile.FromFile("Content/First.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
                 Engine.CurrentMap.CurrentLevel.Unload();
                 LDtkLevel lvl = World.LoadLevel(Levels.LastLDtkLevel.Iid);
                 new Level(Levels.GetLevelData(lvl)).LoadNoAutoTile();

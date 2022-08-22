@@ -1,5 +1,6 @@
 ﻿using Fiourp;
 using LDtk;
+using LDtk.JsonPartials;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -48,9 +49,9 @@ namespace Platformer
             {
                 Entity plat;
                 if (p.Positions.Length == 0)
-                    plat = new SolidPlatform(p.Position, p.Width(), p.Height(), Color.White);
+                    plat = new SolidPlatform(p.Position, p.Width(), p.Height(), FallingPlatformNineSlice1);
                 else
-                    plat = new CyclingPlatform(p.Position, p.Width(), p.Height(), Color.White, p.GoingForwards, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, Ease.QuintInAndOut);
+                    plat = new CyclingPlatform(p.Position, p.Width(), p.Height(), new Sprite(FallingPlatformNineSlice1), p.GoingForwards, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, Ease.QuintInAndOut);
                     
                 entities.Add(plat);
 
@@ -529,8 +530,8 @@ namespace Platformer
                     var pulled = new PulledPlatform(new Vector2(60, 200) + p, 200, 40, new Vector2(60, 200) + p + new Vector2(200, 40), 2, Color.Yellow, Ease.QuintInAndOut);
                     var trig = new GrapplingTrigger(new Vector2(60, 200) + p + new Vector2(200, 40), true, pulled.movingTime, pulled.Pull);
                     return new List<Entity> { pulled, trig,
-                    new CyclingPlatform(40, 200, Color.YellowGreen, new Vector2[]{ Engine.ScreenSize / 2, Engine.ScreenSize / 2 + new Vector2(-200 ,0) }, new float[] { 1.5f }, Ease.QuintInAndOut),
-                    new CyclingPlatform(200, 20, Color.YellowGreen, new Vector2[]{ Engine.ScreenSize / 2 + Engine.ScreenSize.OnlyX() * 0.1f, Engine.ScreenSize / 2 + new Vector2(0 ,-200) }, new float[] { 1.5f }, Ease.QuintInAndOut),
+                    new CyclingPlatform(40, 200, new Sprite(Color.YellowGreen), new Vector2[]{ Engine.ScreenSize / 2, Engine.ScreenSize / 2 + new Vector2(-200 ,0) }, new float[] { 1.5f }, Ease.QuintInAndOut),
+                    new CyclingPlatform(200, 20, new Sprite(Color.YellowGreen), new Vector2[]{ Engine.ScreenSize / 2 + Engine.ScreenSize.OnlyX() * 0.1f, Engine.ScreenSize / 2 + new Vector2(0 ,-200) }, new float[] { 1.5f }, Ease.QuintInAndOut),
                     new RespawnTrigger(new Vector2(600, 200), new Vector2(200, 300), Vector2.Zero)
                     };
 

@@ -15,7 +15,7 @@ namespace Platformer
         public enum States { Idle, Running, Jumping, Ascending, Falling, Dashing, Swinging, WallSliding, Pulling, Jetpack, Dead }
 
         private const float maxSpeed = 100;
-        private const float maxFallingSpeed = 300;
+        private const float maxFallingSpeed = 240;
         private const float maxFallSlidingSpeed = 150; //Max Falling Speed while Wall Sliding
         private const float dashSpeed = 200;
 
@@ -388,6 +388,8 @@ namespace Platformer
 
             collisionX = collisionY = false;
             previousOnGround = onGround;
+
+            Debug.LogUpdate(Engine.CurrentMap.MiddlegroundSystem.Particles.Count);
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
@@ -854,7 +856,7 @@ namespace Platformer
                 }
             }
 
-            Engine.CurrentMap.Instantiate(new ScreenWipe(1, () =>
+            Engine.CurrentMap.Instantiate(new ScreenWipe(1, Color.Black, () =>
             {
                 stateMachine.Switch(States.Idle);
                 Sprite.Play("idle");

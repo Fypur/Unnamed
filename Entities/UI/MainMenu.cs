@@ -61,7 +61,20 @@ namespace Platformer
                 h.AddChild(new TextBox("Abandonned", "Pixel", h.Pos, h.Width, h.Height, 12, Color.Black, true));
                 returned.Add(h);
 
-                var start = new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "START", () => { Platformer.StartGame(); });
+                var start = new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "START", () =>
+                {
+                    Engine.CurrentMap.Instantiate(new ScreenWipe(1.5f, Color.White, () =>
+                    {
+                        ScreenWipe s = (ScreenWipe)Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)][0];
+                        Platformer.StartGame();
+                        Engine.CurrentMap.Data.Entities.Add(s);
+                        Engine.CurrentMap.Data.UIElements.Add(s);
+                        if (!Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(ScreenWipe), out var l))
+                            Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)] = new();
+                        Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)].Add(s);
+                    }));
+                });
+
                 returned.Add(start);
                 returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 100), 700, 100, true, "OPTIONS", () => { SwitchTo(new OptionsSubMenu()); }));
 
