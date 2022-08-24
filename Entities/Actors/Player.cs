@@ -41,7 +41,7 @@ namespace Platformer
         private const float safeTime = 1.0f;
 
         private const float coyoteTime = 0.07f;
-        private const float jumpGraceTime = 0.2f;
+        private const float jumpGraceTime = 0.1f;
         //Can wall jump if wall is this far away from the wall in pixels
         private const float wallJumpPixelGap = 4;
         
@@ -300,12 +300,12 @@ namespace Platformer
 
                 if(JumpControls.IsDown())
                 {
-                    void TestJump(out bool hasJumped)
+                    bool TestJump()
                     {
                         if (onGround || inCoyoteTime)
                         {
                             Jump();
-                            hasJumped = true;
+                            return true;
                         }
                         else if (onFarWall)
                         {
@@ -313,21 +313,22 @@ namespace Platformer
                                 onRightWall = onRightFarWall;
 
                             WallJump();
-                            hasJumped = true;
+                            return true;
                         }
-
-                        hasJumped = false;
+                        
+                        return false;
                     }
 
-                    TestJump(out bool hasJumped);
-                    if(hasJumped)
+                    //Take the jump if on the ground, else wait for jump grace period
+                    if(!TestJump())
                     {
                         AddComponent(new Timer(jumpGraceTime, true, (timer) =>
                         {
-                            TestJump(out _);
+                            if (TestJump())
+                                RemoveComponent(timer);
                         }, () =>
                         {
-                            TestJump(out _);
+                            TestJump();
                         }));
                     }
                 }

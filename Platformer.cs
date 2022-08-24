@@ -32,10 +32,11 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "0";
+        public static string InitLevel = "Test";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
+        public static Light light;
 #endif
 
 #if RELEASE
@@ -64,7 +65,7 @@ namespace Platformer
             Cam = new Camera(Vector2.Zero, 0, 1);
 
 #if DEBUG
-            //StartGame();
+            StartGame();
 
             watcher = new FileSystemWatcher("C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\Content");
             //watcher.Path = "/home/f/Documents/Platformer/Content";
@@ -79,6 +80,8 @@ namespace Platformer
             watcher.Changed += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
 
             watcher.EnableRaisingEvents = true;
+
+            light = (Light)Engine.CurrentMap.Instantiate(new Light(Vector2.Zero, 50));
 
             //Engine.CurrentMap.Instantiate(new MainMenu());
 #endif
@@ -127,7 +130,7 @@ namespace Platformer
 
 #if DEBUG
             //Debug.LogUpdate(Input.MousePos);
-            SolidTile t = new SolidTile(Input.MousePos, 1, 10, null);
+            light.Pos = Input.MousePos;
             /*if(Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Grid), out List<Entity> grids))
                 Debug.LogUpdate(grids[0].Collider.Collide(t.Collider));*/
 
@@ -187,6 +190,10 @@ namespace Platformer
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(new Color(3, 11, 28));
 
+
+            Drawing.BeginPrimitives();
+
+
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
             if(BackgroundTile != null)
@@ -194,15 +201,25 @@ namespace Platformer
 
             spriteBatch.End();
 
+
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.Render();
 
-            Drawing.DebugPoint(1,1);
+            spriteBatch.End();
+
+
+            Drawing.EndPrimitives();
+
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+
+            Drawing.DebugPoint(1, 1);
 
             Drawing.DebugEvents();
 
             spriteBatch.End();
+
 
             GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
@@ -230,6 +247,8 @@ namespace Platformer
             Drawing.DebugString();
 
             spriteBatch.End();
+
+            //Drawing.DrawCircle(Vector2.Zero, 10, 0.01f, Color.White);
 
             base.Draw(gameTime);
         }
@@ -320,7 +339,7 @@ namespace Platformer
             t.AddComponent(new Timer(2, true, null, () =>
             {
                 waitRefresh = false;
-                File.Copy("C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\Content\\First.ldtk", "C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\bin\\x64\\Debug\\net5.0\\Content\\First.ldtk", true);
+                File.Copy("C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\Content\\First.ldtk", "C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\bin\\x64\\Debug\\net6.0\\Content\\First.ldtk", true);
             
                 World = LDtkFile.FromFile("Content/First.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
                 Engine.CurrentMap.CurrentLevel.Unload();

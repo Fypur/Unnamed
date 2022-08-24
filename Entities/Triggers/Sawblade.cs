@@ -10,9 +10,11 @@ namespace Platformer
 {
     public class Sawblade : CyclingSolid
     {
+        public float Radius;
         public Sawblade(Vector2 position, float radius)
             : base(position, (int)(radius * 2), (int)(radius * 2), new Sprite(Color.Gray))
         {
+            Radius = radius;
             Collider.Collidable = false;
             AddComponent(new HurtBox(new Vector2(radius), radius));
         }
@@ -34,6 +36,8 @@ namespace Platformer
         public override void Render()
         {
             base.Render();
+
+            Drawing.DrawCircle(Collider.AbsolutePosition, Radius, 0.3f, Color.Gray);
         }
     }
 }
