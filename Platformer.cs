@@ -36,7 +36,6 @@ namespace Platformer
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
-        public static Light light;
 #endif
 
 #if RELEASE
@@ -80,9 +79,6 @@ namespace Platformer
             watcher.Changed += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
 
             watcher.EnableRaisingEvents = true;
-
-            light = (Light)Engine.CurrentMap.Instantiate(new Light(Vector2.Zero, 50));
-
             //Engine.CurrentMap.Instantiate(new MainMenu());
 #endif
         }
@@ -130,7 +126,6 @@ namespace Platformer
 
 #if DEBUG
             //Debug.LogUpdate(Input.MousePos);
-            light.Pos = Input.MousePos;
             /*if(Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Grid), out List<Entity> grids))
                 Debug.LogUpdate(grids[0].Collider.Collide(t.Collider));*/
 
@@ -259,12 +254,13 @@ namespace Platformer
             Engine.CurrentMap = map;
             Engine.Cam.RenderTargetMode = true;
                 
+            Levels.LoadWorldGrid(World);
+
             if (int.TryParse(InitLevel, out int lvl))
                 map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(lvl, Vector2.Zero)));
             else
                 map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(InitLevel, Vector2.Zero)));
 
-            Levels.LoadWorldGrid(World);
 
             BackgroundTile = new Tile(Vector2.Zero, Engine.RenderTarget.Width, Engine.RenderTarget.Height,  new Sprite(DataManager.Textures["bg/bg1"]));
 

@@ -127,9 +127,9 @@ namespace Platformer
                 entities.Add(new Fire(p.Position, p.Size, p.Direction.ToDirection()));
 
             foreach (LDtkTypes.JumpThru p in level.GetEntities<LDtkTypes.JumpThru>())
-                entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), new Sprite(Color.Brown)));
+                entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), "industrial2"));
             foreach (LDtkTypes.JumpThru2 p in level.GetEntities<LDtkTypes.JumpThru2>())
-                entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), new Sprite(Color.Brown)));
+                entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), "industrial2"));
 
             if (Engine.Player == null)
                 foreach (LDtkTypes.InitPlayerSpawn p in level.GetEntities<LDtkTypes.InitPlayerSpawn>())
@@ -306,9 +306,6 @@ namespace Platformer
                 entities.Add(new DeathTrigger(level.Position.ToVector2() + level.Size.ToVector2().OnlyY(), new Vector2(level.Size.X, intGrid.TileSize)));
             else
             {
-                bool started;
-                int startX = level.Position.X;
-
                 bool inside = false;
                 for (int x = level.Position.X; x < level.Position.X + level.PxWid; x++)
                 {
@@ -341,6 +338,14 @@ namespace Platformer
                 }
             }
 
+            foreach (LDtkTypes.StreetLight p in level.GetEntities<LDtkTypes.StreetLight>())
+            {
+                if(p.TriggerTopLeft is Vector2 v)
+                    entities.Add(new StreetLight(p.Position, p.Width(), p.Height(), new Rectangle(p.TriggerTopLeft.Value.ToPoint(), p.TriggerBottomRight.Value.ToPoint() - p.TriggerTopLeft.Value.ToPoint())));
+                else
+                    entities.Add(new StreetLight(p.Position, p.Width(), p.Height()));
+            }
+
             Engine.Cam.SetBoundaries(oldCamBounds);
             Engine.Cam.CenteredPos = oldCamPos;
 
@@ -360,8 +365,7 @@ namespace Platformer
                 return v;
             }
 
-            Texture2D RandomTile(string id)
-            => DataManager.GetRandomTilesetTexture(DataManager.Tilesets[1], id, levelRandom);
+            //Texture2D RandomTile(string id) => DataManager.GetRandomTilesetTexture(DataManager.Tilesets[1], id, levelRandom);
         }
 
         public static int[,] GetWorldGrid(LDtkWorld world, out Vector2 position)
@@ -508,7 +512,7 @@ namespace Platformer
         {
             int[,] grid = GetWorldGrid(world, out Vector2 gridPos);
             Sprite[,] sp = GetWorldTileSprites(world, gridPos, grid);
-            int gridSize = world.RawLevels[0].GetIntGrid("IntGrid").TileSize;
+            int gridSize = world.LoadLevel(LDtkTypes.Worlds.World.World_Level_0).GetIntGrid("IntGrid").TileSize;
             Engine.CurrentMap.Instantiate(new Grid(gridPos, gridSize, gridSize, grid, sp));
         }
 

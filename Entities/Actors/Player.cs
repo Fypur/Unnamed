@@ -390,8 +390,6 @@ namespace Platformer
             collisionX = collisionY = false;
             previousOnGround = onGround;
 
-            Debug.LogUpdate(Engine.CurrentMap.MiddlegroundSystem.Particles.Count);
-
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
         }

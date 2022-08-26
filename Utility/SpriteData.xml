@@ -31,7 +31,7 @@
 			
 			<StreetLight path="streetLight" start="light">
 				<Loop id="light" path="light" delay="0.1"/>
-				<Anim id="blink" path="blink" delay="0.1"/>
+				<Anim id="blink" path="blink" delay="0.05" goto="off"/>
 				<Loop id="off" path="off" delay="0.1"/>
 			</StreetLight>	
 			
