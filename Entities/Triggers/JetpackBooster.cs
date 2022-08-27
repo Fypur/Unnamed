@@ -14,41 +14,30 @@ namespace Platformer
         private float boostX = 4f;
         private float boostY = 1.5f;
         private Vector2 boostingDir;
+        
+        private static readonly NineSliceSimple nineSliceUp =
+            new NineSliceSimple(DataManager.Objects["JetpackBooster"].CropTo(Vector2.Zero, new Vector2(8)), DataManager.Objects["JetpackBooster"].CropTo(new Vector2(8, 0), new Vector2(8)), DataManager.Objects["JetpackBooster"].CropTo(new Vector2(0, 8), new Vector2(16)), true);
 
-        #region NineSlice Textures 
+        private static readonly NineSliceSimple nineSliceDown = new NineSliceSimple(nineSliceUp.TopLeft, nineSliceUp.Top, nineSliceUp.Fill.FlipY(), true);
+        private static readonly NineSliceSimple nineSliceRight = new NineSliceSimple(nineSliceUp.TopLeft, nineSliceUp.Top, nineSliceUp.Fill.Rotate90(), true);
+        private static readonly NineSliceSimple nineSliceLeft = new NineSliceSimple(nineSliceUp.TopLeft, nineSliceUp.Top, nineSliceRight.Fill.FlipX(), true);
 
-        private static Texture2D fillUp = DataManager.Objects["JetpackBooster"].CropTo(new Vector2(0, 8), new Vector2(16));
-        private static Texture2D fillDown = fillUp.FlipY();
-        private static Texture2D fillRight = fillUp.Rotate90();
-        private static Texture2D fillLeft = fillRight.FlipX();
+        public JetpackBooster(Rectangle bounds, Direction direction) : this(bounds.Location.ToVector2(), bounds.Width, bounds.Height, direction)
+        { }
 
-        private static readonly NineSliceSettings defaultNineSlice =
-            new NineSliceSettings(DataManager.Objects["JetpackBooster"].CropTo(Vector2.Zero, new Vector2(8)),
-                DataManager.Objects["JetpackBooster"].CropTo(new Vector2(8, 0), new Vector2(8)),
-                null, true);
-
-        private static Dictionary<Direction, Texture2D> Fill = new() { { Direction.Up, fillUp }, { Direction.Down, fillDown }, { Direction.Left, fillLeft }, { Direction.Right, fillRight } };
-
-        #endregion
-
-        public JetpackBooster(Rectangle bounds, Direction direction) : base(bounds, new Sprite())
-        {
-            Sprite.NineSliceSettings = defaultNineSlice;
-            Sprite.NineSliceSettings.Fill = Fill[direction];
-            boostingDir = DirectionToVector2(direction);
-        }
-
-        public JetpackBooster(Vector2 position, Vector2 size, Direction direction) : base(position, size, new Sprite())
-        {
-            Sprite.NineSliceSettings = defaultNineSlice;
-            Sprite.NineSliceSettings.Fill = Fill[direction];
-            boostingDir = DirectionToVector2(direction);
-        }
+        public JetpackBooster(Vector2 position, Vector2 size, Direction direction) : this(position, (int)size.X, (int)size.Y, direction)
+        { }
 
         public JetpackBooster(Vector2 position, int width, int height, Direction direction) : base(position, width, height, new Sprite())
         {
-            Sprite.NineSliceSettings = defaultNineSlice;
-            Sprite.NineSliceSettings.Fill = Fill[direction];
+            switch (direction)
+            {
+                case Direction.Left: Sprite.NineSliceSettings = nineSliceLeft; break;
+                case Direction.Right: Sprite.NineSliceSettings = nineSliceRight; break;
+                case Direction.Up: Sprite.NineSliceSettings = nineSliceUp; break;
+                case Direction.Down: Sprite.NineSliceSettings = nineSliceDown; break;
+            }
+
             boostingDir = DirectionToVector2(direction);
         }
 

@@ -1,6 +1,7 @@
+// This file was automatically generated, any modifications will be lost!
+#pragma warning disable
 namespace LDtkTypes;
 
-#pragma warning disable
 public static class Worlds
 {
     public static class World

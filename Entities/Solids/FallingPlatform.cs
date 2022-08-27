@@ -24,7 +24,7 @@ namespace Platformer
         private bool previousOnGround;
         private Vector2 initPos;
 
-        public FallingPlatform(Vector2 position, int width, int height, bool respawning, NineSliceSettings nineSlice)
+        public FallingPlatform(Vector2 position, int width, int height, bool respawning, NineSlice nineSlice)
             : base(position, width, height, new Sprite())
         {
             TriggerComponent trig = (TriggerComponent)AddComponent(new TriggerComponent(-Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }));

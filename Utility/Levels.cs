@@ -28,8 +28,8 @@ namespace Platformer
             }
         }
 
-        public static NineSliceSettings FallingPlatformNineSlice1
-            = new NineSliceSettings(T1Cropped(120, 0), T1Cropped(136, 0), T1Cropped(120, 16), T1Cropped(136, 16), T1Cropped(128, 0), T1Cropped(120, 8), T1Cropped(136, 8), T1Cropped(128, 16), T1Cropped(128, 8), true);
+        public static NineSliceSimple FallingPlatformNineSlice1
+            = new NineSliceSimple(T1Cropped(120, 0), T1Cropped(136, 0), T1Cropped(120, 16), T1Cropped(136, 16), T1Cropped(128, 0), T1Cropped(120, 8), T1Cropped(136, 8), T1Cropped(128, 16), T1Cropped(128, 8), true);
 
         public static Texture2D T1Cropped(int posX, int posY)
             => DataManager.Textures["Tilesets/industrialAll"].CropTo(new Vector2(posX, posY), new Vector2(8));

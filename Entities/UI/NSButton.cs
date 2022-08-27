@@ -15,7 +15,7 @@ namespace Platformer
     {
         public TextBox Text;
 
-        public static NineSliceSettings nineSliceSettings = new NineSliceSettings(DataManager.CropTo(DataManager.Objects["Button"], Vector2.Zero, Vector2.One * 8), DataManager.CropTo(DataManager.Objects["Button"], Vector2.UnitX * 8, Vector2.One * 8), DataManager.CropTo(DataManager.Objects["Button"], Vector2.One * 8, Vector2.One * 8), false);
+        public static NineSlice nineSliceSettings = new NineSliceSimple(DataManager.CropTo(DataManager.Objects["Button"], Vector2.Zero, Vector2.One * 8), DataManager.CropTo(DataManager.Objects["Button"], Vector2.UnitX * 8, Vector2.One * 8), DataManager.CropTo(DataManager.Objects["Button"], Vector2.One * 8, Vector2.One * 8), false);
 
         public NSButton(Vector2 position, int width, int height, bool centered, string text, Action onPressed) : base(position, width, height, centered, new Sprite(nineSliceSettings), onPressed)
         {
