@@ -10,7 +10,7 @@ namespace Platformer
 {
     public class Fire : DeathTrigger
     {
-        private const float coefFire = 0.02f;
+        private const float coefFire = 0.05f;
 
         public ParticleType FireParticle = new ParticleType() 
         {

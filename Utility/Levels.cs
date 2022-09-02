@@ -16,7 +16,7 @@ namespace Platformer
         /// <summary>
         /// The first GUID corresponds to the level, the second correspond to the objects which don't respawn
         /// </summary>
-        public static Dictionary<Guid, List<Guid>> LevelNonRespawn = new();
+        public static List<Guid> LevelNonRespawn = new();
         public static int LevelIndex;
         public static LDtkLevel LastLDtkLevel;
         public static LevelData LastLevelData { 
@@ -167,10 +167,26 @@ namespace Platformer
                 entities.Add(new Refill(p.Position, p.RespawnTime));
 
             foreach (LDtkTypes.Collectable p in level.GetEntities<LDtkTypes.Collectable>())
-                if((!LevelNonRespawn.ContainsKey(level.Iid) || !LevelNonRespawn[level.Iid].Contains(p.Iid)) && 
-                    (!Engine.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(RAM)) ||
+                if((!LevelNonRespawn.Contains(p.Iid))
+                    && (!Engine.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(RAM)) ||
                     Engine.CurrentMap.Data.EntitiesByType[typeof(RAM)].TrueForAll((collected) => ((RAM)collected).iid != p.Iid)))
-                    entities.Add(new RAM(p.Position, p.Iid, level.Iid));
+                    entities.Add(new RAM(p.Position, p.Iid));
+
+            foreach (LDtkTypes.Key p in level.GetEntities<LDtkTypes.Key>())
+                if ((!LevelNonRespawn.Contains(p.Iid))
+                    && (!Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Key), out var keys) ||keys.TrueForAll((collected) => ((RAM)collected).iid != p.Iid)))
+                {
+                    foreach (LDtkTypes.Cage c in level.GetEntities<LDtkTypes.Cage>())
+                    {
+                        if(c.Iid == p.Cage.EntityIid)
+                        {
+                            Cage cage = new Cage(c.Position, c.Width(), c.Height());
+                            entities.Add(cage);
+                            entities.Add(new Key(p.Position, cage, p.Iid));
+                            break;
+                        }
+                    }
+                }
 
             foreach (LDtkTypes.GlassWall p in level.GetEntities<LDtkTypes.GlassWall>())
                 entities.Add(new GlassWall(p.Position, p.Width(), p.Height(), p.BreakVelocity));

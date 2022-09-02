@@ -14,21 +14,20 @@ namespace Platformer
         private Vector2 initPos;
         private bool following;
         public Guid iid;
-        private Guid levelIid;
 
-        public Collectable(Vector2 position, int width, int height, Guid iid, Guid levelIid, Sprite sprite)
-            : base(position, width, height, sprite) { initPos = Pos; this.iid = iid; this.levelIid = levelIid; }
+        public Collectable(Vector2 position, int width, int height, Guid iid, Sprite sprite)
+            : base(position, width, height, sprite) { initPos = Pos; this.iid = iid; }
 
         public override void OnTriggerEnter(Player player)
         {
             if (!following)
             {
                 following = true;
-                AddComponent(new Coroutine(WaitCollected(player), OnCollected(player)));
+                AddComponent(new Coroutine(WaitCollected(player)));
             }
         }
 
-        public abstract IEnumerator OnCollected(Player player);
+        public abstract void OnCollected(Player player);
 
         public virtual void WhileWait(Player player) { }
 
@@ -39,7 +38,7 @@ namespace Platformer
             bool breakLoop = false;
             player.OnDeath += () => breakLoop = true;
 
-            while (!player.Safe)
+            while (!CollectingConditions())
             {
                 Pos = Vector2.Lerp(Pos, player.Pos - player.Facing * Vector2.UnitX * 9 - Vector2.UnitY * 4, 0.2f);
                 WhileWait(player);
@@ -61,9 +60,10 @@ namespace Platformer
                 yield return null;
             }
 
-            if (!Levels.LevelNonRespawn.ContainsKey(levelIid))
-                Levels.LevelNonRespawn[levelIid] = new();
-            Levels.LevelNonRespawn[levelIid].Add(iid);
+            Levels.LevelNonRespawn.Add(iid);
+            OnCollected(player);
         }
+
+        protected abstract bool CollectingConditions(); 
     }
 }

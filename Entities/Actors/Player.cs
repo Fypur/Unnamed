@@ -89,7 +89,9 @@ namespace Platformer
         private bool isUnsticking;
         private bool canUnstick;
         private bool inCoyoteTime;
+
         private float jetpackTime;
+        private BoostBar boostBar;
 
         private float totalRopeLength;
         private Solid grappledSolid;
@@ -156,8 +158,9 @@ namespace Platformer
             };
 
             RespawnPoint = position;
+            Layer = 2;
 
-            //BoostBar = (BoostBar)Engine.CurrentMap.Instantiate(new BoostBar(Engine.ScreenSize.OnlyX() + new Vector2(-300, 20), 200, 30, 1));
+            boostBar = (BoostBar)AddChild(new BoostBar(Pos + new Vector2(1, -5), Width - 1, 1, 0.5f));
         }
 
         public override void Update()
@@ -349,7 +352,10 @@ namespace Platformer
 
             {
                 if (!onGround && CanJetpack && jetpackTime > 0 && JetpackControls.Is())
+                {
                     Jetpack();
+                    boostBar.Visible = true;
+                }
                 else
                 {
                     Jetpacking = false;
@@ -358,7 +364,10 @@ namespace Platformer
                 if (onGround)
                 {
                     jetpackTime = maxJetpackTime;
+                    boostBar.Visible = false;
                 }
+
+                boostBar.Value = jetpackTime / maxJetpackTime;
 
                 if(onGround || onWall)
                     cancelJump = false;
@@ -392,6 +401,8 @@ namespace Platformer
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
+
+            UpdateChildrenPos();
         }
 
         public override void Squish()
@@ -617,7 +628,7 @@ namespace Platformer
             Velocity.X += LiftBoost.X;
             previousOnGround = false;
 
-            //Audio.PlayEvent("event:/Jump");
+            Audio.PlayEvent("event:/Jump");
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 

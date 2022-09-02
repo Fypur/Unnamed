@@ -23,6 +23,7 @@
 
 			<Refill path="refill" start="rotate">
 				<Loop id="rotate" path="rotate" delay="0.1"/>
+				<Anim id="respawn" path="respawn" delay="0.05" goto="rotate"/>
 			</Refill>
 			
 			<RAM path="RAM" start="rotate">

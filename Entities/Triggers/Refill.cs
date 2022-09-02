@@ -32,8 +32,10 @@ namespace Platformer
         public Refill(Vector2 position, float respawnTime) : base(position, new Vector2(size), new Sprite()) 
         {
             Sprite.Add(Sprite.AllAnimData["Refill"]);
-            Sprite.Offset.Y += 1;
             Sprite.Play("rotate");
+            Sprite.Offset.Y += 1;
+            
+
             //Sprite.Scale = Vector2.One * 10;
             RespawnTime = respawnTime;
         }
@@ -51,14 +53,12 @@ namespace Platformer
             Visible = false;
 
             AddComponent(new Timer(RespawnTime, true, null,
-                () => Engine.CurrentMap.Instantiate(new Wipe(Bounds, 0.5f, Color.White, null,
-                    () =>
-                    {
-                        canActivate = true;
-                        Active = true;
-                        Visible = true;
-                    }
-                    , null, null))));
+                () =>
+                {
+                    Visible = true;
+                    canActivate = true;
+                    Sprite.Play("respawn");
+                }));
         }
     }
 }

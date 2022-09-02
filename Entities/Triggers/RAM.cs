@@ -45,7 +45,7 @@ namespace Platformer
 
         private float emittedAmount;
 
-        public RAM(Vector2 position, Guid iid, Guid levelIid) : base(position, 10, 15, iid, levelIid, new Sprite())
+        public RAM(Vector2 position, Guid iid) : base(position, 10, 15, iid, new Sprite())
         {
             Sprite.Add(Sprite.AllAnimData["RAM"]);
             Sprite.Offset.Y += 1;
@@ -61,7 +61,7 @@ namespace Platformer
             emittedAmount -= (int)emittedAmount;
         }
 
-        public override IEnumerator OnCollected(Player player)
+        public override void OnCollected(Player player)
         {
             AddComponent(new Timer(0.2f, true, (timer) =>
             {
@@ -73,7 +73,8 @@ namespace Platformer
                 SelfDestroy();
 
             }));
-            yield break;
         }
+
+        protected override bool CollectingConditions() => ((Player)Engine.Player).Safe;
     }
 }

@@ -32,7 +32,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "Test";
+        public static string InitLevel = "0";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -81,6 +81,7 @@ namespace Platformer
             watcher.EnableRaisingEvents = true;
             //Engine.CurrentMap.Instantiate(new MainMenu());
 #endif
+
         }
 
         protected override void LoadContent()

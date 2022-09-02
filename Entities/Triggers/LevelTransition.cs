@@ -76,6 +76,8 @@ namespace Platformer
                     break;
             }
 
+            p.UpdateChildrenPos();
+
             AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () => {
                 p.CanMove = true;
                 p.CancelJump();

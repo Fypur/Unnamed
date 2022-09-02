@@ -76,5 +76,12 @@ namespace Platformer
 
             return true;
         }
+
+        public override void Update()
+        {
+            base.Update();
+            Debug.LogUpdate(Layer);
+            Layer = 1;
+        }
     }
 }
