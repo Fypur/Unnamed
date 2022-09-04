@@ -362,6 +362,9 @@ namespace Platformer
                     entities.Add(new StreetLight(p.Position, p.Width(), p.Height()));
             }
 
+            foreach (LDtkTypes.ProjectorLight p in level.GetEntities<LDtkTypes.ProjectorLight>())
+                entities.Add(new ProjectorLight(p.Position, p.Direction - p.Position, p.Range));
+
             Engine.Cam.SetBoundaries(oldCamBounds);
             Engine.Cam.CenteredPos = oldCamPos;
 

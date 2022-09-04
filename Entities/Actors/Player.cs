@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using FMOD.Studio;
 
 namespace Platformer
 {
@@ -107,6 +108,8 @@ namespace Platformer
         public static ControlList JumpControls = new ControlList(Keys.C, Keys.I, Keys.Space, Buttons.A);
         public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.X);
         public static ControlList SwingControls = new ControlList(Keys.W, Keys.P, MouseButton.Middle, Buttons.LeftTrigger, Buttons.RightTrigger);
+
+        private EventInstance jetpackAudio;
 
         #endregion
 
@@ -353,12 +356,16 @@ namespace Platformer
             {
                 if (!onGround && CanJetpack && jetpackTime > 0 && JetpackControls.Is())
                 {
+                    /*if(!Jetpacking)
+                        jetpackAudio = Audio.PlayEvent("event:/Jetpack");*/
+
                     Jetpack();
-                    boostBar.Visible = true;
                 }
                 else
                 {
                     Jetpacking = false;
+                    /*if (jetpackAudio.isValid())
+                        Audio.StopEvent(jetpackAudio, true);*/
                 }
 
                 if (onGround)
@@ -794,6 +801,9 @@ namespace Platformer
                 return;
             else
                 dir = new Vector2(xMovingRaw, yMovingRaw);
+
+            boostBar.Visible = true;
+
             dir.X = dir.Normalized().X;
 
             jetpackTime -= Engine.Deltatime;

@@ -188,6 +188,30 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/Objects/robot.png
 
+#begin Graphics/Objects/scenery/barriers.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Objects/scenery/barriers.aseprite
+
+#begin Graphics/Objects/scenery/jetpackTutorialScreen.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Objects/scenery/jetpackTutorialScreen.aseprite
+
 #begin Graphics/Objects/SpikeTest.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -32,7 +32,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "0";
+        public static string InitLevel = "15";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -66,7 +66,7 @@ namespace Platformer
 #if DEBUG
             StartGame();
 
-            watcher = new FileSystemWatcher("C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\Content");
+            watcher = new FileSystemWatcher("C:\\Users\\zddng\\Documents\\Monogame\\Platformer\\Content");
             //watcher.Path = "/home/f/Documents/Platformer/Content";
             watcher.NotifyFilter = NotifyFilters.LastWrite;
                                    
@@ -336,7 +336,7 @@ namespace Platformer
             t.AddComponent(new Timer(2, true, null, () =>
             {
                 waitRefresh = false;
-                File.Copy("C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\Content\\First.ldtk", "C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\bin\\x64\\Debug\\net6.0\\Content\\First.ldtk", true);
+                File.Copy("C:\\Users\\zddng\\Documents\\Monogame\\Platformer\\Content\\First.ldtk", "C:\\Users\\zddng\\Documents\\Monogame\\Platformer\\bin\\x64\\Debug\\net6.0\\Content\\First.ldtk", true);
             
                 World = LDtkFile.FromFile("Content/First.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
                 Engine.CurrentMap.CurrentLevel.Unload();

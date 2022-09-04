@@ -27,7 +27,6 @@ namespace Platformer
             Direction = -90,
         };
 
-
         public StreetLight(Vector2 position, int width, int height, Rectangle? turnOffRect = null) : base(position, width, height, new Sprite(Color.White))
         {
             Sprite.Add(Sprite.AllAnimData["StreetLight"]);
