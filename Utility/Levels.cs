@@ -28,6 +28,8 @@ namespace Platformer
             }
         }
 
+        public static Dictionary<int, string> TileData = new();
+
         public static NineSliceSimple FallingPlatformNineSlice1
             = new NineSliceSimple(T1Cropped(120, 0), T1Cropped(136, 0), T1Cropped(120, 16), T1Cropped(136, 16), T1Cropped(128, 0), T1Cropped(120, 8), T1Cropped(136, 8), T1Cropped(128, 16), T1Cropped(128, 8), true);
 
@@ -277,23 +279,54 @@ namespace Platformer
             {
                 if (l._Type == LayerType.Tiles)
                 {
-                    string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
-                    if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
+                    if (!l._TilesetRelPath.Contains("AnimatedDecals"))
                     {
-                        Texture2D tileSetTex = DataManager.Load(tileSet);
-                        Dictionary<Point, Texture2D> tiles = DataManager.GetTileSetTextures(tileSetTex, l._GridSize);
-                        foreach (KeyValuePair<Point, Texture2D> tile in tiles)
-                            DataManager.Textures[tileSet + tile.Key] = tile.Value;
+                        string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
+                        if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
+                        {
+                            Texture2D tileSetTex = DataManager.Load(tileSet);
+                            Dictionary<Point, Texture2D> tiles = DataManager.GetTileSetTextures(tileSetTex, l._GridSize);
+                            foreach (KeyValuePair<Point, Texture2D> tile in tiles)
+                                DataManager.Textures[tileSet + tile.Key] = tile.Value;
+                        }
+                        for (int i = l.GridTiles.Length - 1; i >= 0; i--)
+                        {
+                            TileInstance t = l.GridTiles[i];
+                            Texture2D texture = DataManager.Textures[tileSet + t.Src];
+                            texture.Name = tileSet + t.T.ToString();
+                            Sprite s = new Sprite(texture);
+                            s.Effect = (SpriteEffects)t.F;
+                            entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
+                        }
                     }
-                    for (int i = l.GridTiles.Length - 1; i >= 0; i--)
+                    else
                     {
-                        TileInstance t = l.GridTiles[i];
-                        Texture2D texture = DataManager.Textures[tileSet + t.Src];
-                        texture.Name = tileSet + t.T.ToString();
-                        Sprite s = new Sprite(texture);
-                        s.Effect = (SpriteEffects)t.F;
-                        entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
+                        if(TileData.Count == 0)
+                        {
+                            TileCustomMetadata[] tilesetData = null;
+                            foreach (TilesetDefinition definition in Platformer.LDtkFile.Defs.Tilesets)
+                                if (definition.Uid == l._TilesetDefUid)
+                                {
+                                    tilesetData = definition.CustomData;
+                                    break;
+                                }
+
+                            foreach(TileCustomMetadata data in tilesetData)
+                                TileData[data.TileId] = data.Data;
+                        }
+
+                        foreach (TileInstance t in l.GridTiles)
+                        {
+                            if (TileData.TryGetValue(t.T, out string data))
+                            {
+                                Sprite s = new();
+                                s.Add(Sprite.AllAnimData[data]);
+
+                                entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
+                            }
+                        }
                     }
+
                 }
                 /*else if (l._Type == LayerType.IntGrid)
                 {

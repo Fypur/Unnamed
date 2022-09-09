@@ -34,8 +34,16 @@
 				<Loop id="light" path="light" delay="0.1"/>
 				<Anim id="blink" path="blink" delay="0.05" goto="off"/>
 				<Loop id="off" path="off" delay="0.1"/>
-			</StreetLight>	
+			</StreetLight>
+
 			
+			<Folder path ="scenery">
+				<JetpackTutorialScreen start="jetpackTutorialScreen">
+					<Loop id="jetpackTutorialScreen" path ="jetpackTutorialScreen" delay ="0.1"/>
+				</JetpackTutorialScreen>
+			
+			</Folder>
+				
 		</Folder>
 	
 	</Animations>

@@ -22,6 +22,7 @@ namespace Platformer
         public static PauseMenu PauseMenu;
         private static Input.State PreviousPauseOldState;
 
+        public static LDtkFile LDtkFile;
         public static LDtkWorld World;
 
         public static Player player => (Player)Engine.Player;
@@ -57,16 +58,17 @@ namespace Platformer
 
             Options.CurrentResolution = Engine.ScreenSize;
 
-            World = LDtkFile.FromFile("Content\\First.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
+            LDtkFile = LDtkFile.FromFile("Content\\First.ldtk");
+            World = LDtkFile.LoadWorld(LDtkTypes.Worlds.World.Iid);
 
             base.Initialize();
 
-            Cam = new Camera(Vector2.Zero, 0, 1);
+            Cam = new Camera(Vector2.Zero, 0, 1f);
 
 #if DEBUG
             StartGame();
 
-            watcher = new FileSystemWatcher("C:\\Users\\zddng\\Documents\\Monogame\\Platformer\\Content");
+            watcher = new FileSystemWatcher("C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\Content");
             //watcher.Path = "/home/f/Documents/Platformer/Content";
             watcher.NotifyFilter = NotifyFilters.LastWrite;
                                    
@@ -254,7 +256,7 @@ namespace Platformer
             var map = new Map(Vector2.Zero);
             Engine.CurrentMap = map;
             Engine.Cam.RenderTargetMode = true;
-                
+            
             Levels.LoadWorldGrid(World);
 
             if (int.TryParse(InitLevel, out int lvl))
@@ -336,7 +338,7 @@ namespace Platformer
             t.AddComponent(new Timer(2, true, null, () =>
             {
                 waitRefresh = false;
-                File.Copy("C:\\Users\\zddng\\Documents\\Monogame\\Platformer\\Content\\First.ldtk", "C:\\Users\\zddng\\Documents\\Monogame\\Platformer\\bin\\x64\\Debug\\net6.0\\Content\\First.ldtk", true);
+                File.Copy("C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\Content\\First.ldtk", "C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\bin\\x64\\Debug\\net6.0\\Content\\First.ldtk", true);
             
                 World = LDtkFile.FromFile("Content/First.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
                 Engine.CurrentMap.CurrentLevel.Unload();
