@@ -33,7 +33,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "15";
+        public static string InitLevel = "Test";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -54,11 +54,11 @@ namespace Platformer
 
         protected override void Initialize()
         {
-            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24), "Utility\\SpriteData.xml");
+            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24), "Utility/SpriteData.xml");
 
             Options.CurrentResolution = Engine.ScreenSize;
 
-            LDtkFile = LDtkFile.FromFile("Content\\First.ldtk");
+            LDtkFile = LDtkFile.FromFile("Content/First.ldtk");
             World = LDtkFile.LoadWorld(LDtkTypes.Worlds.World.Iid);
 
             base.Initialize();
@@ -68,7 +68,7 @@ namespace Platformer
 #if DEBUG
             StartGame();
 
-            watcher = new FileSystemWatcher("C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\Content");
+            watcher = new FileSystemWatcher("C:/Users/Administrateur/Documents/Monogame/Platformer/Content");
             //watcher.Path = "/home/f/Documents/Platformer/Content";
             watcher.NotifyFilter = NotifyFilters.LastWrite;
                                    
@@ -82,6 +82,7 @@ namespace Platformer
 
             watcher.EnableRaisingEvents = true;
             //Engine.CurrentMap.Instantiate(new MainMenu());
+
 #endif
 
         }
@@ -129,8 +130,6 @@ namespace Platformer
 
 #if DEBUG
             //Debug.LogUpdate(Input.MousePos);
-            /*if(Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Grid), out List<Entity> grids))
-                Debug.LogUpdate(grids[0].Collider.Collide(t.Collider));*/
 
             /*if(Engine.Deltatime != 0)
                 Debug.LogUpdate(1 / Engine.Deltatime);*/
@@ -280,6 +279,8 @@ namespace Platformer
             Cam.FollowsPlayer = true;
 
             PauseMenu = new PauseMenu();
+
+           //music = Audio.PlayEvent(AudioData.MUSIC);
         }
 
         public static void EndGame()

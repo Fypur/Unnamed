@@ -1,4 +1,5 @@
 ﻿using Fiourp;
+using FMOD.Studio;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,6 @@ namespace Platformer
 {
     public class StreetLight : Decoration
     {
-        private Light light;
         private static ParticleType Spark = new ParticleType()
         {
             LifeMin = 0.4f,
@@ -26,6 +26,9 @@ namespace Platformer
             DirectionRange = 90,
             Direction = -90,
         };
+
+        private Light light;
+        private EventInstance lightSound;
 
         public StreetLight(Vector2 position, int width, int height, Rectangle? turnOffRect = null) : base(position, width, height, new Sprite(Color.White))
         {
@@ -50,20 +53,29 @@ namespace Platformer
                     };
                 };
             }
+
+            lightSound = Audio.PlayEvent("event:/StreetLight");
         }
 
         public override void Update()
         {
             base.Update();
 
-            Debug.LogUpdate(Engine.CurrentMap.MiddlegroundSystem.Particles.Count);
+            Debug.LogUpdate(-(Engine.Player.Pos.X - Pos.X) / 120);
+            //lightSound.setParameterByName("Distance", -(Engine.Player.Pos.X - Pos.X) / 120);
 
             if(Sprite.CurrentAnimationFrame.Tag is string tag)
             {
                 if (tag.StartsWith("on"))
+                {
                     light.Visible = true;
+                    lightSound.setVolume(1);
+                }
                 else if (tag.StartsWith("off"))
+                {
                     light.Visible = false;
+                    lightSound.setVolume(0);
+                }
             }
 
             if(Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.A))
@@ -84,6 +96,13 @@ namespace Platformer
                 DirectionRange = 90,
                 Direction = -90,
             };
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            Audio.StopEvent(lightSound);
         }
     }
 }

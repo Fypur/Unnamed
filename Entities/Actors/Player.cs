@@ -136,6 +136,7 @@ namespace Platformer
 
             stateMachine.RegisterStateFunctions(States.Swinging, () =>
                 {
+                    Sprite.Play("fall");
                     if (grappledSolid is ISwinged swinged)
                         swinged.OnGrapple(this, () => isAtSwingEnd); }, null,
                         () =>
@@ -356,16 +357,12 @@ namespace Platformer
             {
                 if (!onGround && CanJetpack && jetpackTime > 0 && JetpackControls.Is())
                 {
-                    /*if(!Jetpacking)
-                        jetpackAudio = Audio.PlayEvent("event:/Jetpack");*/
-
                     Jetpack();
                 }
                 else
                 {
                     Jetpacking = false;
-                    /*if (jetpackAudio.isValid())
-                        Audio.StopEvent(jetpackAudio, true);*/
+                    Audio.StopEvent(jetpackAudio);
                 }
 
                 if (onGround)
@@ -554,8 +551,7 @@ namespace Platformer
             RemoveGrapplingPoints();
 
             List<Vector2> cornersToCheck = new List<Vector2>(Engine.CurrentMap.CurrentLevel.Corners);
-            foreach (Vector2 point in swingPositions)
-                cornersToCheck.Remove(point);
+            cornersToCheck.Remove(swingPositions[swingPositions.Count - 1]);
 
             AddGrapplingPoints(cornersToCheck, swingPositions[swingPositions.Count - 1]);
             #endregion
@@ -636,6 +632,7 @@ namespace Platformer
             previousOnGround = false;
 
             Audio.PlayEvent("event:/Jump");
+            PlayerStats.JumpCount++;
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
@@ -674,6 +671,10 @@ namespace Platformer
         private void WallJump()
         {
             stateMachine.Switch(States.Jumping);
+
+            Audio.PlayEvent("event:/Jump");
+            PlayerStats.JumpCount++;
+
             int wallJumpingDirection = onRightWall ? -1 : 1;
             float coef = 1;
 
@@ -804,6 +805,9 @@ namespace Platformer
 
             boostBar.Visible = true;
 
+            if (!Jetpacking)
+                jetpackAudio = Audio.PlayEvent("event:/Jetpack");
+
             dir.X = dir.Normalized().X;
 
             jetpackTime -= Engine.Deltatime;
@@ -853,6 +857,7 @@ namespace Platformer
             Jetpacking = true;
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(JetpackParticle, MiddlePos);
+            jetpackAudio.setParameterByName("JetpackTime", jetpackTime / maxJetpackTime);
         }
 
         public void Death()
@@ -866,6 +871,7 @@ namespace Platformer
             OnDeath?.Invoke();
             OnDeath = delegate { };
             stateMachine.Switch(States.Dead);
+            PlayerStats.DeathCount++;
 
             foreach (Trigger trig in Engine.CurrentMap.Data.Triggers)
             {
