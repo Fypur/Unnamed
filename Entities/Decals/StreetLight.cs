@@ -36,7 +36,7 @@ namespace Platformer
             Sprite.Play("light");
 
             light = (Light)AddComponent(
-                new Light(Sprite.CurrentAnimation.Slices[0].Rect.Location.ToVector2(), 60, new Color(Color.White, 30), Color.Transparent));
+                new Light(Sprite.CurrentAnimation.Slices[0].Rect.Location.ToVector2(), 60, new Color(Color.White, 80), new Color(Color.Black, 20)));
            
             if(turnOffRect is Rectangle r)
             {

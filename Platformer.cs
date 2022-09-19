@@ -33,7 +33,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "Test";
+        public static string InitLevel = "0";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -68,7 +68,9 @@ namespace Platformer
 #if DEBUG
             StartGame();
 
-            watcher = new FileSystemWatcher("C:/Users/Administrateur/Documents/Monogame/Platformer/Content");
+            string currentDir = Environment.CurrentDirectory;
+            currentDir = currentDir.Replace('\\', '/');
+            watcher = new FileSystemWatcher(currentDir.Substring(0, currentDir.LastIndexOf("Platformer/") + 11) + "Content");
             //watcher.Path = "/home/f/Documents/Platformer/Content";
             watcher.NotifyFilter = NotifyFilters.LastWrite;
                                    
@@ -187,10 +189,6 @@ namespace Platformer
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(new Color(3, 11, 28));
 
-
-            Drawing.BeginPrimitives();
-
-
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
             if(BackgroundTile != null)
@@ -198,15 +196,13 @@ namespace Platformer
 
             spriteBatch.End();
 
+            Drawing.BeginPrimitives();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.Render();
 
             spriteBatch.End();
-
-
-            Drawing.EndPrimitives();
 
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
@@ -217,6 +213,7 @@ namespace Platformer
 
             spriteBatch.End();
 
+            Drawing.EndPrimitives();
 
             GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
@@ -255,15 +252,20 @@ namespace Platformer
             var map = new Map(Vector2.Zero);
             Engine.CurrentMap = map;
             Engine.Cam.RenderTargetMode = true;
-            
-            Levels.LoadWorldGrid(World);
+
+            int worldDepth = 0;
 
             if (int.TryParse(InitLevel, out int lvl))
-                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(lvl, Vector2.Zero)));
+            {
+                var level = Levels.GetLdtkLevel(lvl); 
+                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(level)));
+                worldDepth = level.WorldDepth;
+            }
             else
                 map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(InitLevel, Vector2.Zero)));
 
 
+            Levels.LoadWorldGrid(World, worldDepth);
             BackgroundTile = new Tile(Vector2.Zero, Engine.RenderTarget.Width, Engine.RenderTarget.Height,  new Sprite(DataManager.Textures["bg/bg1"]));
 
 #if RELEASE
@@ -280,7 +282,7 @@ namespace Platformer
 
             PauseMenu = new PauseMenu();
 
-           music = Audio.PlayEvent(AudioData.MUSIC);
+            music = Audio.PlayEvent(AudioData.MUSIC);
         }
 
         public static void EndGame()
@@ -339,7 +341,11 @@ namespace Platformer
             t.AddComponent(new Timer(2, true, null, () =>
             {
                 waitRefresh = false;
-                File.Copy("C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\Content\\First.ldtk", "C:\\Users\\Administrateur\\Documents\\Monogame\\Platformer\\bin\\x64\\Debug\\net6.0\\Content\\First.ldtk", true);
+
+                string currentDir = Environment.CurrentDirectory;
+                currentDir = currentDir.Replace('\\', '/');
+
+                File.Copy(currentDir.Substring(0, currentDir.LastIndexOf("Platformer/") + 11) + "Content/First.ldtk", currentDir + "/Content/First.ldtk", true);
             
                 World = LDtkFile.FromFile("Content/First.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
                 Engine.CurrentMap.CurrentLevel.Unload();
@@ -347,8 +353,10 @@ namespace Platformer
                 new Level(Levels.GetLevelData(lvl)).LoadNoAutoTile();
             
                 Engine.CurrentMap.Data.EntitiesByType[typeof(Grid)][0].SelfDestroy();
-                Levels.LoadWorldGrid(World);
-            
+                Levels.LoadWorldGrid(World, lvl.WorldDepth);
+
+                Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
+
                 player.Death();
                 t.SelfDestroy();
             }));

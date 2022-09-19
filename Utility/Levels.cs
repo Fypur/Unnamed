@@ -420,7 +420,7 @@ namespace Platformer
             //Texture2D RandomTile(string id) => DataManager.GetRandomTilesetTexture(DataManager.Tilesets[1], id, levelRandom);
         }
 
-        public static int[,] GetWorldGrid(LDtkWorld world, out Vector2 position)
+        public static int[,] GetWorldGrid(LDtkWorld world, int worldDepth, out Vector2 position)
         {
             int minx = int.MaxValue;
             int maxx = int.MinValue;
@@ -430,7 +430,10 @@ namespace Platformer
 
             foreach (LDtkLevel level in world.Levels)
             {
-                if(level.WorldX < minx)
+                if (level.WorldDepth != worldDepth)
+                    continue;
+
+                if (level.WorldX < minx)
                     minx = level.WorldX;
                 if(level.WorldY < miny)
                     miny = level.WorldY;
@@ -443,6 +446,9 @@ namespace Platformer
             int[,] grid = new int[(maxy - miny) / gridSize, (maxx - minx) / gridSize];
             foreach(LDtkLevel level in world.Levels)
             {
+                if (level.WorldDepth != worldDepth)
+                    continue;
+
                 var intg = SwitchXAndY(level.GetIntGrid("IntGrid"));
                 for (int x = 0; x < level.PxWid / gridSize; x++)
                     for(int y = 0; y < level.PxHei / gridSize; y++)
@@ -456,11 +462,14 @@ namespace Platformer
             return grid;
         }
 
-        public static Sprite[,] GetWorldTileSprites(LDtkWorld world, Vector2 gridPos, int[,] worldOrganisation)
+        public static Sprite[,] GetWorldTileSprites(LDtkWorld world, int worldDepth, Vector2 gridPos, int[,] worldOrganisation)
         {
             Sprite[,] sprites = new Sprite[worldOrganisation.GetLength(0) + 1, worldOrganisation.GetLength(1)];
             foreach(LDtkLevel level in world.Levels)
             {
+                if (level.WorldDepth != worldDepth)
+                    continue;
+
                 foreach (LayerInstance l in level.LayerInstances)
                 {
                     if(l._Type == LayerType.IntGrid)
@@ -560,10 +569,10 @@ namespace Platformer
             return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileWidth, tileHeight)), position, GetLevelSize(org, tileWidth, tileHeight), org, Engine.CurrentMap, GetLevelEnterAction(index), null);
         }
 
-        public static void LoadWorldGrid(LDtkWorld world)
+        public static void LoadWorldGrid(LDtkWorld world, int worldDepth)
         {
-            int[,] grid = GetWorldGrid(world, out Vector2 gridPos);
-            Sprite[,] sp = GetWorldTileSprites(world, gridPos, grid);
+            int[,] grid = GetWorldGrid(world, worldDepth, out Vector2 gridPos);
+            Sprite[,] sp = GetWorldTileSprites(world, worldDepth, gridPos, grid);
             int gridSize = world.LoadLevel(LDtkTypes.Worlds.World.World_Level_0).GetIntGrid("IntGrid").TileSize;
             Engine.CurrentMap.Instantiate(new Grid(gridPos, gridSize, gridSize, grid, sp));
         }

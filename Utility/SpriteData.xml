@@ -36,6 +36,10 @@
 				<Loop id="off" path="off" delay="0.1"/>
 			</StreetLight>
 
+			<ProjectorLight path="projectorLight" start="light">
+				<Loop id="light" path="ground" delay="0.1"/>
+			</ProjectorLight>
+
 			
 			<Folder path ="scenery">
 				<JetpackTutorialScreen start="jetpackTutorialScreen">

@@ -143,6 +143,7 @@ namespace Platformer
                 {
                     if (grappledSolid is ISwinged swinged)
                         swinged.OnStopGrapple(this);
+                    ResetSwing();
                 });
 
             AddComponent(stateMachine);
@@ -176,6 +177,11 @@ namespace Platformer
                 if (stateMachine.Is(States.Swinging))
                     stateMachine.Switch(States.Ascending);
                 isAtSwingEnd = false;
+
+                Jetpacking = false;
+
+                if(jetpackAudio.isValid())
+                    Audio.StopEvent(jetpackAudio);
                 return; 
             }
 
@@ -362,7 +368,8 @@ namespace Platformer
                 else
                 {
                     Jetpacking = false;
-                    Audio.StopEvent(jetpackAudio);
+                    if (jetpackAudio.isValid())
+                        Audio.StopEvent(jetpackAudio);
                 }
 
                 if (onGround)
@@ -380,7 +387,7 @@ namespace Platformer
                     ThrowRope();
                 if (SwingControls.Is() && stateMachine.Is(States.Swinging))
                     Swing();
-                else if(SwingControls.IsUp())
+                else if(SwingControls.IsUp() && stateMachine.Is(States.Swinging))
                 {
                     Velocity.X *= 1.2f;
                     if (Velocity.Y < 0)
@@ -388,7 +395,7 @@ namespace Platformer
                     else
                         Velocity.Y *= 0.7f;
 
-                    ResetSwing();
+                    stateMachine.Switch(States.Ascending);
                 }
             }
 
@@ -402,6 +409,8 @@ namespace Platformer
 
             collisionX = collisionY = false;
             previousOnGround = onGround;
+
+            Debug.LogUpdate(stateMachine.CurrentState, isAtSwingEnd);
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
@@ -631,7 +640,7 @@ namespace Platformer
             Velocity.X += LiftBoost.X;
             previousOnGround = false;
 
-            Audio.PlayEvent("event:/Jump");
+            var j = Audio.PlayEvent("event:/Jump");
             PlayerStats.JumpCount++;
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
