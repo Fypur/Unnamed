@@ -280,7 +280,7 @@ namespace Platformer
 
             PauseMenu = new PauseMenu();
 
-           //music = Audio.PlayEvent(AudioData.MUSIC);
+           music = Audio.PlayEvent(AudioData.MUSIC);
         }
 
         public static void EndGame()

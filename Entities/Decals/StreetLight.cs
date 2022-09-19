@@ -62,7 +62,7 @@ namespace Platformer
             base.Update();
 
             Debug.LogUpdate(-(Engine.Player.Pos.X - Pos.X) / 120);
-            //lightSound.setParameterByName("Distance", -(Engine.Player.Pos.X - Pos.X) / 120);
+            lightSound.setParameterByName("Distance", -(Engine.Player.Pos.X - Pos.X) / 120);
 
             if(Sprite.CurrentAnimationFrame.Tag is string tag)
             {
