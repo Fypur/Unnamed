@@ -33,7 +33,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "62";
+        public static string InitLevel = "61";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -71,20 +71,10 @@ namespace Platformer
             string currentDir = Environment.CurrentDirectory;
             currentDir = currentDir.Replace('\\', '/');
             watcher = new FileSystemWatcher(currentDir.Substring(0, currentDir.LastIndexOf("Platformer/") + 11) + "Content");
-            //watcher.Path = "/home/f/Documents/Platformer/Content";
-            watcher.NotifyFilter = NotifyFilters.LastWrite;
-                                   
+            watcher.NotifyFilter = NotifyFilters.LastWrite;                 
             watcher.Filter = "*.ldtk";
-            //watcher.Deleted += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
-            //watcher.Renamed += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
-            //watcher.Disposed += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
-            //watcher.Error += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
-            //watcher.Created += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
             watcher.Changed += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
-
             watcher.EnableRaisingEvents = true;
-            //Engine.CurrentMap.Instantiate(new MainMenu());
-
 #endif
 
         }
@@ -361,7 +351,10 @@ namespace Platformer
                 Engine.CurrentMap.Data.EntitiesByType[typeof(Grid)][0].SelfDestroy();
                 Levels.LoadWorldGrid(World, lvl.WorldDepth);
 
-                Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, Engine.CurrentMap.CurrentLevel.Size);
+                Vector2 lvlSize = Engine.CurrentMap.CurrentLevel.Size;
+                if (lvlSize.Y == 184)
+                    lvlSize.Y = 180;
+                Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, lvlSize);
 
                 player.Death();
                 t.SelfDestroy();
