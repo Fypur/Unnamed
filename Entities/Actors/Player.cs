@@ -16,7 +16,7 @@ namespace Platformer
         public enum States { Idle, Running, Jumping, Ascending, Falling, Dashing, Swinging, WallSliding, Pulling, Jetpack, Dead }
 
         private const float maxSpeed = 100;
-        private const float maxFallingSpeed = 240;
+        private const float maxFallingSpeed = 260;
         private const float maxFallSlidingSpeed = 150; //Max Falling Speed while Wall Sliding
         private const float dashSpeed = 200;
 
@@ -90,6 +90,7 @@ namespace Platformer
         private bool isUnsticking;
         private bool canUnstick;
         private bool inCoyoteTime;
+        private float potentialFallingSpeed;
 
         private float jetpackTime;
         private BoostBar boostBar;
@@ -207,36 +208,15 @@ namespace Platformer
 
             base.Update();
 
-            if(!Safe && SafePercentage == 0)
             {
-                SafePercentage = 0.01f;
-                if(onGround && !(onGroundEntity is JumpThru) && xMovingRaw == 0)
-                    AddComponent(new Timer(safeTime, true, (timer) =>
-                    {
-                        SafePercentage = Ease.Reverse(timer.Value / timer.MaxValue);
-                        if (!(onGround && !(onGroundEntity is JumpThru)) || xMovingRaw != 0)
-                        {
-                            SafePercentage = 0;
-                            RemoveComponent(timer);
-                        }
-                    },
-                    () => { SafePercentage = 1; Safe = true;  })); ;
-            }
+                xMoving = yMoving = 0;
+                if (RightControls.Is() && !Input.GetButton(Buttons.LeftThumbstickRight)) xMoving = 1;
+                if (LeftControls.Is() && !Input.GetButton(Buttons.LeftThumbstickLeft)) xMoving = -1;
+                if (!((RightControls.Is() && !Input.GetButton(Buttons.LeftThumbstickRight)) ^ LeftControls.Is() && !Input.GetButton(Buttons.LeftThumbstickLeft))) xMoving = 0; //Using ^ which means XOR
 
-            if(!onGround || xMovingRaw != 0)
-            {
-                Safe = false;
-                SafePercentage = 0;
-            }
-
-            {
-                if (RightControls.Is()) xMoving = 1;
-                if (LeftControls.Is()) xMoving = -1;
-                if (!(RightControls.Is() ^ LeftControls.Is())) xMoving = 0; //Using ^ which means XOR
-
-                if (UpControls.Is()) yMoving = -1;
-                if (DownControls.Is()) yMoving = 1;
-                if (!(UpControls.Is() ^ DownControls.Is())) yMoving = 0;
+                if (UpControls.Is() && !Input.GetButton(Buttons.LeftThumbstickUp)) yMoving = -1;
+                if (DownControls.Is() && !Input.GetButton(Buttons.LeftThumbstickDown)) yMoving = 1;
+                if (!((UpControls.Is() && !Input.GetButton(Buttons.LeftThumbstickUp)) ^ (DownControls.Is() && !Input.GetButton(Buttons.LeftThumbstickDown)))) yMoving = 0;
 
                 if (Input.GamePadConnected)
                 {
@@ -244,8 +224,8 @@ namespace Platformer
                         xMoving = Input.GetLeftThumbstick().X;
                     if(yMoving == 0)
                         yMoving = -Input.GetLeftThumbstick().Y;
-                    xMovingRaw = xMoving > 0.2 ? 1 : xMoving <  -0.2 ? -1 : 0;
-                    yMovingRaw = yMoving > 0.2 ? 1 : yMoving <  -0.2 ? -1 : 0;
+                    xMovingRaw = xMoving > 0.3f ? 1 : xMoving <  -0.3f ? -1 : 0;
+                    yMovingRaw = yMoving > 0.4f ? 1 : yMoving <  -0.2f ? -1 : 0;
                 }
                 else
                 {
@@ -254,7 +234,7 @@ namespace Platformer
                 }
             }
 
-            if (onGround && xMovingRaw == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack))
+            if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack))
                 stateMachine.Switch(States.Idle);
             else if (onGround && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack) && normalMouvement)
                 stateMachine.Switch(States.Running);
@@ -271,7 +251,7 @@ namespace Platformer
             float VelocityApproach(float acceleration, float friction)
             {
                 if (Velocity.X == 0 || xMoving != 0)
-                    return Approach(Velocity.X, xMoving * maxSpeed, acceleration);
+                    return Approach(Velocity.X, (xMoving > 0.3f ? 1 : xMoving < -0.3f ? -1 : xMoving) * maxSpeed, acceleration);
                 return Approach(Velocity.X, 0, friction * Math.Abs(Velocity.X));
             }
 
@@ -294,6 +274,27 @@ namespace Platformer
             if (Velocity.X <= 1 && Velocity.X >= -1)
                 Velocity.X = 0;
 
+            if (!Safe && SafePercentage == 0)
+            {
+                SafePercentage = 0.01f;
+                if (onGround && !(onGroundEntity is JumpThru) && xMoving == 0)
+                    AddComponent(new Timer(safeTime, true, (timer) =>
+                    {
+                        SafePercentage = Ease.Reverse(timer.Value / timer.MaxValue);
+                        if (!(onGround && !(onGroundEntity is JumpThru)) || xMoving != 0)
+                        {
+                            SafePercentage = 0;
+                            RemoveComponent(timer);
+                        }
+                    },
+                    () => { SafePercentage = 1; Safe = true; })); ;
+            }
+
+            if (!onGround || xMoving != 0)
+            {
+                Safe = false;
+                SafePercentage = 0;
+            }
 
             {
                 if (previousOnGround && !onGround)
@@ -356,8 +357,10 @@ namespace Platformer
 
                 if(stateMachine.Is(States.WallSliding))
                     Velocity.Y = Math.Min(Velocity.Y, maxFallSlidingSpeed);
-                else
+                else if (!stateMachine.Is(States.Swinging))
+                {
                     Velocity.Y = Math.Min(Velocity.Y, maxFallingSpeed);
+                }
             }
 
             {
@@ -383,6 +386,14 @@ namespace Platformer
                 if(onGround || onWall)
                     cancelJump = false;
 
+                if (Velocity.Y >= maxFallingSpeed)
+                {
+                    potentialFallingSpeed += gravityVector.Y * gravityScale;
+                    potentialFallingSpeed = Math.Min(potentialFallingSpeed, 400);
+                }
+                else
+                    potentialFallingSpeed = Velocity.Y;
+
                 if (SwingControls.IsDown())
                     ThrowRope();
                 if (SwingControls.Is() && stateMachine.Is(States.Swinging))
@@ -402,15 +413,13 @@ namespace Platformer
             if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !OnGroundCheck(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
                 stateMachine.Switch(States.Ascending);
 
-            if (xMovingRaw != 0 && !isUnsticking)
-                Facing = xMovingRaw;
+            if (xMoving != 0 && !isUnsticking)
+                Facing = Math.Sign(xMoving);
 
             Dust.Acceleration = Velocity;
 
             collisionX = collisionY = false;
             previousOnGround = onGround;
-
-            Debug.LogUpdate(stateMachine.CurrentState, isAtSwingEnd);
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
@@ -480,6 +489,8 @@ namespace Platformer
             grappledSolid = determinedGrappledSolid;
 
             #endregion
+
+            Velocity.Y = potentialFallingSpeed;
 
             #region Acting Accordingly depending on Grappled Object
             if (determinedGrappledSolid is ISwinged swinged)
@@ -810,7 +821,7 @@ namespace Platformer
             if (xMoving == 0 && yMoving == 0)
                 return;
             else
-                dir = new Vector2(xMovingRaw, yMovingRaw);
+                dir = new Vector2(Math.Sign(xMoving), Math.Sign(yMoving));
 
             boostBar.Visible = true;
 
@@ -851,9 +862,9 @@ namespace Platformer
             Vector2 d = dir * coef *new Vector2(jetpackPowerX, jetpackPowerY);
             d = Vector2.Clamp(d + Velocity, new Vector2(-maxJetpackSpeedX,  -maxJetpackSpeedY), new Vector2(maxJetpackSpeedX, maxFallingSpeed + maxJetpackSpeedY)) - Velocity;
 
-            if (Math.Sign(d.X) != xMovingRaw)
+            if (Math.Sign(d.X) != Math.Sign(xMoving))
                 d.X = 0;
-            if (Math.Sign(d.Y) != yMovingRaw)
+            if (Math.Sign(d.Y) != Math.Sign(yMoving))
                 d.Y = 0;
 
             if (isAtSwingEnd && Math.Abs(d.X) < 10)

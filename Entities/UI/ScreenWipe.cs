@@ -41,26 +41,30 @@ namespace Platformer
             () =>
             {
                 Pos = Vector2.Lerp(initPos, endPos, 0.5f);
-                onTransition?.Invoke();
 
-                bool doOnce = false;
-                AddComponent(new Timer(wipeTime / 2, true, (timer) =>
+                AddComponent(new Coroutine(Coroutine.WaitFramesThen(1, () =>
                 {
-                    float reversed = 0.5f + Ease.Reverse((timer.Value) / wipeTime, 0.5f);
-                    float eased = Ease.QuintInAndOut(reversed);
-                    Pos = Vector2.Lerp(initPos, endPos, eased);
+                    onTransition?.Invoke();
 
-                    if (!doOnce && reversed >= 0.75f)
+                    bool doOnce = false;
+                    AddComponent(new Timer(wipeTime / 2, true, (timer) =>
                     {
-                        onThreeFourths?.Invoke();
-                        doOnce = true;
-                    }
-                },
-                () =>
-                {
-                    onEnd?.Invoke();
-                    Engine.CurrentMap.Destroy(this);
-                }));
+                        float reversed = 0.5f + Ease.Reverse((timer.Value) / wipeTime, 0.5f);
+                        float eased = Ease.QuintInAndOut(reversed);
+                        Pos = Vector2.Lerp(initPos, endPos, eased);
+
+                        if (!doOnce && reversed >= 0.75f)
+                        {
+                            onThreeFourths?.Invoke();
+                            doOnce = true;
+                        }
+                    },
+                    () =>
+                    {
+                        onEnd?.Invoke();
+                        Engine.CurrentMap.Destroy(this);
+                    }));
+                })));
             }));
         }
     }

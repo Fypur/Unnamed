@@ -33,7 +33,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "0";
+        public static string InitLevel = "62";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -282,15 +282,21 @@ namespace Platformer
 
             PauseMenu = new PauseMenu();
 
-            music = Audio.PlayEvent(AudioData.MUSIC);
+            //music = Audio.PlayEvent(AudioData.MUSIC);
         }
 
         public static void EndGame()
         {
+            foreach (Entity entity in Engine.CurrentMap.Data.Entities)
+                entity.OnDestroy();
+
             Engine.CurrentMap = new Map(Vector2.Zero);
             Engine.Cam.SetBoundaries(Rectangle.Empty);
             Engine.Cam.Pos = Vector2.Zero;
             Engine.Player = null;
+
+
+            Audio.StopEvent(music);
         }
 
         public static void PauseOrUnpause()

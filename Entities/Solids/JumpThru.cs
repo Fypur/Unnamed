@@ -17,6 +17,7 @@ namespace Platformer
         {
             Texture2D texture = DataManager.Objects["jumpthrus/" + textureId];
             Vector2 size = new Vector2(8, 8);
+            Layer = 1;
 
             if (!CroppedTextures.ContainsKey(textureId))
             {
@@ -75,13 +76,6 @@ namespace Platformer
                 return false;
 
             return true;
-        }
-
-        public override void Update()
-        {
-            base.Update();
-            Debug.LogUpdate(Layer);
-            Layer = 1;
         }
     }
 }

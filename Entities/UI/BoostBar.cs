@@ -26,7 +26,6 @@ namespace Platformer
             base.Update();
             
             filled.Scale.X = Value;
-            Debug.LogUpdate(Value);
         }
     }
 }

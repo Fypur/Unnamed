@@ -36,7 +36,7 @@ namespace Platformer
             Sprite.Play("light");
 
             light = (Light)AddComponent(
-                new Light(Sprite.CurrentAnimation.Slices[0].Rect.Location.ToVector2(), 60, new Color(Color.White, 80), new Color(Color.Black, 20)));
+                new Light(Sprite.CurrentAnimation.Slices[0].Rect.Location.ToVector2(), 60, new Color(Color.White, 30), new Color(Color.Black, 20)));
            
             if(turnOffRect is Rectangle r)
             {
@@ -61,8 +61,8 @@ namespace Platformer
         {
             base.Update();
 
-            Debug.LogUpdate(-(Engine.Player.Pos.X - Pos.X) / 120);
-            lightSound.setParameterByName("Distance", -(Engine.Player.Pos.X - Pos.X) / 120);
+            lightSound.setParameterByName("Distance", -(Vector2.Distance(Engine.Player.Pos, Pos + light.LocalPosition) / 120));
+            lightSound.setParameterByName("DistanceX", (Engine.Player.Pos.X - Pos.X - light.LocalPosition.X) / 120);
 
             if(Sprite.CurrentAnimationFrame.Tag is string tag)
             {
@@ -77,9 +77,6 @@ namespace Platformer
                     lightSound.setVolume(0);
                 }
             }
-
-            if(Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.A))
-                Engine.CurrentMap.MiddlegroundSystem.Emit(Spark, Pos + light.LocalPosition, 20);
 
             Spark = new ParticleType()
             {

@@ -47,8 +47,8 @@ namespace Platformer
             lightIntensity2 = (int)(r2.Distance / 1.2f);*/
 
             Drawing.DrawQuad(
-                Pos + lightRect.Location.ToVector2(), new Color(Color.White, 150),
-                Pos + lightRect.Location.ToVector2() + new Vector2(lightRect.Width, 0), new Color(Color.White, 150),
+                Pos + lightRect.Location.ToVector2(), new Color(Color.White, 30),
+                Pos + lightRect.Location.ToVector2() + new Vector2(lightRect.Width, 0), new Color(Color.White, 30),
                 Pos + lightRect.Location.ToVector2() + new Vector2(lightRect.Width, 0) + new Vector2(1, 1) * 100, new Color(Color.Black, 0),
                 Pos + lightRect.Location.ToVector2() + new Vector2(-1, 1) * 100, new Color(Color.Black, 0));
         }

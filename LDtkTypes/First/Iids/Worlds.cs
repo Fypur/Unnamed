@@ -69,6 +69,8 @@ public static class Worlds
         public static readonly System.Guid World_Level_59 = System.Guid.Parse("141ea7f0-02f0-11ed-bfd5-41825b3b763f");
         public static readonly System.Guid World_Level_60 = System.Guid.Parse("045434e0-2a00-11ed-abbc-13e1b40eef4d");
         public static readonly System.Guid World_Level_61 = System.Guid.Parse("6d885e90-2a00-11ed-abbc-cff6b537bdc6");
+        public static readonly System.Guid World_Level_62 = System.Guid.Parse("0391e260-2a00-11ed-82e1-9bd3d844de32");
+        public static readonly System.Guid World_Level_63 = System.Guid.Parse("4bb1f9d0-2a00-11ed-82e1-cbe5aa4ad3c3");
     }
 }
 #pragma warning restore
