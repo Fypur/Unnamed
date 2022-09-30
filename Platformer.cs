@@ -33,7 +33,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "61";
+        public static string InitLevel = "66";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -58,7 +58,7 @@ namespace Platformer
 
             Options.CurrentResolution = Engine.ScreenSize;
 
-            LDtkFile = LDtkFile.FromFile("Content/First.ldtk");
+            LDtkFile = LDtkFile.FromFile("Content/World.ldtk");
             World = LDtkFile.LoadWorld(LDtkTypes.Worlds.World.Iid);
 
             base.Initialize();
@@ -341,9 +341,9 @@ namespace Platformer
                 string currentDir = Environment.CurrentDirectory;
                 currentDir = currentDir.Replace('\\', '/');
 
-                File.Copy(currentDir.Substring(0, currentDir.LastIndexOf("Platformer/") + 11) + "Content/First.ldtk", currentDir + "/Content/First.ldtk", true);
+                File.Copy(currentDir.Substring(0, currentDir.LastIndexOf("Platformer/") + 11) + "Content/World.ldtk", currentDir + "/Content/World.ldtk", true);
             
-                World = LDtkFile.FromFile("Content/First.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
+                World = LDtkFile.FromFile("Content/World.ldtk").LoadWorld(LDtkTypes.Worlds.World.Iid);
                 Engine.CurrentMap.CurrentLevel.Unload();
                 LDtkLevel lvl = World.LoadLevel(Levels.LastLDtkLevel.Iid);
                 new Level(Levels.GetLevelData(lvl)).LoadNoAutoTile();

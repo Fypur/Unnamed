@@ -6,7 +6,7 @@ namespace LDtkTypes;
 using Microsoft.Xna.Framework;
 using LDtk;
 
-public class TriggeredDecal : ILDtkEntity
+public class CamLock : ILDtkEntity
 {
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
