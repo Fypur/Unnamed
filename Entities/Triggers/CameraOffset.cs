@@ -20,21 +20,25 @@ namespace Platformer
 
         public override void OnTriggerEnter(Player player)
         {
-            AddComponent(new Timer(OffsetTransitionTime, true, (timer) =>
+            /*AddComponent(new Timer(OffsetTransitionTime, true, (timer) =>
             {
                 Engine.Cam.Offset = Offset * Ease.QuintInAndOut(Ease.Reverse(timer.Value / timer.MaxValue));
-            }, () => Engine.Cam.Offset = Offset));
+            }, () => Engine.Cam.Offset = Offset));*/
+
+            Engine.Cam.Offset = Offset;
         }
 
         public override void OnTriggerExit(Player player)
         {
-            if (Engine.Cam.Offset == Offset)
+            /*if (Engine.Cam.Offset == Offset)
             {
                 AddComponent(new Timer(OffsetTransitionTime, true, (timer) =>
                 {
                     Engine.Cam.Offset = Offset * Ease.QuintInAndOut(timer.Value / timer.MaxValue);
                 }, () => Engine.Cam.Offset = Vector2.Zero));
-            }
+            }*/
+
+            Engine.Cam.Offset = Vector2.Zero;
         }
     }
 }
