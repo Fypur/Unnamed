@@ -63,7 +63,6 @@ namespace Platformer
 
             if(Engine.Player != null)
             {
-                Debug.LogUpdate(Vector2.Distance(Engine.Player.Pos, Pos + light.LocalPosition) * Math.Sign(Engine.Player.Pos.X - Pos.X - light.LocalPosition.X) / 250);
                 lightSound.setParameterByName("Distance", Vector2.Distance(Engine.Player.Pos, Pos + light.LocalPosition) * Math.Sign(Engine.Player.Pos.X - Pos.X - light.LocalPosition.X) / 120);
                 //lightSound.setParameterByName("DistanceX", (Engine.Player.Pos.X - Pos.X - light.LocalPosition.X) / 120);
             }

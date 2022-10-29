@@ -1004,11 +1004,8 @@ namespace Platformer
 
         private void CollisionX(Entity collided)
         {
-            if (collided is GlassWall gl && gl.DestroyOnX && Math.Abs(Velocity.X) >= gl.BreakVelocity)
-            {
-                gl.Break(Velocity);
+            if (collided is GlassWall gl && gl.Break(this, Velocity, true))
                 return;
-            }
 
             Velocity.X = 0;
             collisionX = true;
@@ -1019,11 +1016,8 @@ namespace Platformer
             if (collided is JumpThru)
                 Pos.Y = collided.Pos.Y - Height;
 
-            if (collided is GlassWall gl && !gl.DestroyOnX && Math.Abs(Velocity.Y) >= gl.BreakVelocity)
-            {
-                gl.Break(Velocity);
+            if (collided is GlassWall gl && gl.Break(this, Velocity, false))
                 return;
-            }
 
             if (Velocity.Y > 0)
                 Land();

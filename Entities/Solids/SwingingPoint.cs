@@ -38,8 +38,8 @@ namespace Platformer
             
             Drawing.DrawCircleEdge(Pos + HalfSize, MaxSwingDistance, 0.1f, new Color(Color.Gray, 50), 1);
 
-            if (!swinged && !new Raycast(Raycast.RayTypes.MapTiles, Pos + HalfSize, Engine.Player.Pos + Engine.Player.HalfSize).Hit && Vector2.Distance(Pos + HalfSize, Engine.Player.Pos + Engine.Player.HalfSize) < MaxSwingDistance)
-                Drawing.DrawLine(Pos + HalfSize, Engine.Player.Pos + Engine.Player.HalfSize, new Color(Color.Gray, 50), 1);
+            if (Engine.Player != null && !swinged && !new Raycast(Raycast.RayTypes.MapTiles, Pos + HalfSize, Engine.Player.Pos + Engine.Player.HalfSize).Hit && Vector2.Distance(Pos + HalfSize, Engine.Player.Pos + Engine.Player.HalfSize) < MaxSwingDistance)
+                Drawing.DrawDottedLine(Pos + HalfSize, Engine.Player.Pos + Engine.Player.HalfSize, new Color(Color.Gray, 50), 1, 4, 4);
         }
 
         public override void OnDestroy()

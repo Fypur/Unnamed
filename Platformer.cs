@@ -33,7 +33,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "69";
+        public static string InitLevel = "70";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -356,7 +356,7 @@ namespace Platformer
                     lvlSize.Y = 180;
                 Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, lvlSize);
 
-                player.Death();
+                player.InstaDeath();
                 t.SelfDestroy();
             }));
             

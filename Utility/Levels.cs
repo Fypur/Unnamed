@@ -191,7 +191,7 @@ namespace Platformer
                 }
 
             foreach (LDtkTypes.GlassWall p in level.GetEntities<LDtkTypes.GlassWall>())
-                entities.Add(new GlassWall(p.Position, p.Width(), p.Height(), p.BreakVelocity));
+                entities.Add(new GlassWall(p.Position, p.SolidInDirection == null ? null : p.SolidInDirection.Value.ToDirection(), p.Width(), p.Height(), p.BreakVelocity));
 
             foreach (LDtkTypes.CamLock p in level.GetEntities<LDtkTypes.CamLock>())
                 entities.Add(new CameraLock(p.Position, p.Size));
