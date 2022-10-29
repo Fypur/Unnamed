@@ -83,9 +83,9 @@ namespace Platformer
             foreach (LDtkTypes.GrapplingPoint p in level.GetEntities<LDtkTypes.GrapplingPoint>())
             {
                 if (p.Positions.Length == 0)
-                    entities.Add(new SwingingPoint(p.Position));
+                    entities.Add(new SwingingPoint(p.Position, p.MaxSwingDistance));
                 else
-                    entities.Add(new SwingingPoint(p.Position, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, p.GoingForwards, Ease.QuintInAndOut));
+                    entities.Add(new SwingingPoint(p.Position, p.MaxSwingDistance, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, p.GoingForwards, Ease.QuintInAndOut));
             }
 
             foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
@@ -102,7 +102,7 @@ namespace Platformer
                 
 
             foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
-                entities.Add(new RailedPullBlock(p.RailPositions, p.Position, p.Width(), p.Height()));
+                entities.Add(new RailedPullBlock(p.RailPositions, p.MaxSwingDistance, p.Position, p.Width(), p.Height()));
 
             foreach (LDtkTypes.RespawnArea p in level.GetEntities<LDtkTypes.RespawnArea>())
                 entities.Add(new RespawnTrigger(p.Position, p.Size, p.RespawnPoint));
@@ -156,7 +156,7 @@ namespace Platformer
                         break;
                 }
 
-                entities.Add(new SwingTriggered(p.Position, p.Positions, p.Width(), p.Height(), speed));
+                entities.Add(new SwingTriggered(p.Positions, p.MaxSwingDistance, p.Position, p.Width(), p.Height(), speed));
             }
                 
             foreach (LDtkTypes.TextSpawn p in level.GetEntities<LDtkTypes.TextSpawn>())
@@ -166,7 +166,7 @@ namespace Platformer
                 entities.Add(new JetpackBooster(p.Position, p.Size, p.Direction.ToDirection()));
 
             foreach (LDtkTypes.Refill p in level.GetEntities<LDtkTypes.Refill>())
-                entities.Add(new Refill(p.Position, p.RespawnTime));
+                entities.Add(new FuelRefill(p.Position, p.RespawnTime));
 
             foreach (LDtkTypes.Collectable p in level.GetEntities<LDtkTypes.Collectable>())
                 if((!LevelNonRespawn.Contains(p.Iid))
@@ -355,7 +355,7 @@ namespace Platformer
             }
 
             if (!downNeighbours)
-                entities.Add(new DeathTrigger(level.Position.ToVector2() + level.Size.ToVector2().OnlyY(), new Vector2(level.Size.X, intGrid.TileSize)));
+                entities.Add(new DeathTrigger(level.Position.ToVector2() + new Vector2(0, level.Size.Y + 10), new Vector2(level.Size.X, intGrid.TileSize), true));
             else
             {
                 bool inside = false;
@@ -383,7 +383,7 @@ namespace Platformer
                         if (minX == int.MaxValue)
                             minX = x + 1;
                         
-                        entities.Add(new DeathTrigger(new Vector2(x, level.Position.Y + level.Size.Y), new Vector2(minX - x, intGrid.TileSize)));
+                        entities.Add(new DeathTrigger(new Vector2(x, level.Position.Y + level.Size.Y), new Vector2(minX - x, intGrid.TileSize), true));
                     }
                     
                     inside = false;
@@ -588,7 +588,7 @@ namespace Platformer
             {
                 case 1:
                     var l = new List<Entity> {
-                        new SwingingPoint(new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2[] { new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2(Engine.ScreenSize.X / 2 - 200, 50) }, new float[]{ 1.5f }, true, Ease.QuintInAndOut),
+                        new SwingingPoint(new Vector2(Engine.ScreenSize.X / 2, 50), 1000, new Vector2[] { new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2(Engine.ScreenSize.X / 2 - 200, 50) }, new float[]{ 1.5f }, true, Ease.QuintInAndOut),
                         FallDeathTrigger(p, size)
                     };
                     l.AddRange(DefaultLevelTransitions(p, new Level(GetLevelData(2, p + Engine.ScreenSize.OnlyX())), null, null, null));
@@ -605,8 +605,8 @@ namespace Platformer
 
                 case 3:
                     return new List<Entity>() { FallDeathTrigger(position, size),
-                    new SwingingPoint(new Vector2(200, 20)),
-                    new RailedPullBlock(new Vector2[] { new Vector2(50, 10), new Vector2(50, 50), new Vector2(100, 50) }, 1, 20, 20)
+                    new SwingingPoint(new Vector2(200, 20), 1000),
+                    new RailedPullBlock(new Vector2[] { new Vector2(50, 10), new Vector2(50, 50), new Vector2(100, 50) }, 1000, 1, 20, 20)
                     };
                 default:
                     throw new Exception("Couldn't find Level");

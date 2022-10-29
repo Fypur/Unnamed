@@ -18,20 +18,24 @@ namespace Platformer
         //Indicates the index of positions[] where the platform is inbetween
         private int currentPosIndex;
 
-        public RailedPullBlock(Vector2[] positions, int initialIndexPosition, int width, int height) : base(positions[initialIndexPosition], width, height, new Sprite(Color.Beige))
+        public float MaxSwingDistance { get; set; }
+
+        public RailedPullBlock(Vector2[] positions, float maxSwingDistance, int initialIndexPosition, int width, int height) : base(positions[initialIndexPosition], width, height, new Sprite(Color.Beige))
         {
             RailPositions = positions;
             currentPosIndex = initialIndexPosition;
             SwingingPoint.SwingingPoints.Add(this);
+            MaxSwingDistance = maxSwingDistance;
 
             AddComponent(new LineRenderer(RailPositions.ToList(), 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
 
-        public RailedPullBlock(Vector2[] positions, Vector2 initPos, int width, int height) : base(DetermineInitPos(initPos, positions, width, height, out int initialIndex), width, height, new Sprite(Color.Beige))
+        public RailedPullBlock(Vector2[] positions, float maxSwingDistance, Vector2 initPos, int width, int height) : base(DetermineInitPos(initPos, positions, width, height, out int initialIndex), width, height, new Sprite(Color.Beige))
         {
             RailPositions = positions;
             currentPosIndex = initialIndex;
             SwingingPoint.SwingingPoints.Add(this);
+            MaxSwingDistance = maxSwingDistance;
 
             AddComponent(new LineRenderer(RailPositions.ToList(), 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }

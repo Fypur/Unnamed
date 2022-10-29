@@ -8,11 +8,18 @@ namespace Platformer
 {
     public class DeathTrigger : PlayerTrigger
     {
+        public bool InstaDeath;
+
         public DeathTrigger(Vector2 position, Vector2 size)
             : base(position, size, null) { }
 
         public DeathTrigger(Rectangle bounds)
             : base(bounds, null) { }
+
+        public DeathTrigger(Vector2 position, Vector2 size, bool instaDeath) : this(position, size)
+        {
+            InstaDeath = instaDeath;
+        }
 
         public DeathTrigger(Vector2 position, int width, int height)
             : base(position, width, height, null) { }
@@ -20,13 +27,23 @@ namespace Platformer
         public override void OnTriggerEnter(Player player)
         {
             if (!player.Is(Player.States.Dead) && Conditions(player))
-                player.Death();
+            {
+                if (InstaDeath)
+                    player.InstaDeath();
+                else
+                    player.Death();
+            }
         }
 
         public override void OnTriggerStay(Player player)
         {
             if (!player.Is(Player.States.Dead) && Conditions(player))
-                player.Death();
+            {
+                if (InstaDeath)
+                    player.InstaDeath();
+                else
+                    player.Death();
+            }
         }
     }
 }

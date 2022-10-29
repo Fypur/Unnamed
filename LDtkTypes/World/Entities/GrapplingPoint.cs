@@ -18,6 +18,7 @@ public class GrapplingPoint : ILDtkEntity
 
     public Color SmartColor { get; set; }
 
+    public float MaxSwingDistance { get; set; }
     public Vector2[]? Positions { get; set; }
     public float[] TimeBetweenPositions { get; set; }
     public bool GoingForwards { get; set; }

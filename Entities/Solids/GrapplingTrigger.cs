@@ -14,15 +14,18 @@ namespace Platformer
     {
         public event Action OnPulled;
         public float TimeToReactive;
+
+        public float MaxSwingDistance { get; set; }
+
         public GrapplingTrigger(Vector2 position, bool active, float timeToReactive, params Action[] triggeredActions) : base(position, 1, 1, null)
         {
-            Pos = position;
             Active = active;
             TimeToReactive = timeToReactive;
             foreach (Action action in triggeredActions)
                 OnPulled += action;
 
             SwingingPoint.SwingingPoints.Add(this);
+            MaxSwingDistance = 1000;
         }
 
         public void Pulled()

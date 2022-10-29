@@ -14,15 +14,15 @@ namespace Platformer
         private static ParticleType Spark = new ParticleType()
         {
             LifeMin = 0.4f,
-            LifeMax = 10,
+            LifeMax = 0.7f,
             Color = Color.Yellow,
-            FadeMode = ParticleType.FadeModes.None,
+            FadeMode = ParticleType.FadeModes.Linear,
             Size = 1,
             SizeRange = 0,
-            SizeChange = ParticleType.FadeModes.EndLinear,
+            //SizeChange = ParticleType.FadeModes.EndLinear,
             Acceleration = Vector2.UnitY * 300,
             SpeedMin = 20,
-            SpeedMax = 120,
+            SpeedMax = 80,
             DirectionRange = 90,
             Direction = -90,
         };
@@ -36,7 +36,7 @@ namespace Platformer
             Sprite.Play("light");
 
             light = (Light)AddComponent(
-                new Light(Sprite.CurrentAnimation.Slices[0].Rect.Location.ToVector2(), 60, new Color(Color.White, 30), new Color(Color.Black, 20)));
+                new Light(Sprite.CurrentAnimation.Slices[0].Rect.Location.ToVector2(), 60, new Color(Color.White, 50), new Color(Color.White, 0)));
            
             if(turnOffRect is Rectangle r)
             {
@@ -54,15 +54,19 @@ namespace Platformer
                 };
             }
 
-            lightSound = Audio.PlayEvent("event:/StreetLight");
+            lightSound = Audio.PlayEvent("StreetLight");
         }
 
         public override void Update()
         {
             base.Update();
 
-            lightSound.setParameterByName("Distance", -(Vector2.Distance(Engine.Player.Pos, Pos + light.LocalPosition) / 120));
-            lightSound.setParameterByName("DistanceX", (Engine.Player.Pos.X - Pos.X - light.LocalPosition.X) / 120);
+            if(Engine.Player != null)
+            {
+                Debug.LogUpdate(Vector2.Distance(Engine.Player.Pos, Pos + light.LocalPosition) * Math.Sign(Engine.Player.Pos.X - Pos.X - light.LocalPosition.X) / 250);
+                lightSound.setParameterByName("Distance", Vector2.Distance(Engine.Player.Pos, Pos + light.LocalPosition) * Math.Sign(Engine.Player.Pos.X - Pos.X - light.LocalPosition.X) / 120);
+                //lightSound.setParameterByName("DistanceX", (Engine.Player.Pos.X - Pos.X - light.LocalPosition.X) / 120);
+            }
 
             if(Sprite.CurrentAnimationFrame.Tag is string tag)
             {
@@ -77,22 +81,6 @@ namespace Platformer
                     lightSound.setVolume(0);
                 }
             }
-
-            Spark = new ParticleType()
-            {
-                LifeMin = 0.4f,
-                LifeMax = 0.7f,
-                Color = Color.Yellow,
-                FadeMode = ParticleType.FadeModes.Linear,
-                Size = 1,
-                SizeRange = 0,
-                //SizeChange = ParticleType.FadeModes.EndLinear,
-                Acceleration = Vector2.UnitY * 300,
-                SpeedMin = 20,
-                SpeedMax = 80,
-                DirectionRange = 90,
-                Direction = -90,
-            };
         }
 
         public override void OnDestroy()

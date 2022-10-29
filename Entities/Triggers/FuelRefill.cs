@@ -8,7 +8,7 @@ using Fiourp;
 
 namespace Platformer
 {
-    public class Refill : PlayerTrigger
+    public class FuelRefill : PlayerTrigger
     {
         private static readonly ParticleType explosion = new ParticleType()
         {
@@ -29,7 +29,7 @@ namespace Platformer
 
         private bool canActivate = true;
 
-        public Refill(Vector2 position, float respawnTime) : base(position, new Vector2(size), new Sprite()) 
+        public FuelRefill(Vector2 position, float respawnTime) : base(position, new Vector2(size), new Sprite()) 
         {
             Sprite.Add(Sprite.AllAnimData["Refill"]);
             Sprite.Play("rotate");
@@ -50,6 +50,8 @@ namespace Platformer
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, MiddlePos, 30);
             Engine.Cam.LightShake();
+            player.HitStop(0.05f);
+
             Visible = false;
 
             AddComponent(new Timer(RespawnTime, true, null,

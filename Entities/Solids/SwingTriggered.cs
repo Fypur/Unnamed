@@ -25,7 +25,9 @@ namespace Platformer
         private bool isMoving;
         private bool looped;
 
-        public SwingTriggered(Vector2 position, Vector2[] positions, int width, int height, Types type) : base(DetermineInitPos(position, positions, out int initIndex), width, height, new Sprite(Color.LightBlue))
+        public float MaxSwingDistance { get; set; }
+
+        public SwingTriggered(Vector2[] positions, float maxSwingDistance, Vector2 initPos, int width, int height, Types type) : base(DetermineInitPos(initPos, positions, out int initIndex), width, height, new Sprite(Color.LightBlue))
         {
             Positions = positions;
             Collider.Collidable = false;
@@ -35,6 +37,7 @@ namespace Platformer
 
             currentPosIndex = initIndex;
             SwingingPoint.SwingingPoints.Add(this);
+            MaxSwingDistance = maxSwingDistance;
 
             switch (type)
             {

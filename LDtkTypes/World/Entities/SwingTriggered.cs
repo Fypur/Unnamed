@@ -20,5 +20,6 @@ public class SwingTriggered : ILDtkEntity
 
     public Vector2[]? Positions { get; set; }
     public Speed Speed { get; set; }
+    public float MaxSwingDistance { get; set; }
 }
 #pragma warning restore

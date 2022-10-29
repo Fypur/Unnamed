@@ -15,6 +15,8 @@ namespace Platformer
         public Color InsideColor;
         public Color OutsideColor;
 
+        public static readonly Color TransparentWhite = new Color(Color.White, 0);
+
         public Light(Vector2 localPosition, float radius, Color insideColor, Color outsideColor)
         {
             LocalPosition = localPosition;
@@ -25,7 +27,7 @@ namespace Platformer
 
         public override void Render()
         {
-            Drawing.DrawCircle(ParentEntity.Pos + LocalPosition, Radius, 0.3f, InsideColor, OutsideColor);
+            Drawing.DrawCircle(ParentEntity.Pos + LocalPosition, Radius, 0.1f, InsideColor, OutsideColor);
         }
     }
 }

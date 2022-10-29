@@ -46,11 +46,37 @@ namespace Platformer
         //Can wall jump if wall is this far away from the wall in pixels
         private const float wallJumpPixelGap = 4;
         
-        private const float maxGrappleDist = 1000f;
-
         public static readonly ParticleType Dust = Particles.Dust.Copy();
 
-        private readonly ParticleType JetpackParticle;
+        private readonly ParticleType JetpackParticle = new ParticleType()
+        {
+            LifeMin = 0.2f,
+            LifeMax = 0.4f,
+            Color = Color.Orange,
+            Color2 = Color.Yellow,
+            Size = 4,
+            SizeRange = 3,
+            SizeChange = ParticleType.FadeModes.Linear,
+            Direction = 180,
+            SpeedMin = 2,
+            SpeedMax = 5
+        };
+
+        private ParticleType ExplosionParticle = new ParticleType()
+        {
+            LifeMin = 0.2f,
+            LifeMax = 1,
+            Color = Color.White,
+            Color2 = Color.Orange,
+            Size = 3,
+            SizeRange = 2,
+            SizeChange = ParticleType.FadeModes.Linear,
+            Direction = 0,
+            DirectionRange = 360,
+            SpeedMin = 4,
+            SpeedMax = 100,
+            Acceleration = Vector2.UnitY * 10,
+        };
 
         #endregion
 
@@ -149,20 +175,6 @@ namespace Platformer
 
             AddComponent(stateMachine);
 
-            JetpackParticle = new ParticleType()
-            {
-                LifeMin = 0.2f,
-                LifeMax = 0.4f,
-                Color = Color.Orange,
-                Color2 = Color.Yellow,
-                Size = 4,
-                SizeRange = 3,
-                SizeChange = ParticleType.FadeModes.Linear,
-                Direction = 180,
-                SpeedMin = 2,
-                SpeedMax = 5
-            };
-
             RespawnPoint = position;
             Layer = 2;
 
@@ -183,9 +195,8 @@ namespace Platformer
 
                 if(jetpackAudio.isValid())
                     Audio.StopEvent(jetpackAudio);
-                return; 
             }
-
+            
             onGround = OnGroundCheck(Pos + new Vector2(0, 1), out Entity onGroundEntity);
             onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
             onWall = Collider.CollideAt(Pos + new Vector2(-1, 0)) || onRightWall;
@@ -207,6 +218,9 @@ namespace Platformer
             }
 
             base.Update();
+
+            if (!CanMove)
+                return;
 
             {
                 xMoving = yMoving = 0;
@@ -316,6 +330,9 @@ namespace Platformer
                 {
                     bool TestJump()
                     {
+                        if(!CanMove)
+                            return false;
+
                         if (onGround || inCoyoteTime)
                         {
                             Jump();
@@ -435,14 +452,14 @@ namespace Platformer
             #region Determining grappling point
             Fiourp.Solid determinedGrappledSolid = null;
             Fiourp.Solid reserveGrappledSolid = null;
-            float distance = maxGrappleDist;
-            float reserveDistance = maxGrappleDist;
+            float distance = float.PositiveInfinity;
+            float reserveDistance = float.PositiveInfinity;
 
-            foreach (Fiourp.Solid g in SwingingPoint.SwingingPoints)
+            foreach (Solid g in SwingingPoint.SwingingPoints)
             {
                 float d = Vector2.Distance(MiddleExactPos, g.MiddleExactPos);
 
-                if (d < distance)
+                if (d < distance && d < ((ISwinged)g).MaxSwingDistance)
                 {
                     Vector2 dir = g.Pos - Pos;
                     bool onRightDir = true;
@@ -651,7 +668,7 @@ namespace Platformer
             Velocity.X += LiftBoost.X;
             previousOnGround = false;
 
-            var j = Audio.PlayEvent("event:/Jump");
+            var j = Audio.PlayEvent("Jump");
             PlayerStats.JumpCount++;
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
@@ -692,7 +709,7 @@ namespace Platformer
         {
             stateMachine.Switch(States.Jumping);
 
-            Audio.PlayEvent("event:/Jump");
+            Audio.PlayEvent("Jump");
             PlayerStats.JumpCount++;
 
             int wallJumpingDirection = onRightWall ? -1 : 1;
@@ -826,7 +843,7 @@ namespace Platformer
             boostBar.Visible = true;
 
             if (!Jetpacking)
-                jetpackAudio = Audio.PlayEvent("event:/Jetpack");
+                jetpackAudio = Audio.PlayEvent("Jetpack");
 
             dir.X = dir.Normalized().X;
 
@@ -882,15 +899,16 @@ namespace Platformer
 
         public void Death()
         {
-            Velocity = Vector2.Zero;
-            Active = false;
-            Visible = false;
+            stateMachine.Switch(States.Dead);
+            CanMove = false;
+
+            Sprite.Play("ascend");
 
             ResetJetpack();
             ResetSwing();
-            OnDeath?.Invoke();
-            OnDeath = delegate { };
-            stateMachine.Switch(States.Dead);
+
+            
+
             PlayerStats.DeathCount++;
 
             foreach (Trigger trig in Engine.CurrentMap.Data.Triggers)
@@ -902,6 +920,56 @@ namespace Platformer
                 }
             }
 
+            Engine.Cam.Shake(0.2f, 2);
+
+            Audio.PlayEvent("DeathInit");
+
+            Vector2 startPos = Pos;
+            Vector2 endPos = Pos - Velocity.Normalized() * 15;
+
+            //Engine.CurrentMap.Instantiate(new ScreenFlash(0.5f, Ease.QuintOut));
+
+            //Engine.CurrentMap.MiddlegroundSystem.Emit(ExplosionParticle, Bounds, 10);
+
+            HitStop(0.05f, () =>
+            {
+                CanMove = false;
+                AddComponent(new Timer(0.2f, true, (timer) =>
+                {
+                    Pos = Vector2.Lerp(startPos, endPos, Ease.QuintOut(Ease.Reverse(timer.Value / timer.MaxValue)));
+                    Sprite.Color.A = (byte)((float)Math.Sin(timer.Value * 14) * 255); //Blinking
+                    Sprite.Color.B = (byte)((float)Math.Sin(timer.Value * 14) * 255);
+                    Sprite.Color.G = (byte)((float)Math.Sin(timer.Value * 14) * 255);
+                },
+                () =>
+                {
+                    Sprite.Color = Color.White;
+                    InstaDeath();
+                }));
+            });
+        }
+
+        public void InstaDeath()
+        {
+            stateMachine.Switch(States.Dead);
+            CanMove = false;
+
+            Sprite.Play("ascend");
+
+            ResetJetpack();
+            ResetSwing();
+
+            Visible = false;
+
+            OnDeath?.Invoke();
+            OnDeath = delegate { };
+
+            Engine.CurrentMap.MiddlegroundSystem.Emit(ExplosionParticle, Bounds, 100);
+            Engine.Cam.Shake(0.4f, 1);
+
+            Audio.PlayEvent("DeathExplosion");
+
+            Velocity = Vector2.Zero;
             Engine.CurrentMap.Instantiate(new ScreenWipe(1, Color.Black, () =>
             {
                 stateMachine.Switch(States.Idle);
@@ -931,8 +999,7 @@ namespace Platformer
                 Levels.ReloadLastLevelFetched();
                 Active = true;
                 Visible = true;
-                CanMove = false;
-            }, () => CanMove = true)); ;
+            }, () => CanMove = true));
         }
 
         private void CollisionX(Entity collided)
@@ -997,7 +1064,8 @@ namespace Platformer
                     Sprite.Effect = SpriteEffects.FlipHorizontally;
             }
 
-            Sprite.Color = Color.Lerp(Color.OrangeRed, Color.White, jetpackTime / maxJetpackTime);
+            if(!stateMachine.Is(States.Dead))
+                Sprite.Color = Color.Lerp(Color.OrangeRed, Color.White, jetpackTime / maxJetpackTime);
 
             //Renderer components
             base.Render();
@@ -1036,5 +1104,11 @@ namespace Platformer
 
         public bool Is(States state)
             => stateMachine.Is(state);
+
+        public void HitStop(float time, Action OnEnd = null)
+        {
+            CanMove = false;
+            AddComponent(new Timer(time, true, null, () => { CanMove = true; OnEnd?.Invoke(); }));
+        }
     }
 }

@@ -19,5 +19,6 @@ public class RailedPulledBlock : ILDtkEntity
     public Color SmartColor { get; set; }
 
     public Vector2[]? RailPositions { get; set; }
+    public float MaxSwingDistance { get; set; }
 }
 #pragma warning restore
