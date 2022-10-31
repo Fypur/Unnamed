@@ -967,7 +967,7 @@ namespace Platformer
             Engine.CurrentMap.MiddlegroundSystem.Emit(ExplosionParticle, Bounds, 100);
             Engine.Cam.Shake(0.4f, 1);
 
-            Audio.PlayEvent("DeathExplosion");
+            //Audio.PlayEvent("DeathExplosion");
 
             Velocity = Vector2.Zero;
             Engine.CurrentMap.Instantiate(new ScreenWipe(1, Color.Black, () =>
@@ -995,6 +995,12 @@ namespace Platformer
 
                 if (!changedCamPos)
                     Engine.Cam.CenteredPos = ExactPos;
+
+                Vector2 offset = Vector2.Zero;
+                foreach (CameraOffset camOffset in Engine.CurrentMap.Data.GetEntities<CameraOffset>())
+                    Engine.Cam.CenteredPos += camOffset.Offset;
+                
+                
 
                 Levels.ReloadLastLevelFetched();
                 Active = true;

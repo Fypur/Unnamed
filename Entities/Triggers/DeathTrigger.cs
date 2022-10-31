@@ -19,6 +19,7 @@ namespace Platformer
         public DeathTrigger(Vector2 position, Vector2 size, bool instaDeath) : this(position, size)
         {
             InstaDeath = instaDeath;
+            Collider.DebugColor = Color.Red;
         }
 
         public DeathTrigger(Vector2 position, int width, int height)

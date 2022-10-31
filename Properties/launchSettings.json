@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Platformer": {
+      "commandName": "Project",
+      "commandLineArgs": "70"
+    }
+  }
+}

@@ -19,5 +19,6 @@ public class GlassWall : ILDtkEntity
     public Color SmartColor { get; set; }
 
     public float BreakVelocity { get; set; }
+    public Direction? SolidInDirection { get; set; }
 }
 #pragma warning restore

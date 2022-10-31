@@ -33,7 +33,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "70";
+        public static string InitLevel = "72";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -247,15 +247,16 @@ namespace Platformer
 
             if (int.TryParse(InitLevel, out int lvl))
             {
-                var level = Levels.GetLdtkLevel(lvl); 
-                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(level)));
+                var level = Levels.GetLdtkLevel(lvl);
+                Engine.CurrentMap.CurrentLevel = new Level(Levels.GetLevelData(level));
                 worldDepth = level.WorldDepth;
             }
             else
-                map.LoadMapNoAutoTile(new Level(Levels.GetLevelData(InitLevel, Vector2.Zero)));
-
+                Engine.CurrentMap.CurrentLevel = new Level(Levels.GetLevelData(InitLevel, Vector2.Zero));
 
             Levels.LoadWorldGrid(World, worldDepth);
+            Engine.CurrentMap.CurrentLevel.LoadNoAutoTile();
+
             BackgroundTile = new Tile(Vector2.Zero, Engine.RenderTarget.Width, Engine.RenderTarget.Height,  new Sprite(DataManager.Textures["bg/bg1"]));
 
 #if RELEASE
@@ -356,7 +357,8 @@ namespace Platformer
                     lvlSize.Y = 180;
                 Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, lvlSize);
 
-                player.InstaDeath();
+                if(Engine.Player != null)
+                    player.InstaDeath();
                 t.SelfDestroy();
             }));
             

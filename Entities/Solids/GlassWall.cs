@@ -73,7 +73,7 @@ namespace Platformer
             Engine.CurrentMap.MiddlegroundSystem.Emit(glass, 200, Bounds, null, particleDirection.ToAngleDegrees(), glass.Color);
             Engine.Cam.Shake(0.2f, 1.7f);
 
-            Audio.PlayEvent("GlassBreak");
+            //Audio.PlayEvent("GlassBreak");
 
             SelfDestroy();
             return true;

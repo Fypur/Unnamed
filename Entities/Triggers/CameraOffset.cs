@@ -16,6 +16,7 @@ namespace Platformer
         public CameraOffset(Vector2 position, Vector2 size, Vector2 offset) : base(position, size, null)
         {
             Offset = offset;
+            Collider.DebugColor = Color.GreenYellow;
         }
 
         public override void OnTriggerEnter(Player player)

@@ -12,14 +12,17 @@ namespace Platformer
     {
         public CameraLock(Rectangle triggerRect) : base(triggerRect, Sprite.None)
         {
+            Collider.DebugColor = Color.RosyBrown;
         }
 
         public CameraLock(Vector2 position, Vector2 size) : base(position, size, Sprite.None)
         {
+            Collider.DebugColor = Color.RosyBrown;
         }
 
         public CameraLock(Vector2 position, int width, int height) : base(position, width, height, Sprite.None)
         {
+            Collider.DebugColor = Color.RosyBrown;
         }
 
         public override void OnTriggerStay(Player player)
