@@ -1,8 +1,7 @@
 {
   "profiles": {
     "Platformer": {
-      "commandName": "Project",
-      "commandLineArgs": "70"
+      "commandName": "Project"
     }
   }
 }

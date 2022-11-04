@@ -33,7 +33,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "72";
+        public static string InitLevel = "Swingtest";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -245,15 +245,10 @@ namespace Platformer
 
             int worldDepth = 0;
 
-            if (int.TryParse(InitLevel, out int lvl))
-            {
-                var level = Levels.GetLdtkLevel(lvl);
-                Engine.CurrentMap.CurrentLevel = new Level(Levels.GetLevelData(level));
-                worldDepth = level.WorldDepth;
-            }
-            else
-                Engine.CurrentMap.CurrentLevel = new Level(Levels.GetLevelData(InitLevel, Vector2.Zero));
-
+            var level = Levels.GetLdtkLevel(InitLevel);
+            worldDepth = level.WorldDepth;
+            Engine.CurrentMap.CurrentLevel = new Level(Levels.GetLevelData(level));
+            
             Levels.LoadWorldGrid(World, worldDepth);
             Engine.CurrentMap.CurrentLevel.LoadNoAutoTile();
 

@@ -526,7 +526,7 @@ namespace Platformer
             return new LevelData(GetLevelEntities(index, p, GetLevelSize(org)), p, GetLevelSize(org), org, Engine.CurrentMap, GetLevelEnterAction(index), null);
         }
 
-        public static LevelData GetLevelData(string ldtkIdentifier, Vector2? position = null)
+        public static LevelData GetLevelData(string ldtkIdentifier)
         {
             LDtkLevel ldtk = GetLdtkLevel(ldtkIdentifier);
 
@@ -549,8 +549,16 @@ namespace Platformer
             try {
                 return Platformer.World.LoadLevel($"World_Level_{index}");
             }
-            catch { 
-                return null; }
+            catch {
+                try
+                {
+                    return Platformer.World.LoadLevel(index);
+                }
+                catch
+                {
+                    return null; 
+                }
+            }
         }
 
 
