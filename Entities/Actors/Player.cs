@@ -276,6 +276,8 @@ namespace Platformer
                 return Math.Max(value - move, approached);
             }
 
+            //CanJetpack = false;
+
             //Celeste code this is inspired from
             /*if (Math.Abs(Speed.X) > max && Math.Sign(Speed.X) == moveX)
                 Speed.X = Calc.Approach(Speed.X, max * moveX, RunReduce * mult * Engine.DeltaTime);  //Reduce back from beyond the max speed
@@ -457,15 +459,15 @@ namespace Platformer
 
             foreach (Solid g in SwingingPoint.SwingingPoints)
             {
-                float d = Vector2.Distance(MiddleExactPos, g.MiddleExactPos);
+                float d = Vector2.DistanceSquared(MiddleExactPos, g.MiddleExactPos);
 
-                if (d < distance && d < ((ISwinged)g).MaxSwingDistance)
+                if (d < distance && d < ((ISwinged)g).MaxSwingDistance * ((ISwinged)g).MaxSwingDistance)
                 {
                     Vector2 dir = g.Pos - Pos;
                     bool onRightDir = true;
                     int signX = Math.Sign(dir.X), signY = Math.Sign(dir.Y);
 
-                    if (!((xMovingRaw == signX || xMovingRaw == 0) && (yMovingRaw == signY || yMovingRaw == 0)))
+                    if (!((xMovingRaw == signX || (xMovingRaw == 0 && Facing == signX)) && (yMovingRaw == signY || yMovingRaw == 0)))
                     {
                         if (d > reserveDistance)
                             continue;
@@ -513,7 +515,7 @@ namespace Platformer
             if (determinedGrappledSolid is ISwinged swinged)
             {
                 stateMachine.Switch(States.Swinging);
-                totalRopeLength = distance;
+                totalRopeLength = (float)Math.Sqrt(distance);
 
                 Vector2 grapplingPos = determinedGrappledSolid.MiddleExactPos;
                 swingPositions.Add(grapplingPos);

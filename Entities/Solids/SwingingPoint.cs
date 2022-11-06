@@ -74,23 +74,7 @@ namespace Platformer
 
                 //Les 5 raycast comme ça c'est juste pcq des fois c'est un peu funky et un seul raycast trouve que y a collision
                 //au pixel près. Donc j'en fait 5 pcq un raycast sur maptiles c'est pas expensive
-                Raycast bestRay = Raycast.FiveRays(middle, corner, false, true, 1);
-                /*var r = new Raycast(Raycast.RayTypes.MapTiles, middle, corner);
-                var r2 = new Raycast(Raycast.RayTypes.MapTiles, middle, corner - Vector2.UnitX);
-                var r3 = new Raycast(Raycast.RayTypes.MapTiles, middle, corner - Vector2.UnitY);
-                var r4 = new Raycast(Raycast.RayTypes.MapTiles, middle, corner + Vector2.UnitX);
-                var r5 = new Raycast(Raycast.RayTypes.MapTiles, middle, corner + Vector2.UnitY);
-                //Debug.PointUpdate(Color.DarkGreen, r5.EndPoint);
-
-                Raycast bestRay = r;
-                if (bestRay.Hit)
-                    bestRay = r2;
-                if (bestRay.Hit)
-                    bestRay = r3;
-                if (bestRay.Hit)
-                    bestRay = r4;
-                if (bestRay.Hit)
-                    bestRay = r5;*/
+                Raycast bestRay = Raycast.FiveRays(middle, corner, false, false, 0.001f);
 
                 if (d < sqrdMaxedDist && !bestRay.Hit)
                 {
@@ -129,25 +113,7 @@ namespace Platformer
             }
 
             //On determine toutes les edges (non opti là ça fait par tile)
-            List<int[]> edges = new();
-            for (int y = 0; y < Engine.CurrentMap.CurrentLevel.Organisation.GetLength(0); y++)
-                for (int x = 0; x < Engine.CurrentMap.CurrentLevel.Organisation.GetLength(1); x++)
-                {
-                    if (Engine.CurrentMap.CurrentLevel.GetOrganisation(x, y) != 0)
-                    {
-                        if (Engine.CurrentMap.CurrentLevel.GetOrganisation(x - 1, y) == 0)
-                            edges.Add(new int[4] { x, y, x, y + 1 } );
-                        if (Engine.CurrentMap.CurrentLevel.GetOrganisation(x + 1, y) == 0)
-                        {
-                            edges.Add(new int[4] { x + 1, y, x + 1, y + 1 });
-                            //edges.Add(new int[4] { x + 1, y, x + 1, y + 1 });
-                        }
-                        if (Engine.CurrentMap.CurrentLevel.GetOrganisation(x, y - 1) == 0)
-                            edges.Add(new int[4] { x, y, x + 1, y });
-                        if (Engine.CurrentMap.CurrentLevel.GetOrganisation(x, y + 1) == 0)
-                            edges.Add(new int[4] { x, y + 1, x + 1, y + 1 });
-                    }
-                }
+            List<int[]> edges = Engine.CurrentMap.CurrentLevel.GetEdges();
 
             //On cherche les points d'intersection sur les edges, puis on vérifie par raycast
             foreach (int[] edge in edges)
@@ -165,23 +131,8 @@ namespace Platformer
                     if (points.Contains(p))
                         continue;
 
-                    Raycast bestRay = Raycast.FiveRays(middle, p, false, true, 1);
-
+                    Raycast bestRay = Raycast.FiveRays(middle, p, false, true, 0.001f);
                     //Debug.PointUpdate(Color.Green, collPoints);
-                    /*var r = new Raycast(Raycast.RayTypes.MapTiles, middle, p);
-                    var r2 = new Raycast(Raycast.RayTypes.MapTiles, middle, p - Vector2.UnitX);
-                    var r3 = new Raycast(Raycast.RayTypes.MapTiles, middle, p - Vector2.UnitY);
-                    var r4 = new Raycast(Raycast.RayTypes.MapTiles, middle, p + Vector2.UnitX);
-                    var r5 = new Raycast(Raycast.RayTypes.MapTiles, middle, p + Vector2.UnitY);
-                    Raycast bestRay = r;
-                    if ((bestRay.Hit || bestRay.DistanceSquared < r2.DistanceSquared) && !r2.Hit)
-                        bestRay = r2;
-                    if ((bestRay.Hit || bestRay.DistanceSquared < r3.DistanceSquared) && !r3.Hit)
-                        bestRay = r3;
-                    if ((bestRay.Hit || bestRay.DistanceSquared < r4.DistanceSquared) && !r4.Hit)
-                        bestRay = r4;
-                    if ((bestRay.Hit || bestRay.DistanceSquared < r4.DistanceSquared) && !r5.Hit)
-                        bestRay = r5;*/
 
                     if (!bestRay.Hit)
                     {
@@ -202,64 +153,51 @@ namespace Platformer
                 });
 
             for (int i = 0; i < points.Count - 2; i++)
-                if(Vector2.Floor(points[i]) == Vector2.Floor(points[i + 1])) points.RemoveAt(i + 1);
-            if (points.Count > 1)
-                if (Vector2.Floor(points[points.Count - 1]) == Vector2.Floor(points[0])) points.RemoveAt(points.Count - 1);
-
-            void CheckAngleAndChange(int index0, int index1, int index2)
             {
-                Vector2 p0 = points[index0];
-                Vector2 p1 = points[index1];
-                Vector2 p2 = points[index2];
-
-                var r0 = new Raycast(Raycast.RayTypes.MapTiles, p0, p1);
-                var r1 = new Raycast(Raycast.RayTypes.MapTiles, p1, p2);
-
-                bool p0p1 = r0.Hit || ((p0 - p1).X == 0 || (p0 - p1).Y == 0);
-                bool p1p2 = r1.Hit || ((p1 - p2).X == 0 || (p1 - p2).Y == 0);
-
-                if (p0p1 && p1p2)
-                    return;
-
-                var r3 = new Raycast(Raycast.RayTypes.MapTiles, p0, p2);
-                /*if (!r3.Hit && !p0p1 && p1p2)
-                {
-                    Vector2 a = points[index1];
-                    points[index1] = points[index2];
-                    points[index2] = a;
-                }*/
-
-
-                Debug.PointUpdate(p0);
-
-                /*Vector2 sub = points[index0] - points[index1];
-                Vector2 sub2 = points[index0] - points[index2];
-
-                if (Math.Round(distancesSquared[points[index1]], 2) + 1 > MaxSwingDistance * MaxSwingDistance && ((sub2.X == 0 && sub.X != 0) || (sub2.Y == 0 && sub.Y != 0)))
-                {
-                    Vector2 a = points[index1];
-                    points[index1] = points[index2];
-                    points[index2] = a;
-                }*/
-
-                /*if (Vector2.DistanceSquared(points[index0], points[index1]) < 1)
-                {
-                    points.RemoveAt(index1);
-                    if (Vector2.DistanceSquared(points[index0], points[index1 < points.Count ? index1 : 0]) < 1)
-                        points.RemoveAt(index1);
-                    return;
-                }
-                if (Vector2.DistanceSquared(points[index0], points[index2]) < 1)
-                    points.RemoveAt(index2);*/
+                if(Vector2.Floor(points[i]) == Vector2.Floor(points[i + 1])) points.RemoveAt(i + 1);
+                if (Vector2.Floor(points[i]) == Vector2.Floor(points[i + 2])) points.RemoveAt(i + 2);
+            }
+            if (points.Count > 1)
+            {
+                if (Vector2.Floor(points[points.Count - 1]) == Vector2.Floor(points[0])) points.RemoveAt(points.Count - 1);
+                if (Vector2.Floor(points[points.Count - 1]) == Vector2.Floor(points[1])) points.RemoveAt(points.Count - 1);
+            }
+            if (points.Count > 2)
+            {
+                if (Vector2.Floor(points[points.Count - 2]) == Vector2.Floor(points[points.Count - 1])) points.RemoveAt(points.Count - 1);
+                if (Vector2.Floor(points[points.Count - 2]) == Vector2.Floor(points[0])) points.RemoveAt(points.Count - 2);
             }
 
+            int CheckAngleAndChange(int index0, int index1, int index2)
+            {
+                bool Aligned(int index, int index2)
+                    => (points[index] - points[index2]).X == 0 || (points[index] - points[index2]).Y == 0;
+
+                bool sameAngle = Math.Round(angles[points[index1]], 2) == Math.Round(angles[points[index2]], 2);
+
+                if (!sameAngle)
+                    return 1;
+
+                if (!Aligned(index0, index2) && !(distancesSquared[points[index0]] >= MaxSwingDistance * MaxSwingDistance && distancesSquared[points[index2]] + 0.001 >= MaxSwingDistance * MaxSwingDistance))
+                    return 1;
+
+                //Debug.LogUpdate(index0);
+
+                Vector2 a = points[index1];
+                points[index1] = points[index2];
+                points[index2] = a;
+                return 2;
+            }
+
+            //CheckAngleAndChange(5, 6, 7);
             //On essaie de résoudre le problème de 2 points ayant le même angle en utilisant le fait que 2 points soit alignés
-            for(int i = 0; i < points.Count - 2; i++)
-                CheckAngleAndChange(i, i + 1, i + 2);
-            if (points.Count > 2)
-                CheckAngleAndChange(points.Count - 2, points.Count - 1, 0);
+            for (int i = 0; i < points.Count - 2; i += CheckAngleAndChange(i, i + 1, i + 2))
+            { }
+
             if (points.Count > 1)
                 CheckAngleAndChange(points.Count - 1, 0, 1);
+            if (points.Count > 2)
+                CheckAngleAndChange(points.Count - 2, points.Count - 1, 0);
 
             //On vérifie si 2 points sont curved en vérifiant si 2 points sont connectés et sont à la limite du cercle
             polygon = new PolygonPoint[points.Count];
@@ -278,13 +216,17 @@ namespace Platformer
             }
 
             //Debug
-            for(int i = 0; i < polygon.Length; i++)
+
+            if (Debug.DebugMode)
             {
-               // Debug.PointUpdate(polygon[i].Position);
-                if (Vector2.DistanceSquared(Input.MousePos, polygon[i].Position) < 1f)
+                for (int i = 0; i < polygon.Length; i++)
                 {
-                    Debug.LogUpdate(i, polygon[i].ArchedLeft, polygon[i].ArchedRight, polygon[i].Position);
-                    Debug.LogUpdate((polygon[i].Position - middle).ToAngle());
+                    Debug.PointUpdate(polygon[i].Position);
+                    if (Vector2.DistanceSquared(Input.MousePos, polygon[i].Position) < 1f)
+                    {
+                        Debug.LogUpdate(i, polygon[i].ArchedLeft, polygon[i].ArchedRight, polygon[i].Position);
+                        Debug.LogUpdate((polygon[i].Position - middle).ToAngle());
+                    }
                 }
             }
         }

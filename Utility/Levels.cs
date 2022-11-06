@@ -564,8 +564,21 @@ namespace Platformer
 
         public static LDtkLevel GetLdtkLevel(string id)
         {
-            try { return Platformer.World.LoadLevel(id); }
-            catch { return null; }
+            try
+            {
+                return Platformer.World.LoadLevel($"World_Level_{id}");
+            }
+            catch
+            {
+                try
+                {
+                    return Platformer.World.LoadLevel(id);
+                }
+                catch
+                {
+                    throw new Exception("Couldn't find level using id: " + id);
+                }
+            }
         }
 
         public static LevelData GetLevelData(int index, Vector2 position, int tileSize)

@@ -33,7 +33,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "Swingtest";
+        public static string InitLevel = "71";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -87,15 +87,13 @@ namespace Platformer
             Engine.CurrentMap = new Map(Vector2.Zero);
 
             Engine.CurrentMap.Instantiate(new MainMenu());
-#if RELEASE
-#endif
 
         }
 
         protected override void Update(GameTime gameTime)
         {
             Input.UpdateState();
-
+            
 #if DEBUG
             /*if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
                 Exit();*/
