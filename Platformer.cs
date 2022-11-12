@@ -33,7 +33,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "71";
+        public static string InitLevel = "Swingtest";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;

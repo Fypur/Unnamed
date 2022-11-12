@@ -142,5 +142,15 @@ namespace Platformer
 
             return initPos;
         }
+
+        public override void Render()
+        {
+            base.Render();
+
+            for(int i = 0; i < Positions.Length - 1; i++)
+            {
+                Drawing.DrawDottedLine(Positions[i] + HalfSize, Positions[i + 1] + HalfSize, new Color(Color.GreenYellow, 100), 1, 4, 4);
+            }
+        }
     }
 }

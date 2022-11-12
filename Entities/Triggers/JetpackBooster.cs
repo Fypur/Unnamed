@@ -11,8 +11,8 @@ namespace Platformer
 {
     public class JetpackBooster : PlayerTrigger
     {
-        private float boostX = 4f;
-        private float boostY = 1.5f;
+        private float boostX = 2.4f;
+        private float boostY = 2.4f;
         private Vector2 boostingDir;
         
         private static readonly NineSliceSimple nineSliceUp =

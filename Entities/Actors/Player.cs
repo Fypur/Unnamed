@@ -134,7 +134,7 @@ namespace Platformer
         public static ControlList DownControls = Input.DownControls;
         public static ControlList JumpControls = new ControlList(Keys.C, Keys.I, Keys.Space, Buttons.A);
         public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.X);
-        public static ControlList SwingControls = new ControlList(Keys.W, Keys.P, MouseButton.Middle, Buttons.LeftTrigger, Buttons.RightTrigger);
+        public static ControlList SwingControls = new ControlList(Keys.W, Keys.Z, Keys.P, MouseButton.Middle, Buttons.LeftTrigger, Buttons.RightTrigger);
 
         private EventInstance jetpackAudio;
 
@@ -185,10 +185,10 @@ namespace Platformer
         {
             if (!CanMove)
             {
-                swingPositions.Clear();
+                /*swingPositions.Clear();
                 swingPositionsSign = new List<int> { 0 };
                 if (stateMachine.Is(States.Swinging))
-                    stateMachine.Switch(States.Ascending);
+                    stateMachine.Switch(States.Ascending);*/
                 isAtSwingEnd = false;
 
                 Jetpacking = false;
@@ -649,15 +649,24 @@ namespace Platformer
             {
                 for (int i = swingPositions.Count - 1; i >= 1; i--)
                 {
-                    float grappleAngle = VectorHelper.GetAngle(swingPositions[i - 1] - ExactPos - HalfSize, swingPositions[i - 1] - swingPositions[i]); ;
+                    float grappleAngle = VectorHelper.GetAngle(swingPositions[i - 1] - ExactPos - HalfSize, swingPositions[i - 1] - swingPositions[i]);
 
-                    if (Math.Sign(grappleAngle) == swingPositionsSign[i])
+                    if(swingPositionsSign.Count > i)
                     {
-                        swingPositions.RemoveAt(i);
-                        swingPositionsSign.RemoveAt(i);
+                        if (Math.Sign(grappleAngle) == swingPositionsSign[i])
+                        {
+                            swingPositionsSign.RemoveAt(i);
+                        }
+                        else
+                            break;
                     }
                     else
-                        break;
+                    {
+                        swingPositions.RemoveAt(i);
+                    }
+
+                    
+                    
                 }
             }
 
@@ -869,17 +878,19 @@ namespace Platformer
                     coef.X += 0.7f;
             }*/
 
-            coef *= JetpackPowerCoef;
+            Vector2 coef2 = JetpackPowerCoef;
 
             if (JetpackDirectionalPowerCoef.X != 0 && Math.Sign(Velocity.X) == Math.Sign(JetpackDirectionalPowerCoef.X))
-                coef.X *= Math.Abs(JetpackDirectionalPowerCoef.X);
+                coef2.X *= Math.Abs(JetpackDirectionalPowerCoef.X);
             if (JetpackDirectionalPowerCoef.Y != 0 && Math.Sign(Velocity.Y) == -Math.Sign(JetpackDirectionalPowerCoef.Y))
-                coef.Y *= Math.Abs(JetpackDirectionalPowerCoef.Y);
+                coef2.Y *= Math.Abs(JetpackDirectionalPowerCoef.Y);
 
             //Velocity.Y = Math.Clamp(Velocity.Y, -140, 140);
 
-            Vector2 d = dir * coef *new Vector2(jetpackPowerX, jetpackPowerY);
-            d = Vector2.Clamp(d + Velocity, new Vector2(-maxJetpackSpeedX,  -maxJetpackSpeedY), new Vector2(maxJetpackSpeedX, maxFallingSpeed + maxJetpackSpeedY)) - Velocity;
+            Debug.LogUpdate(coef2);
+
+            Vector2 d = dir * coef * coef2 * new Vector2(jetpackPowerX, jetpackPowerY);
+            d = Vector2.Clamp(d + Velocity, new Vector2(-maxJetpackSpeedX,  -maxJetpackSpeedY) * VectorHelper.Abs(coef2), new Vector2(maxJetpackSpeedX, maxFallingSpeed + maxJetpackSpeedY) * VectorHelper.Abs(coef2)) - Velocity;
 
             if (Math.Sign(d.X) != Math.Sign(xMoving))
                 d.X = 0;
@@ -901,6 +912,9 @@ namespace Platformer
 
         public void Death()
         {
+            if (stateMachine.Is(States.Dead))
+                return;
+
             stateMachine.Switch(States.Dead);
             CanMove = false;
 
@@ -908,8 +922,6 @@ namespace Platformer
 
             ResetJetpack();
             ResetSwing();
-
-            
 
             PlayerStats.DeathCount++;
 
@@ -969,7 +981,7 @@ namespace Platformer
             Engine.CurrentMap.MiddlegroundSystem.Emit(ExplosionParticle, Bounds, 100);
             Engine.Cam.Shake(0.4f, 1);
 
-            //Audio.PlayEvent("DeathExplosion");
+            Audio.PlayEvent("DeathExplosion");
 
             Velocity = Vector2.Zero;
             Engine.CurrentMap.Instantiate(new ScreenWipe(1, Color.Black, () =>

@@ -10,7 +10,7 @@ namespace Platformer
 {
     public class RailedPullBlock : MovingSolid, ISwinged
     {
-        private const float amountMoved = 100f;
+        private const float amountMoved = 300;
         public Vector2[] RailPositions;
         private Entity grappledEntity;
         private Func<bool> isAtSwingEnd;
@@ -43,16 +43,28 @@ namespace Platformer
         public override void Update()
         {
             base.Update();
-            if(grappledEntity == null || grappledEntity.Collider.CollideAt(this, grappledEntity.Pos + new Vector2(0, 1)))
-                return;
 
-            if (isAtSwingEnd())
+
+            if(grappledEntity == null || grappledEntity.Collider.CollideAt(this, grappledEntity.ExactPos + new Vector2(0, 1)))
+            { }
+            else
             {
-                Velocity = Vector2.Normalize(grappledEntity.MiddleExactPos - MiddleExactPos) * amountMoved * Engine.Deltatime;
+                if (isAtSwingEnd())
+                {
+                    Vector2 v = (grappledEntity.MiddleExactPos - MiddleExactPos) * ((Player)grappledEntity).Velocity.Length() * 100 * Engine.Deltatime;
 
-                foreach (Vector2 velocity in SplitVelocity(Velocity, MiddleExactPos))
-                    Move(velocity);
+                    foreach (Vector2 velocity in SplitVelocity(v, MiddleExactPos))
+                        Move(velocity * Engine.Deltatime);
+
+                    //TODO: Rework this to make it more smooth
+                }
             }
+
+            /*Velocity -= Velocity * 0.1f;
+
+            Move(Velocity * Engine.Deltatime);
+
+            Debug.LogUpdate(ExactPos);*/
         }
 
         private List<Vector2> SplitVelocity(Vector2 splittedVelocity, Vector2 from)
