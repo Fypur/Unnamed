@@ -981,7 +981,7 @@ namespace Platformer
             Engine.CurrentMap.MiddlegroundSystem.Emit(ExplosionParticle, Bounds, 100);
             Engine.Cam.Shake(0.4f, 1);
 
-            Audio.PlayEvent("DeathExplosion");
+            //Audio.PlayEvent("DeathExplosion");
 
             Velocity = Vector2.Zero;
             Engine.CurrentMap.Instantiate(new ScreenWipe(1, Color.Black, () =>
@@ -1025,7 +1025,10 @@ namespace Platformer
         private void CollisionX(Entity collided)
         {
             if (collided is GlassWall gl && gl.Break(this, Velocity, true))
+            {
+                MoveX(Velocity.X * Engine.Deltatime, CollisionX);
                 return;
+            }
 
             Velocity.X = 0;
             collisionX = true;
@@ -1037,7 +1040,10 @@ namespace Platformer
                 Pos.Y = collided.Pos.Y - Height;
 
             if (collided is GlassWall gl && gl.Break(this, Velocity, false))
+            {
+                MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
                 return;
+            }
 
             if (Velocity.Y > 0)
                 Land();
@@ -1094,7 +1100,7 @@ namespace Platformer
             JetpackPowerCoef = Vector2.One;
         }
 
-        private void ResetSwing()
+        public void ResetSwing()
         {
             swingPositions.Clear();
             swingPositionsSign = new List<int>() { 0 };

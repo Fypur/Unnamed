@@ -82,6 +82,7 @@ namespace Platformer
                 p.CanMove = true;
                 p.CancelJump();
                 p.RefillJetpack();
+                p.ResetSwing();
 
                 if(direction == Direction.Up)
                 {

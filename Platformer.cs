@@ -33,14 +33,14 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "Swingtest";
+        public static string InitLevel = "75";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
 #endif
 
 #if RELEASE
-        private const string InitLevel = "0";
+        private const string InitLevel = "60";
 #endif
 
         public Platformer()
