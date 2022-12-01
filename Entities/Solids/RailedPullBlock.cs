@@ -26,6 +26,7 @@ namespace Platformer
             currentPosIndex = initialIndexPosition;
             SwingingPoint.SwingingPoints.Add(this);
             MaxSwingDistance = maxSwingDistance;
+            gravityScale = 1;
 
             AddComponent(new LineRenderer(RailPositions.ToList(), 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
@@ -36,6 +37,7 @@ namespace Platformer
             currentPosIndex = initialIndex;
             SwingingPoint.SwingingPoints.Add(this);
             MaxSwingDistance = maxSwingDistance;
+            gravityScale = 1;
 
             AddComponent(new LineRenderer(RailPositions.ToList(), 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
@@ -44,21 +46,68 @@ namespace Platformer
         {
             base.Update();
 
+            /*if (PreviousPos == ExactPos)
+                Velocity = Vector2.Zero;*/
 
-            if(grappledEntity == null || grappledEntity.Collider.CollideAt(this, grappledEntity.ExactPos + new Vector2(0, 1)))
+            if (MiddleExactPos == RailPositions[0] || MiddleExactPos == RailPositions[RailPositions.Length - 1])
+                Velocity = Vector2.Zero;
+
+            Gravity();
+
+            if (grappledEntity == null || grappledEntity.Collider.CollideAt(this, grappledEntity.ExactPos + new Vector2(0, 1)))
             { }
             else
             {
                 if (isAtSwingEnd())
                 {
-                    Vector2 v = (grappledEntity.MiddleExactPos - MiddleExactPos) * ((Player)grappledEntity).Velocity.Length() * 100 * Engine.Deltatime;
+                    {
+                        //Vector2 v = Velocity * Approach(Velocity.Length(), amountMoved, (grappledEntity.MiddleExactPos - MiddleExactPos).Length()) * Engine.Deltatime;
+                        //Vector2 v = (grappledEntity.MiddleExactPos - MiddleExactPos + Velocity) * Engine.Deltatime;
 
-                    foreach (Vector2 velocity in SplitVelocity(v, MiddleExactPos))
-                        Move(velocity * Engine.Deltatime);
+                        /*float VelocityApproach(float acceleration, float friction)
+                        {
+                            if (xMoving != 0)
+                            {
+                                return Approach(Velocity.X, (xMoving > 0.3f ? 1 : xMoving < -0.3f ? -1 : xMoving) * maxSpeed, acceleration * Engine.Deltatime);
+                            }
+                            return Approach(Velocity.X, 0, friction * Engine.Deltatime);
+                        }*/
+
+                        /*float Approach(float value, float approached, float move)
+                        {
+                            if (value < approached)
+                                return Math.Min(value + move, approached);
+                            return Math.Max(value - move, approached);
+                        }
+
+
+                        foreach (Vector2 velocity in SplitVelocity(v, MiddleExactPos))
+                        {
+                            Velocity += velocity;
+                            Move(velocity);
+                        }*/
+                    }
+
+                    Vector2 testPos = grappledEntity.MiddleExactPos;
+                    if (grappledEntity is Actor a)
+                        testPos += a.Velocity * Engine.Deltatime;
+                    //Velocity = VectorHelper.ClosestOnSegment(testPos, RailPositions[currentPosIndex], RailPositions[currentPosIndex + 1]) - MiddleExactPos;
+
+                    Velocity += grappledEntity.MiddleExactPos - MiddleExactPos;
+
+                    
 
                     //TODO: Rework this to make it more smooth
                 }
             }
+
+
+            foreach (Vector2 velocity in SplitVelocity(Velocity * Engine.Deltatime, MiddleExactPos))
+            {
+                Move(velocity);
+            }
+
+            Debug.LogUpdate(Velocity);
 
             /*Velocity -= Velocity * 0.1f;
 

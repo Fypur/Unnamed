@@ -8,7 +8,7 @@ namespace Platformer
 {
     public class SwingingPoint : CyclingSolid, ISwinged
     {
-        public static List<Solid> SwingingPoints = new List<Solid>();
+        public static List<ISwinged> SwingingPoints = new List<ISwinged>();
 
         private const int width = 8;
         private const int height = 8;
@@ -65,11 +65,13 @@ namespace Platformer
             foreach (Vector2 p in coll)
                 Debug.PointUpdate(Color.GreenYellow, p);*/
 
-            if (Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.Space))
-                MovingTimer.Paused = !MovingTimer.Paused;
+#if DEBUG
+            /*if (Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.Space))
+                 MovingTimer.Paused = !MovingTimer.Paused;
 
-            if (Input.GetKey(Microsoft.Xna.Framework.Input.Keys.N))
-                Pos = Input.MousePos;
+             if (Input.GetKey(Microsoft.Xna.Framework.Input.Keys.N))
+                 Pos = Input.MousePos;*/
+#endif
 
 
             polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);

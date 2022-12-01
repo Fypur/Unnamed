@@ -111,6 +111,7 @@ namespace Platformer
 
                 var fullscreenSwitcher = new BoolSwitcher(Options.DefaultScreenSize / 2 + new Vector2(0, -200), 700, 100, true, "Full Screen", Engine.Graphics.IsFullScreen,
                     () => { Options.FullScreen(); screenSizeSwitcher.Selectable = false; }, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = true; });
+                //screenSizeSwitcher.Selectable = false;
 
                 returned.Add(fullscreenSwitcher);
                 if (Engine.Graphics.IsFullScreen)

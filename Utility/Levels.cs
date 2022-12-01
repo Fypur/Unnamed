@@ -331,6 +331,30 @@ namespace Platformer
                     }
 
                 }
+
+                if (l._Type == LayerType.IntGrid && l._Identifier != "IntGrid")
+                {
+                    string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
+                    if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
+                    {
+                        Texture2D tileSetTex = DataManager.Load(tileSet);
+                        Dictionary<Point, Texture2D> tiles = DataManager.GetTileSetTextures(tileSetTex, l._GridSize);
+                        foreach (KeyValuePair<Point, Texture2D> tile in tiles)
+                            DataManager.Textures[tileSet + tile.Key] = tile.Value;
+                    }
+
+                    foreach (TileInstance t in l.AutoLayerTiles)
+                    {
+                        Texture2D texture = DataManager.Textures[tileSet + t.Src];
+                        texture.Name = tileSet + t.T.ToString();
+
+                        Sprite s = new Sprite(texture);
+                        s.Effect = (SpriteEffects)t.F;
+
+                        entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
+                    }
+                }
+
                 /*else if (l._Type == LayerType.IntGrid)
                 {
                     string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
@@ -475,7 +499,7 @@ namespace Platformer
 
                 foreach (LayerInstance l in level.LayerInstances)
                 {
-                    if(l._Type == LayerType.IntGrid)
+                    if(l._Type == LayerType.IntGrid && !l._Identifier.Contains("Decal"))
                     {
                         string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
                         if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))

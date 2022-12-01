@@ -77,10 +77,10 @@ namespace Platformer
             }
 
             p.UpdateChildrenPos();
+            p.CancelJump();
 
             AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () => {
                 p.CanMove = true;
-                p.CancelJump();
                 p.RefillJetpack();
                 p.ResetSwing();
 

@@ -37,7 +37,7 @@ namespace Platformer
         {
             base.Render();
 
-            Drawing.DrawCircle(Collider.AbsolutePosition, Radius, 0.3f, Color.Gray);
+            Drawing.DrawCircle(Collider.AbsolutePosition + HalfSize, Radius, 0.3f, Color.Gray);
         }
     }
 }

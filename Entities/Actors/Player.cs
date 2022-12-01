@@ -26,12 +26,12 @@ namespace Platformer
         private const float maxJetpackSpeedY = 120;
         private const float maxJetpackTime = 0.5f;
         
-        private const float acceleration = 50f;
-        private const float airAcceleration = 15f;
+        private const float acceleration = 1500f;
+        private const float airAcceleration = 900f;
         private const float swingAcceleration = 3f; //Swing accel is very low since friction isn't applied
-        private const float friction = 0.8f;
-        private const float airFriction = 0.1f;
-        
+        private const float friction = 1200;
+        private const float airFriction = 480;
+
         private const float wallJumpSideForce = 160f;
         private const float jumpForce = 200f;
         private const float constGravityScale = 1.2f;
@@ -43,6 +43,7 @@ namespace Platformer
 
         private const float coyoteTime = 0.07f;
         private const float jumpGraceTime = 0.1f;
+        private const float swingGraceTime = 0.1f;
         //Can wall jump if wall is this far away from the wall in pixels
         private const float wallJumpPixelGap = 4;
         
@@ -62,7 +63,7 @@ namespace Platformer
             SpeedMax = 5
         };
 
-        private ParticleType ExplosionParticle = new ParticleType()
+        private readonly ParticleType ExplosionParticle = new ParticleType()
         {
             LifeMin = 0.2f,
             LifeMax = 1,
@@ -117,6 +118,7 @@ namespace Platformer
         private bool canUnstick;
         private bool inCoyoteTime;
         private float potentialFallingSpeed;
+        private bool inSwingGraceTime;
 
         private float jetpackTime;
         private BoostBar boostBar;
@@ -264,9 +266,11 @@ namespace Platformer
 
             float VelocityApproach(float acceleration, float friction)
             {
-                if (Velocity.X == 0 || xMoving != 0)
-                    return Approach(Velocity.X, (xMoving > 0.3f ? 1 : xMoving < -0.3f ? -1 : xMoving) * maxSpeed, acceleration);
-                return Approach(Velocity.X, 0, friction * Math.Abs(Velocity.X));
+                if (xMoving != 0)
+                {
+                    return Approach(Velocity.X, (xMoving > 0.3f ? 1 : xMoving < -0.3f ? -1 : xMoving) * maxSpeed, acceleration * Engine.Deltatime);
+                }
+                return Approach(Velocity.X, 0, friction * Engine.Deltatime);
             }
 
             float Approach(float value, float approached, float move)
@@ -451,114 +455,142 @@ namespace Platformer
 
         private void ThrowRope()
         {
-            #region Determining grappling point
-            Fiourp.Solid determinedGrappledSolid = null;
-            Fiourp.Solid reserveGrappledSolid = null;
-            float distance = float.PositiveInfinity;
-            float reserveDistance = float.PositiveInfinity;
 
-            foreach (Solid g in SwingingPoint.SwingingPoints)
+            if (!CheckForSwingingPoint(out Solid determinedGrappledSolid, out float distance) && !inSwingGraceTime)
             {
-                float d = Vector2.DistanceSquared(MiddleExactPos, g.MiddleExactPos);
-
-                if (d < distance && d < ((ISwinged)g).MaxSwingDistance * ((ISwinged)g).MaxSwingDistance)
+                AddComponent(new Timer(swingGraceTime, true, (timer) =>
                 {
-                    Vector2 dir = g.Pos - Pos;
-                    bool onRightDir = true;
-                    int signX = Math.Sign(dir.X), signY = Math.Sign(dir.Y);
+                    if (!SwingControls.Is())
+                        timer.End();
 
-                    if (!((xMovingRaw == signX || (xMovingRaw == 0 && Facing == signX)) && (yMovingRaw == signY || yMovingRaw == 0)))
+                    if (CheckForSwingingPoint(out determinedGrappledSolid, out distance))
                     {
-                        if (d > reserveDistance)
-                            continue;
-                        onRightDir = false;
+                        grappledSolid = determinedGrappledSolid;
+                        Velocity.Y = potentialFallingSpeed;
+                        ActOnSwing(determinedGrappledSolid);
+                        timer.End();
                     }
-
-                    if (g is GrapplingTrigger trigger && !trigger.Active)
-                        continue;
-
-                    Raycast ray = new Raycast(Raycast.RayTypes.MapTiles, MiddleExactPos, g.MiddleExactPos);
-                    if (!ray.Hit)
-                    {
-                        if (onRightDir)
-                        {
-                            distance = d;
-                            determinedGrappledSolid = g;
-                        }
-                        else
-                        {
-                            reserveGrappledSolid = g;
-                            reserveDistance = d;
-                        }
-                    }
-                }
-            }
-
-            if (determinedGrappledSolid == null)
-            {
-                if (reserveGrappledSolid != null)
-                {
-                    determinedGrappledSolid = reserveGrappledSolid;
-                    distance = reserveDistance;
-                }
-                else
-                    return;
+                }, () => inSwingGraceTime = false));
+                return;
             }
 
             grappledSolid = determinedGrappledSolid;
 
-            #endregion
-
             Velocity.Y = potentialFallingSpeed;
 
-            #region Acting Accordingly depending on Grappled Object
-            if (determinedGrappledSolid is ISwinged swinged)
+            ActOnSwing(determinedGrappledSolid);
+
+
+            bool CheckForSwingingPoint(out Solid swingingPoint, out float distance)
             {
-                stateMachine.Switch(States.Swinging);
-                totalRopeLength = (float)Math.Sqrt(distance);
+                Solid determinedGrappledSolid = null;
+                Solid reserveGrappledSolid = null;
+                distance = float.PositiveInfinity;
+                float reserveDistance = float.PositiveInfinity;
 
-                Vector2 grapplingPos = determinedGrappledSolid.MiddleExactPos;
-                swingPositions.Add(grapplingPos);
+                foreach (Solid g in SwingingPoint.SwingingPoints)
+                {
+                    float d = Vector2.DistanceSquared(MiddleExactPos, g.MiddleExactPos);
 
-                AddComponent(new LineRenderer(new List<Vector2> { Pos, grapplingPos }, 2, Color.Blue,
-                        (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
-                    (line) => {
+                    if (d < distance && d < ((ISwinged)g).MaxSwingDistance * ((ISwinged)g).MaxSwingDistance)
+                    {
+                        Vector2 dir = g.Pos - Pos;
+                        bool onRightDir = true;
+                        int signX = Math.Sign(dir.X), signY = Math.Sign(dir.Y);
 
-                        List<Vector2> linePositions = new List<Vector2>() { MiddlePos };
-                        List<Vector2> reversedPositions = new List<Vector2>(swingPositions);
-                        reversedPositions.Reverse();
-                        linePositions.AddRange(reversedPositions);
-                        line.Positions = linePositions;
+                        if (!((xMovingRaw == signX || (xMovingRaw == 0 && Facing == signX)) && (yMovingRaw == signY || yMovingRaw == 0)))
+                        {
+                            if (d > reserveDistance)
+                                continue;
+                            onRightDir = false;
+                        }
 
-                    }));
+                        if (g is GrapplingTrigger trigger && !trigger.Active)
+                            continue;
+
+                        Raycast ray = new Raycast(Raycast.RayTypes.MapTiles, MiddleExactPos, g.MiddleExactPos);
+                        if (!ray.Hit)
+                        {
+                            if (onRightDir)
+                            {
+                                distance = d;
+                                determinedGrappledSolid = g;
+                            }
+                            else
+                            {
+                                reserveGrappledSolid = g;
+                                reserveDistance = d;
+                            }
+                        }
+                    }
+                }
+
+                swingingPoint = null;
+
+                if (determinedGrappledSolid == null)
+                {
+                    if (reserveGrappledSolid != null)
+                    {
+                        determinedGrappledSolid = reserveGrappledSolid;
+                        distance = reserveDistance;
+                    }
+                    else
+                        return false;
+                }
+
+                swingingPoint = determinedGrappledSolid;
+                return true;
             }
-            else if (determinedGrappledSolid is GrapplingTrigger trigger)
+
+            void ActOnSwing(Solid grappledSolid)
             {
-                stateMachine.Switch(States.Pulling);
-                trigger.Active = false;
-                bool deactivateLine = false;
+                if (determinedGrappledSolid is ISwinged swinged)
+                {
+                    stateMachine.Switch(States.Swinging);
+                    totalRopeLength = (float)Math.Sqrt(distance);
 
-                AddComponent(new Timer(0.1f, true,
-                    (timer) => {
-                        Velocity.Y *= 0.5f;
-                    },
-                    () => {
-                        trigger.Pulled();
-                        deactivateLine = true;
-                        stateMachine.Switch(States.Ascending);
-                        Velocity.Y = -500;
-                    }));
+                    Vector2 grapplingPos = determinedGrappledSolid.MiddleExactPos;
+                    swingPositions.Add(grapplingPos);
 
-                AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, 2, Color.Blue,
-                    (line) => { if (deactivateLine) RemoveComponent(line); },
-                    (line) => {
-                        line.Positions[0] = Pos + new Vector2(Width / 2, Height / 2);
-                        line.Positions[1] = determinedGrappledSolid.Pos;
-                    }));
+                    AddComponent(new LineRenderer(new List<Vector2> { Pos, grapplingPos }, 2, Color.Blue,
+                            (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
+                        (line) => {
+
+                            List<Vector2> linePositions = new List<Vector2>() { MiddlePos };
+                            List<Vector2> reversedPositions = new List<Vector2>(swingPositions);
+                            reversedPositions.Reverse();
+                            linePositions.AddRange(reversedPositions);
+                            line.Positions = linePositions;
+
+                        }));
+                }
+                else if (determinedGrappledSolid is GrapplingTrigger trigger)
+                {
+                    stateMachine.Switch(States.Pulling);
+                    trigger.Active = false;
+                    bool deactivateLine = false;
+
+                    AddComponent(new Timer(0.1f, true,
+                        (timer) => {
+                            Velocity.Y *= 0.5f;
+                        },
+                        () => {
+                            trigger.Pulled();
+                            deactivateLine = true;
+                            stateMachine.Switch(States.Ascending);
+                            Velocity.Y = -500;
+                        }));
+
+                    AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, 2, Color.Blue,
+                        (line) => { if (deactivateLine) RemoveComponent(line); },
+                        (line) => {
+                            line.Positions[0] = Pos + new Vector2(Width / 2, Height / 2);
+                            line.Positions[1] = determinedGrappledSolid.Pos;
+                        }));
+                }
             }
-
-            #endregion
         }
+
 
         private void Swing()
         {
@@ -679,6 +711,8 @@ namespace Platformer
             Velocity.X += LiftBoost.X;
             previousOnGround = false;
 
+            float lift = LiftBoost.Y;
+
             var j = Audio.PlayEvent("Jump");
             PlayerStats.JumpCount++;
 
@@ -706,7 +740,14 @@ namespace Platformer
                 if (Jetpacking && -jumpForce * (timer.Value / maxJumpTime) + LiftBoost.Y > Velocity.Y)
                     return;
 
-                Velocity.Y = -jumpForce * (timer.Value / maxJumpTime) + LiftBoost.Y;
+                if (lift < 0)
+                {
+                    lift += gravityVector.Y * gravityScale;
+                    if (lift > 0)
+                        lift = 0;
+                }
+
+                Velocity.Y = -jumpForce * (timer.Value / maxJumpTime) + lift;
 
             }, () => {
                 cancelJump = false;
@@ -731,6 +772,7 @@ namespace Platformer
 
             Facing = -Facing;
             Velocity.X = wallJumpSideForce * wallJumpingDirection * coef;
+            Velocity.X += LiftSpeed.X;
             Velocity.Y -= jumpForce * 0.5f;
 
             if (onRightWall)
@@ -887,8 +929,6 @@ namespace Platformer
 
             //Velocity.Y = Math.Clamp(Velocity.Y, -140, 140);
 
-            Debug.LogUpdate(coef2);
-
             Vector2 d = dir * coef * coef2 * new Vector2(jetpackPowerX, jetpackPowerY);
             d = Vector2.Clamp(d + Velocity, new Vector2(-maxJetpackSpeedX,  -maxJetpackSpeedY) * VectorHelper.Abs(coef2), new Vector2(maxJetpackSpeedX, maxFallingSpeed + maxJetpackSpeedY) * VectorHelper.Abs(coef2)) - Velocity;
 
@@ -1026,7 +1066,7 @@ namespace Platformer
         {
             if (collided is GlassWall gl && gl.Break(this, Velocity, true))
             {
-                MoveX(Velocity.X * Engine.Deltatime, CollisionX);
+                MoveX(Velocity.X * Engine.Deltatime - (ExactPos.X - PreviousPos.X), CollisionX);
                 return;
             }
 
@@ -1041,7 +1081,7 @@ namespace Platformer
 
             if (collided is GlassWall gl && gl.Break(this, Velocity, false))
             {
-                MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
+                MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - PreviousPos.Y), new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
                 return;
             }
 
