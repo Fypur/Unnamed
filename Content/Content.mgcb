@@ -356,6 +356,18 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Player/wallSlide.aseprite
 
+#begin Graphics/Tilesets/DecalsTileset.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Tilesets/DecalsTileset.aseprite
+
 #begin Graphics/Tilesets/grass.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor

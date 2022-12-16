@@ -266,10 +266,12 @@ namespace Platformer
 
             float VelocityApproach(float acceleration, float friction)
             {
-                if (xMoving != 0)
+                if (xMoving != 0 && (xMoving > 0 ? Velocity.X < maxSpeed : Velocity.X > -maxSpeed))
                 {
+                    //Debug.LogUpdate("accel");
                     return Approach(Velocity.X, (xMoving > 0.3f ? 1 : xMoving < -0.3f ? -1 : xMoving) * maxSpeed, acceleration * Engine.Deltatime);
                 }
+                    //Debug.LogUpdate("fric");
                 return Approach(Velocity.X, 0, friction * Engine.Deltatime);
             }
 
