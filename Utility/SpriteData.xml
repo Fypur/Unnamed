@@ -45,7 +45,18 @@
 				<JetpackTutorialScreen start="jetpackTutorialScreen">
 					<Loop id="jetpackTutorialScreen" path ="jetpackTutorialScreen" delay ="0.1"/>
 				</JetpackTutorialScreen>
-			
+				
+				<Screen path="screen" start="text">
+					<Anim id="glitch" path ="glitch" delay ="0.025" goto="text"/>
+					<Anim id="text" path ="text" delay ="0.025" goto="littledrawing"/>
+					<Anim id="littledrawing" path ="littledrawing" delay ="0.025" goto="glitch"/>
+				</Screen>
+				<LittleScreen path="screen/little" start="ltext">
+					<Anim id="ltext" path ="ltext" delay ="0.025" goto="begintransfer"/>
+					<Anim id="begintransfer" path ="begintransfer" delay ="0.025" goto="transfer"/>
+					<Loop id="transfer" path ="transfer" delay ="0.025" loop="5" goto="completetransfer"/>
+					<Anim id="completetransfer" path ="completetransfer" delay ="0.025" goto="ltext"/>
+				</LittleScreen>
 			</Folder>
 				
 		</Folder>
