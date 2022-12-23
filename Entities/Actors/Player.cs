@@ -554,17 +554,35 @@ namespace Platformer
                     Vector2 grapplingPos = determinedGrappledSolid.MiddleExactPos;
                     swingPositions.Add(grapplingPos);
 
-                    AddComponent(new LineRenderer(new List<Vector2> { Pos, grapplingPos }, 2, Color.Blue,
-                            (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
-                        (line) => {
+                    Timer t = (Timer)AddComponent(new Timer(0.1f, true));
 
+                    LineRenderer l = new LineRenderer(new List<Vector2> { MiddlePos, MiddlePos }, DataManager.Textures["Player/rope"], 2, Color.White,
+                            (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
+                        (line) =>
+                        {
                             List<Vector2> linePositions = new List<Vector2>() { MiddlePos };
                             List<Vector2> reversedPositions = new List<Vector2>(swingPositions);
                             reversedPositions.Reverse();
                             linePositions.AddRange(reversedPositions);
                             line.Positions = linePositions;
 
-                        }));
+                            if(t.Value > 0)
+                                line.Positions[line.Positions.Count - 1] = MiddlePos + (grapplingPos - MiddlePos) * Ease.Reverse(t.Value / t.MaxValue);
+                            else
+                                line.RenderAction = (line) =>
+                                {
+                                    List<Vector2> linePositions = new List<Vector2>() { MiddlePos };
+                                    List<Vector2> reversedPositions = new List<Vector2>(swingPositions);
+                                    reversedPositions.Reverse();
+                                    linePositions.AddRange(reversedPositions);
+                                    line.Positions = linePositions;
+                                };
+                        });
+
+
+                    AddComponent(l);
+
+                    //l.texture = DataManager.Textures["Player/rope"];
                 }
                 else if (determinedGrappledSolid is GrapplingTrigger trigger)
                 {
@@ -583,7 +601,7 @@ namespace Platformer
                             Velocity.Y = -500;
                         }));
 
-                    AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, 2, Color.Blue,
+                    AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, DataManager.Textures["Player/rope"], 2, Color.White,
                         (line) => { if (deactivateLine) RemoveComponent(line); },
                         (line) => {
                             line.Positions[0] = Pos + new Vector2(Width / 2, Height / 2);

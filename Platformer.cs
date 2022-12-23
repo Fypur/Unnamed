@@ -189,6 +189,7 @@ namespace Platformer
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.Render();
+            //Drawing.DrawLine(DataManager.Textures["Player/rope"], player.Pos, Input.MousePos, Color.White, 1);
 
             spriteBatch.End();
 

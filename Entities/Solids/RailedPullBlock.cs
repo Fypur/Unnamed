@@ -28,7 +28,7 @@ namespace Platformer
             MaxSwingDistance = maxSwingDistance;
             gravityScale = 1;
 
-            AddComponent(new LineRenderer(RailPositions.ToList(), 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
+            AddComponent(new LineRenderer(RailPositions.ToList(), Drawing.PointTexture, 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
 
         public RailedPullBlock(Vector2[] positions, float maxSwingDistance, Vector2 initPos, int width, int height) : base(DetermineInitPos(initPos, positions, width, height, out int initialIndex), width, height, new Sprite(Color.Beige))
@@ -39,7 +39,7 @@ namespace Platformer
             MaxSwingDistance = maxSwingDistance;
             gravityScale = 1;
 
-            AddComponent(new LineRenderer(RailPositions.ToList(), 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
+            AddComponent(new LineRenderer(RailPositions.ToList(), Drawing.PointTexture, 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
 
         public override void Update()
