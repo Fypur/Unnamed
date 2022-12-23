@@ -150,7 +150,10 @@ namespace Platformer
             Sprite.Add(Sprite.AllAnimData["Player"]);
 
             Sprite.Play("idle");
-            Sprite.Offset = new Vector2(-3, -3);
+            //Sprite.Offset = new Vector2(-3, -3);
+
+            Sprite.Origin = Vector2.One * 8;
+            Sprite.Offset = Vector2.One * 5;
             //Sprite.Origin = HalfSize;
 
             stateMachine = new StateMachine<States>(States.Idle);
@@ -172,6 +175,11 @@ namespace Platformer
                 {
                     if (grappledSolid is ISwinged swinged)
                         swinged.OnStopGrapple(this);
+                    if(Sprite.Rotation != 0)
+                    {
+                        float initRot = Sprite.Rotation;
+                        AddComponent(new Timer(0.25f, true, (timer) => Sprite.Rotation = initRot * (timer.Value / timer.MaxValue), () => Sprite.Rotation = 0));
+                    }
                     ResetSwing();
                 });
 
@@ -185,6 +193,9 @@ namespace Platformer
 
         public override void Update()
         {
+            /*Debug.LogUpdate(Sprite.Rotation);
+            if (Sprite.Rotation < -Math.PI * 2)*/
+                Debug.LogUpdate("wesh");
             if (!CanMove)
             {
                 /*swingPositions.Clear();
@@ -445,6 +456,12 @@ namespace Platformer
 
             collisionX = collisionY = false;
             previousOnGround = onGround;
+
+            /*if (Input.GetKey(Keys.E))
+                Sprite.Rotation += 0.1f;
+            Sprite.Origin = Vector2.One * 8;
+            Sprite.Offset = Vector2.One * 5;
+            Debug.LogUpdate(Sprite.Offset);*/
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
@@ -1136,7 +1153,7 @@ namespace Platformer
                 else
                     Sprite.Effect = SpriteEffects.FlipHorizontally;
             }
-            else
+            else if(!stateMachine.Is(States.Swinging))
             {
                 if (Facing == 1)
                     Sprite.Effect = SpriteEffects.None;
@@ -1146,6 +1163,9 @@ namespace Platformer
 
             if(!stateMachine.Is(States.Dead))
                 Sprite.Color = Color.Lerp(Color.OrangeRed, Color.White, jetpackTime / maxJetpackTime);
+
+            if (stateMachine.Is(States.Swinging))
+                Sprite.Rotation = (float)((grappledSolid.MiddlePos - MiddlePos).ToAngle());
 
             //Renderer components
             base.Render();

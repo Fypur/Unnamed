@@ -398,16 +398,21 @@ namespace Platformer
                     if (!inside)
                     {
                         int minX = int.MaxValue;
+                        Rectangle r = new Rectangle(0, 0, 0, 0);
                         foreach (Rectangle rect in downNeighboursRect)
                         {
                             if (rect.X < minX && rect.X > x)
+                            {
                                 minX = rect.X;
+                                r = rect;
+                            }
                         }
 
                         if (minX == int.MaxValue)
-                            minX = x + 1;
+                            minX = level.Position.X + level.PxWid;
                         
                         entities.Add(new DeathTrigger(new Vector2(x, level.Position.Y + level.Size.Y), new Vector2(minX - x, intGrid.TileSize), true));
+                        x = minX + r.Width;
                     }
                     
                     inside = false;
