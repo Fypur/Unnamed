@@ -36,7 +36,7 @@ namespace Platformer
         public override void Awake()
         {
             base.Awake();
-
+            
             polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);
         }
 
@@ -59,7 +59,6 @@ namespace Platformer
         public override void Update()
         {
             base.Update();
-
             //Debug.PointUpdate(new Raycast(Raycast.RayTypes.MapTiles, MiddlePos, Input.MousePos).EndPoint);
             /*Vector2[] coll = Collision.LineCircleIntersection(MiddlePos, Input.MousePos, MiddlePos, MaxSwingDistance);
             foreach (Vector2 p in coll)

@@ -33,7 +33,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "83";
+        public static string InitLevel = "65";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -76,7 +76,6 @@ namespace Platformer
             watcher.Changed += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
             watcher.EnableRaisingEvents = true;
 #endif
-
         }
 
         protected override void LoadContent()
@@ -189,7 +188,6 @@ namespace Platformer
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.Render();
-            //Drawing.DrawLine(DataManager.Textures["Player/rope"], player.Pos, Input.MousePos, Color.White, 1);
 
             spriteBatch.End();
 

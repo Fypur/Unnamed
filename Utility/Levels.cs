@@ -552,7 +552,7 @@ namespace Platformer
 
             Vector2 p = (Vector2)position;
             var org = GetLevelOrganisation(index);
-            return new LevelData(GetLevelEntities(index, p, GetLevelSize(org)), p, GetLevelSize(org), org, Engine.CurrentMap, GetLevelEnterAction(index), null);
+            return new LevelData(GetLevelEntities(index, p, GetLevelSize(org)), p, GetLevelSize(org), org, Engine.CurrentMap, GetLevelEnterAction(index));
         }
 
         public static LevelData GetLevelData(string ldtkIdentifier)
@@ -570,7 +570,7 @@ namespace Platformer
         public static LevelData GetLevelData(LDtkLevel ldtk)
         {
             LastLDtkLevel = ldtk;
-            return new LevelData(ldtk.GetLevelEntities(), ldtk.Position.ToVector2(), ldtk.Size.ToVector2(), SwitchXAndY(ldtk.GetIntGrid("IntGrid")), Engine.CurrentMap, null, null);
+            return new LevelData(ldtk.GetLevelEntities(), ldtk.Position.ToVector2(), ldtk.Size.ToVector2(), SwitchXAndY(ldtk.GetIntGrid("IntGrid")), Engine.CurrentMap, null);
         }
 
         public static LDtkLevel GetLdtkLevel(int index)
@@ -613,13 +613,13 @@ namespace Platformer
         public static LevelData GetLevelData(int index, Vector2 position, int tileSize)
         {
             var org = GetLevelOrganisation(index);
-            return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileSize)), position, GetLevelSize(org, tileSize, tileSize), org, Engine.CurrentMap, GetLevelEnterAction(index), null);
+            return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileSize)), position, GetLevelSize(org, tileSize, tileSize), org, Engine.CurrentMap, GetLevelEnterAction(index));
         }
 
         public static LevelData GetLevelData(int index, Vector2 position, int tileWidth, int tileHeight)
         {
             var org = GetLevelOrganisation(index);
-            return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileWidth, tileHeight)), position, GetLevelSize(org, tileWidth, tileHeight), org, Engine.CurrentMap, GetLevelEnterAction(index), null);
+            return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileWidth, tileHeight)), position, GetLevelSize(org, tileWidth, tileHeight), org, Engine.CurrentMap, GetLevelEnterAction(index));
         }
 
         public static void LoadWorldGrid(LDtkWorld world, int worldDepth)

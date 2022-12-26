@@ -15,6 +15,7 @@
 			<Anim id="jump" path="jump" delay="0.1" goto="ascend"/>
 			<Loop id="ascend" path="ascend" delay="1"/>
 			<Loop id="fall" path="fall" delay="1"/>
+			<Loop id="swing" path="swing" delay="1"/>
 			<Loop id="wallSlide" path="wallSlide" delay="1"/>
 		
 		</Player>

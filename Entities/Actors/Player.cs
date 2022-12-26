@@ -139,6 +139,7 @@ namespace Platformer
         public static ControlList SwingControls = new ControlList(Keys.W, Keys.Z, Keys.P, MouseButton.Middle, Buttons.LeftTrigger, Buttons.RightTrigger);
 
         private EventInstance jetpackAudio;
+        private EventInstance swingAudio;
 
         #endregion
 
@@ -158,7 +159,15 @@ namespace Platformer
 
             stateMachine = new StateMachine<States>(States.Idle);
 
-            stateMachine.RegisterStateFunctions(States.Running, () => Sprite.Play("run"), null, null);
+            stateMachine.RegisterStateFunctions(States.Running, () => Sprite.Play("run"), () =>
+            {
+                Sprite.OnFrameChange = () =>
+                {
+                    if (Sprite.CurrentFrame == 1 || Sprite.CurrentFrame == 3)
+                        Audio.PlayEvent("FootStep");
+
+                };
+            }, () => Sprite.OnFrameChange = null);
             stateMachine.RegisterStateFunctions(States.Jumping, () => Sprite.Play("jump"), null, null);
             stateMachine.RegisterStateFunctions(States.Ascending, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
             stateMachine.RegisterStateFunctions(States.Falling, () => Sprite.Play("fall"), null, null);
@@ -168,7 +177,7 @@ namespace Platformer
 
             stateMachine.RegisterStateFunctions(States.Swinging, () =>
                 {
-                    Sprite.Play("fall");
+                    Sprite.Play("swing");
                     if (grappledSolid is ISwinged swinged)
                         swinged.OnGrapple(this, () => isAtSwingEnd); }, null,
                         () =>
@@ -178,7 +187,17 @@ namespace Platformer
                     if(Sprite.Rotation != 0)
                     {
                         float initRot = Sprite.Rotation;
-                        AddComponent(new Timer(0.25f, true, (timer) => Sprite.Rotation = initRot * (timer.Value / timer.MaxValue), () => Sprite.Rotation = 0));
+                        AddComponent(new Timer(0.25f, true, (timer) =>
+                        {
+                            if (onGround)
+                                timer.TimeScale = 4;
+
+                            if(initRot > (float)Math.PI / 2 && initRot < (float)Math.PI)
+                                Sprite.Rotation = initRot + Ease.Reverse(timer.Value / timer.MaxValue) * (2 * (float)Math.PI - initRot );
+                                //Sprite.Rotation = initRot * (timer.Value / timer.MaxValue);
+                            else
+                                Sprite.Rotation = initRot * (timer.Value / timer.MaxValue);
+                        }, () => Sprite.Rotation = 0));
                     }
                     ResetSwing();
                 });
@@ -189,13 +208,13 @@ namespace Platformer
             Layer = 2;
 
             boostBar = (BoostBar)AddChild(new BoostBar(Pos + new Vector2(1, -5), Width - 1, 1, 0.5f));
+
+            swingAudio = Audio.PlayEvent("Swing");
+            swingAudio.stop(STOP_MODE.IMMEDIATE);
         }
 
         public override void Update()
         {
-            /*Debug.LogUpdate(Sprite.Rotation);
-            if (Sprite.Rotation < -Math.PI * 2)*/
-                Debug.LogUpdate("wesh");
             if (!CanMove)
             {
                 /*swingPositions.Clear();
@@ -208,7 +227,10 @@ namespace Platformer
 
                 if(jetpackAudio.isValid())
                     Audio.StopEvent(jetpackAudio);
+
             }
+
+             Sprite.Active = CanMove;
             
             onGround = OnGroundCheck(Pos + new Vector2(0, 1), out Entity onGroundEntity);
             onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
@@ -229,6 +251,7 @@ namespace Platformer
                 onWall = false;
                 onFarWall = false;
             }
+
 
             base.Update();
 
@@ -259,6 +282,13 @@ namespace Platformer
                     xMovingRaw = (int)xMoving;
                     yMovingRaw = (int)yMoving;
                 }
+            }
+
+            if (onGround && stateMachine.Is(States.Swinging))
+            {
+                //if (Sprite.Rotation == (swingPositions[swingPositions.Count - 1] - MiddlePos).ToAngle() + (float)Math.PI / 2)
+                    //Sprite.Rotation = 0;
+                stateMachine.Switch(States.Idle);
             }
 
             if (onGround && xMoving == 0 && normalMouvement && !stateMachine.Is(States.Swinging) && !stateMachine.Is(States.Jumping) && !stateMachine.Is(States.Jetpack))
@@ -430,7 +460,7 @@ namespace Platformer
                 else
                     potentialFallingSpeed = Velocity.Y;
 
-                if (SwingControls.IsDown())
+                if (SwingControls.IsDown() && !onGround)
                     ThrowRope();
                 if (SwingControls.Is() && stateMachine.Is(States.Swinging))
                     Swing();
@@ -462,6 +492,7 @@ namespace Platformer
             Sprite.Origin = Vector2.One * 8;
             Sprite.Offset = Vector2.One * 5;
             Debug.LogUpdate(Sprite.Offset);*/
+
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
@@ -571,20 +602,25 @@ namespace Platformer
                     Vector2 grapplingPos = determinedGrappledSolid.MiddleExactPos;
                     swingPositions.Add(grapplingPos);
 
-                    Timer t = (Timer)AddComponent(new Timer(0.1f, true));
+                    Timer t = (Timer)AddComponent(new Timer(0.15f, true));
 
                     LineRenderer l = new LineRenderer(new List<Vector2> { MiddlePos, MiddlePos }, DataManager.Textures["Player/rope"], 2, Color.White,
                             (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
                         (line) =>
                         {
-                            List<Vector2> linePositions = new List<Vector2>() { MiddlePos };
+                            /*List<Vector2> linePositions = new List<Vector2>() { MiddlePos };
                             List<Vector2> reversedPositions = new List<Vector2>(swingPositions);
                             reversedPositions.Reverse();
                             linePositions.AddRange(reversedPositions);
-                            line.Positions = linePositions;
+                            line.Positions = linePositions;*/
 
                             if(t.Value > 0)
-                                line.Positions[line.Positions.Count - 1] = MiddlePos + (grapplingPos - MiddlePos) * Ease.Reverse(t.Value / t.MaxValue);
+                            {
+                                //Vector2 m = Pos + new Vector2(5, 0) * (float)Math.Cos(Sprite.Rotation);
+                                Vector2 m = MiddlePos + (grapplingPos - MiddlePos).Normalized() * 5;
+                                Drawing.DrawSineWave(m + (grapplingPos - m) * Ease.Reverse(t.Value / t.MaxValue), m, 10 * (t.Value / t.MaxValue), 1, 1, Color.Gray, Ease.QuintIn);
+                                line.Positions.Clear();
+                            }
                             else
                                 line.RenderAction = (line) =>
                                 {
@@ -593,6 +629,10 @@ namespace Platformer
                                     reversedPositions.Reverse();
                                     linePositions.AddRange(reversedPositions);
                                     line.Positions = linePositions;
+
+                                    /*Vector2 m = MiddlePos + (grapplingPos - MiddlePos).Normalized() * 7;
+                                    Drawing.DrawSineWave(m + (grapplingPos - m) * Ease.Reverse(t.Value / t.MaxValue), m, 10 * (t.Value / t.MaxValue), 1, 1, Ease.QuintIn);
+                                    line.Positions.Clear();*/
                                 };
                         });
 
@@ -650,7 +690,18 @@ namespace Platformer
             else
                 isAtSwingEnd = false;
 
+            swingAudio.getPlaybackState(out PLAYBACK_STATE p);
+            //Debug.LogUpdate(p);
+            if (isAtSwingEnd && p == PLAYBACK_STATE.STOPPED)
+                swingAudio = Audio.PlayEvent("Swing");
+
+            swingAudio.setVolume(Math.Clamp(Velocity.LengthSquared() / (150 * 150), 0, 1));
+            
+            Debug.LogUpdate(Sprite.Rotation);
+
             #endregion
+
+            Sprite.Rotation = (swingPositions[swingPositions.Count - 1] - MiddlePos).ToAngle() + (float)Math.PI / 2;
 
             #region Determining the right position to Swing to (Rope colliding with terrain)
 
@@ -1153,7 +1204,7 @@ namespace Platformer
                 else
                     Sprite.Effect = SpriteEffects.FlipHorizontally;
             }
-            else if(!stateMachine.Is(States.Swinging))
+            else
             {
                 if (Facing == 1)
                     Sprite.Effect = SpriteEffects.None;
@@ -1163,9 +1214,6 @@ namespace Platformer
 
             if(!stateMachine.Is(States.Dead))
                 Sprite.Color = Color.Lerp(Color.OrangeRed, Color.White, jetpackTime / maxJetpackTime);
-
-            if (stateMachine.Is(States.Swinging))
-                Sprite.Rotation = (float)((grappledSolid.MiddlePos - MiddlePos).ToAngle());
 
             //Renderer components
             base.Render();
@@ -1185,6 +1233,8 @@ namespace Platformer
             swingPositions.Clear();
             swingPositionsSign = new List<int>() { 0 };
             isAtSwingEnd = false;
+            //swingAudio.stop(STOP_MODE.ALLOWFADEOUT);
+            Audio.StopEvent(swingAudio);
             if (stateMachine.Is(States.Swinging))
                 stateMachine.Switch(States.Ascending);
         }
@@ -1208,7 +1258,8 @@ namespace Platformer
         public void HitStop(float time, Action OnEnd = null)
         {
             CanMove = false;
-            AddComponent(new Timer(time, true, null, () => { CanMove = true; OnEnd?.Invoke(); }));
+            AddComponent(new Timer(time, true, null, () => { 
+                CanMove = true; OnEnd?.Invoke(); }));
         }
     }
 }

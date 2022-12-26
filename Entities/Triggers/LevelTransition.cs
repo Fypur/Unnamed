@@ -51,6 +51,8 @@ namespace Platformer
             else
                 toLevel.Load();
 
+            Engine.CurrentMap.CurrentLevel = new MergedLevel(oldLevel, toLevel);
+
             Player p = (Player)entity;
             p.CanMove = false;
 
@@ -84,7 +86,9 @@ namespace Platformer
                 p.RefillJetpack();
                 p.ResetSwing();
 
-                if(direction == Direction.Up)
+                Engine.CurrentMap.CurrentLevel = toLevel;
+
+                if (direction == Direction.Up)
                 {
                     p.Velocity.Y = Math.Min(p.Velocity.Y, -200);
                     //p.LimitJetpackY(0.5f, 0.4f, () => p.Velocity.Y >= 0);
