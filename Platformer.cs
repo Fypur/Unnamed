@@ -14,8 +14,6 @@ namespace Platformer
     {
         public static Platformer instance;
         public static GraphicsDeviceManager GraphicsManager;
-        private SpriteBatch spriteBatch;
-
         public static RenderTarget2D RenderTarget => Engine.RenderTarget;
 
         private static bool Paused;
@@ -33,7 +31,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "65";
+        public static string InitLevel = "85";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -80,8 +78,7 @@ namespace Platformer
 
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            Drawing.Init(spriteBatch, Content.Load<SpriteFont>("font"));
+            Drawing.Init(new SpriteBatch(GraphicsDevice), Content.Load<SpriteFont>("font"));
 
             Engine.CurrentMap = new Map(Vector2.Zero);
 
@@ -144,24 +141,33 @@ namespace Platformer
             if (Input.GetKeyDown(Keys.D2))
                 RefreshLDtk();
 
+
+
             /*if (Input.GetKey(Keys.W))
             {
-                var PT = new ParticleType();
-                PT.Color = Color.White;
-                PT.Size = 2;
-                PT.SizeRange = 1;
-                PT.LifeMin = 0.1f;
-                PT.LifeMax = 0.3f;
-                PT.SpeedMin = 20;
-                PT.SpeedMax = 50;
-                PT.Direction = -90;
-                PT.DirectionRange = 45;
-                //PT.Acceleration = Vector2.UnitY * 100;
-                //PT.Friction = 0.1f;
-                PT.FadeMode = ParticleType.FadeModes.EndLinear;
-                PT.SizeChange = ParticleType.FadeModes.EndSmooth;
-                pS.Emit(PT, 10, new Rectangle((Input.MousePos - Vector2.One * 3).ToPoint(), (Vector2.One * 6).ToPoint()), null, -90, Color.White);
-            }*/
+                ParticleType PT = new ParticleType()
+                {
+                    Color = Color.LightSkyBlue,
+                    Size = 2,
+                    SizeRange = 0,
+                    LifeMin = 0.5f,
+                    LifeMax = 4f,
+                    SpeedMin = 65,
+                    SpeedMax = 70,
+                    Direction = 0,
+                    DirectionRange = 10,
+                    Acceleration = Vector2.UnitY * 100,
+                    Friction = 0.1f,
+                    FadeMode = ParticleType.FadeModes.EndLinear,
+                    SizeChange = ParticleType.FadeModes.EndSmooth,
+                };
+
+                Engine.CurrentMap.BackgroundSystem.Emit(PT, Input.MousePos, 3);
+                IsMouseVisible = false;
+                Debug.LogUpdate(Engine.CurrentMap.BackgroundSystem.Particles.Count);
+            }
+            else
+                IsMouseVisible = true;*/
 #endif
 
             Input.UpdateOldState();
@@ -176,58 +182,61 @@ namespace Platformer
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(new Color(3, 11, 28));
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
             if(BackgroundTile != null)
                 BackgroundTile.Render();
 
-            spriteBatch.End();
+            Drawing.End();
 
             Drawing.BeginPrimitives();
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.Render();
 
-            spriteBatch.End();
+            Drawing.End();
 
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Drawing.DebugPoint(1, 1);
 
             Drawing.DebugEvents();
 
-            spriteBatch.End();
+            Drawing.End();
 
             Drawing.EndPrimitives();
 
             GraphicsDevice.SetRenderTarget(null);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
-            spriteBatch.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
+            DataManager.PixelShaders["Test"].Parameters["extent"].SetValue(0.3f);
+            DataManager.PixelShaders["Test"].Parameters["strength"].SetValue(30f);
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Test"], null);
 
+            Drawing.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
 
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+            Drawing.End();
+            Drawing.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.UIRender();
 
+            Drawing.End();
+            
 
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+            Drawing.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
             Engine.CurrentMap.UIOverlayRender();
 
             PauseMenu?.Render();
             PauseMenu?.UIChildRender();
 
-            spriteBatch.End();
-            spriteBatch.Begin();
+            Drawing.End();
+            Drawing.Begin();
 
             Drawing.DebugString();
 
-            spriteBatch.End();
+            Drawing.End();
 
             //Drawing.DrawCircle(Vector2.Zero, 10, 0.01f, Color.White);
 

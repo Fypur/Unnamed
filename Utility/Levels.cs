@@ -207,6 +207,23 @@ namespace Platformer
                     entities.Add(new Sawblade(p.Position, p.Width() / 2));
             }
 
+            foreach(LDtkTypes.ParticleEmitter p in level.GetEntities<LDtkTypes.ParticleEmitter>())
+            {
+                ParticleType pT;
+
+                switch (p.Type)
+                {
+                    case LDtkTypes.ParticleTypes.Waterfall: pT = Particles.WaterFall; break;
+                    default: pT = Particles.Debug; break;
+                }
+
+                Entity e = new Entity(p.Position);
+                e.AddComponent(new ParticleEmitter(Engine.CurrentMap.BackgroundSystem, pT, Vector2.Zero, p.Amount, p.Direction, pT.Color));
+                entities.Add(e);
+                
+                //entities.Add(new ParticleEntity(p.Position, Engine.CurrentMap.BackgroundSystem, pT, p.Amount, p.Direction, pT.Color));
+            }
+
             foreach (LDtkTypes.SpecialTrigger p in level.GetEntities<LDtkTypes.SpecialTrigger>())
             {
                 switch (p.Index)
@@ -298,7 +315,7 @@ namespace Platformer
                             Texture2D texture = DataManager.Textures[tileSet + t.Src];
                             texture.Name = tileSet + t.T.ToString();
                             Sprite s = new Sprite(texture);
-                            s.Effect = (SpriteEffects)t.F;
+                            s.SpriteEffect = (SpriteEffects)t.F;
                             entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
                         }
                     }
@@ -349,7 +366,7 @@ namespace Platformer
                         texture.Name = tileSet + t.T.ToString();
 
                         Sprite s = new Sprite(texture);
-                        s.Effect = (SpriteEffects)t.F;
+                        s.SpriteEffect = (SpriteEffects)t.F;
 
                         entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
                     }
@@ -521,7 +538,7 @@ namespace Platformer
                             texture.Name = tileSet + t.T.ToString();
 
                             Sprite s = new Sprite(texture);
-                            s.Effect = (SpriteEffects)t.F;
+                            s.SpriteEffect = (SpriteEffects)t.F;
 
                             sprites[(t.Px.Y + l._PxTotalOffsetY + level.Position.Y - (int)gridPos.Y) / l._GridSize, (t.Px.X + l._PxTotalOffsetX + level.Position.X - (int)gridPos.X) / l._GridSize] = s;
                         }

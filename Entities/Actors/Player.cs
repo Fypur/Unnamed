@@ -49,36 +49,6 @@ namespace Platformer
         
         public static readonly ParticleType Dust = Particles.Dust.Copy();
 
-        private readonly ParticleType JetpackParticle = new ParticleType()
-        {
-            LifeMin = 0.2f,
-            LifeMax = 0.4f,
-            Color = Color.Orange,
-            Color2 = Color.Yellow,
-            Size = 4,
-            SizeRange = 3,
-            SizeChange = ParticleType.FadeModes.Linear,
-            Direction = 180,
-            SpeedMin = 2,
-            SpeedMax = 5
-        };
-
-        private readonly ParticleType ExplosionParticle = new ParticleType()
-        {
-            LifeMin = 0.2f,
-            LifeMax = 1,
-            Color = Color.White,
-            Color2 = Color.Orange,
-            Size = 3,
-            SizeRange = 2,
-            SizeChange = ParticleType.FadeModes.Linear,
-            Direction = 0,
-            DirectionRange = 360,
-            SpeedMin = 4,
-            SpeedMax = 100,
-            Acceleration = Vector2.UnitY * 10,
-        };
-
         #endregion
 
         #region variables
@@ -143,7 +113,6 @@ namespace Platformer
 
         #endregion
 
-
         public Player(Vector2 position) : base(position, 8, 13, constGravityScale, new Sprite(Color.White))
         {
             Engine.Player = this;
@@ -159,15 +128,18 @@ namespace Platformer
 
             stateMachine = new StateMachine<States>(States.Idle);
 
-            stateMachine.RegisterStateFunctions(States.Running, () => Sprite.Play("run"), () =>
+            bool startRun = false;
+            stateMachine.RegisterStateFunctions(States.Running, () => { Sprite.Play("run"); Audio.PlayEvent("FootStep"); startRun = true; }, () =>
             {
                 Sprite.OnFrameChange = () =>
                 {
-                    if (Sprite.CurrentFrame == 1 || Sprite.CurrentFrame == 3)
+                    if ((!startRun && Sprite.CurrentFrame == 1) || Sprite.CurrentFrame == 3)
                         Audio.PlayEvent("FootStep");
 
+                    startRun = false;
                 };
             }, () => Sprite.OnFrameChange = null);
+
             stateMachine.RegisterStateFunctions(States.Jumping, () => Sprite.Play("jump"), null, null);
             stateMachine.RegisterStateFunctions(States.Ascending, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
             stateMachine.RegisterStateFunctions(States.Falling, () => Sprite.Play("fall"), null, null);
@@ -187,6 +159,23 @@ namespace Platformer
                     if(Sprite.Rotation != 0)
                     {
                         float initRot = Sprite.Rotation;
+                        //Debug.Log(Sprite.Rotation);
+                        if (initRot > (float)Math.PI / 2)
+                        {
+                            float val = 0.5f;
+                            AddComponent(new Timer(val + 0.2f, true, (timer) =>
+                            {
+                                Sprite.PixelShader = DataManager.PixelShaders["WhiteBar"];
+                                if (timer.Value <= val)
+                                    DataManager.PixelShaders["WhiteBar"].Parameters["barLocation"].SetValue(Ease.QuintInAndOut(Ease.Reverse(timer.Value / val)));
+                            },
+                            () =>
+                            {
+                                Sprite.PixelShader = null;
+                                DataManager.PixelShaders["WhiteBar"].Parameters["barLocation"].SetValue(-1);
+                            } ));
+                        }
+
                         AddComponent(new Timer(0.25f, true, (timer) =>
                         {
                             if (onGround)
@@ -194,7 +183,6 @@ namespace Platformer
 
                             if(initRot > (float)Math.PI / 2 && initRot < (float)Math.PI)
                                 Sprite.Rotation = initRot + Ease.Reverse(timer.Value / timer.MaxValue) * (2 * (float)Math.PI - initRot );
-                                //Sprite.Rotation = initRot * (timer.Value / timer.MaxValue);
                             else
                                 Sprite.Rotation = initRot * (timer.Value / timer.MaxValue);
                         }, () => Sprite.Rotation = 0));
@@ -211,6 +199,8 @@ namespace Platformer
 
             swingAudio = Audio.PlayEvent("Swing");
             swingAudio.stop(STOP_MODE.IMMEDIATE);
+
+            AddComponent(new Light(HalfSize, 70, new Color(Color.White, 20), new Color(Color.White, 0)));
         }
 
         public override void Update()
@@ -493,15 +483,18 @@ namespace Platformer
             Sprite.Offset = Vector2.One * 5;
             Debug.LogUpdate(Sprite.Offset);*/
 
+            //Debug.LogUpdate(DataManager.PixelShaders["WhiteBar"].Parameters["barLocation"].GetValueSingle());
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
-
+  
             UpdateChildrenPos();
         }
 
         public override void Squish()
             => Death();
+
+        #region Movement
 
         private void ThrowRope()
         {
@@ -1034,9 +1027,13 @@ namespace Platformer
 
             Jetpacking = true;
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(JetpackParticle, MiddlePos);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Jetpack, MiddlePos);
             jetpackAudio.setParameterByName("JetpackTime", jetpackTime / maxJetpackTime);
         }
+
+        #endregion
+
+        #region Death
 
         public void Death()
         {
@@ -1106,7 +1103,7 @@ namespace Platformer
             OnDeath?.Invoke();
             OnDeath = delegate { };
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(ExplosionParticle, Bounds, 100);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Bounds, 100);
             Engine.Cam.Shake(0.4f, 1);
 
             //Audio.PlayEvent("DeathExplosion");
@@ -1150,6 +1147,27 @@ namespace Platformer
             }, () => CanMove = true));
         }
 
+        private void ResetJetpack()
+        {
+            jetpackTime = maxJetpackTime;
+            JetpackPowerCoef = Vector2.One;
+        }
+
+        public void ResetSwing()
+        {
+            swingPositions.Clear();
+            swingPositionsSign = new List<int>() { 0 };
+            isAtSwingEnd = false;
+            //swingAudio.stop(STOP_MODE.ALLOWFADEOUT);
+            Audio.StopEvent(swingAudio);
+            if (stateMachine.Is(States.Swinging))
+                stateMachine.Switch(States.Ascending);
+        }
+
+        #endregion
+
+        #region Collision
+
         private void CollisionX(Entity collided)
         {
             if (collided is GlassWall gl && gl.Break(this, Velocity, true))
@@ -1185,6 +1203,8 @@ namespace Platformer
         private bool OnGroundCheck(Vector2 position)
             => Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position);
 
+        #endregion
+
         void Land()
         {
             ParticleType oldDust = Dust.Copy();
@@ -1200,19 +1220,19 @@ namespace Platformer
             if (stateMachine.Is(States.WallSliding))
             {
                 if (!onRightWall)
-                    Sprite.Effect = SpriteEffects.None;
+                    Sprite.SpriteEffect = SpriteEffects.None;
                 else
-                    Sprite.Effect = SpriteEffects.FlipHorizontally;
+                    Sprite.SpriteEffect = SpriteEffects.FlipHorizontally;
             }
             else
             {
                 if (Facing == 1)
-                    Sprite.Effect = SpriteEffects.None;
+                    Sprite.SpriteEffect = SpriteEffects.None;
                 else if (Facing == -1)
-                    Sprite.Effect = SpriteEffects.FlipHorizontally;
+                    Sprite.SpriteEffect = SpriteEffects.FlipHorizontally;
             }
 
-            if(!stateMachine.Is(States.Dead))
+            if (!stateMachine.Is(States.Dead))
                 Sprite.Color = Color.Lerp(Color.OrangeRed, Color.White, jetpackTime / maxJetpackTime);
 
             //Renderer components
@@ -1221,23 +1241,6 @@ namespace Platformer
 
         public void RefillJetpack()
             => jetpackTime = maxJetpackTime;
-
-        private void ResetJetpack()
-        {
-            jetpackTime = maxJetpackTime;
-            JetpackPowerCoef = Vector2.One;
-        }
-
-        public void ResetSwing()
-        {
-            swingPositions.Clear();
-            swingPositionsSign = new List<int>() { 0 };
-            isAtSwingEnd = false;
-            //swingAudio.stop(STOP_MODE.ALLOWFADEOUT);
-            Audio.StopEvent(swingAudio);
-            if (stateMachine.Is(States.Swinging))
-                stateMachine.Switch(States.Ascending);
-        }
 
         public void LimitJetpackY(float coef, float time, Func<bool> stopLimitting)
         {
