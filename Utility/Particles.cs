@@ -90,5 +90,21 @@ namespace Platformer
             Acceleration = Vector2.UnitY * 10,
             CustomRender = (p) => Drawing.DrawCircle(p.Pos, p.Size.X / p.StartSize * p.StartSize * 10, 1, new Color(p.Color, 13), Color.Transparent),
         };
+
+        public static ParticleType Spark = new ParticleType()
+        {
+            LifeMin = 0.4f,
+            LifeMax = 0.7f,
+            Color = Color.Yellow,
+            FadeMode = ParticleType.FadeModes.Linear,
+            Size = 1,
+            SizeRange = 0,
+            //SizeChange = ParticleType.FadeModes.EndLinear,
+            Acceleration = Vector2.UnitY * 300,
+            SpeedMin = 20,
+            SpeedMax = 80,
+            DirectionRange = 90,
+            Direction = -90,
+        };
     }
 }

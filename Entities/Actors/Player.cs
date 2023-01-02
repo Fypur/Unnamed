@@ -108,8 +108,8 @@ namespace Platformer
         public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.X);
         public static ControlList SwingControls = new ControlList(Keys.W, Keys.Z, Keys.P, MouseButton.Middle, Buttons.LeftTrigger, Buttons.RightTrigger);
 
-        private EventInstance jetpackAudio;
-        private EventInstance swingAudio;
+        private Sound3D jetpackAudio;
+        private Sound3D swingAudio;
 
         #endregion
 
@@ -197,10 +197,12 @@ namespace Platformer
 
             boostBar = (BoostBar)AddChild(new BoostBar(Pos + new Vector2(1, -5), Width - 1, 1, 0.5f));
 
-            swingAudio = Audio.PlayEvent("Swing");
-            swingAudio.stop(STOP_MODE.IMMEDIATE);
+            swingAudio = (Sound3D)AddComponent(new Sound3D("Swing"));
+            swingAudio.Sound.stop(STOP_MODE.IMMEDIATE);
+            jetpackAudio = (Sound3D)AddComponent(new Sound3D("Jetpack"));
+            jetpackAudio.Sound.stop(STOP_MODE.IMMEDIATE);
 
-            AddComponent(new Light(HalfSize, 70, new Color(Color.White, 20), new Color(Color.White, 0)));
+            AddComponent(new Light(HalfSize, 40, new Color(Color.White, 5), new Color(Color.White, 0)));
         }
 
         public override void Update()
@@ -215,8 +217,8 @@ namespace Platformer
 
                 Jetpacking = false;
 
-                if(jetpackAudio.isValid())
-                    Audio.StopEvent(jetpackAudio);
+                if(jetpackAudio.Sound.isValid())
+                    Audio.StopEvent(jetpackAudio.Sound);
 
             }
 
@@ -427,8 +429,8 @@ namespace Platformer
                 else
                 {
                     Jetpacking = false;
-                    if (jetpackAudio.isValid())
-                        Audio.StopEvent(jetpackAudio);
+                    if (jetpackAudio.Sound.isValid())
+                        Audio.StopEvent(jetpackAudio.Sound);
                 }
 
                 if (onGround)
@@ -683,15 +685,11 @@ namespace Platformer
             else
                 isAtSwingEnd = false;
 
-            swingAudio.getPlaybackState(out PLAYBACK_STATE p);
-            //Debug.LogUpdate(p);
-            if (isAtSwingEnd && p == PLAYBACK_STATE.STOPPED)
-                swingAudio = Audio.PlayEvent("Swing");
+            if (!swingAudio.isPlaying())
+                swingAudio.Play();
 
-            swingAudio.setVolume(Math.Clamp(Velocity.LengthSquared() / (150 * 150), 0, 1));
+            swingAudio.SetVolume(Math.Clamp(Velocity.LengthSquared() / (150 * 150), 0, 1));
             
-            Debug.LogUpdate(Sprite.Rotation);
-
             #endregion
 
             Sprite.Rotation = (swingPositions[swingPositions.Count - 1] - MiddlePos).ToAngle() + (float)Math.PI / 2;
@@ -977,7 +975,7 @@ namespace Platformer
             boostBar.Visible = true;
 
             if (!Jetpacking)
-                jetpackAudio = Audio.PlayEvent("Jetpack");
+                jetpackAudio.Play();
 
             dir.X = dir.Normalized().X;
 
@@ -1028,7 +1026,7 @@ namespace Platformer
             Jetpacking = true;
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Jetpack, MiddlePos);
-            jetpackAudio.setParameterByName("JetpackTime", jetpackTime / maxJetpackTime);
+            jetpackAudio.SetParameter("JetpackTime", jetpackTime / maxJetpackTime);
         }
 
         #endregion
@@ -1159,9 +1157,10 @@ namespace Platformer
             swingPositionsSign = new List<int>() { 0 };
             isAtSwingEnd = false;
             //swingAudio.stop(STOP_MODE.ALLOWFADEOUT);
-            Audio.StopEvent(swingAudio);
+            swingAudio.Stop();
             if (stateMachine.Is(States.Swinging))
                 stateMachine.Switch(States.Ascending);
+            boostBar.Visible = false;
         }
 
         #endregion

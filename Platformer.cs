@@ -31,7 +31,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "85";
+        public static string InitLevel = "60";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -52,7 +52,7 @@ namespace Platformer
 
         protected override void Initialize()
         {
-            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24), "Utility/SpriteData.xml");
+            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 0, RenderTargetUsage.PreserveContents), "Utility/SpriteData.xml");
 
             Options.CurrentResolution = Engine.ScreenSize;
 
@@ -179,6 +179,8 @@ namespace Platformer
 
         protected override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.SetRenderTarget(Engine.PrimitivesRenderTarget);
+            GraphicsDevice.Clear(Color.Transparent);
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(new Color(3, 11, 28));
 
@@ -208,10 +210,18 @@ namespace Platformer
 
             Drawing.EndPrimitives();
 
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+
+            Drawing.Draw(Engine.PrimitivesRenderTarget, Vector2.Zero);
+
+            Drawing.End();
+
+            Drawing.DebugEvents();
+
             GraphicsDevice.SetRenderTarget(null);
 
             DataManager.PixelShaders["Test"].Parameters["extent"].SetValue(0.3f);
-            DataManager.PixelShaders["Test"].Parameters["strength"].SetValue(30f);
+            DataManager.PixelShaders["Test"].Parameters["strength"].SetValue(30f);  
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Test"], null);
 
             Drawing.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
@@ -274,7 +284,7 @@ namespace Platformer
 
             PauseMenu = new PauseMenu();
 
-            //music = Audio.PlayEvent(AudioData.MUSIC);
+            music = Audio.PlayEvent("WindAmbience");
         }
 
         public static void EndGame()

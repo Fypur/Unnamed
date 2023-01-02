@@ -219,6 +219,7 @@ namespace Platformer
 
                 Entity e = new Entity(p.Position);
                 e.AddComponent(new ParticleEmitter(Engine.CurrentMap.BackgroundSystem, pT, Vector2.Zero, p.Amount, p.Direction, pT.Color));
+                e.AddComponent(new Sound3D("WaterLeak"));
                 entities.Add(e);
                 
                 //entities.Add(new ParticleEntity(p.Position, Engine.CurrentMap.BackgroundSystem, pT, p.Amount, p.Direction, pT.Color));
