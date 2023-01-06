@@ -25,7 +25,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     float vig = uv.x * uv.y * strength; // multiply with sth for intensity
     
-    vig = pow(vig, extent); // change pow for modifying the extend of the  vignette
+    vig = pow(abs(vig), extent); // change pow for modifying the extend of the  vignette
 
     if(vig < 1.0f)
         color.rgb *= vig;

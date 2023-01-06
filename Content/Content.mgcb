@@ -368,11 +368,11 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Objects/swingingPoint.aseprite
 
-#begin Graphics/PixelShaders/Test.fx
+#begin Graphics/PixelShaders/Vignette.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Graphics/PixelShaders/Test.fx;Graphics/PixelShaders/Vignette.fx
+/build:Graphics/PixelShaders/Vignette.fx
 
 #begin Graphics/PixelShaders/WhiteBar.fx
 /importer:EffectImporter

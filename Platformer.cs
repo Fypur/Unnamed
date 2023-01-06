@@ -220,9 +220,9 @@ namespace Platformer
 
             GraphicsDevice.SetRenderTarget(null);
 
-            DataManager.PixelShaders["Test"].Parameters["extent"].SetValue(0.3f);
-            DataManager.PixelShaders["Test"].Parameters["strength"].SetValue(30f);  
-            Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Test"], null);
+            DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.3f);
+            DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(30f);  
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Vignette"], null);
 
             Drawing.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
 
