@@ -486,7 +486,6 @@ namespace Platformer
             Debug.LogUpdate(Sprite.Offset);*/
 
             //Debug.LogUpdate(DataManager.PixelShaders["WhiteBar"].Parameters["barLocation"].GetValueSingle());
-
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
   

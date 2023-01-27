@@ -37,7 +37,7 @@ namespace Platformer
         {
             base.Awake();
 
-            AddComponent(new Light(HalfSize, Math.Min(MaxSwingDistance, 100), new Color(Color.LightBlue, 50), new Color(Color.White, 0)));
+            AddComponent(new Light(HalfSize, Math.Min(MaxSwingDistance, 100), new Color(Color.LightBlue, 50), new Color(Color.LightBlue, 0)));
             polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);
         }
 
