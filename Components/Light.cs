@@ -27,7 +27,8 @@ namespace Platformer
 
         public override void Render()
         {
-            Drawing.DrawCircle(ParentEntity.Pos + LocalPosition, Radius, 0.1f, InsideColor, OutsideColor);
+            Lighting.DrawLight(ParentEntity.Pos + LocalPosition, Radius, InsideColor, OutsideColor);
+            //Drawing.DrawCircle(ParentEntity.Pos + LocalPosition, Radius, 0.1f, InsideColor, OutsideColor);
         }
     }
 }

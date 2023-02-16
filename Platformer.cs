@@ -80,10 +80,11 @@ namespace Platformer
         {
             Drawing.Init(new SpriteBatch(GraphicsDevice), Content.Load<SpriteFont>("font"));
 
+
+
             Engine.CurrentMap = new Map(Vector2.Zero);
 
             Engine.CurrentMap.Instantiate(new MainMenu());
-
         }
 
         protected override void Update(GameTime gameTime)
@@ -130,13 +131,6 @@ namespace Platformer
 
             if (Input.GetKeyDown(Keys.R))
                 Levels.ReloadLastLevelFetched();
-
-            if (Input.GetKeyDown(Keys.NumPad1))
-                music.setParameterByName("Pitch", 0);
-            if (Input.GetKeyDown(Keys.NumPad2))
-                music.setParameterByName("Pitch", 0.5f);
-            if (Input.GetKeyDown(Keys.NumPad3))
-                music.setParameterByName("Pitch", 1);
             
             if (Input.GetKeyDown(Keys.D2))
                 RefreshLDtk();
@@ -181,6 +175,8 @@ namespace Platformer
         {
             GraphicsDevice.SetRenderTarget(Engine.PrimitivesRenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
+            GraphicsDevice.SetRenderTarget(Engine.LightsRenderTarget);
+            GraphicsDevice.Clear(Color.Transparent);
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(new Color(3, 11, 28));
 
@@ -191,13 +187,39 @@ namespace Platformer
 
             Drawing.End();
 
-            Drawing.BeginPrimitives();
+
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+
+            
+
+
+
+            Drawing.End();
+
 
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
+
+            Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget);
+
             Engine.CurrentMap.Render();
+            //Drawing.DrawLight(Input.MousePos, 100, new Color(Color.White, 100), new Color(Color.White, 100));
+
+            Drawing.EndPrimitives();
+
+
+
+            Drawing.BeginPrimitives(Engine.LightsRenderTarget, null, BlendState.AlphaBlend, false, null);
+            Lighting.FlushLights();
+            Drawing.EndPrimitives();
+
 
             Drawing.End();
+
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+            Lighting.DrawAllLights();
+            Drawing.End();
+
 
 
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
@@ -208,25 +230,32 @@ namespace Platformer
 
             Drawing.End();
 
-            Drawing.EndPrimitives();
+            
+
 
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
             Drawing.Draw(Engine.PrimitivesRenderTarget, Vector2.Zero);
+            //Drawing.Draw(Engine.LightsRenderTarget, Vector2.Zero);
 
             Drawing.End();
+            
 
             Drawing.DebugEvents();
 
             GraphicsDevice.SetRenderTarget(null);
 
+
             DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.3f);
             DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(30f);  
+
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Vignette"], null);
 
             Drawing.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
 
             Drawing.End();
+
+
             Drawing.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.UIRender();
@@ -284,7 +313,7 @@ namespace Platformer
 
             PauseMenu = new PauseMenu();
 
-            music = Audio.PlayEvent("WindAmbience");
+            //music = Audio.PlayEvent("WindAmbience");
         }
 
         public static void EndGame()
