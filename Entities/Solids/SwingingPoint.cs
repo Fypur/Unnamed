@@ -73,8 +73,8 @@ namespace Platformer
                  Pos = Input.MousePos;*/
 #endif
 
-
-            polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);
+            if(Pos != PreviousPos)
+                polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);
         }
 
         public override void Render()
@@ -86,14 +86,16 @@ namespace Platformer
 
             Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.Gray, 50));
 
+            if (Debug.DebugMode)
+                Drawing.DrawCircleEdge(MiddleExactPos, MaxSwingDistance, 0.1f, new Color(Color.Gray, 50), 1);
+
+
             
             /*Drawing.DrawLine(MiddlePos + Vector2.UnitX * 300, Input.MousePos, Color.Yellow);
             foreach (Vector2 p in Collision.LineCircleIntersection(MiddlePos + Vector2.UnitX * 300, Input.MousePos, MiddlePos, MaxSwingDistance))
                 Debug.PointUpdate(p);*/
 
 
-            if (Debug.DebugMode)
-                Drawing.DrawCircleEdge(MiddleExactPos, MaxSwingDistance, 0.1f, new Color(Color.Gray, 50), 1);
         }
     }
 }

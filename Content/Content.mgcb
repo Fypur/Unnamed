@@ -368,6 +368,12 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Objects/swingingPoint.aseprite
 
+#begin Graphics/PixelShaders/Edge.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Graphics/PixelShaders/Edge.fx
+
 #begin Graphics/PixelShaders/Vignette.fx
 /importer:EffectImporter
 /processor:EffectProcessor
