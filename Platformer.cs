@@ -31,7 +31,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "83";
+        public static string InitLevel = "60";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -209,7 +209,7 @@ namespace Platformer
 
 
 
-            Drawing.BeginPrimitives(Engine.LightsRenderTarget, null, BlendState.AlphaBlend, false, null);
+            Drawing.BeginPrimitives(Engine.LightsRenderTarget, null, BlendState.Opaque, false, null);
             Lighting.FlushLights();
             Drawing.EndPrimitives();
 

@@ -307,16 +307,20 @@ namespace Platformer
                         {
                             Texture2D tileSetTex = DataManager.Load(tileSet);
                             Dictionary<Point, Texture2D> tiles = DataManager.GetTileSetTextures(tileSetTex, l._GridSize);
+
                             foreach (KeyValuePair<Point, Texture2D> tile in tiles)
                                 DataManager.Textures[tileSet + tile.Key] = tile.Value;
                         }
                         for (int i = l.GridTiles.Length - 1; i >= 0; i--)
                         {
                             TileInstance t = l.GridTiles[i];
+
                             Texture2D texture = DataManager.Textures[tileSet + t.Src];
                             texture.Name = tileSet + t.T.ToString();
+
                             Sprite s = new Sprite(texture);
                             s.SpriteEffect = (SpriteEffects)t.F;
+
                             entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
                         }
                     }

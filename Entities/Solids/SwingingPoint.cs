@@ -37,7 +37,7 @@ namespace Platformer
         {
             base.Awake();
 
-            AddComponent(new Light(HalfSize, Math.Min(MaxSwingDistance, 100), new Color(Color.LightBlue, 50), new Color(Color.LightBlue, 0)));
+            //AddComponent(new Light(HalfSize, Math.Min(MaxSwingDistance, 100), new Color(Color.LightBlue, 50), new Color(Color.LightBlue, 0)));
             polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);
         }
 
@@ -82,12 +82,12 @@ namespace Platformer
             base.Render();
 
             if (Engine.Player != null && !swinged && !new Raycast(Raycast.RayTypes.MapTiles, MiddleExactPos, Engine.Player.Pos + Engine.Player.HalfSize).Hit && Vector2.Distance(MiddleExactPos, Engine.Player.Pos + Engine.Player.HalfSize) < MaxSwingDistance)
-                Drawing.DrawDottedLine(MiddlePos, Engine.Player.Pos + Engine.Player.HalfSize, new Color(Color.Gray, 50), 1, 4, 4);
+                Drawing.DrawDottedLine(MiddlePos, Engine.Player.Pos + Engine.Player.HalfSize, new Color(Color.LightBlue, 120), 1, 4, 4);
 
-            Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.Gray, 50));
+            Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.LightBlue, 120));
 
             if (Debug.DebugMode)
-                Drawing.DrawCircleEdge(MiddleExactPos, MaxSwingDistance, 0.1f, new Color(Color.Gray, 50), 1);
+                Drawing.DrawCircleEdge(MiddleExactPos, MaxSwingDistance, 0.1f, new Color(Color.LightBlue, 120), 1);
 
 
             
