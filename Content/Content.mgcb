@@ -224,7 +224,7 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Objects/scenery/jetpackTutorialScreen.aseprite
 
-#begin Graphics/Objects/scenery/screen/glitch.aseprite
+#begin Graphics/Objects/scenery/screen/glitch_appear.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor
 /processorParam:SheetType=Packed
@@ -234,7 +234,19 @@
 /processorParam:BorderPadding=0
 /processorParam:Spacing=0
 /processorParam:InnerPadding=0
-/build:Graphics/Objects/scenery/screen/glitch.aseprite
+/build:Graphics/Objects/scenery/screen/glitch_appear.aseprite
+
+#begin Graphics/Objects/scenery/screen/glitch_loop.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Objects/scenery/screen/glitch_loop.aseprite
 
 #begin Graphics/Objects/scenery/screen/little/begintransfer.aseprite
 /importer:AsepriteDocumentImporter

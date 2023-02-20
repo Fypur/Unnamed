@@ -47,10 +47,9 @@
 					<Loop id="jetpackTutorialScreen" path ="jetpackTutorialScreen" delay ="0.1"/>
 				</JetpackTutorialScreen>
 				
-				<Screen path="screen" start="text">
-					<Anim id="glitch" path ="glitch" delay ="0.025" goto="text"/>
-					<Anim id="text" path ="text" delay ="0.025" goto="littledrawing"/>
-					<Anim id="littledrawing" path ="littledrawing" delay ="0.025" goto="glitch"/>
+				<Screen path="screen" start="appear">
+					<Anim id="appear" path ="glitch_appear" delay="0.050" goto="loop"/>
+					<Loop id="loop" path ="glitch_loop" delay="0.080"/>
 				</Screen>
 				<LittleScreen path="screen/little" start="ltext">
 					<Anim id="ltext" path ="ltext" delay ="0.025" goto="begintransfer"/>
