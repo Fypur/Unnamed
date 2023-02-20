@@ -74,7 +74,8 @@ namespace Platformer
             Engine.Cam.Shake(0.2f, 1.7f);
             player.HitStop(0.05f);
 
-            //Audio.PlayEvent("GlassBreak");
+            FMOD.Studio.EventInstance g = Audio.PlayEvent("GlassBreak");
+            g.setVolume((float)32 / (DestroyOnX ? Height : Width));
 
             SelfDestroy();
             return true;
