@@ -1,8 +1,7 @@
 // This file was automatically generated, any modifications will be lost!
-
+#pragma warning disable
 namespace LDtkTypes;
 
-#pragma warning disable
 using Microsoft.Xna.Framework;
 using LDtk;
 
