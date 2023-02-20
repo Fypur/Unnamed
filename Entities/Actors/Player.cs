@@ -367,7 +367,7 @@ namespace Platformer
                     isUnsticking = false;
                 }
 
-                if(JumpControls.IsDown())
+                if (JumpControls.IsDown() && !stateMachine.Is(States.Jumping))
                 {
                     bool TestJump()
                     {
