@@ -12,32 +12,38 @@ namespace Platformer
     {
         public float Radius;
         public Sawblade(Vector2 position, float radius)
-            : base(position, (int)(radius * 2), (int)(radius * 2), new Sprite(Color.Gray))
+            : base(position, (int)(radius * 2), (int)(radius * 2), new Sprite(DataManager.Objects["sawblade/sawblade"]))
         {
             Radius = radius;
-            Collider.Collidable = false;
-            AddComponent(new HurtBox(new Vector2(radius), radius));
         }
 
         public Sawblade(Vector2 position, float radius, Vector2[] positions, float[] timesBetweenPositions, bool goingForwards)
-            : base(position, (int)(radius * 2), (int)(radius * 2), new Sprite(Color.Gray), goingForwards, positions, timesBetweenPositions, Ease.QuintInAndOut)
+            : base(position, (int)(radius * 2), (int)(radius * 2), new Sprite(DataManager.Objects["sawblade/sawblade"]), goingForwards, positions, timesBetweenPositions, Ease.QuintInAndOut)
         {
-            Collider.Collidable = false;
-            AddComponent(new HurtBox(new Vector2(radius / 2), radius));
+            Radius = radius;
         }
 
         public override void Awake()
         {
-            RemoveComponent(Sprite);
-            Sprite = null;
             base.Awake();
+
+            Collider.Collidable = false;
+            AddComponent(new HurtBox(HalfSize, Radius - 2));
+
+            Sprite.Offset = HalfSize;
+            Sprite.Origin = HalfSize;
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            Sprite.Rotation += 0.1f;
         }
 
         public override void Render()
         {
             base.Render();
-
-            Drawing.DrawCircle(Collider.AbsolutePosition + HalfSize, Radius, 0.3f, Color.Gray);
         }
     }
 }
