@@ -209,6 +209,9 @@ namespace Platformer
 
             foreach(LDtkTypes.ParticleEmitter p in level.GetEntities<LDtkTypes.ParticleEmitter>())
             {
+                if (Levels.LevelNonRespawn.Contains(p.Iid))
+                    continue;
+
                 ParticleType pT;
 
                 switch (p.Type)
@@ -217,9 +220,7 @@ namespace Platformer
                     default: pT = Particles.Debug; break;
                 }
 
-                Entity e = new Entity(p.Position);
-                e.AddComponent(new ParticleEmitter(Engine.CurrentMap.BackgroundSystem, pT, Vector2.Zero, p.Amount, p.Direction, pT.Color));
-                e.AddComponent(new Sound3D("WaterLeak"));
+                ParticleSoundEmitter e = new ParticleSoundEmitter(p.Position, pT, p.Amount, p.Direction, pT.Color, p.Iid);
                 entities.Add(e);
                 
                 //entities.Add(new ParticleEntity(p.Position, Engine.CurrentMap.BackgroundSystem, pT, p.Amount, p.Direction, pT.Color));
@@ -321,7 +322,10 @@ namespace Platformer
                             Sprite s = new Sprite(texture);
                             s.SpriteEffect = (SpriteEffects)t.F;
 
-                            entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
+                            Tile tile = new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s);
+                            tile.Layer = -1;
+
+                            entities.Add(tile);
                         }
                     }
                     else
@@ -347,7 +351,10 @@ namespace Platformer
                                 Sprite s = new();
                                 s.Add(Sprite.AllAnimData[data]);
 
-                                entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
+                                Tile tile = new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s);
+                                tile.Layer = -1;
+
+                                entities.Add(tile);
                             }
                         }
                     }
@@ -365,6 +372,7 @@ namespace Platformer
                             DataManager.Textures[tileSet + tile.Key] = tile.Value;
                     }
 
+                    int layer = l._Identifier == "DecalIntGrid" ? -1 : l._Identifier == "BgTiles" ? -2 : throw new Exception("Tiles layer was not identified");
                     foreach (TileInstance t in l.AutoLayerTiles)
                     {
                         Texture2D texture = DataManager.Textures[tileSet + t.Src];
@@ -373,11 +381,15 @@ namespace Platformer
                         Sprite s = new Sprite(texture);
                         s.SpriteEffect = (SpriteEffects)t.F;
 
-                        entities.Add(new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
+                        Tile tile = new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s);
+
+                        tile.Layer = layer;
+
+                        entities.Add(tile);
                     }
                 }
 
-                /*else if (l._Type == LayerType.IntGrid)
+               /* else if (l._Type == LayerType.IntGrid)
                 {
                     string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
                     if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
@@ -526,7 +538,7 @@ namespace Platformer
 
                 foreach (LayerInstance l in level.LayerInstances)
                 {
-                    if(l._Type == LayerType.IntGrid && !l._Identifier.Contains("Decal"))
+                    if(l._Type == LayerType.IntGrid && !l._Identifier.Contains("Decal") && !l._Identifier.Contains("Bg") && !l._Identifier.Contains("Tiles"))
                     {
                         string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
                         if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))

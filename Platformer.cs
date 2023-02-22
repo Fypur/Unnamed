@@ -31,7 +31,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "60";
+        public static string InitLevel = "85";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -246,7 +246,7 @@ namespace Platformer
             GraphicsDevice.SetRenderTarget(null);
 
 
-            DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.3f);
+            DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.4f);
             DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(30f);  
 
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Vignette"], null);
@@ -314,6 +314,7 @@ namespace Platformer
             PauseMenu = new PauseMenu();
 
             //music = Audio.PlayEvent("WindAmbience");
+            music = Audio.PlayEvent("Music");
         }
 
         public static void EndGame()

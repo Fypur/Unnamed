@@ -15,6 +15,8 @@ namespace Platformer
         private LDtk.LDtkLevel ldtk;
         private Direction direction;
 
+        private static List<Entity> destroyOnTransition = new();
+
         public LevelTransition(Vector2 position, Vector2 size, Level toLevel, Direction dir)
             : base(position, size, new List<Type>() { typeof(Player) }, null)
         {
@@ -38,6 +40,8 @@ namespace Platformer
 
         public override void OnTriggerEnter(Entity entity)
         {
+            List<Entity> toDestroy = new(destroyOnTransition);
+
             Level oldLevel = Engine.CurrentMap.CurrentLevel;
             SwingingPoint.SwingingPoints.Clear();
 
@@ -95,8 +99,22 @@ namespace Platformer
                 }
 
                 Engine.Cam.SetBoundaries(toLevel.Pos, size);
+
+                foreach (Entity e in toDestroy)
+                {
+                    Engine.CurrentMap.Destroy(e);
+                    destroyOnTransition.Remove(e);
+                }
+
                 oldLevel.Unload();
+
             }));
+        }
+
+        public static void DontDestroyOnDeath(Entity entity)
+        {
+            Engine.CurrentMap.CurrentLevel.DontDestroyOnUnload(entity);
+            destroyOnTransition.Add(entity);
         }
     }
 }

@@ -687,8 +687,11 @@ namespace Platformer
             if (!swingAudio.isPlaying())
                 swingAudio.Play();
 
-            swingAudio.SetVolume(Math.Clamp(Velocity.LengthSquared() / (150 * 150), 0, 1));
-            
+            if(isAtSwingEnd)
+                swingAudio.SetVolume(Math.Clamp(Velocity.LengthSquared() / (150 * 150), 0, 1));
+            else
+                swingAudio.SetVolume(0);
+
             #endregion
 
             Sprite.Rotation = (swingPositions[swingPositions.Count - 1] - MiddlePos).ToAngle() + (float)Math.PI / 2;
