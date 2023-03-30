@@ -20,7 +20,7 @@ namespace Platformer
             Sprite.Play("light");
 
             light = (Light)AddComponent(
-                new Light(Sprite.CurrentAnimation.Slices[0].Rect.Location.ToVector2(), 60, new Color(Color.White, 50), new Color(Color.White, 0)));
+                new CircleLight(Sprite.CurrentAnimation.Slices[0].Rect.Location.ToVector2(), 60, new Color(Color.White, 50), new Color(Color.White, 0)));
            
             if(turnOffRect is Rectangle r)
             {

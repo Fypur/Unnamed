@@ -31,7 +31,7 @@ namespace Platformer
         public static Tile BackgroundTile;
 
 #if DEBUG
-        public static string InitLevel = "60";
+        public static string InitLevel = "76";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -314,7 +314,7 @@ namespace Platformer
             PauseMenu = new PauseMenu();
 
             //music = Audio.PlayEvent("WindAmbience");
-            music = Audio.PlayEvent("Music");
+            //music = Audio.PlayEvent("Music");
         }
 
         public static void EndGame()

@@ -51,7 +51,7 @@ namespace Platformer
             Sprite.Offset.Y += 1;
             Sprite.Play("rotate");
 
-            AddComponent(new Light(HalfSize, 30, new Color(Color.Orange, 50), new Color(Color.White, 0)));
+            AddComponent(new CircleLight(HalfSize, 30, new Color(Color.Orange, 50), new Color(Color.White, 0)));
         }
 
         public override void WhileWait(Player player)

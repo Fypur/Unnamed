@@ -202,7 +202,7 @@ namespace Platformer
             jetpackAudio = (Sound3D)AddComponent(new Sound3D("Jetpack"));
             jetpackAudio.Sound.stop(STOP_MODE.IMMEDIATE);
 
-            AddComponent(new Light(HalfSize, 40, new Color(Color.White, 5), new Color(Color.White, 0)));
+            AddComponent(new CircleLight(HalfSize, 40, new Color(Color.White, 5), new Color(Color.White, 0)));
         }
 
         public override void Update()
