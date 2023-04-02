@@ -131,6 +131,9 @@ namespace Platformer
             bool startRun = false;
             stateMachine.RegisterStateFunctions(States.Running, () => { Sprite.Play("run"); Audio.PlayEvent("FootStep"); startRun = true; }, () =>
             {
+                if(Rand.NextDouble() < 0.1f)
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.LightBigDust, new Rectangle(Bounds.X + (Facing == 1 ? 2 : 3), Bounds.Bottom - 2, 3, 3), 1);
+
                 Sprite.OnFrameChange = () =>
                 {
                     if ((!startRun && Sprite.CurrentFrame == 1) || Sprite.CurrentFrame == 3)
@@ -147,9 +150,14 @@ namespace Platformer
             stateMachine.RegisterStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Ascending); }, null);
             stateMachine.RegisterStateFunctions(States.Jetpack, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
 
+            TrailRenderer trail = new TrailRenderer(0.03f);
+            trail.Condition = () => Velocity.Length() > 210;
+
             stateMachine.RegisterStateFunctions(States.Swinging, () =>
                 {
                     Sprite.Play("swing");
+                    AddComponent(trail);
+
                     if (grappledSolid is ISwinged swinged)
                         swinged.OnGrapple(this, () => isAtSwingEnd); }, null,
                         () =>
@@ -188,6 +196,7 @@ namespace Platformer
                         }, () => Sprite.Rotation = 0));
                     }
                     ResetSwing();
+                    RemoveComponent(trail);
                 });
 
             AddComponent(stateMachine);
@@ -695,6 +704,24 @@ namespace Platformer
             #endregion
 
             Sprite.Rotation = (swingPositions[swingPositions.Count - 1] - MiddlePos).ToAngle() + (float)Math.PI / 2;
+
+            /*ParticleType Trail = new ParticleType()
+            {
+                Color = Color.Gray,
+                Size = Velocity.Length() * 0.05f,
+                SizeRange = 0,
+                LifeMin = 0.3f,
+                LifeMax = 0.3f,
+                SpeedMin = 0,
+                SpeedMax = 2,
+                Direction = 0,
+                DirectionRange = 360,
+                FadeMode = ParticleType.FadeModes.Linear,
+                SizeChange = ParticleType.FadeModes.Linear
+            };
+            //Trail.Acceleration = Velocity;
+            //if(Velocity.Length() > 200)
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Trail, MiddlePos, 10);*/
 
             #region Determining the right position to Swing to (Rope colliding with terrain)
 

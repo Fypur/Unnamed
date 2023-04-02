@@ -462,7 +462,10 @@ namespace Platformer
             }
 
             foreach (LDtkTypes.ProjectorLight p in level.GetEntities<LDtkTypes.ProjectorLight>())
-                entities.Add(new ProjectorLight(p.Position, p.Direction - p.Position, p.Range));
+                entities.Add(new ProjectorLight(p.Position, p.Direction, p.Range, p.Color, ProjectorLight.ProjectorType.Ground));
+
+            foreach (LDtkTypes.WallProjectorLight p in level.GetEntities<LDtkTypes.WallProjectorLight>())
+                entities.Add(new ProjectorLight(p.Position, p.Direction, p.Range, p.Color, ProjectorLight.ProjectorType.Corner));
 
             Engine.Cam.SetBoundaries(oldCamBounds);
             Engine.Cam.CenteredPos = oldCamPos;

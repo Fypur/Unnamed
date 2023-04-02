@@ -10,40 +10,29 @@ namespace Platformer
 {
     public class ProjectorLight : Decoration
     {
+        public enum ProjectorType { Ground, Corner };
+
         public Vector2 Direction;
         private Rectangle lightRect;
-        /*private Vector2 collidedPoint;
-        private Vector2 collidedPoint2;
+        public QuadPointLight QuadLight;
 
-        private int lightIntensity;
-        private int lightIntensity2;*/
-
-        public ProjectorLight(Vector2 position, Vector2 direction, float range) : base(position, 10, 10, new Sprite(Color.White))
+        public ProjectorLight(Vector2 position, Vector2 directionPoint, float range, Color color, ProjectorType type) : base(position, 10, 10, new Sprite(Color.White))
         {
             Sprite.Add(Sprite.AllAnimData["ProjectorLight"]);
-
+            Sprite.Play(type.ToString());
             lightRect = Sprite.CurrentAnimation.Slices[0].Rect;
 
-            Direction = direction.Normalized();
-
-            /*var r1 = new Raycast(Raycast.RayTypes.MapTiles, Pos + lightRect.Location.ToVector2() + new Vector2(lightRect.Width, 0), VectorHelper.RotateDeg(direction, -range), 300f);
-            var r2 = new Raycast(Raycast.RayTypes.MapTiles, Pos + lightRect.Location.ToVector2(), VectorHelper.RotateDeg(direction, range), 300f);
-            collidedPoint = r1.EndPoint;
-            lightIntensity = (int)(r1.Distance / 1.2f);
-            collidedPoint2 = r2.EndPoint;
-            lightIntensity2 = (int)(r2.Distance / 1.2f);*/
+            QuadLight = (QuadPointLight)AddComponent(new QuadPointLight(lightRect.Location.ToVector2(), (lightRect.Location + lightRect.Size).ToVector2(), directionPoint, 170, new Color(Color.LightYellow, 90), new Color(color, 0), range));
         }
 
-        public override void Render()
+        public override void Awake()
         {
-            base.Render();
+            base.Awake();
 
-
-            Drawing.DrawQuad(
-                Pos + lightRect.Location.ToVector2(), new Color(Color.White, 70),
-                Pos + lightRect.Location.ToVector2() + new Vector2(lightRect.Width, 0), new Color(Color.White, 70),
-                Pos + lightRect.Location.ToVector2() + new Vector2(lightRect.Width, 0) + VectorHelper.RotateDeg(Direction, -45) * 70, new Color(Color.Black, 0),
-                Pos + lightRect.Location.ToVector2() + VectorHelper.RotateDeg(Direction, 45) * 70, new Color(Color.Black, 0));
+            QuadLight.Direction -= Pos;
+            QuadLight.Direction -= new Vector2(Engine.CurrentMap.CurrentLevel.TileWidth, Engine.CurrentMap.CurrentLevel.TileHeight) / 2;
+            //Direction -= Sprite.CurrentAnimation.Slices[0].Rect.Center.ToVector2();
+            QuadLight.Direction.Normalize();
         }
     }
 }

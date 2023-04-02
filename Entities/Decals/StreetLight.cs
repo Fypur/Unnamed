@@ -11,7 +11,7 @@ namespace Platformer
 {
     public class StreetLight : Decoration
     {
-        private Light light;
+        private CircleLight light;
         private Sound3D sound;
 
         public StreetLight(Vector2 position, int width, int height, Rectangle? turnOffRect = null) : base(position, width, height, new Sprite(Color.White))
@@ -19,8 +19,7 @@ namespace Platformer
             Sprite.Add(Sprite.AllAnimData["StreetLight"]);
             Sprite.Play("light");
 
-            light = (Light)AddComponent(
-                new CircleLight(Sprite.CurrentAnimation.Slices[0].Rect.Location.ToVector2(), 60, new Color(Color.White, 50), new Color(Color.White, 0)));
+            light = (CircleLight)AddComponent(new CircleLight(Sprite.CurrentAnimation.Slices[0].Rect.Location.ToVector2(), 60, new Color(Color.White, 50), new Color(Color.White, 0)));
            
             if(turnOffRect is Rectangle r)
             {

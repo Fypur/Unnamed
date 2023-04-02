@@ -10,6 +10,12 @@ namespace Platformer
 {
     public static class Particles
     {
+
+        static Particles()
+        {
+            TrailRenderer.Trail = Trail;
+        }
+
         public static readonly ParticleType Dust = new ParticleType()
         {
             Color = Color.White,
@@ -23,6 +29,36 @@ namespace Platformer
             DirectionRange = 45,
             FadeMode = ParticleType.FadeModes.EndLinear,
             SizeChange = ParticleType.FadeModes.EndSmooth
+        };
+
+        public static readonly ParticleType LightBigDust = new ParticleType()
+        {
+            Color = new Color(Color.White, 50),
+            Size = 4,
+            SizeRange = 2,
+            LifeMin = 0.3f,
+            LifeMax = 1f,
+            SpeedMin = 5,
+            SpeedMax = 10,
+            Direction = -90,
+            DirectionRange = 45,
+            FadeMode = ParticleType.FadeModes.Linear,
+            SizeChange = ParticleType.FadeModes.Smooth
+        };
+
+        public static readonly ParticleType Trail = new ParticleType()
+        {
+            Color = new Color(Color.White, 50),
+            Size = 1,
+            SizeRange = 0,
+            LifeMin = 0.3f,
+            LifeMax = 0.3f,
+            SpeedMin = 0,
+            SpeedMax = 2,
+            Direction = 0,
+            DirectionRange = 360,
+            FadeMode = ParticleType.FadeModes.Linear,
+            SizeChange = ParticleType.FadeModes.Linear
         };
 
         public static readonly ParticleType WaterFall = new ParticleType()

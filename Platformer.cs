@@ -209,7 +209,7 @@ namespace Platformer
 
 
 
-            Drawing.BeginPrimitives(Engine.LightsRenderTarget, null, BlendState.Opaque, false, null);
+            Drawing.BeginPrimitives(Engine.LightsRenderTarget, null, BlendState.AlphaBlend, false, null);
             Lighting.FlushLights();
             Drawing.EndPrimitives();
 
@@ -247,8 +247,7 @@ namespace Platformer
 
 
             DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.4f);
-            DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(30f);  
-
+            DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(25f);  
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Vignette"], null);
 
             Drawing.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);

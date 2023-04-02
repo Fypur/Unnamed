@@ -19,5 +19,6 @@ public class ProjectorLight : ILDtkEntity
 
     public Vector2 Direction { get; set; }
     public float Range { get; set; }
+    public Color Color { get; set; }
 }
 #pragma warning restore
