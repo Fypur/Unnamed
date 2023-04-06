@@ -301,34 +301,7 @@ namespace Platformer
             {
                 if (l._Type == LayerType.Tiles)
                 {
-                    if (!l._TilesetRelPath.Contains("AnimatedDecals"))
-                    {
-                        string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
-                        if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
-                        {
-                            Texture2D tileSetTex = DataManager.Load(tileSet);
-                            Dictionary<Point, Texture2D> tiles = DataManager.GetTileSetTextures(tileSetTex, l._GridSize);
-
-                            foreach (KeyValuePair<Point, Texture2D> tile in tiles)
-                                DataManager.Textures[tileSet + tile.Key] = tile.Value;
-                        }
-                        for (int i = l.GridTiles.Length - 1; i >= 0; i--)
-                        {
-                            TileInstance t = l.GridTiles[i];
-
-                            Texture2D texture = DataManager.Textures[tileSet + t.Src];
-                            texture.Name = tileSet + t.T.ToString();
-
-                            Sprite s = new Sprite(texture);
-                            s.SpriteEffect = (SpriteEffects)t.F;
-
-                            Tile tile = new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s);
-                            tile.Layer = -1;
-
-                            entities.Add(tile);
-                        }
-                    }
-                    else
+                    if(l._TilesetRelPath.Contains("AnimatedDecals"))
                     {
                         if(TileData.Count == 0)
                         {
@@ -358,28 +331,113 @@ namespace Platformer
                             }
                         }
                     }
+                    else if (l._TilesetRelPath.Contains("Lights"))
+                    {
+                        string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
 
+                        if (!DataManager.Textures.ContainsKey(tileSet))
+                            DataManager.Textures[tileSet] = DataManager.Load(tileSet);
+
+                        List<Sprite.Animation.Slice> slices = (List<Sprite.Animation.Slice>)((object[])DataManager.Textures[tileSet].Tag)[1];
+
+                        for (int i = l.GridTiles.Length - 1; i >= 0; i--)
+                        {
+                            TileInstance t = l.GridTiles[i];
+
+                            Texture2D texture = DataManager.Textures[tileSet];
+                            texture.Name = tileSet + t.T.ToString();
+
+                            Sprite s = new Sprite(texture);
+                            s.SpriteEffect = (SpriteEffects)t.F;
+                            s.SourceRectangle = new Rectangle(t.Src.X, t.Src.Y, l._GridSize, l._GridSize);
+
+                            Tile tile = new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s);
+                            tile.Layer = -1;
+
+
+                            foreach (Sprite.Animation.Slice slice in slices)
+                            {
+                                if (s.SourceRectangle.Value.Contains(slice.Rect.Location))
+                                {
+                                    float direction = float.Parse(slice.Name.Substring(slice.Name.LastIndexOf('D') + 1, slice.Name.IndexOf(" ", slice.Name.LastIndexOf('D')) - slice.Name.LastIndexOf('D')));
+                                    float length = float.Parse(slice.Name.Substring(slice.Name.LastIndexOf('L') + 1, slice.Name.IndexOf(" ", slice.Name.LastIndexOf('L')) - slice.Name.LastIndexOf('L')));
+
+                                    int lR = slice.Name.LastIndexOf('R');
+                                    float range;
+
+                                    if (slice.Name.LastIndexOf(" ") > lR)
+                                        range = float.Parse(slice.Name.Substring(lR + 1, slice.Name.IndexOf(" ", lR) - lR));
+                                    else
+                                        range = float.Parse(slice.Name.Substring(lR + 1));
+
+                                    Vector2 location;
+                                    Vector2 location2;
+
+                                    if (slice.Name[0] == 'F')
+                                    {
+                                        location = new Vector2(slice.Rect.X + slice.Rect.Width - t.Src.X, slice.Rect.Y - t.Src.Y);
+                                        location2 = new Vector2(slice.Rect.X - t.Src.X, slice.Rect.Y + slice.Rect.Height - t.Src.Y);
+                                    }
+                                    else
+                                    {
+                                        location = (slice.Rect.Location - t.Src).ToVector2();
+                                        location2 = (slice.Rect.Location - t.Src + slice.Rect.Size).ToVector2();
+                                    }
+
+
+                                    tile.AddComponent(new QuadPointLight(location, location2, direction, range, length,  slice.Color, new Color(slice.Color, 0)));
+                                }
+                            }
+
+
+                            entities.Add(tile);
+                        }
+                    }
+                    else
+                    {
+                        string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
+
+                        if (!DataManager.Textures.ContainsKey(tileSet))
+                            DataManager.Textures[tileSet] = DataManager.Load(tileSet);
+
+                        for (int i = l.GridTiles.Length - 1; i >= 0; i--)
+                        {
+                            TileInstance t = l.GridTiles[i];
+
+                            Texture2D texture = DataManager.Textures[tileSet];
+                            texture.Name = tileSet + t.T.ToString();
+
+                            Sprite s = new Sprite(texture);
+                            s.SpriteEffect = (SpriteEffects)t.F;
+                            s.SourceRectangle = new Rectangle(t.Src.X, t.Src.Y, l._GridSize, l._GridSize);
+
+                            Tile tile = new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s);
+                            tile.Layer = -1;
+
+                            entities.Add(tile);
+                        }
+                    }
                 }
 
                 if (l._Type == LayerType.IntGrid && l._Identifier != "IntGrid")
                 {
+
                     string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
-                    if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
-                    {
-                        Texture2D tileSetTex = DataManager.Load(tileSet);
-                        Dictionary<Point, Texture2D> tiles = DataManager.GetTileSetTextures(tileSetTex, l._GridSize);
-                        foreach (KeyValuePair<Point, Texture2D> tile in tiles)
-                            DataManager.Textures[tileSet + tile.Key] = tile.Value;
-                    }
+
+                    if (!DataManager.Textures.ContainsKey(tileSet))
+                        DataManager.Textures[tileSet] = DataManager.Load(tileSet);
+
 
                     int layer = l._Identifier == "DecalIntGrid" ? -1 : l._Identifier == "BgTiles" ? -2 : throw new Exception("Tiles layer was not identified");
+
                     foreach (TileInstance t in l.AutoLayerTiles)
                     {
-                        Texture2D texture = DataManager.Textures[tileSet + t.Src];
+                        Texture2D texture = DataManager.Textures[tileSet];
                         texture.Name = tileSet + t.T.ToString();
 
                         Sprite s = new Sprite(texture);
                         s.SpriteEffect = (SpriteEffects)t.F;
+                        s.SourceRectangle = new Rectangle(t.Src.X, t.Src.Y, l._GridSize, l._GridSize);
 
                         Tile tile = new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s);
 
@@ -388,28 +446,6 @@ namespace Platformer
                         entities.Add(tile);
                     }
                 }
-
-               /* else if (l._Type == LayerType.IntGrid)
-                {
-                    string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
-                    if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
-                    {
-                        Texture2D tileSetTex = DataManager.Load(tileSet);
-                        Dictionary<Point, Texture2D> tiles = DataManager.GetTileSetTextures(tileSetTex, l._GridSize);
-                        foreach (KeyValuePair<Point, Texture2D> tile in tiles)
-                            DataManager.Textures[tileSet + tile.Key] = tile.Value;
-                    }
-
-                    foreach (TileInstance t in l.AutoLayerTiles)
-                    {
-                        Texture2D texture = DataManager.Textures[tileSet + t.Src];
-                        texture.Name = tileSet + t.T.ToString();
-
-                        Sprite s = new Sprite(texture);
-                        s.Effect = (SpriteEffects)t.F;
-                        entities.Add(new SolidTile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s));
-                    }
-                }*/
             }
 
             if (!downNeighbours)
@@ -460,12 +496,6 @@ namespace Platformer
                 else
                     entities.Add(new StreetLight(p.Position, p.Width(), p.Height()));
             }
-
-            foreach (LDtkTypes.ProjectorLight p in level.GetEntities<LDtkTypes.ProjectorLight>())
-                entities.Add(new ProjectorLight(p.Position, p.Direction, p.Range, p.Color, ProjectorLight.ProjectorType.Ground));
-
-            foreach (LDtkTypes.WallProjectorLight p in level.GetEntities<LDtkTypes.WallProjectorLight>())
-                entities.Add(new ProjectorLight(p.Position, p.Direction, p.Range, p.Color, ProjectorLight.ProjectorType.Corner));
 
             Engine.Cam.SetBoundaries(oldCamBounds);
             Engine.Cam.CenteredPos = oldCamPos;
@@ -544,21 +574,17 @@ namespace Platformer
                     if(l._Type == LayerType.IntGrid && !l._Identifier.Contains("Decal") && !l._Identifier.Contains("Bg") && !l._Identifier.Contains("Tiles"))
                     {
                         string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
-                        if (!DataManager.Textures.ContainsKey(tileSet + "{X:0 Y:0}"))
-                        {
-                            Texture2D tileSetTex = DataManager.Load(tileSet);
-                            Dictionary<Point, Texture2D> tiles = DataManager.GetTileSetTextures(tileSetTex, l._GridSize);
-                            foreach (KeyValuePair<Point, Texture2D> tile in tiles)
-                                DataManager.Textures[tileSet + tile.Key] = tile.Value;
-                        }
+                        if (!DataManager.Textures.ContainsKey(tileSet))
+                            DataManager.Textures[tileSet] = DataManager.Load(tileSet);
 
                         foreach (TileInstance t in l.AutoLayerTiles)
                         {
-                            Texture2D texture = DataManager.Textures[tileSet + t.Src];
+                            Texture2D texture = DataManager.Textures[tileSet];
                             texture.Name = tileSet + t.T.ToString();
 
                             Sprite s = new Sprite(texture);
                             s.SpriteEffect = (SpriteEffects)t.F;
+                            s.SourceRectangle = new Rectangle(t.Src.X, t.Src.Y, l._GridSize, l._GridSize);
 
                             sprites[(t.Px.Y + l._PxTotalOffsetY + level.Position.Y - (int)gridPos.Y) / l._GridSize, (t.Px.X + l._PxTotalOffsetX + level.Position.X - (int)gridPos.X) / l._GridSize] = s;
                         }

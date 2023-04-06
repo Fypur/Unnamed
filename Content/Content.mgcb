@@ -140,6 +140,30 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Objects/jumpthrus/industrial2.aseprite
 
+#begin Graphics/Objects/Lights.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Objects/Lights.aseprite
+
+#begin Graphics/Objects/projectorLight/ceiling.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Objects/projectorLight/ceiling.aseprite
+
 #begin Graphics/Objects/projectorLight/corner.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor
@@ -403,6 +427,12 @@
 /processorParam:Spacing=0
 /processorParam:InnerPadding=0
 /build:Graphics/Objects/swingingPoint.aseprite
+
+#begin Graphics/PixelShaders/Bloom.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Graphics/PixelShaders/Bloom.fx
 
 #begin Graphics/PixelShaders/Edge.fx
 /importer:EffectImporter

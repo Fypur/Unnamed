@@ -10,7 +10,7 @@ namespace Platformer
 {
     public class ProjectorLight : Decoration
     {
-        public enum ProjectorType { Ground, Corner };
+        public enum ProjectorType { Ground, Corner, Ceiling };
 
         public Vector2 Direction;
         private Rectangle lightRect;
@@ -21,8 +21,9 @@ namespace Platformer
             Sprite.Add(Sprite.AllAnimData["ProjectorLight"]);
             Sprite.Play(type.ToString());
             lightRect = Sprite.CurrentAnimation.Slices[0].Rect;
+            //Sprite.CurrentAnimation.Slices[0].
 
-            QuadLight = (QuadPointLight)AddComponent(new QuadPointLight(lightRect.Location.ToVector2(), (lightRect.Location + lightRect.Size).ToVector2(), directionPoint, 170, new Color(Color.LightYellow, 90), new Color(color, 0), range));
+            //QuadLight = (QuadPointLight)AddComponent(new QuadPointLight(lightRect.Location.ToVector2(), (lightRect.Location + lightRect.Size).ToVector2() - Vector2.UnitY, directionPoint, 170, new Color(Color.LightYellow, 90), new Color(color, 0), range));
         }
 
         public override void Awake()

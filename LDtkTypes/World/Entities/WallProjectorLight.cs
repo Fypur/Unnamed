@@ -17,7 +17,7 @@ public class WallProjectorLight : ILDtkEntity
 
     public Color SmartColor { get; set; }
 
-    public Vector2 Direction { get; set; }
+    public Vector2? Direction { get; set; }
     public float Range { get; set; }
     public Color Color { get; set; }
 }

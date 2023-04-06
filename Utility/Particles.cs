@@ -18,7 +18,7 @@ namespace Platformer
 
         public static readonly ParticleType Dust = new ParticleType()
         {
-            Color = Color.White,
+            Color = new Color(Color.White, 140),
             Size = 2,
             SizeRange = 1,
             LifeMin = 0.05f,

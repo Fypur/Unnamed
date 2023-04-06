@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using Fiourp;
 using LDtk;
+using Platformer.Bloom;
 
 namespace Platformer
 {
@@ -15,6 +16,7 @@ namespace Platformer
         public static Platformer instance;
         public static GraphicsDeviceManager GraphicsManager;
         public static RenderTarget2D RenderTarget => Engine.RenderTarget;
+        private static RenderTarget2D SecondRenderTarget;
 
         private static bool Paused;
         public static PauseMenu PauseMenu;
@@ -29,6 +31,7 @@ namespace Platformer
 
         public static EventInstance music;
         public static Tile BackgroundTile;
+        public static BloomFilter BloomFilter;
 
 #if DEBUG
         public static string InitLevel = "76";
@@ -63,6 +66,12 @@ namespace Platformer
 
             Cam = new Camera(Vector2.Zero, 0, 1f);
 
+            SecondRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, RenderTarget.Width, RenderTarget.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            
+            BloomFilter = new BloomFilter();
+            BloomFilter.Load(Engine.Graphics.GraphicsDevice, Content, RenderTarget.Width, RenderTarget.Height);
+            BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
+
 #if DEBUG
             StartGame();
 
@@ -90,7 +99,7 @@ namespace Platformer
         protected override void Update(GameTime gameTime)
         {
             Input.UpdateState();
-            
+
 #if DEBUG
             /*if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
                 Exit();*/
@@ -209,7 +218,7 @@ namespace Platformer
 
 
 
-            Drawing.BeginPrimitives(Engine.LightsRenderTarget, null, BlendState.AlphaBlend, false, null);
+            Drawing.BeginPrimitives(Engine.LightsRenderTarget, null, BlendState.Opaque, false, null);
             Lighting.FlushLights();
             Drawing.EndPrimitives();
 
@@ -241,14 +250,49 @@ namespace Platformer
             Drawing.End();
             
 
+
+
             Drawing.DebugEvents();
 
-            GraphicsDevice.SetRenderTarget(null);
 
+            GraphicsDevice.SetRenderTarget(SecondRenderTarget);
+            GraphicsDevice.Clear(Color.Transparent);
 
             DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.4f);
-            DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(25f);  
+            DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(25f);
+
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Vignette"], null);
+
+            Drawing.Draw(RenderTarget, Vector2.Zero, Color.White);
+
+            Drawing.End();
+
+
+
+
+            BloomFilter.BloomThreshold = 0.8f;
+            BloomFilter.BloomStreakLength = 0.4f;
+            BloomFilter.BloomStrengthMultiplier = 0.55f;
+
+            GraphicsDevice.SetRenderTarget(RenderTarget);
+            GraphicsDevice.Clear(Color.Transparent);
+
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, null);
+
+            Drawing.Draw(SecondRenderTarget, Vector2.Zero, Color.White);
+
+            Texture2D bloomTexture = BloomFilter.Draw(SecondRenderTarget, RenderTarget.Width, RenderTarget.Height);
+            GraphicsDevice.SetRenderTarget(RenderTarget);
+            Drawing.Draw(bloomTexture, Vector2.Zero);
+
+            Drawing.End();
+
+
+
+
+
+            GraphicsDevice.SetRenderTarget(null);
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
             Drawing.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
 
@@ -363,6 +407,8 @@ namespace Platformer
         protected override void EndRun()
         {
             Audio.Finish();
+            BloomFilter.Dispose();
+
             base.EndRun();
         }
         
