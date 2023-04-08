@@ -295,6 +295,7 @@ namespace Platformer
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
             Drawing.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
+            //Drawing.Draw(Engine.LightsRenderTarget, new Rectangle(new Point(0, 0), new Point(3000, 3000)), Color.White);
 
             Drawing.End();
 
@@ -389,8 +390,7 @@ namespace Platformer
 
             Paused = true;
             PauseMenu.Show();
-            if (PreviousPauseOldState == null)
-                PreviousPauseOldState = Input.OldState;
+            PreviousPauseOldState = Input.OldState;
         }
 
         public static void Unpause()
@@ -401,7 +401,6 @@ namespace Platformer
             PauseMenu.Children = new();
             Paused = false;
             Input.OldState = PreviousPauseOldState;
-            PreviousPauseOldState = null;
         }
 
         protected override void EndRun()

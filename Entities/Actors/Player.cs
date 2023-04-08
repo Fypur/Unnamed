@@ -74,6 +74,7 @@ namespace Platformer
         private bool onRightFarWall;
         private bool collisionX;
         private bool collisionY;
+        private bool couldMove = true;
 
         private float xMoving;
         private float yMoving;
@@ -107,6 +108,7 @@ namespace Platformer
         public static ControlList JumpControls = new ControlList(Keys.C, Keys.I, Keys.Space, Buttons.A);
         public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.X);
         public static ControlList SwingControls = new ControlList(Keys.W, Keys.Z, Keys.P, MouseButton.Middle, Buttons.LeftTrigger, Buttons.RightTrigger);
+        private Input.State canMoveState;
 
         private Sound3D jetpackAudio;
         private Sound3D swingAudio;
@@ -216,6 +218,8 @@ namespace Platformer
 
         public override void Update()
         {
+            couldMove = CanMove;
+
             if (!CanMove)
             {
                 /*swingPositions.Clear();
@@ -229,6 +233,7 @@ namespace Platformer
                 if(jetpackAudio.Sound.isValid())
                     Audio.StopEvent(jetpackAudio.Sound);
 
+                
             }
 
              Sprite.Active = CanMove;
@@ -256,8 +261,14 @@ namespace Platformer
 
             base.Update();
 
-            if (!CanMove)
+            if (!CanMove)                
                 return;
+            else if (!couldMove)
+            {
+                Input.State state = Input.OldState;
+                Input.OldState = canMoveState;
+                canMoveState = state;
+            }
 
             {
                 xMoving = yMoving = 0;
@@ -431,7 +442,7 @@ namespace Platformer
             }
 
             {
-                if (!onGround && CanJetpack && jetpackTime > 0 && JetpackControls.Is())
+                if (!onGround && CanJetpack && jetpackTime > 0 && JetpackControls.Is() && !(xMoving == 0 && yMoving == 0))
                 {
                     Jetpack();
                 }
@@ -495,10 +506,15 @@ namespace Platformer
             Debug.LogUpdate(Sprite.Offset);*/
 
             //Debug.LogUpdate(DataManager.PixelShaders["WhiteBar"].Parameters["barLocation"].GetValueSingle());
+
+
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
   
             UpdateChildrenPos();
+
+            if (!couldMove)
+                Input.OldState = canMoveState;
         }
 
         public override void Squish()
@@ -995,11 +1011,7 @@ namespace Platformer
 
         private void Jetpack()
         {
-            Vector2 dir;
-            if (xMoving == 0 && yMoving == 0)
-                return;
-            else
-                dir = new Vector2(Math.Sign(xMoving), Math.Sign(yMoving));
+            Vector2 dir = new Vector2(Math.Sign(xMoving), Math.Sign(yMoving));
 
             boostBar.Visible = true;
 
