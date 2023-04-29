@@ -34,7 +34,7 @@ namespace Platformer
         public static BloomFilter BloomFilter;
 
 #if DEBUG
-        public static string InitLevel = "76";
+        public static string InitLevel = "97";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -282,7 +282,9 @@ namespace Platformer
             Drawing.Draw(SecondRenderTarget, Vector2.Zero, Color.White);
 
             Texture2D bloomTexture = BloomFilter.Draw(SecondRenderTarget, RenderTarget.Width, RenderTarget.Height);
-            GraphicsDevice.SetRenderTarget(RenderTarget);
+
+            GraphicsDevice.SetRenderTarget(RenderTarget); //For some damn reason man don't change back the render target
+
             Drawing.Draw(bloomTexture, Vector2.Zero);
 
             Drawing.End();

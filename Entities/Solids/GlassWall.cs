@@ -81,14 +81,17 @@ namespace Platformer
             return true;
         }
 
-        private bool Conditions(Player player, bool collDir)
+        private bool Conditions(Player player, bool horizontal)
         {
-            if (collDir != DestroyOnX)
+            if (horizontal != DestroyOnX)
                 return false;
 
-            if (collDir)
+            if (horizontal)
             {
-                if (Math.Abs(player.Velocity.X) < BreakVelocity)
+                /*if (Math.Abs(player.Velocity.X) < BreakVelocity)
+                    return false;*/
+
+                if (player.Velocity.LengthSquared() < BreakVelocity * BreakVelocity)
                     return false;
 
                 if (SolidDir == Direction.Left)
@@ -98,7 +101,10 @@ namespace Platformer
             }
             else
             {
-                if (Math.Abs(player.Velocity.Y) < BreakVelocity)
+                /*if (Math.Abs(player.Velocity.Y) < BreakVelocity)
+                    return false;*/
+
+                if (player.Velocity.LengthSquared() < BreakVelocity * BreakVelocity)
                     return false;
 
                 if (SolidDir == Direction.Up)

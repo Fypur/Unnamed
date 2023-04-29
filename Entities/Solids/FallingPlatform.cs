@@ -28,7 +28,8 @@ namespace Platformer
             : base(position, width, height, new Sprite())
         {
             TriggerComponent trig = (TriggerComponent)AddComponent(new TriggerComponent(-Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }));
-            trig.trigger.OnTriggerEnterAction = (entity) => { AddComponent(new Coroutine(Fall(shakeTime))); trig.trigger.Active = false; };
+            trig.trigger.OnTriggerEnterAction = (entity) => { Fall(); trig.trigger.Active = false; };
+            //trig.trigger.OnTriggerEnterAction = (entity) => { AddComponent(new Coroutine(FallEnumerator())); trig.trigger.Active = false; };
             
             Sprite.NineSliceSettings = nineSlice;
             Dust.Acceleration = -Vector2.UnitY * 100;
@@ -36,7 +37,29 @@ namespace Platformer
             Respawning = respawning;
         }
 
-        private IEnumerator Fall(float shakeTime)
+        public void Fall()
+        {
+            GetComponent<TriggerComponent>().trigger.Active = false;
+            AddComponent(new Shaker(shakeTime, 1.2f, null, true));
+            AddComponent(new Timer(shakeTime, true, null, () =>
+            {
+                gravityScale = constGravityScale;
+
+                if (Respawning)
+                {
+                    AddComponent(new Timer(respawnTime, true, null, () => {
+                        wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
+                        {
+                            Pos = initPos; Velocity = Vector2.Zero; gravityScale = 0; previousOnGround = false; Collided = false;
+                            GetComponent<TriggerComponent>().trigger.Active = true;
+                        });
+                        Engine.CurrentMap.Instantiate(wipe);
+                    }));
+                }
+            }));
+        }
+
+        /*private IEnumerator FallEnumerator()
         {
             GetComponent<TriggerComponent>().trigger.Active = false;
             AddComponent(new Shaker(shakeTime, 1.2f, null, true));
@@ -54,7 +77,7 @@ namespace Platformer
                     Engine.CurrentMap.Instantiate(wipe);
                 }));
             }
-        }
+        }*/
 
         public override void Update()
         {

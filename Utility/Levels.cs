@@ -62,30 +62,6 @@ namespace Platformer
 
                 foreach (EntityRef child in p.Children)
                     IidsChildren[plat].Add(child.EntityIid);
-
-                /*switch (p.SpikeDirection)
-                {
-                    case LDtkTypes.Direction.Up:
-                        plat.AddChild(new SpikeRow(new Vector2(0, -Spike.DefaultSize) + plat.Pos, Direction.Right, plat.Width, Direction.Up));
-                        break;
-                    case LDtkTypes.Direction.Down:
-                        plat.AddChild(new SpikeRow(new Vector2(0, plat.Height) + plat.Pos, Direction.Right, plat.Width, Direction.Down));
-                        break;
-                    case LDtkTypes.Direction.Left:
-                        plat.AddChild(new SpikeRow(new Vector2(-Spike.DefaultSize, 0) + plat.Pos, Direction.Down, plat.Height, Direction.Left));
-                        break;
-                    case LDtkTypes.Direction.Right:
-                        plat.AddChild(new SpikeRow(new Vector2(plat.Width, 0) + plat.Pos, Direction.Down, plat.Height, Direction.Right));
-                        break;
-                }*/
-            }
-
-            foreach (LDtkTypes.GrapplingPoint p in level.GetEntities<LDtkTypes.GrapplingPoint>())
-            {
-                if (p.Positions.Length == 0)
-                    entities.Add(new SwingingPoint(p.Position, p.MaxSwingDistance));
-                else
-                    entities.Add(new SwingingPoint(p.Position, p.MaxSwingDistance, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, p.GoingForwards, Ease.QuintInAndOut));
             }
 
             foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
@@ -97,7 +73,15 @@ namespace Platformer
                     IidsChildren[plat] = new();
 
                 foreach (EntityRef child in p.Children)
-                    IidsChildren[plat].Add(child.EntityIid); 
+                    IidsChildren[plat].Add(child.EntityIid);
+            }
+
+            foreach (LDtkTypes.GrapplingPoint p in level.GetEntities<LDtkTypes.GrapplingPoint>())
+            {
+                if (p.Positions.Length == 0)
+                    AddIfChild(new SwingingPoint(p.Position, p.MaxSwingDistance), p.Iid);
+                else
+                    AddIfChild(new SwingingPoint(p.Position, p.MaxSwingDistance, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, p.GoingForwards, Ease.QuintInAndOut), p.Iid);
             }
                 
 
@@ -110,16 +94,8 @@ namespace Platformer
             foreach (LDtkTypes.Spike p in level.GetEntities<LDtkTypes.Spike>())
             {
                 SpikeRow spike = new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToDirection());
-                bool isChild = false;
-                foreach (KeyValuePair<Entity, List<Guid>> parents in IidsChildren)
-                    foreach (Guid guid in parents.Value)
-                        if (p.Iid == guid)
-                        {
-                            parents.Key.AddChild(spike);
-                            isChild = true;
-                        }
-                if(!isChild)
-                    entities.Add(spike);
+
+                AddIfChild(spike, p.Iid);
             }
 
             foreach (LDtkTypes.DeathTrigger p in level.GetEntities<LDtkTypes.DeathTrigger>())
@@ -384,8 +360,10 @@ namespace Platformer
                                         location2 = (slice.Rect.Location - t.Src + slice.Rect.Size).ToVector2();
                                     }
 
-
-                                    tile.AddComponent(new QuadPointLight(location, location2, direction, range, length,  slice.Color, new Color(slice.Color, 0)));
+                                    if (range == 360)
+                                        tile.AddComponent(new CircleLight(location, length, slice.Color, new Color(slice.Color, 0)));
+                                    else
+                                        tile.AddComponent(new QuadPointLight(location, location2, direction, range, length, slice.Color, new Color(slice.Color, 0)));
                                 }
                             }
 
@@ -514,6 +492,22 @@ namespace Platformer
             {
                 v -= new Vector2(intGrid.TileSize / 2);
                 return v;
+            }
+
+            void AddIfChild(Entity entity, Guid iid)
+            {
+                bool isChild = false;
+                foreach (KeyValuePair<Entity, List<Guid>> parents in IidsChildren)
+                    for(int i = parents.Value.Count - 1; i >= 0; i--)
+                        if (iid == parents.Value[i])
+                        {
+                            parents.Key.AddChild(entity);
+                            parents.Value.RemoveAt(i);
+                            isChild = true;
+                        }
+
+                if (!isChild)
+                    entities.Add(entity);
             }
 
             //Texture2D RandomTile(string id) => DataManager.GetRandomTilesetTexture(DataManager.Tilesets[1], id, levelRandom);

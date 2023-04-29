@@ -73,6 +73,8 @@ namespace Platformer
                  Pos = Input.MousePos;*/
 #endif
 
+            if (Input.GetKey(Microsoft.Xna.Framework.Input.Keys.NumPad6))
+                Pos = VectorHelper.Round(Pos);
             if(Pos != PreviousPos)
                 polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);
         }

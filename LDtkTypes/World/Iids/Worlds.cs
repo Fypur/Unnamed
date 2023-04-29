@@ -94,12 +94,16 @@ public static class Worlds
         public static readonly System.Guid World_Level_84 = System.Guid.Parse("57a26cd0-5110-11ed-83e9-8b9054537202");
         public static readonly System.Guid World_Level_85 = System.Guid.Parse("512c1bd0-5110-11ed-babc-9f90ff502237");
         public static readonly System.Guid World_Level_86 = System.Guid.Parse("3dd6c7c0-5110-11ed-babc-f3965819adfc");
+        public static readonly System.Guid World_Level_87 = System.Guid.Parse("f8164420-c640-11ed-8b3f-1310b6dffb08");
         public static readonly System.Guid World_Level_94 = System.Guid.Parse("05cecff0-5110-11ed-ae3b-510fe3057bca");
-        public static readonly System.Guid World_Level_87 = System.Guid.Parse("84e6de30-5110-11ed-8505-49e4576268df");
+        public static readonly System.Guid World_Level_88 = System.Guid.Parse("84e6de30-5110-11ed-8505-49e4576268df");
+        public static readonly System.Guid World_Level_90 = System.Guid.Parse("9e743c60-c640-11ed-86a1-09d481b6704c");
         public static readonly System.Guid World_Level_92 = System.Guid.Parse("08be28b0-7820-11ed-84d9-9f94b5526e62");
-        public static readonly System.Guid World_Level_90 = System.Guid.Parse("04c5de80-7820-11ed-9cc3-fd8b6c066066");
-        public static readonly System.Guid World_Level_91 = System.Guid.Parse("d1fc8c40-7820-11ed-9cc3-5da030c748a1");
-        public static readonly System.Guid World_Level_93 = System.Guid.Parse("79d99c30-7820-11ed-b485-d9d6c509be52");
+        public static readonly System.Guid World_Level_91 = System.Guid.Parse("04c5de80-7820-11ed-9cc3-fd8b6c066066");
+        public static readonly System.Guid World_Level_93 = System.Guid.Parse("d1fc8c40-7820-11ed-9cc3-5da030c748a1");
+        public static readonly System.Guid World_Level_95 = System.Guid.Parse("79d99c30-7820-11ed-b485-d9d6c509be52");
+        public static readonly System.Guid World_Level_96 = System.Guid.Parse("567585f0-c640-11ed-8b3f-bff200906a98");
+        public static readonly System.Guid World_Level_97 = System.Guid.Parse("294a39f0-c640-11ed-9f2e-e15a2a3806bb");
     }
 }
 #pragma warning restore

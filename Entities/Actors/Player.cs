@@ -25,6 +25,7 @@ namespace Platformer
         private const float maxJetpackSpeedX = 170;
         private const float maxJetpackSpeedY = 120;
         private const float maxJetpackTime = 0.5f;
+        private const float maxPotentialFallingSpeed = 400;
         
         private const float acceleration = 1500f;
         private const float airAcceleration = 900f;
@@ -218,10 +219,12 @@ namespace Platformer
 
         public override void Update()
         {
-            couldMove = CanMove;
+            
 
             if (!CanMove)
             {
+                if (couldMove)
+                    canMoveState = Input.OldState;
                 /*swingPositions.Clear();
                 swingPositionsSign = new List<int> { 0 };
                 if (stateMachine.Is(States.Swinging))
@@ -258,7 +261,7 @@ namespace Platformer
                 onFarWall = false;
             }
 
-
+            couldMove = CanMove;
             base.Update();
 
             if (!CanMove)                
@@ -467,7 +470,7 @@ namespace Platformer
                 if (Velocity.Y >= maxFallingSpeed)
                 {
                     potentialFallingSpeed += gravityVector.Y * gravityScale;
-                    potentialFallingSpeed = Math.Min(potentialFallingSpeed, 400);
+                    potentialFallingSpeed = Math.Min(potentialFallingSpeed, maxPotentialFallingSpeed);
                 }
                 else
                     potentialFallingSpeed = Velocity.Y;
@@ -499,19 +502,12 @@ namespace Platformer
             collisionX = collisionY = false;
             previousOnGround = onGround;
 
-            /*if (Input.GetKey(Keys.E))
-                Sprite.Rotation += 0.1f;
-            Sprite.Origin = Vector2.One * 8;
-            Sprite.Offset = Vector2.One * 5;
-            Debug.LogUpdate(Sprite.Offset);*/
-
-            //Debug.LogUpdate(DataManager.PixelShaders["WhiteBar"].Parameters["barLocation"].GetValueSingle());
-
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
   
             UpdateChildrenPos();
+
 
             if (!couldMove)
                 Input.OldState = canMoveState;
@@ -658,6 +654,9 @@ namespace Platformer
 
                     AddComponent(l);
 
+                    if (grappledSolid.Parent is FallingPlatform falling)
+                        falling.Fall();
+
                     //l.texture = DataManager.Textures["Player/rope"];
                 }
                 else if (determinedGrappledSolid is GrapplingTrigger trigger)
@@ -721,27 +720,10 @@ namespace Platformer
 
             Sprite.Rotation = (swingPositions[swingPositions.Count - 1] - MiddlePos).ToAngle() + (float)Math.PI / 2;
 
-            /*ParticleType Trail = new ParticleType()
-            {
-                Color = Color.Gray,
-                Size = Velocity.Length() * 0.05f,
-                SizeRange = 0,
-                LifeMin = 0.3f,
-                LifeMax = 0.3f,
-                SpeedMin = 0,
-                SpeedMax = 2,
-                Direction = 0,
-                DirectionRange = 360,
-                FadeMode = ParticleType.FadeModes.Linear,
-                SizeChange = ParticleType.FadeModes.Linear
-            };
-            //Trail.Acceleration = Velocity;
-            //if(Velocity.Length() > 200)
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Trail, MiddlePos, 10);*/
-
             #region Determining the right position to Swing to (Rope colliding with terrain)
 
             swingPositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
+            
 
             RemoveGrapplingPoints();
 
