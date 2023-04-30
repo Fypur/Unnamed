@@ -633,7 +633,7 @@ namespace Platformer
         public static LDtkLevel GetLdtkLevel(int index)
         {
             try {
-                return Platformer.World.LoadLevel($"World_Level_{index}");
+                return Platformer.World.LoadLevel($"Lvl{index}");
             }
             catch {
                 try
@@ -652,7 +652,7 @@ namespace Platformer
         {
             try
             {
-                return Platformer.World.LoadLevel($"World_Level_{id}");
+                return Platformer.World.LoadLevel($"Lvl{id}");
             }
             catch
             {
@@ -683,7 +683,7 @@ namespace Platformer
         {
             int[,] grid = GetWorldGrid(world, worldDepth, out Vector2 gridPos);
             Sprite[,] sp = GetWorldTileSprites(world, worldDepth, gridPos, grid);
-            int gridSize = world.LoadLevel(LDtkTypes.Worlds.World.World_Level_0).GetIntGrid("IntGrid").TileSize;
+            int gridSize = world.RawLevels[0].GetIntGrid("IntGrid").TileSize;
             Engine.CurrentMap.Instantiate(new Grid(gridPos, gridSize, gridSize, grid, sp));
         }
 
@@ -901,8 +901,6 @@ namespace Platformer
                     return Direction.Null;
             }
         }
-
-        public static void LoadLevel(this LDtkWorld world) {  }
 
         public static int Length(this LDtkTypes.Spike spike)
         {

@@ -53,7 +53,7 @@ namespace Platformer
                 toLevel.LoadNoAutoTile();
             }
             else
-                toLevel.Load();
+                toLevel.LoadAutoTile();
 
             Engine.CurrentMap.CurrentLevel = new MergedLevel(oldLevel, toLevel);
 
