@@ -8,34 +8,34 @@ namespace Platformer
 {
     public class LevelTransition : Trigger
     {
+        public Direction Direction;
         private const float transitionTime = 1;
+        public Level ToLevel;
+        public LDtk.LDtkLevel LDtkToLevel;
 
         private Camera cam = Platformer.Cam;
-        private Level toLevel;
-        private LDtk.LDtkLevel ldtk;
-        private Direction direction;
 
         private static List<Entity> destroyOnTransition = new();
 
         public LevelTransition(Vector2 position, Vector2 size, Level toLevel, Direction dir)
             : base(position, size, new List<Type>() { typeof(Player) }, null)
         {
-            this.toLevel = toLevel;
-            direction = dir;
+            this.ToLevel = toLevel;
+            Direction = dir;
         }
 
         public LevelTransition(Vector2 position, Vector2 size, LDtk.LDtkLevel ldtk, Direction dir)
             : base(position, size, new List<Type>() { typeof(Player) }, null)
         {
-            this.ldtk = ldtk;
-            direction = dir;
+            this.LDtkToLevel = ldtk;
+            Direction = dir;
         }
 
         public LevelTransition(Rectangle triggerRect, Level toLevel, Direction dir)
             : base(triggerRect, new List<Type>() { typeof(Player) }, null)
         {
-            this.toLevel = toLevel;
-            direction = dir;
+            this.ToLevel = toLevel;
+            Direction = dir;
         }
 
         public override void OnTriggerEnter(Entity entity)
@@ -47,26 +47,26 @@ namespace Platformer
 
             cam.SetBoundaries(Rectangle.Empty);
 
-            if (toLevel == null)
+            if (ToLevel == null)
             {
-                toLevel = new Level(Levels.GetLevelData(ldtk));
-                toLevel.LoadNoAutoTile();
+                ToLevel = new Level(Levels.GetLevelData(LDtkToLevel));
+                ToLevel.LoadNoAutoTile();
             }
             else
-                toLevel.LoadAutoTile();
+                ToLevel.LoadAutoTile();
 
-            Engine.CurrentMap.CurrentLevel = new MergedLevel(oldLevel, toLevel);
+            Engine.CurrentMap.CurrentLevel = new MergedLevel(oldLevel, ToLevel);
 
             Player p = (Player)entity;
             p.CanMove = false;
 
-            Vector2 size = toLevel.Size;
+            Vector2 size = ToLevel.Size;
             if (size.Y == 184)
                 size.Y = 180;
 
-            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(toLevel.Pos.ToPoint(), size.ToPoint())) - cam.CenteredPos, transitionTime, Ease.QuintInAndOut);
+            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(ToLevel.Pos.ToPoint(), size.ToPoint())) - cam.CenteredPos, transitionTime, Ease.QuintInAndOut);
 
-            switch (direction)
+            switch (Direction)
             {
                 case Direction.Up:
                     p.Pos.Y = Pos.Y - p.Height;
@@ -90,15 +90,15 @@ namespace Platformer
                 p.RefillJetpack();
                 p.ResetSwing();
 
-                Engine.CurrentMap.CurrentLevel = toLevel;
+                Engine.CurrentMap.CurrentLevel = ToLevel;
 
-                if (direction == Direction.Up)
+                if (Direction == Direction.Up)
                 {
                     p.Velocity.Y = Math.Min(p.Velocity.Y, -200);
                     //p.LimitJetpackY(0.5f, 0.4f, () => p.Velocity.Y >= 0);
                 }
 
-                Engine.Cam.SetBoundaries(toLevel.Pos, size);
+                Engine.Cam.SetBoundaries(ToLevel.Pos, size);
 
                 foreach (Entity e in toDestroy)
                 {
@@ -115,6 +115,77 @@ namespace Platformer
         {
             Engine.CurrentMap.CurrentLevel.DontDestroyOnUnload(entity);
             destroyOnTransition.Add(entity);
+        }
+
+        public static void InstaTransition(Level toLevel)
+        {
+            if (toLevel == null)
+                throw new Exception("Level to Insta Transition to is null");
+
+            List<Entity> toDestroy = new(destroyOnTransition);
+
+            Engine.CurrentMap.CurrentLevel.Unload();
+            SwingingPoint.SwingingPoints.Clear();
+
+            toLevel.LoadNoAutoTile();
+
+            Engine.Player.Pos = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>()[0].RespawnPoint;
+
+            Vector2 size = toLevel.Size;
+            if (size.Y == 184)
+                size.Y = 180;
+
+            Player p = (Player)Engine.Player;
+
+            p.UpdateChildrenPos();
+            p.CancelJump();
+
+            p.RefillJetpack();
+            p.ResetSwing();
+
+            Engine.CurrentMap.CurrentLevel = toLevel;
+
+            Engine.Cam.SetBoundaries(toLevel.Pos, size);
+
+            foreach (Entity e in toDestroy)
+            {
+                Engine.CurrentMap.Destroy(e);
+            }
+        }
+
+        public static void InstaTransition(LDtk.LDtkLevel toLevelLDtk)
+        {
+            List<Entity> toDestroy = new(destroyOnTransition);
+
+            Engine.CurrentMap.CurrentLevel.Unload();
+            SwingingPoint.SwingingPoints.Clear();
+
+            Level toLevel = new Level(Levels.GetLevelData(toLevelLDtk));
+            toLevel.LoadNoAutoTile();
+
+            var respawns = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>();
+            Engine.Player.Pos = respawns[respawns.Count - 1].RespawnPoint;
+
+            Vector2 size = toLevel.Size;
+            if (size.Y == 184)
+                size.Y = 180;
+
+            Player p = (Player)Engine.Player;
+
+            p.UpdateChildrenPos();
+            p.CancelJump();
+
+            p.RefillJetpack();
+            p.ResetSwing();
+
+            Engine.CurrentMap.CurrentLevel = toLevel;
+
+            Engine.Cam.SetBoundaries(toLevel.Pos, size);
+
+            foreach (Entity e in toDestroy)
+            {
+                Engine.CurrentMap.Destroy(e);
+            }
         }
     }
 }

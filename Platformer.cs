@@ -179,6 +179,24 @@ namespace Platformer
             else
                 IsMouseVisible = true;*/
 
+            if (Input.GetKey(Keys.LeftAlt))
+            {
+                List<Entity> transitions = Engine.CurrentMap.Data.EntitiesByType[typeof(LevelTransition)];
+
+                void CheckTransitionsKey(Keys key, Direction dir)
+                {
+                    if (Input.GetKeyDown(key))
+                        foreach (LevelTransition transition in transitions)
+                            if (transition.Direction == dir)
+                            { LevelTransition.InstaTransition(transition.LDtkToLevel); break; }
+                }
+
+                CheckTransitionsKey(Keys.Up, Direction.Up);
+                CheckTransitionsKey(Keys.Left, Direction.Left);
+                CheckTransitionsKey(Keys.Right, Direction.Right);
+                CheckTransitionsKey(Keys.Down, Direction.Down);
+            }
+
             if (Input.GetKeyDown(Keys.P))
             {
                 int lvlNumber = int.Parse(System.Text.RegularExpressions.Regex.Match(Levels.LastLDtkLevel.Identifier, @"\d+$").Value); //Funny regex to get number at end of string
@@ -198,6 +216,8 @@ namespace Platformer
             Input.UpdateOldState();
 
             Audio.Update();
+
+            //Debug.LogUpdate(Engine.CurrentMap.Data.GetEntity<SwingingPoint>().ExactPos);
 
             base.Update(gameTime);
         }
