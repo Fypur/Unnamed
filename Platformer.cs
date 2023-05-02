@@ -37,7 +37,7 @@ namespace Platformer
         public static BloomFilter BloomFilter;
 
 #if DEBUG
-        public static string InitLevel = "20";
+        public static string InitLevel = "39";
         public static int InitWorld = 1;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -63,9 +63,6 @@ namespace Platformer
             Options.CurrentResolution = Engine.ScreenSize;
 
             LDtkFile = LDtkFile.FromFile("Content/World.ldtk");
-
-            JetpackWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.World.Iid);
-            SwingWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.World2.Iid);
 
             World = GetWorld();
 
@@ -216,8 +213,6 @@ namespace Platformer
             Input.UpdateOldState();
 
             Audio.Update();
-
-            //Debug.LogUpdate(Engine.CurrentMap.Data.GetEntity<SwingingPoint>().ExactPos);
 
             base.Update(gameTime);
         }
@@ -457,8 +452,8 @@ namespace Platformer
 
         private static LDtkWorld GetWorld()
         {
-            if (InitWorld == 0) return JetpackWorld;
-            else if (InitWorld == 1) return SwingWorld;
+            if (InitWorld == 0) return JetpackWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.Jetpack.Iid);
+            else if (InitWorld == 1) return SwingWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.Swing.Iid);
             else throw new Exception("World Index does not refer to any World");
         }
         
@@ -482,6 +477,7 @@ namespace Platformer
 
                 LDtkFile = LDtkFile.FromFile("Content/World.ldtk");
                 World = GetWorld();
+                
                 Engine.CurrentMap.CurrentLevel.Unload();
                 LDtkLevel lvl = World.LoadLevel(Levels.LastLDtkLevel.Iid);
                 new Level(Levels.GetLevelData(lvl)).LoadNoAutoTile();

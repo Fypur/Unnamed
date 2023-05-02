@@ -4,7 +4,7 @@ namespace LDtkTypes;
 
 public static class Worlds
 {
-    public static class World
+    public static class Jetpack
     {
         public static readonly System.Guid Iid = System.Guid.Parse("96a73220-b4d0-11ec-a5f6-5dbe2b9531db");
 
@@ -68,7 +68,7 @@ public static class Worlds
         public static readonly System.Guid Lvl57 = System.Guid.Parse("930bc610-02f0-11ed-b8f8-63cd9666263d");
         public static readonly System.Guid Lvl58 = System.Guid.Parse("141ea7f0-02f0-11ed-bfd5-41825b3b763f");
     }
-    public static class World2
+    public static class Swing
     {
         public static readonly System.Guid Iid = System.Guid.Parse("7f41fe40-c640-11ed-87bd-673eb5b75206");
 

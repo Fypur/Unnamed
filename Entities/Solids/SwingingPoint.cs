@@ -50,6 +50,9 @@ namespace Platformer
         void ISwinged.OnGrapple(Entity grappledEntity, Func<bool> isAtSwingEnd)
         {
             swinged = true;
+
+            if (Parent is FallingPlatform falling)
+                falling.Fall();
         }
 
         void ISwinged.OnStopGrapple(Entity unGrappledEntity)
@@ -73,9 +76,9 @@ namespace Platformer
                  Pos = Input.MousePos;*/
 #endif
 
-            if (Input.GetKey(Microsoft.Xna.Framework.Input.Keys.NumPad6))
-                Pos = VectorHelper.Round(Pos);
-            if(Pos != PreviousPos)
+            Debug.LogUpdate(Pos);
+
+            if(Pos != PreviousExactPos)
                 polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);
         }
 
@@ -86,7 +89,8 @@ namespace Platformer
             if (Engine.Player != null && !swinged && !new Raycast(Raycast.RayTypes.MapTiles, MiddleExactPos, Engine.Player.Pos + Engine.Player.HalfSize).Hit && Vector2.Distance(MiddleExactPos, Engine.Player.Pos + Engine.Player.HalfSize) < MaxSwingDistance)
                 Drawing.DrawDottedLine(MiddlePos, Engine.Player.Pos + Engine.Player.HalfSize, new Color(Color.LightBlue, 120), 1, 4, 4);
 
-            Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.LightBlue, 120));
+            //Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.LightBlue, 120));
+            Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.DeepSkyBlue, 120));
 
             if (Debug.DebugMode)
                 Drawing.DrawCircleEdge(MiddleExactPos, MaxSwingDistance, 0.1f, new Color(Color.LightBlue, 120), 1);

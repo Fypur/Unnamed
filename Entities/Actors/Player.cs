@@ -614,7 +614,8 @@ namespace Platformer
                     stateMachine.Switch(States.Swinging);
                     totalRopeLength = (float)Math.Sqrt(distance);
 
-                    Vector2 grapplingPos = determinedGrappledSolid.MiddleExactPos;
+                    Vector2 grapplingPos = determinedGrappledSolid.MiddlePos;
+                    //Vector2 grapplingPos = determinedGrappledSolid.MiddleExactPos;
                     swingPositions.Add(grapplingPos);
 
                     Timer t = (Timer)AddComponent(new Timer(0.15f, true));
@@ -653,9 +654,6 @@ namespace Platformer
 
 
                     AddComponent(l);
-
-                    if (grappledSolid.Parent is FallingPlatform falling)
-                        falling.Fall();
 
                     //l.texture = DataManager.Textures["Player/rope"];
                 }
@@ -1076,7 +1074,7 @@ namespace Platformer
                 if (trig.Contains(this))
                 {
                     trig.OnTriggerExit(this);
-                    trig.OnTriggerEnter(this);
+                    //trig.OnTriggerEnter(this);
                 }
             }
 
@@ -1194,7 +1192,7 @@ namespace Platformer
         {
             if (collided is GlassWall gl && gl.Break(this, Velocity, true))
             {
-                MoveX(Velocity.X * Engine.Deltatime - (ExactPos.X - PreviousPos.X), CollisionX);
+                MoveX(Velocity.X * Engine.Deltatime - (ExactPos.X - PreviousExactPos.X), CollisionX);
                 return;
             }
 
@@ -1209,7 +1207,7 @@ namespace Platformer
 
             if (collided is GlassWall gl && gl.Break(this, Velocity, false))
             {
-                MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - PreviousPos.Y), new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
+                MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - PreviousExactPos.Y), new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
                 return;
             }
 

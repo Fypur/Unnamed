@@ -9,7 +9,7 @@ namespace Platformer
     public class LevelTransition : Trigger
     {
         public Direction Direction;
-        private const float transitionTime = 1;
+        private const float transitionTime = 1f;
         public Level ToLevel;
         public LDtk.LDtkLevel LDtkToLevel;
 
@@ -165,6 +165,7 @@ namespace Platformer
 
             var respawns = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>();
             Engine.Player.Pos = respawns[respawns.Count - 1].RespawnPoint;
+            
 
             Vector2 size = toLevel.Size;
             if (size.Y == 184)
@@ -172,6 +173,7 @@ namespace Platformer
 
             Player p = (Player)Engine.Player;
 
+            p.RespawnPoint = respawns[respawns.Count - 1].RespawnPoint;
             p.UpdateChildrenPos();
             p.CancelJump();
 

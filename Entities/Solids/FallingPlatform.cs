@@ -20,7 +20,7 @@ namespace Platformer
 
         public bool Respawning;
         private Wipe wipe;
-        private bool Collided;
+        private bool hasFallen;
         private bool previousOnGround;
         private Vector2 initPos;
 
@@ -39,6 +39,9 @@ namespace Platformer
 
         public void Fall()
         {
+            if (hasFallen)
+                return;
+
             GetComponent<TriggerComponent>().trigger.Active = false;
             AddComponent(new Shaker(shakeTime, 1.2f, null, true));
             AddComponent(new Timer(shakeTime, true, null, () =>
@@ -50,7 +53,7 @@ namespace Platformer
                     AddComponent(new Timer(respawnTime, true, null, () => {
                         wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
                         {
-                            Pos = initPos; Velocity = Vector2.Zero; gravityScale = 0; previousOnGround = false; Collided = false;
+                            Pos = initPos; Velocity = Vector2.Zero; gravityScale = 0; previousOnGround = false; hasFallen = false;
                             GetComponent<TriggerComponent>().trigger.Active = true;
                         });
                         Engine.CurrentMap.Instantiate(wipe);
@@ -84,31 +87,31 @@ namespace Platformer
             Gravity();
 
             Action onCollision;
-            if (!Collided)
+            if (!hasFallen)
             {
                 onCollision = () =>
                 {
                     Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 0, Color.White);
                     Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 180, Color.White);
-                    Collided = true;
+                    hasFallen = true;
                 };
             }
             else
             {
                 onCollision = null;
                 if (!previousOnGround && Collider.CollideAt(Pos + new Vector2(0, 1)))
-                    Collided = true;
+                    hasFallen = true;
             }
 
             Velocity.Y = Math.Min(Velocity.Y, maxFallingSpeed);
             MoveCollideSolids(Velocity * Engine.Deltatime, null, onCollision);
 
-            if (Collided)
+            if (hasFallen)
                 previousOnGround = Collider.CollideAt(Pos + new Vector2(0, 1));
 
             base.Update();
             //Debug.LogUpdate(Pos - PreviousPos);
-            if(Pos - PreviousPos != Vector2.Zero)
+            if(Pos - PreviousExactPos != Vector2.Zero)
             { }
         }
 
