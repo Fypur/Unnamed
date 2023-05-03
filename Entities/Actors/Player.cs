@@ -216,6 +216,8 @@ namespace Platformer
             jetpackAudio.Sound.stop(STOP_MODE.IMMEDIATE);
 
             AddComponent(new CircleLight(HalfSize, 40, new Color(Color.White, 5), new Color(Color.White, 0)));
+
+            PreviousExactPos = ExactPos;
         }
 
         public override void Update()
@@ -775,8 +777,6 @@ namespace Platformer
                 {
                     SwingPositions.Add(foundCorner);
                     SwingPositionsSign.Add(Math.Sign(angle));
-                    Debug.Log("addedPlayer");
-                    //Platformer.Pause();
 
                     nextCorners.Remove(foundCorner);
 

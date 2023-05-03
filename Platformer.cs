@@ -37,8 +37,8 @@ namespace Platformer
         public static BloomFilter BloomFilter;
 
 #if DEBUG
-        public static string InitLevel = "39";
-        public static int InitWorld = 1;
+        public static string InitLevel = "GraphicsTest";
+        public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
 #endif

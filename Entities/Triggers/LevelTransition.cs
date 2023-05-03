@@ -164,7 +164,8 @@ namespace Platformer
             toLevel.LoadNoAutoTile();
 
             var respawns = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>();
-            Engine.Player.Pos = respawns[respawns.Count - 1].RespawnPoint;
+            if(respawns.Count > 0)
+                Engine.Player.Pos = respawns[respawns.Count - 1].RespawnPoint;
             
 
             Vector2 size = toLevel.Size;
@@ -173,7 +174,7 @@ namespace Platformer
 
             Player p = (Player)Engine.Player;
 
-            p.RespawnPoint = respawns[respawns.Count - 1].RespawnPoint;
+            p.RespawnPoint = Engine.Player.Pos;
             p.UpdateChildrenPos();
             p.CancelJump();
 

@@ -131,9 +131,6 @@ namespace Platformer
                         p.SwingPositions.Insert(1, foundCorner);
                         p.SwingPositionsSign.Insert(1, -Math.Sign(angle));
 
-                        Debug.Log("added");
-                        //Platformer.Pause();
-
                         nextCorners.Remove(foundCorner);
 
                         if (nextCorners.Count > 0)
