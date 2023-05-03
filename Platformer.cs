@@ -178,7 +178,7 @@ namespace Platformer
 
             if (Input.GetKey(Keys.LeftAlt))
             {
-                List<Entity> transitions = Engine.CurrentMap.Data.EntitiesByType[typeof(LevelTransition)];
+                List<LevelTransition> transitions = Engine.CurrentMap.Data.GetEntities<LevelTransition>(); ;
 
                 void CheckTransitionsKey(Keys key, Direction dir)
                 {

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Platformer
 {
-    public class Sawblade : CyclingSolid
+    public class Sawblade : MovingSolid
     {
         public float Radius;
         public Sawblade(Vector2 position, float radius)
@@ -18,9 +18,11 @@ namespace Platformer
         }
 
         public Sawblade(Vector2 position, float radius, Vector2[] positions, float[] timesBetweenPositions, bool goingForwards)
-            : base(position, (int)(radius * 2), (int)(radius * 2), new Sprite(DataManager.Objects["sawblade/sawblade"]), goingForwards, positions, timesBetweenPositions, Ease.QuintInAndOut)
+            : base(position, (int)(radius * 2), (int)(radius * 2), new Sprite(DataManager.Objects["sawblade/sawblade"]))
         {
             Radius = radius;
+            AddComponent(new CycleMover(position, Width, Height, goingForwards, positions, timesBetweenPositions, Ease.QuintInAndOut, out Vector2 initPos));
+            ExactPos = initPos;
         }
 
         public override void Awake()

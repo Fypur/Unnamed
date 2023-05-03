@@ -97,8 +97,8 @@ namespace Platformer
 
         private float totalRopeLength;
         private Solid grappledSolid;
-        private List<Vector2> swingPositions = new List<Vector2>();
-        private List<int> swingPositionsSign = new List<int>() { 0 };
+        public List<Vector2> SwingPositions = new List<Vector2>();
+        public List<int> SwingPositionsSign = new List<int>() { 0 };
         private bool isAtSwingEnd;
 
         //Controls
@@ -207,6 +207,7 @@ namespace Platformer
             RespawnPoint = position;
             Layer = 2;
 
+            jetpackTime = maxJetpackTime;
             boostBar = (BoostBar)AddChild(new BoostBar(Pos + new Vector2(1, -5), Width - 1, 1, 0.5f));
 
             swingAudio = (Sound3D)AddComponent(new Sound3D("Swing"));
@@ -616,7 +617,7 @@ namespace Platformer
 
                     Vector2 grapplingPos = determinedGrappledSolid.MiddlePos;
                     //Vector2 grapplingPos = determinedGrappledSolid.MiddleExactPos;
-                    swingPositions.Add(grapplingPos);
+                    SwingPositions.Add(grapplingPos);
 
                     Timer t = (Timer)AddComponent(new Timer(0.15f, true));
 
@@ -633,15 +634,15 @@ namespace Platformer
                             if(t.Value > 0)
                             {
                                 //Vector2 m = Pos + new Vector2(5, 0) * (float)Math.Cos(Sprite.Rotation);
-                                Vector2 m = MiddlePos + (grapplingPos - MiddlePos).Normalized() * 5;
-                                Drawing.DrawSineWave(m + (grapplingPos - m) * Ease.Reverse(t.Value / t.MaxValue), m, 10 * (t.Value / t.MaxValue), 1, 1, Color.Gray, Ease.QuintIn);
+                                Vector2 m = MiddlePos + (determinedGrappledSolid.MiddlePos - MiddlePos).Normalized() * 5;
+                                Drawing.DrawSineWave(m + (determinedGrappledSolid.MiddlePos - m) * Ease.Reverse(t.Value / t.MaxValue), m, 10 * (t.Value / t.MaxValue), 1, 1, Color.Gray, Ease.QuintIn);
                                 line.Positions.Clear();
                             }
                             else
                                 line.RenderAction = (line) =>
                                 {
                                     List<Vector2> linePositions = new List<Vector2>() { MiddlePos };
-                                    List<Vector2> reversedPositions = new List<Vector2>(swingPositions);
+                                    List<Vector2> reversedPositions = new List<Vector2>(SwingPositions);
                                     reversedPositions.Reverse();
                                     linePositions.AddRange(reversedPositions);
                                     line.Positions = linePositions;
@@ -689,11 +690,11 @@ namespace Platformer
         {
             #region Swinging
 
-            Vector2 grapplePos = swingPositions[swingPositions.Count - 1];
+            Vector2 grapplePos = SwingPositions[SwingPositions.Count - 1];
 
             float ropeLength = totalRopeLength;
-            for (int i = 0; i < swingPositions.Count - 1; i++)
-                ropeLength -= Vector2.Distance(swingPositions[i], swingPositions[i + 1]);
+            for (int i = 0; i < SwingPositions.Count - 1; i++)
+                ropeLength -= Vector2.Distance(SwingPositions[i], SwingPositions[i + 1]);
 
             Vector2 testPos = ExactPos + HalfSize + Velocity * Engine.Deltatime;
 
@@ -716,20 +717,21 @@ namespace Platformer
 
             #endregion
 
-            Sprite.Rotation = (swingPositions[swingPositions.Count - 1] - MiddlePos).ToAngle() + (float)Math.PI / 2;
+            Sprite.Rotation = (SwingPositions[SwingPositions.Count - 1] - MiddlePos).ToAngle() + (float)Math.PI / 2;
 
             #region Determining the right position to Swing to (Rope colliding with terrain)
 
-            swingPositions[0] = grappledSolid.Pos + new Vector2(grappledSolid.Width / 2, grappledSolid.Height / 2);
-            
-
-            RemoveGrapplingPoints();
+            SwingPositions[0] = grappledSolid.MiddleExactPos;
 
             List<Vector2> cornersToCheck = new List<Vector2>(Engine.CurrentMap.CurrentLevel.Corners);
-            cornersToCheck.Remove(swingPositions[swingPositions.Count - 1]);
+            RemoveGrapplingPoints();
 
-            AddGrapplingPoints(cornersToCheck, swingPositions[swingPositions.Count - 1]);
+            cornersToCheck.Remove(SwingPositions[SwingPositions.Count - 1]);
+
+            AddGrapplingPoints(cornersToCheck, SwingPositions[SwingPositions.Count - 1]);
             #endregion
+
+            Debug.LogUpdate(SwingPositions.Count);
 
             #region Grappling Methods
 
@@ -740,7 +742,7 @@ namespace Platformer
                 if (angle == 0)
                     return;
 
-                float distanceFromPoint = Vector2.Distance(ExactPos + HalfSize + Velocity * Engine.Deltatime, checkingFrom);
+                float distanceFromPoint = Vector2.DistanceSquared(ExactPos + HalfSize + Velocity * Engine.Deltatime, checkingFrom);
 
                 float closestAngle = angle;
                 Vector2? closestPoint = null;
@@ -749,7 +751,7 @@ namespace Platformer
 
                 foreach (Vector2 corner in cornersToCheck)
                 {
-                    float cornerDistance = Vector2.Distance(checkingFrom, corner);
+                    float cornerDistance = Vector2.DistanceSquared(checkingFrom, corner);
                     if (cornerDistance > distanceFromPoint)
                     {
                         continue;
@@ -771,8 +773,10 @@ namespace Platformer
 
                 if (closestPoint is Vector2 foundCorner)
                 {
-                    swingPositions.Add(foundCorner);
-                    swingPositionsSign.Add(Math.Sign(angle));
+                    SwingPositions.Add(foundCorner);
+                    SwingPositionsSign.Add(Math.Sign(angle));
+                    Debug.Log("addedPlayer");
+                    //Platformer.Pause();
 
                     nextCorners.Remove(foundCorner);
 
@@ -783,23 +787,19 @@ namespace Platformer
 
             void RemoveGrapplingPoints()
             {
-                for (int i = swingPositions.Count - 1; i >= 1; i--)
+                for (int i = SwingPositions.Count - 1; i >= 1; i--)
                 {
-                    float grappleAngle = VectorHelper.GetAngle(swingPositions[i - 1] - ExactPos - HalfSize, swingPositions[i - 1] - swingPositions[i]);
+                    float grappleAngle = VectorHelper.GetAngle(SwingPositions[i - 1] - ExactPos - HalfSize, SwingPositions[i - 1] - SwingPositions[i]);
 
-                    if(swingPositionsSign.Count > i)
+                    if (Math.Sign(grappleAngle) == SwingPositionsSign[i])
                     {
-                        if (Math.Sign(grappleAngle) == swingPositionsSign[i])
-                        {
-                            swingPositionsSign.RemoveAt(i);
-                        }
-                        else
-                            break;
+                        cornersToCheck.Remove(SwingPositions[i]);
+
+                        SwingPositions.RemoveAt(i);
+                        SwingPositionsSign.RemoveAt(i);
                     }
                     else
-                    {
-                        swingPositions.RemoveAt(i);
-                    }
+                        break;
 
                     
                     
@@ -1174,8 +1174,8 @@ namespace Platformer
 
         public void ResetSwing()
         {
-            swingPositions.Clear();
-            swingPositionsSign = new List<int>() { 0 };
+            SwingPositions.Clear();
+            SwingPositionsSign = new List<int>() { 0 };
             isAtSwingEnd = false;
             //swingAudio.stop(STOP_MODE.ALLOWFADEOUT);
             swingAudio.Stop();

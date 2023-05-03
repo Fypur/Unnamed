@@ -84,7 +84,8 @@ namespace Platformer
 
         public override void Update()
         {
-            Gravity();
+            if(!Collider.CollideAt(Pos + new Vector2(0, 1)))
+                Gravity();
 
             Action onCollision;
             if (!hasFallen)
