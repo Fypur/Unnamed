@@ -17,5 +17,10 @@ public class Light : ILDtkEntity
 
     public Color SmartColor { get; set; }
 
+    public float Direction { get; set; }
+    public float Range { get; set; }
+    public float Length { get; set; }
+    public Color Color { get; set; }
+    public int Opacity { get; set; }
 }
 #pragma warning restore

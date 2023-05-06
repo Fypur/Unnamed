@@ -1,6 +1,7 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,8 @@ namespace Platformer
         public MainMenu() : base(Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black))
         {
             Platformer.PauseMenu = null;
-            new MainSubMenu().Instantiate();
+            //new MainSubMenu().Instantiate();
+            AddChild(new OptionsSubMenu());
         }
 
         public void SwitchToSubMenu(List<UIElement> subMenu)
@@ -57,11 +59,11 @@ namespace Platformer
             {
                 List<UIElement> returned = new List<UIElement>();
 
-                var h = new UIImage(Options.DefaultScreenSize / 2 + new Vector2(0, -250), 700, 200, true, new Sprite(Color.White));
-                h.AddChild(new TextBox("Abandonned", "Pixel", h.Pos, h.Width, h.Height, 12, Color.Black, true));
+                var h = new UIImage(new Vector2(208, 32), 400, 96, false, new Sprite(Color.White));
+                h.AddChild(new TextBox("Unnamed.", "Pixel", h.Pos, h.Width, h.Height, 5, Color.Black, true));
                 returned.Add(h);
 
-                var start = new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "START", () =>
+                /*var start = new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "START", () =>
                 {
                     Engine.CurrentMap.Instantiate(new ScreenWipe(1.5f, Color.White, () =>
                     {
@@ -78,11 +80,38 @@ namespace Platformer
                 returned.Add(start);
                 returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 100), 700, 100, true, "OPTIONS", () => { SwitchTo(new OptionsSubMenu()); }));
 
-                returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 250), 700, 100, true, "QUIT", () => { Platformer.instance.Exit(); }));
+                returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 250), 700, 100, true, "QUIT", () => { Platformer.instance.Exit(); }));*/
+
+                returned.Add(new TextSelectable("Play", "LexendDeca", new Vector2(48, 272), 384, 64, 1, Color.White, false, () =>
+                {
+                    Engine.CurrentMap.Instantiate(new ScreenWipe(1.5f, Color.White, () =>
+                    {
+                        ScreenWipe s = (ScreenWipe)Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)][0];
+                        Platformer.StartGame();
+                        Engine.CurrentMap.Data.Entities.Add(s);
+                        Engine.CurrentMap.Data.UIElements.Add(s);
+                        if (!Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(ScreenWipe), out var l))
+                            Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)] = new();
+                        Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)].Add(s);
+                    }));
+                }));
+
+
+
+                returned.Add(new TextSelectable("Options", "LexendDeca", new Vector2(48, 352), 384, 64, 1, Color.White, false, () => { SwitchTo(new OptionsSubMenu()); }));
+
+                returned.Add(new TextSelectable("Quit", "LexendDeca", new Vector2(48, 432), 384, 64, 1, Color.White, false, () => { Platformer.instance.Exit(); }));
 
                 MakeList(returned, true);
 
                 return returned;
+            }
+
+            public override IEnumerator OnOpen()
+            {
+                foreach (var child in Children) child.Pos = Vector2.Zero;
+
+                return Slide(1, Vector2.UnitX * -200, Children);
             }
         }
 
@@ -119,9 +148,15 @@ namespace Platformer
 
                 returned.Add(screenSizeSwitcher);
 
-                returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 100), 700, 100, true, "Change Controls", () => SwitchTo(new ControlsSubMenu())));
+                returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 100), 700, 100, true, "Change Controls", 
+                    () 
+                    =>
+                    { 
+                        SwitchTo(new ControlsSubMenu()); }));
 
-                returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 250), 700, 100, true, "Back", () => { SwitchTo(new MainSubMenu()); }));
+                returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 250), 700, 100, true, "Back", () => 
+                { 
+                    SwitchTo(new MainSubMenu()); }));
 
                 MakeList(returned, true);
 

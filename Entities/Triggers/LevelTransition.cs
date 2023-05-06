@@ -82,7 +82,7 @@ namespace Platformer
                     break;
             }
 
-            p.UpdateChildrenPos();
+            //p.UpdateChildrenPos();
             p.CancelJump();
 
             AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () => {
@@ -137,7 +137,7 @@ namespace Platformer
 
             Player p = (Player)Engine.Player;
 
-            p.UpdateChildrenPos();
+            //p.UpdateChildrenPos();
             p.CancelJump();
 
             p.RefillJetpack();
@@ -175,7 +175,7 @@ namespace Platformer
             Player p = (Player)Engine.Player;
 
             p.RespawnPoint = Engine.Player.Pos;
-            p.UpdateChildrenPos();
+            //p.UpdateChildrenPos();
             p.CancelJump();
 
             p.RefillJetpack();

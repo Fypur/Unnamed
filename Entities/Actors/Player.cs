@@ -222,8 +222,6 @@ namespace Platformer
 
         public override void Update()
         {
-            
-
             if (!CanMove)
             {
                 if (couldMove)
@@ -508,8 +506,6 @@ namespace Platformer
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
-  
-            UpdateChildrenPos();
 
 
             if (!couldMove)
@@ -1098,6 +1094,8 @@ namespace Platformer
                     Sprite.Color.A = (byte)((float)Math.Sin(timer.Value * 14) * 255); //Blinking
                     Sprite.Color.B = (byte)((float)Math.Sin(timer.Value * 14) * 255);
                     Sprite.Color.G = (byte)((float)Math.Sin(timer.Value * 14) * 255);
+
+                    //UpdateChildrenPos();
                 },
                 () =>
                 {

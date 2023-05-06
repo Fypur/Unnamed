@@ -36,8 +36,9 @@ namespace Platformer
         public static Tile BackgroundTile;
         public static BloomFilter BloomFilter;
 
+        private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "GraphicsTest";
+        public static string InitLevel = "0";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -77,7 +78,7 @@ namespace Platformer
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
 #if DEBUG
-            StartGame();
+            //StartGame();
 
             string currentDir = Environment.CurrentDirectory;
             currentDir = currentDir.Replace('\\', '/');
@@ -97,7 +98,7 @@ namespace Platformer
 
             Engine.CurrentMap = new Map(Vector2.Zero);
 
-            Engine.CurrentMap.Instantiate(new MainMenu());
+            menu = (MainMenu)Engine.CurrentMap.Instantiate(new MainMenu());
         }
 
         protected override void Update(GameTime gameTime)
@@ -110,7 +111,7 @@ namespace Platformer
 #endif
 
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
+            
             if (Input.GetKeyDown(Keys.D1))
                 PauseOrUnpause();
 
@@ -147,6 +148,12 @@ namespace Platformer
             
             if (Input.GetKeyDown(Keys.D2))
                 RefreshLDtk();
+
+            if (Input.GetKeyDown(Keys.M))
+            {
+                Engine.CurrentMap.Destroy(Engine.CurrentMap.Data.GetEntity<MainMenu>());
+                Engine.CurrentMap.Instantiate(new MainMenu());
+            }
 
 
 

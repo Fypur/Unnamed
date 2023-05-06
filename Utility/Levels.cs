@@ -183,7 +183,7 @@ namespace Platformer
                     entities.Add(new Sawblade(p.Position, p.Width() / 2));
             }
 
-            foreach(LDtkTypes.ParticleEmitter p in level.GetEntities<LDtkTypes.ParticleEmitter>())
+            foreach (LDtkTypes.ParticleEmitter p in level.GetEntities<LDtkTypes.ParticleEmitter>())
             {
                 if (Levels.LevelNonRespawn.Contains(p.Iid))
                     continue;
@@ -200,6 +200,16 @@ namespace Platformer
                 entities.Add(e);
                 
                 //entities.Add(new ParticleEntity(p.Position, Engine.CurrentMap.BackgroundSystem, pT, p.Amount, p.Direction, pT.Color));
+            }
+
+            foreach (LDtkTypes.Light p in level.GetEntities<LDtkTypes.Light>())
+            {
+                Entity light = new Entity(p.Position);
+                if (p.Range == 360)
+                    light.AddComponent(new CircleLight(Vector2.Zero, p.Length, new Color(p.Color, p.Opacity), new Color(p.Color, 0)));
+                else
+                    light.AddComponent(new QuadPointLight(Vector2.Zero, Vector2.Zero, p.Direction, p.Range, p.Length, new Color(p.Color, p.Opacity), new Color(p.Color, 0)));
+                entities.Add(light);
             }
 
             foreach (LDtkTypes.SpecialTrigger p in level.GetEntities<LDtkTypes.SpecialTrigger>())
