@@ -124,13 +124,17 @@ namespace Platformer
                 Cam.Update();
             }
 
-            PauseMenu?.Update();
+            if(PauseMenu != null)
+            {
+                PauseMenu.Update();
+                PauseMenu.LateUpdate();
+            }
 
             if (BackgroundTile != null)
                 BackgroundTile.Update();
 
 #if DEBUG
-            //Debug.LogUpdate(Input.MousePos);
+            //Debug.LogUpdate(Input.MousePosNoRenderTarget);
 
             /*if(Engine.Deltatime != 0)
                 Debug.LogUpdate(1 / Engine.Deltatime);*/
@@ -314,9 +318,12 @@ namespace Platformer
 
 
 
-            BloomFilter.BloomThreshold = 0.8f;
+            //BloomFilter.BloomThreshold = 0.8f;
+            BloomFilter.BloomThreshold = 0.3f;
+            //BloomFilter.BloomStreakLength = 0.4f;
             BloomFilter.BloomStreakLength = 0.4f;
-            BloomFilter.BloomStrengthMultiplier = 0.55f;
+            //BloomFilter.BloomStrengthMultiplier = 0.55f;
+            BloomFilter.BloomStrengthMultiplier = 0.4f;
 
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
@@ -404,7 +411,7 @@ namespace Platformer
             PauseMenu = new PauseMenu();
 
             //music = Audio.PlayEvent("WindAmbience");
-            //music = Audio.PlayEvent("Music");
+            //music = Audio.PlayEvent("MusicAtmo");
         }
 
         public static void EndGame()

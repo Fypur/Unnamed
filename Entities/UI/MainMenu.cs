@@ -15,8 +15,7 @@ namespace Platformer
         public MainMenu() : base(Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black))
         {
             Platformer.PauseMenu = null;
-            //new MainSubMenu().Instantiate();
-            AddChild(new OptionsSubMenu());
+            AddChild(new MainSubMenu());
         }
 
         public void SwitchToSubMenu(List<UIElement> subMenu)
@@ -60,7 +59,7 @@ namespace Platformer
                 List<UIElement> returned = new List<UIElement>();
 
                 var h = new UIImage(new Vector2(208, 32), 400, 96, false, new Sprite(Color.White));
-                h.AddChild(new TextBox("Unnamed.", "Pixel", h.Pos, h.Width, h.Height, 5, Color.Black, true));
+                h.AddChild(new TextBox("Unnamed.", "Pixel", h.Pos + h.HalfSize, h.Width, h.Height, 5, Color.Black, true));
                 returned.Add(h);
 
                 /*var start = new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "START", () =>
@@ -109,9 +108,28 @@ namespace Platformer
 
             public override IEnumerator OnOpen()
             {
-                foreach (var child in Children) child.Pos = Vector2.Zero;
+                Vector2[] offsets = new Vector2[Children.Count];
+                Array.Fill(offsets, Vector2.UnitX * -200);
 
-                return Slide(1, Vector2.UnitX * -200, Children);
+                offsets[0] -= Vector2.UnitX * 500;
+
+                var s = Slide(1, offsets, Children);
+                s.MoveNext();
+                return s;
+            }
+
+            public override IEnumerator OnClose()
+            {
+                Vector2[] offsets = new Vector2[Children.Count];
+                Array.Fill(offsets, Vector2.UnitX * -200);
+
+                offsets[0] -= Vector2.UnitX * 500;
+
+                var s = SlideTo(1, offsets, Children);
+                s.MoveNext();
+                return s;
+
+                Fix the pause menu and you also gotta do the player cliiping up stuff going thru a wall, maybe even jumpthru help. More graphics and music to do and finish this damn menu boy
             }
         }
 
@@ -136,13 +154,13 @@ namespace Platformer
                     { ScreenSizes.x7, () => Options.SetSize(7) },
                 });*/
 
-                var screenSizeSwitcher = new Switcher(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Screen Size", Options.CurrentScreenSizeMultiplier, 3, 8, (size) => Options.SetSize(size));
+                /*var screenSizeSwitcher = new Switcher(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Screen Size", Options.CurrentScreenSizeMultiplier, 3, 8, );
 
                 var fullscreenSwitcher = new BoolSwitcher(Options.DefaultScreenSize / 2 + new Vector2(0, -200), 700, 100, true, "Full Screen", Engine.Graphics.IsFullScreen,
-                    () => { Options.FullScreen(); screenSizeSwitcher.Selectable = false; }, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = true; });
+                    () => { Options.FullScreen(); screenSizeSwitcher.Selectable = false; }, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = true; });*/
                 //screenSizeSwitcher.Selectable = false;
 
-                returned.Add(fullscreenSwitcher);
+                /*returned.Add(fullscreenSwitcher);
                 if (Engine.Graphics.IsFullScreen)
                     screenSizeSwitcher.Selectable = false;
 
@@ -156,7 +174,24 @@ namespace Platformer
 
                 returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 250), 700, 100, true, "Back", () => 
                 { 
-                    SwitchTo(new MainSubMenu()); }));
+                    SwitchTo(new MainSubMenu()); }));*/
+
+
+                returned.Add(new TextBox("Options", "LexendDeca", new Vector2(640, 100), 300, 200, 2, Color.White, true));
+
+                /*returned.Add(new TextBox("Switcher n1", "LexendDeca", new Vector2(640, 300), 300, 200, 1, Color.White, true));
+                returned.Add(new TextBox("Switcher n2", "LexendDeca", new Vector2(640, 400), 300, 200, 1, Color.White, true));*/
+
+                var screenSizeSwitcher = new SwitcherText(new Vector2(640, 300), 500, 200, true, "Screen Size", Options.CurrentScreenSizeMultiplier, 3, 8, (size) => Options.SetSize(size));
+                
+
+                returned.Add(screenSizeSwitcher);
+
+
+                var fullscreen = new BoolSwitcherText(new Vector2(640, 400), 500, 200, true, "FullScreen", false, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = false; }, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = true; });
+                
+
+                returned.Add(fullscreen);
 
                 MakeList(returned, true);
 
@@ -167,6 +202,24 @@ namespace Platformer
             {
                 base.OnBack();
                 SwitchTo(new MainSubMenu());
+            }
+
+            public override IEnumerator OnOpen()
+            {
+                Vector2[] offsets = new Vector2[Children.Count];
+                offsets[0] = -Vector2.UnitY * 200;
+
+                for(int i = 1; i < offsets.Length; i++)
+                {
+                    if(i % 2 == 1)
+                        offsets[i] = -Vector2.UnitX * 1000;
+                    else
+                        offsets[i] = Vector2.UnitX * 1000;
+                }
+
+                var s = Slide(1, offsets, Children, true);
+                s.MoveNext();
+                return s;
             }
         }
 

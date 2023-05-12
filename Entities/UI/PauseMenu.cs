@@ -30,7 +30,21 @@ namespace Platformer
             {
                 List<UIElement> elements = new List<UIElement>();
 
-                elements.Add(new NSButton(Options.DefaultScreenSize / 2, 700, 100, true, "Resume", () =>
+
+                elements.Add(new TextSelectable("Resume", "LexendDeca", Options.DefaultScreenSize / 2 - new Vector2(0, 50), 500, 100, 1, Color.White, true, () =>
+                {
+                    Platformer.PauseMenu.RemoveChild(this);
+                    Platformer.Unpause();
+                }));
+
+                elements.Add(new TextSelectable("Return to Main Menu", "LexendDeca", Options.DefaultScreenSize / 2 + new Vector2(0, 50), 500, 100, 1, Color.White, true, () => {
+                    Platformer.Unpause();
+                    Platformer.PauseMenu.RemoveChild(this);
+                    Platformer.EndGame();
+                    Engine.CurrentMap.Instantiate(new MainMenu());
+                }));
+
+                /*elements.Add(new NSButton(Options.DefaultScreenSize / 2, 700, 100, true, "Resume", () =>
                 {
                     Platformer.PauseMenu.RemoveChild(this);
                     Platformer.Unpause();
@@ -43,11 +57,19 @@ namespace Platformer
                     Platformer.PauseMenu.RemoveChild(this);
                     Platformer.EndGame();
                     Engine.CurrentMap.Instantiate(new MainMenu());
-                }));
+                }));*/
 
                 MakeList(elements, true);
 
                 return elements;
+            }
+
+            public override void OnBack()
+            {
+                base.OnBack();
+
+                Platformer.PauseMenu.RemoveChild(this);
+                Platformer.Unpause();
             }
         }
     }

@@ -19,7 +19,7 @@ namespace Platformer
 
         public NSButton(Vector2 position, int width, int height, bool centered, string text, Action onPressed) : base(position, width, height, centered, new Sprite(nineSliceSettings), onPressed)
         {
-            Text = new TextBox(text, "Recursive", position - HalfSize, width, height, 0.5f, Color.Black, true);
+            Text = new TextBox(text, "Recursive", position, width, height, 0.5f, Color.Black, true);
             AddChild(Text);
         }
     }
