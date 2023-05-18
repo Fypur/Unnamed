@@ -62,26 +62,7 @@ namespace Platformer
                 h.AddChild(new TextBox("Unnamed.", "Pixel", h.Pos + h.HalfSize, h.Width, h.Height, 5, Color.Black, true));
                 returned.Add(h);
 
-                /*var start = new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "START", () =>
-                {
-                    Engine.CurrentMap.Instantiate(new ScreenWipe(1.5f, Color.White, () =>
-                    {
-                        ScreenWipe s = (ScreenWipe)Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)][0];
-                        Platformer.StartGame();
-                        Engine.CurrentMap.Data.Entities.Add(s);
-                        Engine.CurrentMap.Data.UIElements.Add(s);
-                        if (!Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(ScreenWipe), out var l))
-                            Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)] = new();
-                        Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)].Add(s);
-                    }));
-                });
-
-                returned.Add(start);
-                returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 100), 700, 100, true, "OPTIONS", () => { SwitchTo(new OptionsSubMenu()); }));
-
-                returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 250), 700, 100, true, "QUIT", () => { Platformer.instance.Exit(); }));*/
-
-                returned.Add(new TextSelectable("Play", "LexendDeca", new Vector2(48, 272), 384, 64, 1, Color.White, false, () =>
+                returned.Add(new TextSelectable("Play", "LexendDeca", new Vector2(48, 272), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () =>
                 {
                     Engine.CurrentMap.Instantiate(new ScreenWipe(1.5f, Color.White, () =>
                     {
@@ -97,9 +78,9 @@ namespace Platformer
 
 
 
-                returned.Add(new TextSelectable("Options", "LexendDeca", new Vector2(48, 352), 384, 64, 1, Color.White, false, () => { SwitchTo(new OptionsSubMenu()); }));
+                returned.Add(new TextSelectable("Options", "LexendDeca", new Vector2(48, 352), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { SwitchTo(new OptionsSubMenu()); }));
 
-                returned.Add(new TextSelectable("Quit", "LexendDeca", new Vector2(48, 432), 384, 64, 1, Color.White, false, () => { Platformer.instance.Exit(); }));
+                returned.Add(new TextSelectable("Quit", "LexendDeca", new Vector2(48, 432), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { Platformer.instance.Exit(); }));
 
                 MakeList(returned, true);
 
@@ -129,7 +110,7 @@ namespace Platformer
                 s.MoveNext();
                 return s;
 
-                Fix the pause menu and you also gotta do the player cliiping up stuff going thru a wall, maybe even jumpthru help. More graphics and music to do and finish this damn menu boy
+                //Fix the pause menu and you also gotta do the player clipping up stuff going thru a wall, maybe even jumpthru help. More graphics and music to do and finish this damn menu boy
             }
         }
 
@@ -143,55 +124,34 @@ namespace Platformer
             {
                 List<UIElement> returned = new();
 
-                /*var screenSizeSwitcher = new EnumSwitcher<ScreenSizes>(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Screen Size", Options.CurrentScreenSizeMultiplier, new()
-                {
-                    { ScreenSizes.x1, () => Options.SetSize(1) },
-                    { ScreenSizes.x2, () => Options.SetSize(2) },
-                    { ScreenSizes.x3, () => Options.SetSize(3) },
-                    { ScreenSizes.x4, () => Options.SetSize(4) },
-                    { ScreenSizes.x5, () => Options.SetSize(5) },
-                    { ScreenSizes.x6, () => Options.SetSize(6) },
-                    { ScreenSizes.x7, () => Options.SetSize(7) },
-                });*/
-
-                /*var screenSizeSwitcher = new Switcher(Options.DefaultScreenSize / 2 + new Vector2(0, -50), 700, 100, true, "Screen Size", Options.CurrentScreenSizeMultiplier, 3, 8, );
-
-                var fullscreenSwitcher = new BoolSwitcher(Options.DefaultScreenSize / 2 + new Vector2(0, -200), 700, 100, true, "Full Screen", Engine.Graphics.IsFullScreen,
-                    () => { Options.FullScreen(); screenSizeSwitcher.Selectable = false; }, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = true; });*/
-                //screenSizeSwitcher.Selectable = false;
-
-                /*returned.Add(fullscreenSwitcher);
-                if (Engine.Graphics.IsFullScreen)
-                    screenSizeSwitcher.Selectable = false;
-
-                returned.Add(screenSizeSwitcher);
-
-                returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 100), 700, 100, true, "Change Controls", 
-                    () 
-                    =>
-                    { 
-                        SwitchTo(new ControlsSubMenu()); }));
-
-                returned.Add(new NSButton(Options.DefaultScreenSize / 2 + new Vector2(0, 250), 700, 100, true, "Back", () => 
-                { 
-                    SwitchTo(new MainSubMenu()); }));*/
-
-
                 returned.Add(new TextBox("Options", "LexendDeca", new Vector2(640, 100), 300, 200, 2, Color.White, true));
 
                 /*returned.Add(new TextBox("Switcher n1", "LexendDeca", new Vector2(640, 300), 300, 200, 1, Color.White, true));
                 returned.Add(new TextBox("Switcher n2", "LexendDeca", new Vector2(640, 400), 300, 200, 1, Color.White, true));*/
 
-                var screenSizeSwitcher = new SwitcherText(new Vector2(640, 300), 500, 200, true, "Screen Size", Options.CurrentScreenSizeMultiplier, 3, 8, (size) => Options.SetSize(size));
-                
+                var screenSizeSwitcher = new SwitcherText(new Vector2(640, 250), 750, 50, true, "Screen Size", Options.CurrentScreenSizeMultiplier, 3, 7, (size) => Options.SetSize(size));
+
+                if (Engine.Graphics.IsFullScreen)
+                    screenSizeSwitcher.Selectable = false;
+
 
                 returned.Add(screenSizeSwitcher);
 
 
-                var fullscreen = new BoolSwitcherText(new Vector2(640, 400), 500, 200, true, "FullScreen", false, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = false; }, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = true; });
-                
+                var fullscreen = new BoolSwitcherText(new Vector2(640, 300), 750, 50, true, "FullScreen", Engine.Graphics.IsFullScreen, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = false; }, () => { Options.FullScreen(); screenSizeSwitcher.Selectable = true; });
 
                 returned.Add(fullscreen);
+
+                returned.Add(new TextSelectable("Controls", "LexendDeca", new Vector2(640, 350), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new ControlsSubMenu())));
+
+
+                returned.Add(new SwitcherText(new Vector2(640, 400), 750, 50, true, "Music volume", (int)(Audio.GetGroupVolume("Musics") * 10), 0, 10, (volume) => Audio.SetGroupVolume("Musics", volume / (float)10)));
+
+                returned.Add(new SwitcherText(new Vector2(640, 450), 750, 50, true, "Sound Effects volume", (int)(Audio.GetGroupVolume("Sound Effects") * 10), 0, 10, (volume) => Audio.SetGroupVolume("Sound Effects", volume / (float)10)));
+
+                returned.Add(new SwitcherText(new Vector2(640, 500), 750, 50, true, "Master Volume", (int)(Audio.GetMasterVolume() * 10), 0, 10, (volume) => Audio.SetMasterVolume(volume / (float)10)));
+
+                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(640, 550), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new MainSubMenu())));
 
                 MakeList(returned, true);
 
@@ -212,12 +172,12 @@ namespace Platformer
                 for(int i = 1; i < offsets.Length; i++)
                 {
                     if(i % 2 == 1)
-                        offsets[i] = -Vector2.UnitX * 1000;
+                        offsets[i] = -Vector2.UnitX * 1200;
                     else
-                        offsets[i] = Vector2.UnitX * 1000;
+                        offsets[i] = Vector2.UnitX * 1200;
                 }
 
-                var s = Slide(1, offsets, Children, true);
+                var s = Slide(1, offsets, Children, false);
                 s.MoveNext();
                 return s;
             }
@@ -233,19 +193,42 @@ namespace Platformer
                 List<UIElement> ControlsMenu = new();
                 Vector2 screenSize = Options.DefaultScreenSize;
 
-                ControlsMenu.Add(new TextBox($"Change Controls: {Input.UIAction1.GetAllControlNames(" or ")} \nClear Controls: {Input.UIActionBack.GetAllControlNames(" or ")}", "Recursive", screenSize / 2 + new Vector2(-500, -550), 1000, 200, 0.6f, Color.Black, true));
+                ControlsMenu.Add(new TextBox($"Change Controls: {Input.UIAction1.GetAllControlNames(" or ")} \nClear Controls: {Input.UIActionBack.GetAllControlNames(" or ")}", "Recursive", screenSize.OnlyX() / 2, 1000, 200, 0.3f, Color.White, true, TextBox.Alignement.Center));
 
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -200), 700, 100, true, "Jump", Player.JumpControls, null));
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -200), 700, 100, true, null, Color.White, "LexendDeca", 1, "Jump", Player.JumpControls, null));
 
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -50), 700, 100, true, "Jetpack", Player.JetpackControls, null));
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, 100), 700, 100, true, "Rope Swing", Player.SwingControls, null));
-                ControlsMenu.Add(new NSButton(screenSize / 2 + new Vector2(0, 250), 700, 50, true, "Back", () => {
-                    SwitchTo(new OptionsSubMenu());
-                }));
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -50), 700, 100, true, null, Color.White, "LexendDeca", 1, "Jetpack", Player.JetpackControls, null));
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, 100), 700, 100, true, null, Color.White, "LexendDeca", 1, "Rope Swing", Player.SwingControls, null));
+
+                ControlsMenu.Add(new TextSelectable("Back", "LexendDeca", screenSize / 2 + new Vector2(0, 250), 700, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new OptionsSubMenu())));
 
                 MakeList(ControlsMenu, true);
 
                 return ControlsMenu;
+            }
+
+            public override IEnumerator OnOpen()
+            {
+                Vector2[] offsets = new Vector2[Children.Count];
+                offsets[0] = -Vector2.UnitY * 200;
+
+                for(int i = 1; i < offsets.Length; i++)
+                {
+                    if(i % 2 == 1)
+                        offsets[i] = -Vector2.UnitX * 1200;
+                    else
+                        offsets[i] = Vector2.UnitX * 1200;
+                }
+
+                var s = Slide(1, offsets, Children, false);
+                s.MoveNext();
+                return s;
+            }
+
+            public override void OnBack()
+            {
+                base.OnBack();
+                SwitchTo(new OptionsSubMenu());
             }
         }
     }

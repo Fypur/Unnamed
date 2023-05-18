@@ -178,7 +178,7 @@ namespace Platformer
                             {
                                 Sprite.PixelShader = DataManager.PixelShaders["WhiteBar"];
                                 if (timer.Value <= val)
-                                    DataManager.PixelShaders["WhiteBar"].Parameters["barLocation"].SetValue(Ease.QuintInAndOut(Ease.Reverse(timer.Value / val)));
+                                    DataManager.PixelShaders["WhiteBar"].Parameters["barLocation"].SetValue(Ease.CubeInAndOut(Ease.Reverse(timer.Value / val)));
                             },
                             () =>
                             {
@@ -1193,7 +1193,6 @@ namespace Platformer
                 MoveX(Velocity.X * Engine.Deltatime - (ExactPos.X - PreviousExactPos.X), CollisionX);
                 return;
             }
-
             Velocity.X = 0;
             collisionX = true;
         }
@@ -1211,6 +1210,33 @@ namespace Platformer
 
             if (Velocity.Y > 0)
                 Land();
+
+            if(collided is Grid grid && Velocity.Y < -40)
+            {
+                const int maxOffset = 3;
+
+                int offset = (int)(Pos.X + Width - grid.Pos.X) % grid.TileWidth;
+                if (offset > maxOffset)
+                {
+                    offset = (int)(Pos.X - grid.Pos.X) % grid.TileWidth;
+                    Debug.Log(offset);
+
+                    if (offset < grid.TileWidth - maxOffset)
+                        offset = 0;
+                    else
+                        offset = grid.TileWidth - offset;
+                }
+                else
+                    offset = -offset;
+
+                if(offset != 0 && !grid.Collider.Collide(Pos - Vector2.UnitY + new Vector2(offset, 0)))
+                {
+                    Pos.X += offset;
+                    MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - PreviousExactPos.Y), new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
+                    return;
+                }
+            }
+
 
             Velocity.Y = 0;
             collisionY = true;

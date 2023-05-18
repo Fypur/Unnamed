@@ -64,7 +64,7 @@ namespace Platformer
             if (size.Y == 184)
                 size.Y = 180;
 
-            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(ToLevel.Pos.ToPoint(), size.ToPoint())) - cam.CenteredPos, transitionTime, Ease.QuintInAndOut);
+            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(ToLevel.Pos.ToPoint(), size.ToPoint())) - cam.CenteredPos, transitionTime, Ease.CubeInAndOut);
 
             switch (Direction)
             {

@@ -51,5 +51,19 @@ namespace Platformer
         {
             
         }
+
+        public override void OnAddSelectable()
+        {
+            base.OnAddSelectable();
+            FieldTextBox.Color = Color.White;
+            ValueTextBox.Color = Color.White;
+        }
+
+        public override void OnRemoveSelectable()
+        {
+            base.OnRemoveSelectable();
+            FieldTextBox.Color = Color.Gray;
+            ValueTextBox.Color = Color.Gray;
+        }
     }
 }

@@ -30,14 +30,13 @@ namespace Platformer
             {
                 List<UIElement> elements = new List<UIElement>();
 
-
-                elements.Add(new TextSelectable("Resume", "LexendDeca", Options.DefaultScreenSize / 2 - new Vector2(0, 50), 500, 100, 1, Color.White, true, () =>
+                elements.Add(new TextSelectable("Resume", "LexendDeca", Options.DefaultScreenSize / 2 - new Vector2(0, 50), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () =>
                 {
                     Platformer.PauseMenu.RemoveChild(this);
                     Platformer.Unpause();
                 }));
 
-                elements.Add(new TextSelectable("Return to Main Menu", "LexendDeca", Options.DefaultScreenSize / 2 + new Vector2(0, 50), 500, 100, 1, Color.White, true, () => {
+                elements.Add(new TextSelectable("Return to Main Menu", "LexendDeca", Options.DefaultScreenSize / 2 + new Vector2(0, 50), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () => {
                     Platformer.Unpause();
                     Platformer.PauseMenu.RemoveChild(this);
                     Platformer.EndGame();

@@ -35,7 +35,7 @@ namespace Platformer
             AddComponent(new Timer(wipeTime / 2, true, (timer) =>
             {
                 float reversed = Ease.Reverse(timer.Value / wipeTime, 0.5f);
-                float eased = Ease.QuintInAndOut(reversed);
+                float eased = Ease.CubeInAndOut(reversed);
                 Pos = Vector2.Lerp(initPos, endPos, eased);
             },
             () =>
@@ -50,7 +50,7 @@ namespace Platformer
                     AddComponent(new Timer(wipeTime / 2, true, (timer) =>
                     {
                         float reversed = 0.5f + Ease.Reverse((timer.Value) / wipeTime, 0.5f);
-                        float eased = Ease.QuintInAndOut(reversed);
+                        float eased = Ease.CubeInAndOut(reversed);
                         Pos = Vector2.Lerp(initPos, endPos, eased);
 
                         if (!doOnce && reversed >= 0.75f)

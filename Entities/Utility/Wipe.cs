@@ -45,7 +45,7 @@ namespace Platformer
             AddComponent(new Timer(wipeTime / 2, true, (timer) =>
             {
                 float reversed = Ease.Reverse(timer.Value / wipeTime, 0.5f);
-                Progress = Ease.QuintInAndOut(reversed);
+                Progress = Ease.CubeInAndOut(reversed);
                 usedPos = Vector2.Lerp(initPos, endPos, Progress);
                 //Pos = initPos + new Vector2(wiped.Width, 0);
                 Width = (int)(wiped.Width * Progress * 2);
@@ -78,7 +78,7 @@ namespace Platformer
                         onThreeFourths?.Invoke();
                         doOnce = true;
                     }
-                    Progress = Ease.QuintInAndOut(reversed);
+                    Progress = Ease.CubeInAndOut(reversed);
                     usedPos = Vector2.Lerp(initPos, endPos, Progress);
                     Pos.X = usedPos.X;
                     Width = (int)(wiped.Width * Ease.Reverse(Progress - 0.5f, 0.5f) * 2);

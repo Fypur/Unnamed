@@ -21,7 +21,7 @@ namespace Platformer
             : base(position, (int)(radius * 2), (int)(radius * 2), new Sprite(DataManager.Objects["sawblade/sawblade"]))
         {
             Radius = radius;
-            AddComponent(new CycleMover(position, Width, Height, goingForwards, positions, timesBetweenPositions, Ease.QuintInAndOut, out Vector2 initPos));
+            AddComponent(new CycleMover(position, Width, Height, goingForwards, positions, timesBetweenPositions, Ease.CubeInAndOut, out Vector2 initPos));
             ExactPos = initPos;
         }
 

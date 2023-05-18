@@ -22,5 +22,7 @@ public class Light : ILDtkEntity
     public float Length { get; set; }
     public Color Color { get; set; }
     public int Opacity { get; set; }
+    public bool CollideWithWalls { get; set; }
+    public float? BlinkTime { get; set; }
 }
 #pragma warning restore

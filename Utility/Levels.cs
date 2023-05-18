@@ -53,7 +53,7 @@ namespace Platformer
                 if (p.Positions.Length == 0)
                     plat = new SolidPlatform(p.Position, p.Width(), p.Height(), FallingPlatformNineSlice1);
                 else
-                    plat = new CyclingPlatform(p.Position, p.Width(), p.Height(), new Sprite(FallingPlatformNineSlice1), p.GoingForwards, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, Ease.QuintInAndOut);
+                    plat = new CyclingPlatform(p.Position, p.Width(), p.Height(), new Sprite(FallingPlatformNineSlice1), p.GoingForwards, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, Ease.CubeInAndOut);
                     
                 entities.Add(plat);
 
@@ -81,7 +81,7 @@ namespace Platformer
                 if (p.Positions.Length == 0)
                     AddIfChild(new SwingingPoint(p.Position, p.MaxSwingDistance), p.Iid);
                 else
-                    AddIfChild(new SwingingPoint(p.Position, p.MaxSwingDistance, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, p.GoingForwards, Ease.QuintInAndOut), p.Iid);
+                    AddIfChild(new SwingingPoint(p.Position, p.MaxSwingDistance, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, p.GoingForwards, Ease.CubeInAndOut), p.Iid);
             }
                 
 
@@ -209,6 +209,15 @@ namespace Platformer
                     light.AddComponent(new CircleLight(Vector2.Zero, p.Length, new Color(p.Color, p.Opacity), new Color(p.Color, 0)));
                 else
                     light.AddComponent(new QuadPointLight(Vector2.Zero, Vector2.Zero, p.Direction, p.Range, p.Length, new Color(p.Color, p.Opacity), new Color(p.Color, 0)));
+
+                Light l = light.GetComponent<Light>();
+                l.CollideWithWalls = p.CollideWithWalls;
+
+                if(p.BlinkTime is float b)
+                    l.StartBlink(b);
+
+
+
                 entities.Add(light);
             }
 
@@ -249,9 +258,9 @@ namespace Platformer
                     Vector2 pos = new Vector2(Math.Max(level.WorldX, neigh.WorldX), level.WorldY - 1);
                     Vector2 size;
                     if (level.WorldX + level.Size.X < neigh.WorldX + neigh.Size.X)
-                        size = new Vector2(level.WorldX + level.Size.X - neigh.WorldX, 2);
+                        size = new Vector2(level.WorldX + level.Size.X - pos.X, 2);
                     else
-                        size = new Vector2(neigh.WorldX + neigh.Size.X - level.WorldX, 2);
+                        size = new Vector2(neigh.WorldX + neigh.Size.X - pos.X, 2);
                     entities.Add(new LevelTransition(pos, size, neigh, Direction.Up));
                 }
                 else if (neighRect.X == lvlRect.X + lvlRect.Width)
@@ -274,9 +283,9 @@ namespace Platformer
                     Vector2 size;
 
                     if (level.WorldX + level.Size.X < neigh.WorldX + neigh.Size.X)
-                        size = new Vector2(level.WorldX + level.Size.X - neigh.WorldX, 2);
+                        size = new Vector2(level.WorldX + level.Size.X - pos.X, 2);
                     else
-                        size = new Vector2(neigh.WorldX + neigh.Size.X - level.WorldX, 2);
+                        size = new Vector2(neigh.WorldX + neigh.Size.X - pos.X, 2);
                     
                     downNeighboursRect.Add(new Rectangle(neigh.Position, neigh.Size));
                     entities.Add(new LevelTransition(pos, size, neigh, Direction.Down));
@@ -338,7 +347,7 @@ namespace Platformer
                             s.SourceRectangle = new Rectangle(t.Src.X, t.Src.Y, l._GridSize, l._GridSize);
 
                             Tile tile = new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s);
-                            tile.Layer = -1;
+                            tile.Layer = 0;
 
 
                             foreach (Sprite.Animation.Slice slice in slices)
@@ -371,9 +380,14 @@ namespace Platformer
                                     }
 
                                     if (range == 360)
-                                        tile.AddComponent(new CircleLight(location, length, slice.Color, new Color(slice.Color, 0)));
+                                    {
+                                        Light l2 = (Light)tile.AddComponent(new CircleLight(location, length, slice.Color, new Color(slice.Color, 0)));
+                                        l2.CollideWithWalls = false;
+                                    }
                                     else
                                         tile.AddComponent(new QuadPointLight(location, location2, direction, range, length, slice.Color, new Color(slice.Color, 0)));
+
+                                    
                                 }
                             }
 
@@ -705,18 +719,18 @@ namespace Platformer
             {
                 case 1:
                     var l = new List<Entity> {
-                        new SwingingPoint(new Vector2(Engine.ScreenSize.X / 2, 50), 1000, new Vector2[] { new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2(Engine.ScreenSize.X / 2 - 200, 50) }, new float[]{ 1.5f }, true, Ease.QuintInAndOut),
+                        new SwingingPoint(new Vector2(Engine.ScreenSize.X / 2, 50), 1000, new Vector2[] { new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2(Engine.ScreenSize.X / 2 - 200, 50) }, new float[]{ 1.5f }, true, Ease.CubeInAndOut),
                         FallDeathTrigger(p, size)
                     };
                     l.AddRange(DefaultLevelTransitions(p, new Level(GetLevelData(2, p + Engine.ScreenSize.OnlyX())), null, null, null));
                     return l;
 
                 case 2:
-                    var pulled = new PulledPlatform(new Vector2(60, 200) + p, 200, 40, new Vector2(60, 200) + p + new Vector2(200, 40), 2, Color.Yellow, Ease.QuintInAndOut);
+                    var pulled = new PulledPlatform(new Vector2(60, 200) + p, 200, 40, new Vector2(60, 200) + p + new Vector2(200, 40), 2, Color.Yellow, Ease.CubeInAndOut);
                     var trig = new GrapplingTrigger(new Vector2(60, 200) + p + new Vector2(200, 40), true, pulled.movingTime, pulled.Pull);
                     return new List<Entity> { pulled, trig,
-                    new CyclingPlatform(40, 200, new Sprite(Color.YellowGreen), new Vector2[]{ Engine.ScreenSize / 2, Engine.ScreenSize / 2 + new Vector2(-200 ,0) }, new float[] { 1.5f }, Ease.QuintInAndOut),
-                    new CyclingPlatform(200, 20, new Sprite(Color.YellowGreen), new Vector2[]{ Engine.ScreenSize / 2 + Engine.ScreenSize.OnlyX() * 0.1f, Engine.ScreenSize / 2 + new Vector2(0 ,-200) }, new float[] { 1.5f }, Ease.QuintInAndOut),
+                    new CyclingPlatform(40, 200, new Sprite(Color.YellowGreen), new Vector2[]{ Engine.ScreenSize / 2, Engine.ScreenSize / 2 + new Vector2(-200 ,0) }, new float[] { 1.5f }, Ease.CubeInAndOut),
+                    new CyclingPlatform(200, 20, new Sprite(Color.YellowGreen), new Vector2[]{ Engine.ScreenSize / 2 + Engine.ScreenSize.OnlyX() * 0.1f, Engine.ScreenSize / 2 + new Vector2(0 ,-200) }, new float[] { 1.5f }, Ease.CubeInAndOut),
                     new RespawnTrigger(new Vector2(600, 200), new Vector2(200, 300), Vector2.Zero)
                     };
 

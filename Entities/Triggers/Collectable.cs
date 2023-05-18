@@ -53,7 +53,7 @@ namespace Platformer
                 Vector2 oldPos = Pos;
                 AddComponent(new Timer(0.5f, true, (timer) =>
                 {
-                    Pos = Vector2.Lerp(oldPos, initPos, Ease.QuintInAndOut(Ease.Reverse(timer.Value / timer.MaxValue)));
+                    Pos = Vector2.Lerp(oldPos, initPos, Ease.CubeInAndOut(Ease.Reverse(timer.Value / timer.MaxValue)));
                 }, () => Pos = initPos));
 
                 RemoveComponent(GetComponent<Coroutine>());

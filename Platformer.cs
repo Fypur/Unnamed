@@ -33,12 +33,13 @@ namespace Platformer
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
         public static EventInstance music;
+        public static EventInstance windAmbience;
         public static Tile BackgroundTile;
         public static BloomFilter BloomFilter;
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "0";
+        public static string InitLevel = "64";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -195,7 +196,7 @@ namespace Platformer
                 {
                     if (Input.GetKeyDown(key))
                         foreach (LevelTransition transition in transitions)
-                            if (transition.Direction == dir)
+                            if (transition.Direction == dir && !transition.LDtkToLevel.Identifier.StartsWith("Filler"))
                             { LevelTransition.InstaTransition(transition.LDtkToLevel); break; }
                 }
 
@@ -235,7 +236,7 @@ namespace Platformer
             GraphicsDevice.SetRenderTarget(Engine.LightsRenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
             GraphicsDevice.SetRenderTarget(RenderTarget);
-            GraphicsDevice.Clear(new Color(3, 11, 28));
+            GraphicsDevice.Clear(new Color(5, 8, 13));
 
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
@@ -394,7 +395,7 @@ namespace Platformer
             Levels.LoadWorldGrid(World, worldDepth);
             Engine.CurrentMap.CurrentLevel.LoadNoAutoTile();
 
-            BackgroundTile = new Tile(Vector2.Zero, Engine.RenderTarget.Width, Engine.RenderTarget.Height,  new Sprite(DataManager.Textures["bg/bg1"]));
+            BackgroundTile = new Tile(Vector2.Zero, Engine.RenderTarget.Width, Engine.RenderTarget.Height,  new Sprite(DataManager.Textures["bg/bg2"]));
 
 #if RELEASE
             if (World.Iid == LDtkTypes.Worlds.World.Iid)
@@ -410,7 +411,7 @@ namespace Platformer
 
             PauseMenu = new PauseMenu();
 
-            //music = Audio.PlayEvent("WindAmbience");
+            //windAmbience = Audio.PlayEvent("WindAmbience");
             //music = Audio.PlayEvent("MusicAtmo");
         }
 

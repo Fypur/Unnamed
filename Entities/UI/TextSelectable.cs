@@ -11,10 +11,10 @@ namespace Platformer
     public class TextSelectable : Button
     {
         public TextBox Text;
-        public TextSelectable(string text, string fontID, Vector2 position, int width, int height, float fontSize, Color color, bool centered = false, Action onPressed = null) : base(position, width, height, centered, null, onPressed)
+        public TextSelectable(string text, string fontID, Vector2 position, int width, int height, float fontSize, Color color, bool centered = false, TextBox.Alignement alignement = TextBox.Alignement.Center, Action onPressed = null) : base(position, width, height, centered, null, onPressed)
         {
             Selectable = true;
-            Text = (TextBox)AddChild(new TextBox(text, fontID, position, width, height, fontSize, color, centered));
+            Text = (TextBox)AddChild(new TextBox(text, fontID, position, width, height, fontSize, color, centered, alignement));
         }
 
         public override void OnSelected()
@@ -29,6 +29,18 @@ namespace Platformer
             base.OnLeaveSelected();
 
             Text.Color.B = 255;
+        }
+
+        public override void OnAddSelectable()
+        {
+            base.OnAddSelectable();
+            Text.Color = Color.White;
+        }
+
+        public override void OnRemoveSelectable()
+        {
+            base.OnRemoveSelectable();
+            Text.Color = Color.Gray;
         }
     }
 }

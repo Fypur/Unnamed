@@ -37,12 +37,12 @@ namespace Platformer
             AddComponent(new Timer(1f, true, (timer) =>
             {
                 MoveTo(Vector2.Lerp(initPos, newPos,
-                     (EasingFunction ?? Ease.QuintInAndOut).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
+                     (EasingFunction ?? Ease.CubeInAndOut).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
             },
             () =>
             {
                 MoveTo(newPos);
-                AddComponent(new Timer(PulledOutTime, false, null, () => Unpull(Ease.QuintInAndOut)));
+                AddComponent(new Timer(PulledOutTime, false, null, () => Unpull(Ease.CubeInAndOut)));
             }));
         }
 
