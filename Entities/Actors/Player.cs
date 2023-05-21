@@ -729,8 +729,6 @@ namespace Platformer
             AddGrapplingPoints(cornersToCheck, SwingPositions[SwingPositions.Count - 1]);
             #endregion
 
-            Debug.LogUpdate(SwingPositions.Count);
-
             #region Grappling Methods
 
             void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
@@ -1219,7 +1217,6 @@ namespace Platformer
                 if (offset > maxOffset)
                 {
                     offset = (int)(Pos.X - grid.Pos.X) % grid.TileWidth;
-                    Debug.Log(offset);
 
                     if (offset < grid.TileWidth - maxOffset)
                         offset = 0;

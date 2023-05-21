@@ -59,6 +59,25 @@
 					<Loop id="transfer" path ="transfer" delay ="0.025" loop="5" goto="completetransfer"/>
 					<Anim id="completetransfer" path ="completetransfer" delay ="0.025" goto="ltext"/>
 				</LittleScreen>
+
+				<Folder path ="screen">
+					<sc1 path="" start="normal">
+						<Loop id="normal" path ="sc1"/>
+					</sc1>
+					
+					<sc2 path="" start="normal">
+						<Loop id="normal" path ="sc2"/>
+					</sc2>
+					
+					<sc3 path="" start="normal">
+						<Loop id="normal" path ="sc3"/>
+					</sc3>
+					
+					<sc4 path="" start="normal">
+						<Loop id="normal" path ="sc4"/>
+					</sc4>
+				</Folder>
+				
 			</Folder>
 				
 		</Folder>

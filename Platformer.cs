@@ -34,12 +34,12 @@ namespace Platformer
 
         public static EventInstance music;
         public static EventInstance windAmbience;
-        public static Tile BackgroundTile;
+        public static ParallaxBackground BackgroundTile;
         public static BloomFilter BloomFilter;
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "64";
+        public static string InitLevel = "0";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -122,7 +122,9 @@ namespace Platformer
             if (!Paused)
             {
                 Engine.CurrentMap.Update();
-                Cam.Update();
+                Engine.Cam.Update();
+                Engine.CurrentMap.LateUpdate();
+                Engine.Cam.LateUpdate();
             }
 
             if(PauseMenu != null)
@@ -130,9 +132,6 @@ namespace Platformer
                 PauseMenu.Update();
                 PauseMenu.LateUpdate();
             }
-
-            if (BackgroundTile != null)
-                BackgroundTile.Update();
 
 #if DEBUG
             //Debug.LogUpdate(Input.MousePosNoRenderTarget);
@@ -238,19 +237,10 @@ namespace Platformer
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(new Color(5, 8, 13));
 
+
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
-            if(BackgroundTile != null)
-                BackgroundTile.Render();
-
-            Drawing.End();
-
-
-            Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
-
-            
-
-
+            BackgroundTile?.Render();
 
             Drawing.End();
 
@@ -262,6 +252,9 @@ namespace Platformer
 
             Engine.CurrentMap.Render();
             //Drawing.DrawLight(Input.MousePos, 100, new Color(Color.White, 100), new Color(Color.White, 100));
+
+
+            
 
             Drawing.EndPrimitives();
 
@@ -331,10 +324,10 @@ namespace Platformer
 
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, null);
 
+
             Drawing.Draw(SecondRenderTarget, Vector2.Zero, Color.White);
 
             Texture2D bloomTexture = BloomFilter.Draw(SecondRenderTarget, RenderTarget.Width, RenderTarget.Height);
-
             GraphicsDevice.SetRenderTarget(RenderTarget); //For some damn reason man don't change back the render target
 
             Drawing.Draw(bloomTexture, Vector2.Zero);
@@ -395,7 +388,7 @@ namespace Platformer
             Levels.LoadWorldGrid(World, worldDepth);
             Engine.CurrentMap.CurrentLevel.LoadNoAutoTile();
 
-            BackgroundTile = new Tile(Vector2.Zero, Engine.RenderTarget.Width, Engine.RenderTarget.Height,  new Sprite(DataManager.Textures["bg/bg2"]));
+            BackgroundTile = (ParallaxBackground)Engine.CurrentMap.Instantiate(new ParallaxBackground(new Sprite[] { new Sprite(DataManager.Textures["bg/bg2/Layer 1"]), new Sprite(DataManager.Textures["bg/bg2/Layer 2"]), new Sprite(DataManager.Textures["bg/bg2/Layer 3"]), new Sprite(DataManager.Textures["bg/bg2/Layer 4"]), new Sprite(DataManager.Textures["bg/bg2/Layer 5"]) }, new float[] { 0, 0.05f, 0.1f, 0.15f, 0.2f }));
 
 #if RELEASE
             if (World.Iid == LDtkTypes.Worlds.World.Iid)

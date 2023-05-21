@@ -298,7 +298,10 @@ namespace Platformer
                 {
                     if(l._TilesetRelPath.Contains("AnimatedDecals"))
                     {
-                        if(TileData.Count == 0)
+                        string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
+                        List<Sprite.Animation.Slice> slices = (List<Sprite.Animation.Slice>)((object[])DataManager.Textures[tileSet.Substring("Graphics/".Length)].Tag)[1];
+
+                        if (TileData.Count == 0)
                         {
                             TileCustomMetadata[] tilesetData = null;
                             foreach (TilesetDefinition definition in Platformer.LDtkFile.Defs.Tilesets)
@@ -314,6 +317,8 @@ namespace Platformer
 
                         foreach (TileInstance t in l.GridTiles)
                         {
+                            Rectangle spriteRect = new Rectangle(t.Src.X, t.Src.Y, l._GridSize, l._GridSize);
+
                             if (TileData.TryGetValue(t.T, out string data))
                             {
                                 Sprite s = new();
@@ -323,6 +328,49 @@ namespace Platformer
                                 tile.Layer = -1;
 
                                 entities.Add(tile);
+                            }
+
+                            foreach (Sprite.Animation.Slice slice in slices)
+                            {
+                                if (spriteRect.Contains(slice.Rect.Location))
+                                {
+                                    float direction = float.Parse(slice.Name.Substring(slice.Name.LastIndexOf('D') + 1, slice.Name.IndexOf(" ", slice.Name.LastIndexOf('D')) - slice.Name.LastIndexOf('D')));
+                                    float length = float.Parse(slice.Name.Substring(slice.Name.LastIndexOf('L') + 1, slice.Name.IndexOf(" ", slice.Name.LastIndexOf('L')) - slice.Name.LastIndexOf('L')));
+
+                                    int lR = slice.Name.LastIndexOf('R');
+                                    float range;
+
+                                    if (slice.Name.LastIndexOf(" ") > lR)
+                                        range = float.Parse(slice.Name.Substring(lR + 1, slice.Name.IndexOf(" ", lR) - lR));
+                                    else
+                                        range = float.Parse(slice.Name.Substring(lR + 1));
+
+                                    Vector2 location;
+                                    Vector2 location2;
+
+                                    if (slice.Name[0] == 'F')
+                                    {
+                                        location = new Vector2(slice.Rect.X + slice.Rect.Width - t.Src.X, slice.Rect.Y - t.Src.Y);
+                                        location2 = new Vector2(slice.Rect.X - t.Src.X, slice.Rect.Y + slice.Rect.Height - t.Src.Y);
+                                    }
+                                    else
+                                    {
+                                        location = (slice.Rect.Location - t.Src).ToVector2();
+                                        location2 = (slice.Rect.Location - t.Src + slice.Rect.Size).ToVector2();
+                                    }
+
+                                    Entity light = new Entity(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l.PxOffsetY + level.Position.Y));
+
+                                    if (range == 360)
+                                    {
+                                        Light l2 = (Light)light.AddComponent(new CircleLight(location, length, slice.Color, new Color(slice.Color, 0)));
+                                        l2.CollideWithWalls = false;
+                                    }
+                                    else
+                                        light.AddComponent(new QuadPointLight(location, location2, direction, range, length, slice.Color, new Color(slice.Color, 0)));
+
+                                    entities.Add(light);
+                                }
                             }
                         }
                     }
