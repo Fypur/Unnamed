@@ -166,6 +166,10 @@ namespace Platformer
                     }
                 }
 
+
+            foreach (LDtkTypes.HangingWire p in level.GetEntities<LDtkTypes.HangingWire>())
+                entities.Add(new HangingWire(p.ControlPoints.AddAtBeggining(p.Position)));
+
             foreach (LDtkTypes.GlassWall p in level.GetEntities<LDtkTypes.GlassWall>())
                 entities.Add(new GlassWall(p.Position, p.SolidInDirection == null ? null : p.SolidInDirection.Value.ToDirection(), p.Width(), p.Height(), p.BreakVelocity));
 

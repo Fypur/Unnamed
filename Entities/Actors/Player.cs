@@ -66,6 +66,7 @@ namespace Platformer
         public Vector2 JetpackDirectionalPowerCoef = Vector2.Zero;
         public Vector2 RespawnPoint;
         public event Action OnDeath = delegate { };
+        public Vector2 PrevVelocity;
 
         private bool onGround;
         private bool previousOnGround = true;
@@ -241,7 +242,9 @@ namespace Platformer
             }
 
              Sprite.Active = CanMove;
-            
+
+            PrevVelocity = Velocity;
+
             onGround = OnGroundCheck(Pos + new Vector2(0, 1), out Entity onGroundEntity);
             onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
             onWall = Collider.CollideAt(Pos + new Vector2(-1, 0)) || onRightWall;
@@ -263,6 +266,7 @@ namespace Platformer
             }
 
             couldMove = CanMove;
+
             base.Update();
 
             if (!CanMove)                
@@ -476,7 +480,7 @@ namespace Platformer
                 else
                     potentialFallingSpeed = Velocity.Y;
 
-                if (SwingControls.IsDown() && !onGround)
+                if (SwingControls.Is() && !stateMachine.Is(States.Swinging) && !onGround)
                     ThrowRope();
                 if (SwingControls.Is() && stateMachine.Is(States.Swinging))
                     Swing();
@@ -498,6 +502,25 @@ namespace Platformer
             if (xMoving != 0 && !isUnsticking)
                 Facing = Math.Sign(xMoving);
 
+            if (!onGround)
+            {
+                foreach(JumpThru jumpThru in Engine.CurrentMap.Data.GetEntities<JumpThru>())
+                {
+                    if (Collider.AbsoluteBottom - jumpThru.Collider.AbsoluteTop < 7 && jumpThru.Collider.AbsoluteTop != Collider.AbsoluteBottom - 1 && Collider.AbsoluteBottom - jumpThru.Collider.AbsoluteTop >= 0 && PrevVelocity.Y < 0 && Velocity.Y > 0)
+                    {
+                        //Pos.Y = jumpThru.Collider.AbsoluteTop - 1 - Height;
+
+                        MoveY(jumpThru.Collider.AbsoluteTop - 3 - Collider.AbsoluteBottom, () =>
+                        {
+
+                        });
+                        Velocity.Y = 0;
+                        Debug.Log("y");
+                        break;
+                    }
+                }
+            }
+
             Dust.Acceleration = Velocity;
 
             collisionX = collisionY = false;
@@ -506,7 +529,6 @@ namespace Platformer
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
-
 
             if (!couldMove)
                 Input.OldState = canMoveState;
@@ -520,7 +542,16 @@ namespace Platformer
         private void ThrowRope()
         {
 
-            if (!CheckForSwingingPoint(out Solid determinedGrappledSolid, out float distance) && !inSwingGraceTime)
+            if (CheckForSwingingPoint(out Solid determinedGrappledSolid, out float distance))
+            {
+                grappledSolid = determinedGrappledSolid;
+                Velocity.Y = potentialFallingSpeed;
+                ActOnSwing(determinedGrappledSolid);
+            }
+            
+            
+            //If you want to use grace time with KeyDown instead of just Key
+            /*if (!CheckForSwingingPoint(out Solid determinedGrappledSolid, out float distance) && !inSwingGraceTime)
             {
                 AddComponent(new Timer(swingGraceTime, true, (timer) =>
                 {
@@ -536,14 +567,7 @@ namespace Platformer
                     }
                 }, () => inSwingGraceTime = false));
                 return;
-            }
-
-            grappledSolid = determinedGrappledSolid;
-
-            Velocity.Y = potentialFallingSpeed;
-
-            ActOnSwing(determinedGrappledSolid);
-
+            }*/
 
             bool CheckForSwingingPoint(out Solid swingingPoint, out float distance)
             {
@@ -1191,6 +1215,7 @@ namespace Platformer
                 MoveX(Velocity.X * Engine.Deltatime - (ExactPos.X - PreviousExactPos.X), CollisionX);
                 return;
             }
+
             Velocity.X = 0;
             collisionX = true;
         }
@@ -1198,7 +1223,10 @@ namespace Platformer
         private void CollisionY(Entity collided)
         {
             if (collided is JumpThru)
-                Pos.Y = collided.Pos.Y - Height;
+            {
+                Pos.Y = collided.Collider.AbsoluteTop - Height;
+                Debug.Log("m");
+            }
 
             if (collided is GlassWall gl && gl.Break(this, Velocity, false))
             {

@@ -39,14 +39,15 @@ namespace Platformer
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "0";
-        public static int InitWorld = 0;
+        public static string InitLevel = "22";
+        public static int InitWorld = 1;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
 #endif
 
 #if RELEASE
-        private const string InitLevel = "60";
+        private const string InitLevel = "0";
+        private const int InitWorld = 0;
 #endif
 
         public Platformer()
