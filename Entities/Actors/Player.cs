@@ -1289,6 +1289,11 @@ namespace Platformer
             Dust.CopyFrom(oldDust);
         }
 
+        public void Damage()
+        {
+            
+        }
+
         public override void Render()
         {
             if (stateMachine.Is(States.WallSliding))
