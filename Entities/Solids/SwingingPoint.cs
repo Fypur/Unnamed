@@ -72,7 +72,7 @@ namespace Platformer
                 Pos = Input.MousePos;
 #endif
 
-            if(ExactPos != PreviousExactPos)
+            //if(ExactPos != PreviousExactPos)
             {
                 polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);
 
@@ -89,6 +89,8 @@ namespace Platformer
                     cornersToCheck.Remove(p.SwingPositions[1]);
 
                 AddGrapplingPoints(cornersToCheck, p.SwingPositions.Count > 1 ? p.SwingPositions[1] : p.MiddleExactPos);
+
+
 
                 void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
                 {
@@ -143,14 +145,14 @@ namespace Platformer
                     Player p = (Player)Engine.Player;
 
 
-                    Debug.LogUpdate(p.SwingPositions.Count, p.SwingPositionsSign.Count);
+                    //Debug.LogUpdate(p.SwingPositions.Count, p.SwingPositionsSign.Count);
                     
                     for (int i = 1; i < p.SwingPositions.Count; i++)
                     {
                         Vector2 prevPos = (i == p.SwingPositions.Count - 1) ? p.MiddleExactPos : p.SwingPositions[i + 1];
                         float grappleAngle = VectorHelper.GetAngle(prevPos - MiddleExactPos, prevPos - p.SwingPositions[i]);
 
-                        Debug.LogUpdate(p.SwingPositionsSign[i]);
+                        //Debug.LogUpdate(p.SwingPositionsSign[i]);
                         if (Math.Sign(grappleAngle) == -p.SwingPositionsSign[i])
                         {
                             cornersToCheck.Remove(p.SwingPositions[i]);

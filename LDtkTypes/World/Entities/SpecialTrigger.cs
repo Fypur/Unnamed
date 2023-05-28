@@ -17,6 +17,7 @@ public class SpecialTrigger : ILDtkEntity
 
     public Color SmartColor { get; set; }
 
-    public int Index { get; set; }
+    public int TypeId { get; set; }
+    public int Id { get; set; }
 }
 #pragma warning restore

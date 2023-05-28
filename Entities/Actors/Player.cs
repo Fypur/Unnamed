@@ -92,6 +92,7 @@ namespace Platformer
         private bool inCoyoteTime;
         private float potentialFallingSpeed;
         private bool inSwingGraceTime;
+        private bool heldSwing;
 
         private float jetpackTime;
         private BoostBar boostBar;
@@ -234,6 +235,7 @@ namespace Platformer
                 isAtSwingEnd = false;
 
                 Jetpacking = false;
+                heldSwing = false;
 
                 if(jetpackAudio.Sound.isValid())
                     Audio.StopEvent(jetpackAudio.Sound);
@@ -480,19 +482,24 @@ namespace Platformer
                 else
                     potentialFallingSpeed = Velocity.Y;
 
-                if (SwingControls.Is() && !stateMachine.Is(States.Swinging) && !onGround)
+                if (SwingControls.Is() && !stateMachine.Is(States.Swinging) && !heldSwing && !onGround)
                     ThrowRope();
                 if (SwingControls.Is() && stateMachine.Is(States.Swinging))
                     Swing();
-                else if(SwingControls.IsUp() && stateMachine.Is(States.Swinging))
+                else if(SwingControls.IsUp())
                 {
-                    Velocity.X *= 1.2f;
-                    if (Velocity.Y < 0)
-                        Velocity.Y *= 1.1f;
-                    else
-                        Velocity.Y *= 0.7f;
+                    heldSwing = false;
 
-                    stateMachine.Switch(States.Ascending);
+                    if (stateMachine.Is(States.Swinging))
+                    {
+                        Velocity.X *= 1.2f;
+                        if (Velocity.Y < 0)
+                            Velocity.Y *= 1.1f;
+                        else
+                            Velocity.Y *= 0.7f;
+
+                        stateMachine.Switch(States.Ascending);
+                    }
                 }
             }
 
@@ -506,14 +513,12 @@ namespace Platformer
             {
                 foreach(JumpThru jumpThru in Engine.CurrentMap.Data.GetEntities<JumpThru>())
                 {
-                    if (Collider.AbsoluteBottom - jumpThru.Collider.AbsoluteTop < 7 && jumpThru.Collider.AbsoluteTop != Collider.AbsoluteBottom - 1 && Collider.AbsoluteBottom - jumpThru.Collider.AbsoluteTop >= 0 && PrevVelocity.Y < 0 && Velocity.Y > 0)
+                    if (jumpThru.Collider.Collide((BoxCollider)Collider) && Collider.AbsoluteBottom - jumpThru.Collider.AbsoluteTop < 3 && jumpThru.Collider.AbsoluteTop != Collider.AbsoluteBottom - 1 && Collider.AbsoluteBottom - jumpThru.Collider.AbsoluteTop >= 0 && PrevVelocity.Y < 0 && Velocity.Y >= 0)
                     {
                         //Pos.Y = jumpThru.Collider.AbsoluteTop - 1 - Height;
 
-                        MoveY(jumpThru.Collider.AbsoluteTop - 3 - Collider.AbsoluteBottom, () =>
-                        {
-
-                        });
+                        Debug.Log(jumpThru.Collider.AbsoluteTop);
+                        MoveY(jumpThru.Collider.AbsoluteTop - 1 - Collider.AbsoluteBottom);
                         Velocity.Y = 0;
                         Debug.Log("y");
                         break;
@@ -546,6 +551,8 @@ namespace Platformer
             {
                 grappledSolid = determinedGrappledSolid;
                 Velocity.Y = potentialFallingSpeed;
+                heldSwing = true;
+
                 ActOnSwing(determinedGrappledSolid);
             }
             
@@ -830,6 +837,7 @@ namespace Platformer
         private void Jump()
         {
             stateMachine.Switch(States.Jumping);
+
             Velocity.X += LiftBoost.X;
             previousOnGround = false;
 
@@ -1223,10 +1231,7 @@ namespace Platformer
         private void CollisionY(Entity collided)
         {
             if (collided is JumpThru)
-            {
                 Pos.Y = collided.Collider.AbsoluteTop - Height;
-                Debug.Log("m");
-            }
 
             if (collided is GlassWall gl && gl.Break(this, Velocity, false))
             {

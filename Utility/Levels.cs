@@ -225,10 +225,18 @@ namespace Platformer
                 entities.Add(light);
             }
 
+            foreach (LDtkTypes.Boss p in level.GetEntities<LDtkTypes.Boss>())
+            {
+                entities.Add(new Boss(p.Position));
+            }
+
             foreach (LDtkTypes.SpecialTrigger p in level.GetEntities<LDtkTypes.SpecialTrigger>())
             {
-                switch (p.Index)
+                switch (p.TypeId)
                 {
+                    case 0:
+                        entities.Add(new IdentifierTrigger(p.Position, p.Size, p.Id));
+                        break;
                     case 1:
                         entities.Add(new JetpackActivator(p.Position, p.Size));
                         break;

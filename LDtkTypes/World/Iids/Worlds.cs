@@ -103,9 +103,13 @@ public static class Worlds
         public static readonly System.Guid Lvl56 = System.Guid.Parse("04c5de80-7820-11ed-9cc3-fd8b6c066066");
         public static readonly System.Guid Lvl59 = System.Guid.Parse("05cecff0-5110-11ed-ae3b-510fe3057bca");
         public static readonly System.Guid Lvl60 = System.Guid.Parse("0742cde0-5110-11ed-ace6-1fee1b310122");
-        public static readonly System.Guid Lvl61 = System.Guid.Parse("773dca30-5110-11ed-8c7c-37d826c9642b");
-        public static readonly System.Guid Lvl62 = System.Guid.Parse("57a26cd0-5110-11ed-83e9-8b9054537202");
-        public static readonly System.Guid Lvl63 = System.Guid.Parse("5c923460-c640-11ed-9e4a-959cd9b16bb5");
+        public static readonly System.Guid Lvl61 = System.Guid.Parse("5c923460-c640-11ed-9e4a-959cd9b16bb5");
+        public static readonly System.Guid Lvl62 = System.Guid.Parse("9417d6a0-ed50-11ed-a45c-a513ccdef848");
+        public static readonly System.Guid Lvl63 = System.Guid.Parse("13c33d80-ed50-11ed-96eb-b9573646f610");
+        public static readonly System.Guid Lvl64 = System.Guid.Parse("5d672b40-ed50-11ed-96eb-a78cca55e38a");
+        public static readonly System.Guid Lvl65 = System.Guid.Parse("95a31d60-ed50-11ed-96eb-3ffd481069ae");
+        public static readonly System.Guid Lvl66 = System.Guid.Parse("b10be1a0-ed50-11ed-96eb-df5758515932");
+        public static readonly System.Guid Lvl67 = System.Guid.Parse("b5ebde70-ed50-11ed-96eb-4b466b31ad93");
     }
 }
 #pragma warning restore

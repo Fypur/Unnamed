@@ -76,12 +76,7 @@ namespace Platformer
                 return false;
 
             if (Collider.AbsoluteTop != other.AbsoluteBottom - 1)
-            {
-                if(Collider.AbsolutePosition.Y < -260)
-                    Debug.LogUpdate(other.AbsoluteBottom - Collider.AbsoluteTop);
-
                 return false;
-            }
 
             
 

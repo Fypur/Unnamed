@@ -39,7 +39,7 @@ namespace Platformer
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "22";
+        public static string InitLevel = "67";
         public static int InitWorld = 1;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -206,7 +206,7 @@ namespace Platformer
                 CheckTransitionsKey(Keys.Down, Direction.Down);
             }
 
-            if (Input.GetKeyDown(Keys.P))
+            /*if (Input.GetKeyDown(Keys.P))
             {
                 int lvlNumber = int.Parse(System.Text.RegularExpressions.Regex.Match(Levels.LastLDtkLevel.Identifier, @"\d+$").Value); //Funny regex to get number at end of string
                 Engine.CurrentMap.CurrentLevel.Unload();
@@ -219,7 +219,7 @@ namespace Platformer
                 Engine.Cam.SetBoundaries(lvl.Pos, size);
 
                 player.Pos = ((RespawnTrigger)Engine.CurrentMap.Data.EntitiesByType[typeof(RespawnTrigger)][0]).RespawnPoint;
-            }
+            }*/
 #endif
 
             Input.UpdateOldState();

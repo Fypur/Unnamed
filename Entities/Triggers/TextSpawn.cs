@@ -19,14 +19,8 @@ namespace Platformer
             Text = text;
             initPos = textPos;
             Collider.DebugColor = Color.LightGreen;
-            TextBox = new WritingTextBox("", "Recursive", Engine.Cam.RenderTargetToWorldPosition(textPos), int.MaxValue, int.MaxValue, 0.3f, Color.White, false, 0.01f);
+            TextBox = new WritingTextBox("", "Recursive", textPos, int.MaxValue, int.MaxValue, 0.3f, Color.White, false, Fiourp.TextBox.Alignement.TopLeft, 0.01f);
             AddChild(TextBox);
-        }
-
-        public override void Update()
-        {
-            base.Update();
-            TextBox.Pos = Engine.Cam.RenderTargetToWorldPosition(initPos);
         }
 
         public override void OnTriggerEnter(Player player)
