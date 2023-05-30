@@ -39,7 +39,7 @@ namespace Platformer
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "39";
+        public static string InitLevel = "BossRoom";
         public static int InitWorld = 1;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -253,9 +253,6 @@ namespace Platformer
 
             Engine.CurrentMap.Render();
             //Drawing.DrawLight(Input.MousePos, 100, new Color(Color.White, 100), new Color(Color.White, 100));
-
-
-            
 
             Drawing.EndPrimitives();
 

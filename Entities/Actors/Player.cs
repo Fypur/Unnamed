@@ -155,7 +155,7 @@ namespace Platformer
             stateMachine.RegisterStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Ascending); }, null);
             stateMachine.RegisterStateFunctions(States.Jetpack, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
 
-            TrailRenderer trail = new TrailRenderer(0.03f);
+            TrailRenderer trail = new TrailRenderer(MiddlePos, 0.03f);
             trail.Condition = () => Velocity.Length() > 210;
 
             stateMachine.RegisterStateFunctions(States.Swinging, () =>
@@ -540,7 +540,7 @@ namespace Platformer
         }
 
         public override void Squish()
-            => Death();
+            => InstaDeath();
 
         #region Movement
 
@@ -746,7 +746,7 @@ namespace Platformer
 
             #endregion
 
-            Sprite.Rotation = (SwingPositions[SwingPositions.Count - 1] - MiddlePos).ToAngle() + (float)Math.PI / 2;
+            Sprite.Rotation = (SwingPositions[SwingPositions.Count - 1] - MiddlePos).VectorToAngle() + (float)Math.PI / 2;
 
             #region Determining the right position to Swing to (Rope colliding with terrain)
 
@@ -1106,37 +1106,53 @@ namespace Platformer
 
             Engine.Cam.Shake(0.2f, 2);
 
-            Audio.PlayEvent("DeathInit");
 
-            Vector2 startPos = Pos;
-            Vector2 endPos = Pos - Velocity.Normalized() * 15;
+            if (Velocity == Vector2.Zero)
+            {
+                stateMachine.Switch(States.Idle); //this is just to change the state from States.Dead so InstaDeath can execute
+                InstaDeath();
+            }
+            else
+            {
+                Audio.PlayEvent("DeathInit");
+
+                Vector2 startPos = Pos;
+                Vector2 endPos = Pos - Velocity.Normalized() * 15;
+
+                HitStop(0.05f, () =>
+                {
+                    CanMove = false;
+                    AddComponent(new Timer(0.2f, true, (timer) =>
+                    {
+                        Pos = Vector2.Lerp(startPos, endPos, Ease.QuintOut(Ease.Reverse(timer.Value / timer.MaxValue)));
+                        Sprite.Color.A = (byte)((float)Math.Sin(timer.Value * 14) * 255); //Blinking
+                        Sprite.Color.B = (byte)((float)Math.Sin(timer.Value * 14) * 255);
+                        Sprite.Color.G = (byte)((float)Math.Sin(timer.Value * 14) * 255);
+
+                        //UpdateChildrenPos();
+                    },
+                    () =>
+                    {
+                        Sprite.Color = Color.White;
+
+                        stateMachine.Switch(States.Idle); //this is just to change the state from States.Dead so InstaDeath can execute
+                        InstaDeath();
+                    }));
+                });
+            }
 
             //Engine.CurrentMap.Instantiate(new ScreenFlash(0.5f, Ease.QuintOut));
 
             //Engine.CurrentMap.MiddlegroundSystem.Emit(ExplosionParticle, Bounds, 10);
 
-            HitStop(0.05f, () =>
-            {
-                CanMove = false;
-                AddComponent(new Timer(0.2f, true, (timer) =>
-                {
-                    Pos = Vector2.Lerp(startPos, endPos, Ease.QuintOut(Ease.Reverse(timer.Value / timer.MaxValue)));
-                    Sprite.Color.A = (byte)((float)Math.Sin(timer.Value * 14) * 255); //Blinking
-                    Sprite.Color.B = (byte)((float)Math.Sin(timer.Value * 14) * 255);
-                    Sprite.Color.G = (byte)((float)Math.Sin(timer.Value * 14) * 255);
-
-                    //UpdateChildrenPos();
-                },
-                () =>
-                {
-                    Sprite.Color = Color.White;
-                    InstaDeath();
-                }));
-            });
+            
         }
 
         public void InstaDeath()
         {
+            if (stateMachine.Is(States.Dead))
+                return;
+
             stateMachine.Switch(States.Dead);
             CanMove = false;
 

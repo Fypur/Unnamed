@@ -67,11 +67,6 @@ namespace Platformer
         {
             base.Update();
 
-#if DEBUG
-            if (Input.GetKey(Microsoft.Xna.Framework.Input.Keys.N))
-                Pos = Input.MousePos;
-#endif
-
             //if(ExactPos != PreviousExactPos)
             {
                 polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);

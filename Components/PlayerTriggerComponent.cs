@@ -16,8 +16,12 @@ namespace Platformer
             : base(localPosition, width, height, new List<Type> { typeof(Player) })
         { }
 
-        protected PlayerTriggerComponent(Vector2 localPosition, float radius)
+        public PlayerTriggerComponent(Vector2 localPosition, float radius)
             : base(localPosition, radius, new List<Type> { typeof(Player) })
+        { }
+
+        public PlayerTriggerComponent(Vector2 localPosition, Collider collider)
+            : base(localPosition, collider, new List<Type> { typeof(Player) })
         { }
 
         public sealed override void OnTriggerEnter(Entity entity)

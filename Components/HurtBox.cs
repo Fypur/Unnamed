@@ -11,27 +11,46 @@ namespace Platformer
     public class HurtBox : PlayerTriggerComponent
     {
         public Func<Player, bool> DeathConditions = (player) => true;
+        public Action OnDeath = null;
+        public bool InstaDeath;
         public HurtBox(Vector2 localPosition, float width, float height) : base(localPosition, width, height)
-        { trigger.Collider.DebugColor = Color.Red; }
+        { }
 
         public HurtBox(Vector2 localPosition, float radius) : base(localPosition, radius)
-        { trigger.Collider.DebugColor = Color.Red; }
+        { }
+
+        public HurtBox(Vector2 localPosition, Collider collider) : base(localPosition, collider) {  }
 
         public override void Added()
         {
             base.Added();
+
+            trigger.Collider.DebugColor = Color.Red;
         }
 
         public override void OnTriggerEnter(Player player)
         {
             if (!player.Is(Player.States.Dead) && Conditions(player))
-                player.Death();
+            {
+                if (InstaDeath)
+                    player.InstaDeath();
+                else
+                    player.Death();
+
+                OnDeath?.Invoke();
+            }
         }
 
         public override void OnTriggerStay(Player player)
         {
             if (!player.Is(Player.States.Dead) && Conditions(player))
-                player.Death();
+            {
+                if (InstaDeath)
+                    player.InstaDeath();
+                else
+                    player.Death();
+                OnDeath?.Invoke();
+            }
         }
 
         protected override bool Conditions(Player player)
