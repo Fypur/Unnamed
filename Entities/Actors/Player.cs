@@ -13,7 +13,7 @@ namespace Platformer
     {
         #region constants
 
-        public enum States { Idle, Running, Jumping, Ascending, Falling, Dashing, Swinging, WallSliding, Pulling, Jetpack, Dead }
+        public enum States { Idle, Running, Jumping, Ascending, Falling, Dashing, Swinging, WallSliding, Pulling, Jetpack, Dead, Damaged }
 
         private const float maxSpeed = 100;
         private const float maxFallingSpeed = 260;
@@ -26,6 +26,8 @@ namespace Platformer
         private const float maxJetpackSpeedY = 120;
         private const float maxJetpackTime = 0.5f;
         private const float maxPotentialFallingSpeed = 400;
+        private const int maxHealth = 3;
+        private const float invicibilityTime = 2;
         
         private const float acceleration = 1500f;
         private const float airAcceleration = 900f;
@@ -67,6 +69,7 @@ namespace Platformer
         public Vector2 RespawnPoint;
         public event Action OnDeath = delegate { };
         public Vector2 PrevVelocity;
+        public int Health = maxHealth;
 
         private bool onGround;
         private bool previousOnGround = true;
@@ -77,6 +80,7 @@ namespace Platformer
         private bool collisionX;
         private bool collisionY;
         private bool couldMove = true;
+        private bool invincible;
 
         private float xMoving;
         private float yMoving;
@@ -531,6 +535,7 @@ namespace Platformer
             collisionX = collisionY = false;
             previousOnGround = onGround;
 
+            Debug.LogUpdate(Health);
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
@@ -1170,6 +1175,7 @@ namespace Platformer
             Engine.Cam.Shake(0.4f, 1);
 
             //Audio.PlayEvent("DeathExplosion");
+            Health = maxHealth;
 
             Velocity = Vector2.Zero;
             Engine.CurrentMap.Instantiate(new ScreenWipe(1, Color.Black, () =>
@@ -1307,7 +1313,27 @@ namespace Platformer
 
         public void Damage()
         {
-            
+            if (invincible || stateMachine.Is(States.Dead))
+                return;
+
+            Health--;
+
+            if (Health <= 0)
+            {
+                InstaDeath();
+                return;
+            }
+
+            Engine.Cam.LightShake();
+            stateMachine.Switch(States.Damaged);
+            invincible = true;
+
+            HitStop(0.5f, () =>
+            {
+                stateMachine.Switch(States.Ascending);
+            });
+
+            AddComponent(new Timer(invicibilityTime, true, null, () => invincible = false));
         }
 
         public override void Render()

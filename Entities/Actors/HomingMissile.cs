@@ -15,6 +15,9 @@ namespace Platformer
         public float Rotation = 0;
 
         private Player player;
+        private Boss boss;
+
+        private bool canHitBoss;
 
         public HomingMissile(Vector2 position, float rotation) : base(position, 10, 5, 0, new Sprite(Color.OrangeRed))
         {
@@ -27,11 +30,13 @@ namespace Platformer
             Sprite.Origin = Vector2.One / 2; //To change when texture gets bigger
             Sprite.Rotation = MathHelper.ToRadians(Rotation);
 
+            AddComponent(new Timer(1, true, null, () => canHitBoss = true));
             AddComponent(new Timer(5, true, null, SelfDestroy));
 
             AddComponent(new TrailRenderer(Vector2.Zero, 2));
 
             player = (Player)Engine.Player;
+            boss = Engine.CurrentMap.Data.GetEntity<Boss>();
         }
 
         public override void Update()
@@ -59,6 +64,12 @@ namespace Platformer
 
             if (Collider.Collide(player.Collider))
                 SelfDestroy();
+
+            if (canHitBoss && Collider.Collide(boss.Collider))
+            {
+                boss.Damage();
+                SelfDestroy();
+            }
         }
 
         public override void Render()
@@ -74,7 +85,7 @@ namespace Platformer
             Engine.Cam.Shake(0.4f, 1);
 
             if (Vector2.DistanceSquared(MiddlePos, player.MiddlePos) < 25 * 25)
-                player.InstaDeath();
+                player.Damage();
         }
     }
 }

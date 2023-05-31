@@ -32,7 +32,7 @@ namespace Platformer
             base.Update();
 
             if (Collider.Collide(Engine.Player.Collider))
-                ((Player)Engine.Player).InstaDeath();
+                ((Player)Engine.Player).Damage();
         }
 
         public override void Render()

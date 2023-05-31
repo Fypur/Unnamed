@@ -22,6 +22,7 @@ namespace Platformer
         public StateMachine<States> StateMachine;
         public enum States { Idle, Walking, Jumping, Missiling, WallMissiling, JumpDown, Swipe, MachineGun }
 
+        public int Health = 5;
 
         private Player player;
         private bool onGround;
@@ -75,6 +76,8 @@ namespace Platformer
             if (Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.Q))
                 StateMachine.Switch(States.Swipe);
 
+            if (Collider.Collide(player))
+                player.Damage();
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, CollisionY);
@@ -229,8 +232,18 @@ namespace Platformer
         public IEnumerator MachineGun()
         {
             int numBullets = 15;
-            int range = 90;
             bool right = Engine.Player.MiddlePos.X > MiddlePos.X;
+
+            /*float r = 0;
+            if (right)
+                r = -(player.MiddlePos - MiddlePos).ToAngleDegrees();
+            else
+                r = -(player.MiddlePos - MiddlePos).ToAngleDegrees() + 90;
+
+            Debug.Log(r);
+            int range = (int)Math.Max(r, 30);*/
+
+            int range = 180;
 
             for(int i = 0; i < numBullets; i++)
             {
@@ -274,7 +287,7 @@ namespace Platformer
             Sprite.Color = Color.Red;
 
             if (zones[0].Contains(player))
-                player.InstaDeath();
+                player.Damage();
 
             yield return new Coroutine.WaitForSeconds(1f);
 
@@ -291,11 +304,38 @@ namespace Platformer
 
             if (LeftZone || RightZone)
             {
-                StateMachine.Switch(States.Jumping);
+                if(Rand.NextDouble() < 0.5f)
+                    StateMachine.Switch(States.MachineGun);
+                else
+                    StateMachine.Switch(States.Jumping);
+
                 return;
+            }
+
+            if (DownZone)
+            {
+                float r = Rand.NextDouble();
+                if (r < 0.33f)
+                {
+                    StateMachine.Switch(States.MachineGun);
+                    return;
+                }
+                else if (r < 0.66f)
+                {
+                    StateMachine.Switch(States.Swipe);
+                    return;
+                }
             }
             
             StateMachine.Switch(States.Missiling);
+        }
+
+        public void Damage()
+        {
+            Health--;
+
+            if (Health <= 0)
+                SelfDestroy();
         }
 
         private void CollisionX()
