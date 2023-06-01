@@ -63,6 +63,7 @@ namespace Platformer
             base.Update();
 
             Debug.LogUpdate(StateMachine.CurrentState);
+            Debug.LogUpdate("Boss Health: " + Health);
 
             onGround = Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), Pos + new Vector2(0, 1));
 
@@ -231,7 +232,11 @@ namespace Platformer
 
         public IEnumerator MachineGun()
         {
-            int numBullets = 15;
+            Sprite.Color = Color.Yellow;
+
+            yield return new Coroutine.WaitForSeconds(1);
+
+            int numBullets = 10;
             bool right = Engine.Player.MiddlePos.X > MiddlePos.X;
 
             /*float r = 0;
@@ -247,11 +252,12 @@ namespace Platformer
 
             for(int i = 0; i < numBullets; i++)
             {
-                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, right ? -i * range / numBullets : i * range / numBullets + 180));
+                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, right ? -i * range / numBullets + 10 : i * range / numBullets + 170));
                 Engine.Cam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.03f);
             }
 
+            Sprite.Color = Color.Red;
             StateMachine.Switch(States.Walking);
         }
 
@@ -259,7 +265,7 @@ namespace Platformer
         {
             Sprite.Color = Color.Green;
 
-            bool right = Pos.X > zones[3].Pos.X;
+            bool right = Pos.X > player.Pos.X;
 
             float backJumpTime = 0.5f;
 
