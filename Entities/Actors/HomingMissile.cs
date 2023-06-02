@@ -10,12 +10,13 @@ namespace Platformer
 {
     public class HomingMissile : Actor
     {
-        private float acceleration = 0.1f;
-        private float maxSpeed = 100f;
+        private float acceleration = 6f;
+        private float maxSpeed = 120f;
         public float Rotation = 0;
 
         private Player player;
         private Boss boss;
+        private TrailRenderer trail;
 
         private bool canHitBoss;
 
@@ -33,7 +34,7 @@ namespace Platformer
             AddComponent(new Timer(1, true, null, () => canHitBoss = true));
             AddComponent(new Timer(5, true, null, SelfDestroy));
 
-            AddComponent(new TrailRenderer(Vector2.Zero, 2));
+            trail = (TrailRenderer)AddComponent(new TrailRenderer(Vector2.Zero, 2));
 
             player = (Player)Engine.Player;
             boss = Engine.CurrentMap.Data.GetEntity<Boss>();
@@ -42,7 +43,7 @@ namespace Platformer
         public override void Update()
         {
             acceleration = 6f;
-            maxSpeed = 120f;
+            maxSpeed = 150f;
 
             Vector2 rotVec = (Engine.Player.MiddlePos - MiddlePos);
             if(rotVec != Vector2.Zero)
@@ -51,19 +52,29 @@ namespace Platformer
                 Rotation = VectorHelper.VectorToAngle(rotVec);
             }
 
-            ((BoxColliderRotated)Collider).Rotation = Rotation;
+            BoxColliderRotated colliderRotated = (BoxColliderRotated)Collider;
+            colliderRotated.Rotation = Rotation;
             Sprite.Rotation = Rotation;
 
             Velocity += rotVec * acceleration;
 
-            Velocity = new Vector2(Math.Clamp(Velocity.X, -maxSpeed, maxSpeed), Math.Clamp(Velocity.Y, -maxSpeed, maxSpeed));
+            float vLen = Velocity.Length();
+            if(vLen > maxSpeed)
+                Velocity = Velocity / vLen * maxSpeed;
 
             base.Update();
 
+
             Move(Velocity * Engine.Deltatime, SelfDestroy, SelfDestroy);
 
+            trail.LocalPosition = (colliderRotated.Rect[3] + colliderRotated.Rect[0]) / 2;
+            trail.LocalPosition += (MiddlePos - trail.LocalPosition) / 3 - Pos;
+
             if (Collider.Collide(player.Collider))
+            {
+                player.Damage();
                 SelfDestroy();
+            }
 
             if (canHitBoss && Collider.Collide(boss.Collider))
             {
@@ -84,8 +95,8 @@ namespace Platformer
             Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Bounds, 100);
             Engine.Cam.Shake(0.4f, 1);
 
-            if (Vector2.DistanceSquared(MiddlePos, player.MiddlePos) < 25 * 25)
-                player.Damage();
+            /*if (Vector2.DistanceSquared(MiddlePos, player.MiddlePos) < 25 * 25)
+                player.Damage();*/
         }
     }
 }

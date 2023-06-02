@@ -22,7 +22,7 @@ namespace Platformer
 
         public bool Paused { get; private set; }
 
-        public Wipe(Rectangle wiped, float wipeTime, Color color, Func<bool> pausedUntil, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : 
+        public Wipe(Rectangle wiped, float wipeTime, Color color, Func<bool> pausedUntil = null, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : 
             base(wiped.Location.ToVector2() - new Vector2(wiped.Width, 0), wiped.Width, wiped.Height, new Sprite(color))
         {
             Layer = 3;
@@ -86,7 +86,7 @@ namespace Platformer
                 () =>
                 {
                     onEnd?.Invoke();
-                    Engine.CurrentMap.Destroy(this);
+                    SelfDestroy();
                 }));
             }));
         }

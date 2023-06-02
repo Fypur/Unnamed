@@ -20,6 +20,7 @@ namespace Platformer
 
 
         public StateMachine<States> StateMachine;
+        private States previousState = States.Walking;
         public enum States { Idle, Walking, Jumping, Missiling, WallMissiling, JumpDown, Swipe, MachineGun }
 
         public int Health = 5;
@@ -236,7 +237,7 @@ namespace Platformer
 
             yield return new Coroutine.WaitForSeconds(1);
 
-            int numBullets = 10;
+            int numBullets = 8;
             bool right = Engine.Player.MiddlePos.X > MiddlePos.X;
 
             /*float r = 0;
@@ -252,7 +253,7 @@ namespace Platformer
 
             for(int i = 0; i < numBullets; i++)
             {
-                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, right ? -i * range / numBullets + 10 : i * range / numBullets + 170));
+                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, right ? -i * range / numBullets : i * range / numBullets + 180));
                 Engine.Cam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.03f);
             }
@@ -283,19 +284,29 @@ namespace Platformer
 
             Velocity.X = 0;
 
-            yield return new Coroutine.WaitForSeconds(1f);
+            yield return new Coroutine.WaitForSeconds(0.5f);
 
+            int prevX = (int)Pos.X;
             if (right)
+            {
                 Pos.X = zones[0].Pos.X;
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Jetpack, new Rectangle((int)Pos.X + Width, (int)Pos.Y, (int)Math.Abs(Pos.X - prevX), Height), 40);
+            }
             else
+            {
                 Pos.X = zones[0].Pos.X + zones[0].Width - Width;
+                //Engine.CurrentMap.Instantiate(new Wipe(new Rectangle(prevX, (int)Pos.Y, (int)Math.Abs(Pos.X - prevX), Height), 0.2f, Color.White));
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Jetpack, new Rectangle(prevX, (int)Pos.Y, (int)Math.Abs(Pos.X - prevX), Height), 40);
+            }
+
+
 
             Sprite.Color = Color.Red;
 
             if (zones[0].Contains(player))
                 player.Damage();
 
-            yield return new Coroutine.WaitForSeconds(1f);
+            yield return new Coroutine.WaitForSeconds(0.5f);
 
             StateMachine.Switch(States.Walking);
         }
@@ -306,16 +317,25 @@ namespace Platformer
             if (StateMachine.Is(States.Walking) && counter < 3)
                 return; //we do nothing and keep walkin
 
+            bool switched = false;
+            void SwitchTo(States state)
+            {
+                if (switched || previousState == state)
+                    return;
+
+                switched = true;
+
+                previousState = state;
+                StateMachine.Switch(state);
+            }
+
+
             counter = 0;
+
 
             if (LeftZone || RightZone)
             {
-                if(Rand.NextDouble() < 0.5f)
-                    StateMachine.Switch(States.MachineGun);
-                else
-                    StateMachine.Switch(States.Jumping);
-
-                return;
+                SwitchTo(States.Jumping);
             }
 
             if (DownZone)
@@ -323,17 +343,16 @@ namespace Platformer
                 float r = Rand.NextDouble();
                 if (r < 0.33f)
                 {
-                    StateMachine.Switch(States.MachineGun);
-                    return;
+                    SwitchTo(States.MachineGun);
                 }
                 else if (r < 0.66f)
                 {
-                    StateMachine.Switch(States.Swipe);
-                    return;
+                    SwitchTo(States.Swipe);
                 }
             }
-            
-            StateMachine.Switch(States.Missiling);
+
+            SwitchTo(States.Missiling);
+
         }
 
         public void Damage()
