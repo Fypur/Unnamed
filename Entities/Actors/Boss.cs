@@ -63,6 +63,7 @@ namespace Platformer
         {
             base.Update();
 
+            Debug.LogUpdate(VectorHelper.ToAngleDegrees(zones[1].Pos - MiddlePos));
             Debug.LogUpdate(StateMachine.CurrentState);
             Debug.LogUpdate("Boss Health: " + Health);
 
@@ -103,8 +104,6 @@ namespace Platformer
 
                 Velocity.X = walkingSpeed * (walkingRight ? 1 : -1);
 
-                Debug.LogUpdate(walkingRight, Pos.X > zones[3].Pos.X);
-
                 if (Vector2.DistanceSquared(zones[3].Pos, Pos + Velocity) > 64 * 64)
                 {
                     if(!(walkingRight == Pos.X < zones[3].Pos.X))
@@ -119,6 +118,7 @@ namespace Platformer
             {
                 counter++;
 
+                previousState = States.Walking;
                 Switch();
 
                 if (StateMachine.Is(States.Walking))
@@ -237,7 +237,7 @@ namespace Platformer
 
             yield return new Coroutine.WaitForSeconds(1);
 
-            int numBullets = 8;
+            int numBullets = 10;
             bool right = Engine.Player.MiddlePos.X > MiddlePos.X;
 
             /*float r = 0;
@@ -249,16 +249,25 @@ namespace Platformer
             Debug.Log(r);
             int range = (int)Math.Max(r, 30);*/
 
-            int range = 180;
+            float range = 35;
+            if(right)
+                range = VectorHelper.ToAngleDegrees(zones[2].Pos + new Vector2(zones[2].Width, 0) - MiddlePos);
+            else
+                range = VectorHelper.ToAngleDegrees(zones[1].Pos - MiddlePos) - 180;
+
+            //Debug.Point(zones[2].Pos + new Vector2(zones[2].Width));
+            range = Math.Abs(range);
+            Debug.Log(range);
 
             for(int i = 0; i < numBullets; i++)
             {
-                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, right ? -i * range / numBullets : i * range / numBullets + 180));
+                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, right ? -i * range / numBullets : i * range / numBullets + 175));
                 Engine.Cam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.03f);
             }
 
             Sprite.Color = Color.Red;
+
             StateMachine.Switch(States.Walking);
         }
 
@@ -284,7 +293,7 @@ namespace Platformer
 
             Velocity.X = 0;
 
-            yield return new Coroutine.WaitForSeconds(0.5f);
+            yield return new Coroutine.WaitForSeconds(0.75f);
 
             int prevX = (int)Pos.X;
             if (right)

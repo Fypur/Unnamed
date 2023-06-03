@@ -112,8 +112,8 @@ namespace Platformer
         public static ControlList RightControls = Input.RightControls;
         public static ControlList UpControls = Input.UpControls;
         public static ControlList DownControls = Input.DownControls;
-        public static ControlList JumpControls = new ControlList(Keys.C, Keys.I, Keys.Space, Buttons.A);
-        public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.X);
+        public static ControlList JumpControls = new ControlList(Keys.C, Keys.I, Keys.Space, Buttons.B);
+        public static ControlList JetpackControls = new ControlList(Keys.X, Keys.O, MouseButton.Right, Buttons.Y);
         public static ControlList SwingControls = new ControlList(Keys.W, Keys.Z, Keys.P, MouseButton.Middle, Buttons.LeftTrigger, Buttons.RightTrigger);
         private Input.State canMoveState;
 
@@ -535,7 +535,7 @@ namespace Platformer
             collisionX = collisionY = false;
             previousOnGround = onGround;
 
-            Debug.LogUpdate(Health);
+            Debug.LogUpdate("Player Health : " + Health);
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
