@@ -11,6 +11,7 @@ namespace Platformer
     public class SpawnTrigger : PlayerTrigger
     {
         public IList<Entity> Spawned;
+        bool spawned = false;
         public SpawnTrigger(Rectangle bounds, IList<Entity> spawned) : base(bounds, null)
         {
             Spawned = spawned;
@@ -28,6 +29,11 @@ namespace Platformer
 
         public override void OnTriggerEnter(Player player)
         {
+            if (spawned)
+                return;
+
+            spawned = true;
+
             foreach (Entity e in Spawned)
                 Engine.CurrentMap.Instantiate(e);
         }

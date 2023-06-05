@@ -57,9 +57,6 @@ namespace Platformer
                     
                 entities.Add(plat);
 
-                if (p.Children.Length != 0)
-                    IidsChildren[plat] = new();
-
                 foreach (EntityRef child in p.Children)
                     IidsChildren[plat].Add(child.EntityIid);
             }
@@ -237,9 +234,6 @@ namespace Platformer
                     entities.Add(new Boss2(p.Position));
             }
 
-            /*foreach (LDtkTypes.ChaseMissile p in level.GetEntities<LDtkTypes.ChaseMissile>())
-                entities.Add(new ChaseMissile(p.ControlPoints.AddAtBeggining(p.Position), p.Time));*/
-
             foreach (LDtkTypes.SpecialTrigger p in level.GetEntities<LDtkTypes.SpecialTrigger>())
             {
                 switch (p.TypeId)
@@ -251,7 +245,14 @@ namespace Platformer
                         entities.Add(new JetpackActivator(p.Position, p.Size));
                         break;
                     case 3:
-                        entities.Add(new SpawnTrigger(p.Position, p.Size, p.Children[0].WorldIid));
+                        List<Entity> spawned = new();
+                        foreach (EntityRef entity in p.Children)
+                        {
+                            LDtkTypes.ChaseMissile c = level.GetEntityRef<LDtkTypes.ChaseMissile>(p.Children[0]);
+                            spawned.Add(new ChaseMissile(c.ControlPoints.AddAtBeggining(c.Position), c.Time));
+                        }
+
+                        entities.Add(new SpawnTrigger(p.Position, p.Size, spawned));
                         break;
                 }
             }

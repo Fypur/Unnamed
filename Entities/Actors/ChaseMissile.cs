@@ -66,7 +66,16 @@ namespace Platformer
             Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Bounds, 100);
             Engine.Cam.Shake(0.4f, 1);
 
+            foreach (FallingPlatform falling in Engine.CurrentMap.Data.GetEntities<FallingPlatform>())
+                if (Vector2.DistanceSquared(MiddlePos, falling.MiddlePos) < 10 * 10)
+                    falling.Fall();
+
             SelfDestroy();
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
         }
     }
 }
