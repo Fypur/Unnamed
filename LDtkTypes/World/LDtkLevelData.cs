@@ -7,5 +7,6 @@ using LDtk;
 
 public class LDtkLevelData
 {
+    public int CamWidth { get; set; }
 }
 #pragma warning restore

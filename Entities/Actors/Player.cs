@@ -102,7 +102,7 @@ namespace Platformer
         private BoostBar boostBar;
 
         private float totalRopeLength;
-        private Solid grappledSolid;
+        private Entity grappledSolid;
         public List<Vector2> SwingPositions = new List<Vector2>();
         public List<int> SwingPositionsSign = new List<int>() { 0 };
         private bool isAtSwingEnd;
@@ -159,7 +159,7 @@ namespace Platformer
             stateMachine.RegisterStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Ascending); }, null);
             stateMachine.RegisterStateFunctions(States.Jetpack, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
 
-            TrailRenderer trail = new TrailRenderer(MiddlePos, 0.03f);
+            TrailRenderer trail = new TrailRenderer(HalfSize, 0.03f);
             trail.Condition = () => Velocity.Length() > 210;
 
             stateMachine.RegisterStateFunctions(States.Swinging, () =>
@@ -168,11 +168,11 @@ namespace Platformer
                     AddComponent(trail);
 
                     if (grappledSolid is ISwinged swinged)
-                        swinged.OnGrapple(this, () => isAtSwingEnd); }, null,
+                        swinged.OnSwing(this, () => isAtSwingEnd); }, null,
                         () =>
                 {
                     if (grappledSolid is ISwinged swinged)
-                        swinged.OnStopGrapple(this);
+                        swinged.OnStopSwing(this);
                     if(Sprite.Rotation != 0)
                     {
                         float initRot = Sprite.Rotation;
@@ -552,7 +552,7 @@ namespace Platformer
         private void ThrowRope()
         {
 
-            if (CheckForSwingingPoint(out Solid determinedGrappledSolid, out float distance))
+            if (CheckForSwingingPoint(out Entity determinedGrappledSolid, out float distance))
             {
                 grappledSolid = determinedGrappledSolid;
                 Velocity.Y = potentialFallingSpeed;
@@ -581,14 +581,14 @@ namespace Platformer
                 return;
             }*/
 
-            bool CheckForSwingingPoint(out Solid swingingPoint, out float distance)
+            bool CheckForSwingingPoint(out Entity swingingPoint, out float distance)
             {
-                Solid determinedGrappledSolid = null;
-                Solid reserveGrappledSolid = null;
+                Entity determinedGrappledSolid = null;
+                Entity reserveGrappledSolid = null;
                 distance = float.PositiveInfinity;
                 float reserveDistance = float.PositiveInfinity;
 
-                foreach (Solid g in SwingingPoint.SwingingPoints)
+                foreach (Entity g in SwingingPoint.SwingingPoints)
                 {
                     float d = Vector2.DistanceSquared(MiddleExactPos, g.MiddleExactPos);
 
@@ -642,7 +642,7 @@ namespace Platformer
                 return true;
             }
 
-            void ActOnSwing(Solid grappledSolid)
+            void ActOnSwing(Entity grappledSolid)
             {
                 if (determinedGrappledSolid is ISwinged swinged)
                 {
@@ -1185,11 +1185,18 @@ namespace Platformer
                 onGround = true;
 
                 Vector2 groundedRespawnPos = RespawnPoint;
+                bool found =false;
                 for (int i = 0; i < 100; i++)
                     if (!OnGroundCheck(groundedRespawnPos + new Vector2(0, 1)))
                         groundedRespawnPos += new Vector2(0, 1);
                     else
+                    {
+                        found = true;
                         break;
+                    }
+
+                if (!found)
+                    groundedRespawnPos = RespawnPoint;
 
                 ExactPos = groundedRespawnPos;
 

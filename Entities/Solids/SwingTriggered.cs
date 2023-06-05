@@ -60,7 +60,7 @@ namespace Platformer
             }
         }
 
-        void ISwinged.OnGrapple(Entity grappledEntity, Func<bool> isAtSwingEnd)
+        void ISwinged.OnSwing(Entity grappledEntity, Func<bool> isAtSwingEnd)
         {
             if (grappledEntity is Player player)
             {
@@ -69,7 +69,7 @@ namespace Platformer
             }
         }
 
-        void ISwinged.OnStopGrapple(Entity unGrappledEntity)
+        void ISwinged.OnStopSwing(Entity unGrappledEntity)
             => isMoving = false;
 
         public void Trigger()

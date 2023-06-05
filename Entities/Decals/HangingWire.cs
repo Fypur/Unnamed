@@ -16,13 +16,13 @@ namespace Platformer
         public Vector2[] ControlPoints;
 
 
-        private BezierCurve bezier;
+        private BezierCurveRenderer bezier;
         private Timer timer;
 
         public HangingWire(Vector2[] controlPoints) : base(GetStats(controlPoints, out int width, out int height), width, height, null)
         {
             ControlPoints = controlPoints;
-            bezier = (BezierCurve)AddComponent(new BezierCurve(new Color(27, 31, 28), 1, controlPoints));
+            bezier = (BezierCurveRenderer)AddComponent(new BezierCurveRenderer(new Color(27, 31, 28), 1, controlPoints));
 
             RestartTimer(true);
         }

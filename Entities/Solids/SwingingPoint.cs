@@ -50,7 +50,7 @@ namespace Platformer
             SwingingPoints.Remove(this); 
         }
         
-        void ISwinged.OnGrapple(Entity grappledEntity, Func<bool> isAtSwingEnd)
+        void ISwinged.OnSwing(Entity grappledEntity, Func<bool> isAtSwingEnd)
         {
             swinged = true;
 
@@ -58,7 +58,7 @@ namespace Platformer
                 falling.Fall();
         }
 
-        void ISwinged.OnStopGrapple(Entity unGrappledEntity)
+        void ISwinged.OnStopSwing(Entity unGrappledEntity)
         {
             swinged = false;
         }

@@ -11,8 +11,8 @@ namespace Platformer
     {
         public abstract float MaxSwingDistance { get; set; }
 
-        public virtual void OnGrapple(Entity grappledEntity, Func<bool> isAtSwingEnd) { }
+        public virtual void OnSwing(Entity grappledEntity, Func<bool> isAtSwingEnd) { }
 
-        public virtual void OnStopGrapple(Entity unGrappledEntity) { }
+        public virtual void OnStopSwing(Entity unGrappledEntity) { }
     }
 }

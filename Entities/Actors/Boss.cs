@@ -118,7 +118,6 @@ namespace Platformer
             {
                 counter++;
 
-                previousState = States.Walking;
                 Switch();
 
                 if (StateMachine.Is(States.Walking))
@@ -183,6 +182,8 @@ namespace Platformer
                 else
                     StateMachine.Switch(States.Walking);
             }));
+
+
             //StateMachine.Switch(States.Walking);
         }
 
@@ -193,12 +194,12 @@ namespace Platformer
             if (zones[1].Collider.Collide((BoxCollider)Collider)) //left
             {
                 rect = new Rectangle((int)Pos.X, (int)Pos.Y, 3, Height);
-                aimed = zones[3].Pos - Vector2.UnitX * Rand.NextDouble() * 64;
+                aimed = new Vector2(zones[3].Pos.X - Rand.NextDouble() * 64, zones[0].Pos.Y + zones[0].Height - Height);
             }
             else
             {
                 rect = new Rectangle((int)Pos.X + Width - 3, (int)Pos.Y, 3, Height);
-                aimed = zones[3].Pos + Vector2.UnitX * Rand.NextDouble() * 64;
+                aimed = new Vector2(zones[3].Pos.X + Rand.NextDouble() * 64, zones[0].Pos.Y + zones[0].Height - Height);
             }
 
 
@@ -235,10 +236,11 @@ namespace Platformer
         {
             Sprite.Color = Color.Yellow;
 
+            bool right = Engine.Player.MiddlePos.X > MiddlePos.X;
+
             yield return new Coroutine.WaitForSeconds(1);
 
             int numBullets = 10;
-            bool right = Engine.Player.MiddlePos.X > MiddlePos.X;
 
             /*float r = 0;
             if (right)
@@ -251,17 +253,13 @@ namespace Platformer
 
             float range = 35;
             if(right)
-                range = VectorHelper.ToAngleDegrees(zones[2].Pos + new Vector2(zones[2].Width, 0) - MiddlePos);
+                range = -VectorHelper.ToAngleDegrees(zones[2].Pos + new Vector2(zones[2].Width, 0) - MiddlePos);
             else
-                range = VectorHelper.ToAngleDegrees(zones[1].Pos - MiddlePos) - 180;
+                range = VectorHelper.ToAngleDegrees(zones[1].Pos - MiddlePos) + 180;
 
-            //Debug.Point(zones[2].Pos + new Vector2(zones[2].Width));
-            range = Math.Abs(range);
-            Debug.Log(range);
-
-            for(int i = 0; i < numBullets; i++)
+            for(int i = 1; i <= numBullets; i++)
             {
-                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, right ? -i * range / numBullets : i * range / numBullets + 175));
+                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, right ? -i * range / numBullets : i * range / numBullets + 180));
                 Engine.Cam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.03f);
             }
@@ -323,13 +321,13 @@ namespace Platformer
         public void Switch()
         {
 
-            if (StateMachine.Is(States.Walking) && counter < 3)
+            if (StateMachine.Is(States.Walking) && counter < 2)
                 return; //we do nothing and keep walkin
 
             bool switched = false;
             void SwitchTo(States state)
             {
-                if (switched || previousState == state)
+                if (switched /*|| previousState == state*/)
                     return;
 
                 switched = true;
@@ -361,7 +359,6 @@ namespace Platformer
             }
 
             SwitchTo(States.Missiling);
-
         }
 
         public void Damage()

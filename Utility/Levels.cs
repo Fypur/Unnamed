@@ -179,6 +179,10 @@ namespace Platformer
             foreach (LDtkTypes.CamOffset p in level.GetEntities<LDtkTypes.CamOffset>())
                 entities.Add(new CameraOffset(p.Position, p.Size, p.Offset - p.Position - new Vector2(intGrid.TileSize / 2)));
 
+            foreach (LDtkTypes.CameraBlock p in level.GetEntities<LDtkTypes.CameraBlock>())
+                entities.Add(new CameraBlock(p.Position, p.Size));
+                //
+
             foreach (LDtkTypes.Sawblade p in level.GetEntities<LDtkTypes.Sawblade>())
             {
                 if (p.Positions.Length != 0)
@@ -227,8 +231,14 @@ namespace Platformer
 
             foreach (LDtkTypes.Boss p in level.GetEntities<LDtkTypes.Boss>())
             {
-                entities.Add(new Boss(p.Position));
+                if(p.Id == 0)
+                    entities.Add(new Boss(p.Position));
+                else if (p.Id == 1)
+                    entities.Add(new Boss2(p.Position));
             }
+
+            /*foreach (LDtkTypes.ChaseMissile p in level.GetEntities<LDtkTypes.ChaseMissile>())
+                entities.Add(new ChaseMissile(p.ControlPoints.AddAtBeggining(p.Position), p.Time));*/
 
             foreach (LDtkTypes.SpecialTrigger p in level.GetEntities<LDtkTypes.SpecialTrigger>())
             {
@@ -239,6 +249,9 @@ namespace Platformer
                         break;
                     case 1:
                         entities.Add(new JetpackActivator(p.Position, p.Size));
+                        break;
+                    case 3:
+                        entities.Add(new SpawnTrigger(p.Position, p.Size, p.Children[0].WorldIid));
                         break;
                 }
             }
@@ -559,8 +572,26 @@ namespace Platformer
                     entities.Add(new StreetLight(p.Position, p.Width(), p.Height()));
             }
 
+
+            int camWidth = ((System.Text.Json.JsonElement)level.FieldInstances[0]._Value).GetInt32();
+
+            if(Engine.RenderTarget.Width != camWidth)
+            {
+                int camHeight = (int)(9 * (float)camWidth / 16);
+
+                Engine.RenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                Engine.PrimitivesRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                Engine.LightsRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                Platformer.SecondRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            }
+
+
             Engine.Cam.SetBoundaries(oldCamBounds);
             Engine.Cam.CenteredPos = oldCamPos;
+
+
+
+
 
             return entities;
 

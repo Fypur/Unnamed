@@ -17,5 +17,6 @@ public class Boss : ILDtkEntity
 
     public Color SmartColor { get; set; }
 
+    public int Id { get; set; }
 }
 #pragma warning restore

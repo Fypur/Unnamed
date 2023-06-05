@@ -109,7 +109,14 @@ public static class Worlds
         public static readonly System.Guid Lvl64 = System.Guid.Parse("5d672b40-ed50-11ed-96eb-a78cca55e38a");
         public static readonly System.Guid Lvl65 = System.Guid.Parse("95a31d60-ed50-11ed-96eb-3ffd481069ae");
         public static readonly System.Guid Lvl66 = System.Guid.Parse("b10be1a0-ed50-11ed-96eb-df5758515932");
+    }
+    public static class Boss
+    {
+        public static readonly System.Guid Iid = System.Guid.Parse("be79b2f0-ed50-11ed-9715-f59c6d1d1d88");
+
         public static readonly System.Guid BossRoom = System.Guid.Parse("b5ebde70-ed50-11ed-96eb-4b466b31ad93");
+        public static readonly System.Guid BossRoom2 = System.Guid.Parse("ba3ffc80-ed50-11ed-9715-db9ee56f3167");
+        public static readonly System.Guid Chase = System.Guid.Parse("f3ab40b0-ed50-11ed-9715-5f97038aa3bb");
     }
 }
 #pragma warning restore

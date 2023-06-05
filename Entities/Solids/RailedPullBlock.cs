@@ -191,13 +191,13 @@ namespace Platformer
             SwingingPoint.SwingingPoints.Remove(this);
         }
 
-        void ISwinged.OnGrapple(Entity grappledEntity, Func<bool> atSwingEnd)
+        void ISwinged.OnSwing(Entity grappledEntity, Func<bool> atSwingEnd)
         {
             this.grappledEntity = grappledEntity;
             isAtSwingEnd = atSwingEnd;
         }
 
-        void ISwinged.OnStopGrapple(Entity unGrappledEntity)
+        void ISwinged.OnStopSwing(Entity unGrappledEntity)
         {
             if(grappledEntity == unGrappledEntity)
                 grappledEntity = null;

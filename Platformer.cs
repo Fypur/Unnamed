@@ -16,7 +16,7 @@ namespace Platformer
         public static Platformer instance;
         public static GraphicsDeviceManager GraphicsManager;
         public static RenderTarget2D RenderTarget => Engine.RenderTarget;
-        private static RenderTarget2D SecondRenderTarget;
+        public static RenderTarget2D SecondRenderTarget;
 
         private static bool Paused;
         public static PauseMenu PauseMenu;
@@ -27,6 +27,7 @@ namespace Platformer
         public static LDtkWorld World;
         public static LDtkWorld JetpackWorld;
         public static LDtkWorld SwingWorld;
+        public static LDtkWorld BossWorld;
 
         public static Player player => (Player)Engine.Player;
 
@@ -37,10 +38,12 @@ namespace Platformer
         public static ParallaxBackground BackgroundTile;
         public static BloomFilter BloomFilter;
 
+        public static Vector2 GameDefaultSize = new Vector2(320, 180);
+
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "BossRoom";
-        public static int InitWorld = 1;
+        public static string InitLevel = "Chase";
+        public static int InitWorld = 2;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
 #endif
@@ -61,7 +64,7 @@ namespace Platformer
 
         protected override void Initialize()
         {
-            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 320, 180, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 0, RenderTargetUsage.PreserveContents), "Utility/SpriteData.xml");
+            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, (int)GameDefaultSize.X, (int)GameDefaultSize.Y, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 0, RenderTargetUsage.PreserveContents), "Utility/SpriteData.xml");
 
             Options.CurrentResolution = Engine.ScreenSize;
 
@@ -187,6 +190,11 @@ namespace Platformer
             }
             else
                 IsMouseVisible = true;*/
+
+            if (Input.GetKey(Keys.NumPad5))
+                Engine.Cam.Size += Vector2.One;
+            if (Input.GetKey(Keys.NumPad6))
+                Engine.Cam.Size -= Vector2.One;
 
             if (Input.GetKey(Keys.LeftAlt))
             {
@@ -375,7 +383,7 @@ namespace Platformer
         {
             var map = new Map(Vector2.Zero);
             Engine.CurrentMap = map;
-            Engine.Cam.RenderTargetMode = true;
+            Engine.Cam.Size = GameDefaultSize;
 
             int worldDepth = 0;
 
@@ -460,6 +468,7 @@ namespace Platformer
         {
             if (InitWorld == 0) return JetpackWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.Jetpack.Iid);
             else if (InitWorld == 1) return SwingWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.Swing.Iid);
+            else if (InitWorld == 2) return BossWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.Boss.Iid);
             else throw new Exception("World Index does not refer to any World");
         }
         
