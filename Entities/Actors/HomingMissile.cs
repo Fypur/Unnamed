@@ -49,7 +49,7 @@ namespace Platformer
             if(rotVec != Vector2.Zero)
             {
                 rotVec.Normalize();
-                Rotation = VectorHelper.VectorToAngle(rotVec);
+                Rotation = VectorHelper.ToAngleRad(rotVec);
             }
 
             BoxColliderRotated colliderRotated = (BoxColliderRotated)Collider;

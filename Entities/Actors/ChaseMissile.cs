@@ -32,7 +32,7 @@ namespace Platformer
             AddComponent(new Timer(time, true, (timer) =>
             {
                 Vector2 next = Bezier.Generic(controlPoints, timer.AmountCompleted());
-                Rotation = VectorHelper.VectorToAngle(next - Pos);
+                Rotation = VectorHelper.ToAngleRad(next - Pos);
                 Pos = next;
             },
             Explode));

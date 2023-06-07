@@ -751,7 +751,7 @@ namespace Platformer
 
             #endregion
 
-            Sprite.Rotation = (SwingPositions[SwingPositions.Count - 1] - MiddlePos).VectorToAngle() + (float)Math.PI / 2;
+            Sprite.Rotation = (SwingPositions[SwingPositions.Count - 1] - MiddlePos).ToAngleRad() + (float)Math.PI / 2;
 
             #region Determining the right position to Swing to (Rope colliding with terrain)
 
