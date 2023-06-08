@@ -42,7 +42,7 @@ namespace Platformer
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "66";
+        public static string InitLevel = "67";
         public static int InitWorld = 1;
         private FileSystemWatcher watcher;
         private bool waitRefresh;

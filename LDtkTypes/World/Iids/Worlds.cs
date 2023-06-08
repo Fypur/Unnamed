@@ -110,6 +110,7 @@ public static class Worlds
         public static readonly System.Guid Lvl65 = System.Guid.Parse("95a31d60-ed50-11ed-96eb-3ffd481069ae");
         public static readonly System.Guid Lvl66 = System.Guid.Parse("b10be1a0-ed50-11ed-96eb-df5758515932");
         public static readonly System.Guid Lvl67 = System.Guid.Parse("84a4e870-ed50-11ed-bfec-6373fe016e1b");
+        public static readonly System.Guid Lvl68 = System.Guid.Parse("18790070-ed50-11ed-9783-edea66013b46");
     }
     public static class Boss
     {
