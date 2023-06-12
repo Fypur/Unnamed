@@ -111,14 +111,11 @@ namespace Platformer
             base.Render();
 
             Player p = (Player)Engine.Player;
-            Debug.LogUpdate(text.Pos);
 
             int length; //Draw part Square
             if (DestroyOnX)
             {
                 length = (int)(Height * (float)Math.Clamp(p.Velocity.Length() / BreakVelocity, 0, 1));
-                Debug.LogUpdate(length);
-                Debug.LogUpdate(p.Velocity.Length() / BreakVelocity);
                 Drawing.Draw(Drawing.PointTexture, new Vector2(Pos.X, Pos.Y + Height - length), new Vector2(Width, length), new Color(DestroyableColor, 10), 0, Vector2.Zero, SpriteEffects.None, 0.1f);
             }
             else

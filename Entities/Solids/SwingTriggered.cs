@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Platformer
 {
-    public class SwingTriggered : MovingSolid, ISwinged
+    public class SwingTriggered : SwingingPoint, ISwinged
     {
         private readonly float maxSpeed = 100;
         private readonly float acceleration = 10;
@@ -25,10 +25,10 @@ namespace Platformer
         private bool isMoving;
         private bool looped;
 
-        public float MaxSwingDistance { get; set; }
-
-        public SwingTriggered(Vector2[] positions, float maxSwingDistance, Vector2 initPos, int width, int height, Types type) : base(DetermineInitPos(initPos, positions, out int initIndex), width, height, new Sprite(Color.LightBlue))
+        public SwingTriggered(Vector2[] positions, float maxSwingDistance, Vector2 initPos, int width, int height, Types type) : base(DetermineInitPos(initPos, positions, out int initIndex), maxSwingDistance)
         {
+            Sprite.Texture = DataManager.Objects["swingTriggered"];
+
             Positions = positions;
             Collider.Collidable = false;
             Velocity = Vector2.Zero;
@@ -42,15 +42,15 @@ namespace Platformer
             switch (type)
             {
                 case Types.Slow:
-                    maxSpeed = 35;
+                    maxSpeed = 60;
                     acceleration = 5;
                     break;
                 case Types.Normal:
-                    maxSpeed = 70;
+                    maxSpeed = 100;
                     acceleration = 20;
                     break;
                 case Types.Fast:
-                    maxSpeed = 130;
+                    maxSpeed = 150;
                     acceleration = 20;
                     break;
                 case Types.VeryFast:

@@ -20,5 +20,6 @@ public class SpecialTrigger : ILDtkEntity
     public int TypeId { get; set; }
     public int Id { get; set; }
     public EntityRef[] Children { get; set; }
+    public Vector2[]? Positions { get; set; }
 }
 #pragma warning restore

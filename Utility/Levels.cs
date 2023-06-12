@@ -86,7 +86,12 @@ namespace Platformer
                 entities.Add(new RailedPullBlock(p.RailPositions, p.MaxSwingDistance, p.Position, p.Width(), p.Height()));
 
             foreach (LDtkTypes.RespawnArea p in level.GetEntities<LDtkTypes.RespawnArea>())
+            {
+                if(Engine.Player == null)
+                    Engine.CurrentMap.Instantiate(new Player(p.RespawnPoint));
+
                 entities.Add(new RespawnTrigger(p.Position, p.Size, p.RespawnPoint));
+            }
 
             foreach (LDtkTypes.Spike p in level.GetEntities<LDtkTypes.Spike>())
             {
@@ -254,6 +259,10 @@ namespace Platformer
 
                         entities.Add(new SpawnTrigger(p.Position, p.Size, spawned));
                         break;
+                    case 4:
+                        entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new ChaseBoss(p.Positions, p.Id) }));
+                        break;
+
                 }
             }
 

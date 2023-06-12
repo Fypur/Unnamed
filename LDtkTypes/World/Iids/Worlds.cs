@@ -105,12 +105,14 @@ public static class Worlds
         public static readonly System.Guid Lvl60 = System.Guid.Parse("0742cde0-5110-11ed-ace6-1fee1b310122");
         public static readonly System.Guid Lvl61 = System.Guid.Parse("5c923460-c640-11ed-9e4a-959cd9b16bb5");
         public static readonly System.Guid Lvl62 = System.Guid.Parse("9417d6a0-ed50-11ed-a45c-a513ccdef848");
-        public static readonly System.Guid Lvl63 = System.Guid.Parse("13c33d80-ed50-11ed-96eb-b9573646f610");
-        public static readonly System.Guid Lvl64 = System.Guid.Parse("5d672b40-ed50-11ed-96eb-a78cca55e38a");
-        public static readonly System.Guid Lvl65 = System.Guid.Parse("95a31d60-ed50-11ed-96eb-3ffd481069ae");
-        public static readonly System.Guid Lvl66 = System.Guid.Parse("b10be1a0-ed50-11ed-96eb-df5758515932");
-        public static readonly System.Guid Lvl67 = System.Guid.Parse("84a4e870-ed50-11ed-bfec-6373fe016e1b");
-        public static readonly System.Guid Lvl68 = System.Guid.Parse("18790070-ed50-11ed-9783-edea66013b46");
+        public static readonly System.Guid Lvl63 = System.Guid.Parse("5d672b40-ed50-11ed-96eb-a78cca55e38a");
+        public static readonly System.Guid Lvl64 = System.Guid.Parse("95a31d60-ed50-11ed-96eb-3ffd481069ae");
+        public static readonly System.Guid Lvl65 = System.Guid.Parse("b10be1a0-ed50-11ed-96eb-df5758515932");
+        public static readonly System.Guid Lvl66 = System.Guid.Parse("84a4e870-ed50-11ed-bfec-6373fe016e1b");
+        public static readonly System.Guid Lvl67 = System.Guid.Parse("f2312070-ed50-11ed-bda8-47a771777422");
+        public static readonly System.Guid Lvl69 = System.Guid.Parse("cae7c0e0-ed50-11ed-a0da-0d39cb0c2262");
+        public static readonly System.Guid Lvl70 = System.Guid.Parse("bd7864c0-ed50-11ed-a0da-d91f33cf1bb0");
+        public static readonly System.Guid Lvl72 = System.Guid.Parse("b3293740-ed50-11ed-be12-ed0ee2cd9844");
     }
     public static class Boss
     {
@@ -119,6 +121,15 @@ public static class Worlds
         public static readonly System.Guid BossRoom = System.Guid.Parse("b5ebde70-ed50-11ed-96eb-4b466b31ad93");
         public static readonly System.Guid BossRoom2 = System.Guid.Parse("ba3ffc80-ed50-11ed-9715-db9ee56f3167");
         public static readonly System.Guid Chase = System.Guid.Parse("f3ab40b0-ed50-11ed-9715-5f97038aa3bb");
+        public static readonly System.Guid Lvl73 = System.Guid.Parse("ee7ad250-ed50-11ed-a0da-a50057c597c2");
+        public static readonly System.Guid Lvl74 = System.Guid.Parse("429ac420-ed50-11ed-be12-3d57cf78585f");
+    }
+    public static class SwingJetpack
+    {
+        public static readonly System.Guid Iid = System.Guid.Parse("51547760-ed50-11ed-be12-af7256309b48");
+
+        public static readonly System.Guid Lvl68 = System.Guid.Parse("18790070-ed50-11ed-9783-edea66013b46");
+        public static readonly System.Guid Lvl71 = System.Guid.Parse("b1767830-ed50-11ed-bda8-033308489f7a");
     }
 }
 #pragma warning restore

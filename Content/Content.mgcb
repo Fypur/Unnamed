@@ -548,6 +548,18 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Objects/swingingPoint.aseprite
 
+#begin Graphics/Objects/swingTriggered.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Objects/swingTriggered.aseprite
+
 #begin Graphics/PixelShaders/Bloom.fx
 /importer:EffectImporter
 /processor:EffectProcessor

@@ -259,7 +259,8 @@ namespace Platformer
 
             for(int i = 1; i <= numBullets; i++)
             {
-                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, right ? -i * range / numBullets : i * range / numBullets + 180));
+                var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, right ? -i * range / numBullets : i * range / numBullets + 180));
+                Engine.CurrentMap.CurrentLevel.EntityData.Add(m);
                 Engine.Cam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.03f);
             }

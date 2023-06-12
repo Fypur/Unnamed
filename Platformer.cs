@@ -28,6 +28,7 @@ namespace Platformer
         public static LDtkWorld JetpackWorld;
         public static LDtkWorld SwingWorld;
         public static LDtkWorld BossWorld;
+        public static LDtkWorld SwingAndJetpack;
 
         public static Player player => (Player)Engine.Player;
 
@@ -42,8 +43,8 @@ namespace Platformer
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "67";
-        public static int InitWorld = 1;
+        public static string InitLevel = "Chase";
+        public static int InitWorld = 2;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
 #endif
@@ -469,6 +470,7 @@ namespace Platformer
             if (InitWorld == 0) return JetpackWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.Jetpack.Iid);
             else if (InitWorld == 1) return SwingWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.Swing.Iid);
             else if (InitWorld == 2) return BossWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.Boss.Iid);
+            else if (InitWorld == 3) return SwingAndJetpack = LDtkFile.LoadWorld(LDtkTypes.Worlds.SwingJetpack.Iid);
             else throw new Exception("World Index does not refer to any World");
         }
         
