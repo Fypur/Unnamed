@@ -13,24 +13,27 @@ namespace Platformer
     {
         public Vector2[] Positions;
 
-        public ChaseBoss(Vector2[] positions, int id) : base(positions[0] + new Vector2(0, -100), 32, 32, 0, new Sprite(Color.Red))
+        public ChaseBoss(Vector2[] positions, int id) : base(positions[0] + new Vector2(-4), 32, 32, 0, new Sprite(Color.Red))
         {
-            Positions = positions;
+            Positions = positions.Addition(new Vector2(-4));
 
-            AddComponent(new Coroutine(Room1()));
+            if (id == 0)
+                AddComponent(new Coroutine(Room1()));
+            else
+                AddComponent(new Coroutine(Jump(Positions[1], 0.4f, 300),
+                    Jump(Positions[2], 0.4f, 100), Coroutine.WaitSeconds(0.3f), Jump(Positions[3], 0.4f, 100), Coroutine.WaitSeconds(0.2f), MachineGun(45, 13, true)
+                    ));
+
+            GetComponent<Coroutine>().Enumerator.MoveNext();
         }
 
         private IEnumerator Room1()
         {
             float time = 0;
 
-            Positions = Positions.Addition(new Vector2(-4));
+            Vector2 initPos = Pos + new Vector2(0, -100);
 
-            Vector2 initPos = Pos;
-
-
-
-            while(time < 0.7f)
+            while (time < 0.7f)
             {
                 Vector2 aim = Vector2.Lerp(initPos, Positions[1], Ease.CubicIn(time / 0.7f));
 
@@ -68,7 +71,6 @@ namespace Platformer
 
             MoveX(Positions[2].X - Pos.X, OnCollision);
             MoveY(Positions[2].Y - Pos.Y, OnCollision);
-            Debug.Point(Positions[2]);
 
             Engine.Cam.LightShake();
 
@@ -93,7 +95,57 @@ namespace Platformer
 
         }
 
-        private void OnCollision(Entity entity)
+        private IEnumerator Room2()
+        {
+            yield return null;
+        }
+
+        private IEnumerator Jump(Vector2 to, float jumpTime, float height)
+        {
+            float time = 0;
+            Vector2 initPos = Pos;
+
+            Vector2[] controlPoints = new Vector2[] { initPos, new Vector2((initPos.X + to.X) / 2, initPos.Y - height), to };
+            while (time < jumpTime)
+            {
+                Vector2 aim = Bezier.Quadratic(controlPoints, time / jumpTime);
+
+                Pos.X += aim.X - Pos.X;
+                Pos.Y += aim.Y - Pos.Y;
+                MoveX(aim.X - Pos.X, OnCollision);
+                MoveY(aim.Y - Pos.Y, OnCollision);
+
+                time += Engine.Deltatime;
+                yield return 0;
+            }
+
+            MoveX(to.X - Pos.X, OnCollision);
+            MoveY(to.Y - Pos.Y, OnCollision);
+
+            Engine.Cam.LightShake();
+
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 0, Particles.Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 180, Particles.Dust.Color);
+        }
+
+        private IEnumerator MachineGun(float range, int numBullets, bool rightSide)
+        {
+            Sprite.Color = Color.Yellow;
+
+            yield return new Coroutine.WaitForSeconds(0.2f);
+
+            for (int i = 1; i <= numBullets; i++)
+            {
+            Debug.LogUpdate("ey");
+                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, rightSide ? -i * range / numBullets : i * range / numBullets + 180));
+                Engine.Cam.Shake(0.3f, 0.7f);
+                yield return new Coroutine.WaitForSeconds(0.1f);
+            }
+
+            Sprite.Color = Color.Red;
+        }
+
+            private void OnCollision(Entity entity)
         {
             if (entity is FallingPlatform f)
                 f.Fall();
