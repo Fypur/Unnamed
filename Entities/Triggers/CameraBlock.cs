@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Platformer
 {
-    public class CameraBlock : Solid
+    public class CameraBlock : MovingSolid
     {
         public CameraBlock(Vector2 position, int width, int height) : base(position, width, height, null)
         {
@@ -31,6 +31,8 @@ namespace Platformer
             base.Awake();
 
             Engine.CurrentMap.Data.CameraSolids.Add(this);
+            Move(-Vector2.UnitY);
+            Move(Vector2.UnitY);
         }
 
         public override void OnDestroy()

@@ -142,5 +142,18 @@ namespace Platformer
             DirectionRange = 90,
             Direction = -90,
         };
+
+        public static ParticleType Fire = new ParticleType()
+        {
+            LifeMin = 0.4f,
+            LifeMax = 3f,
+            Size = 5,
+            SizeRange = 2,
+            SizeChange = ParticleType.FadeModes.Linear,
+            Color = Color.Red,
+            Color2 = Color.Yellow,
+            SpeedMin = 5,
+            SpeedMax = 10
+        };
     }
 }

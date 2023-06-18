@@ -229,6 +229,13 @@ namespace Platformer
 
                 player.Pos = ((RespawnTrigger)Engine.CurrentMap.Data.EntitiesByType[typeof(RespawnTrigger)][0]).RespawnPoint;
             }*/
+
+            if (Input.GetKeyDown(Keys.P))
+            {
+                if (Engine.CurrentMap.Data.GetEntity<PushingFire>() != null)
+                    Engine.CurrentMap.Destroy(Engine.CurrentMap.Data.GetEntity<PushingFire>());
+                Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos, 8));
+            }
 #endif
 
             Input.UpdateOldState();
@@ -401,7 +408,7 @@ namespace Platformer
             if (World.Iid == LDtkTypes.Worlds.World.Iid)
                 player.CanJetpack = false;
 #endif
-
+            Engine.CurrentMap.Data.Actors.Add(Cam);
             Vector2 lvlSize = Engine.CurrentMap.CurrentLevel.Size;
             if (lvlSize.Y == 184)
                 lvlSize.Y = 180;

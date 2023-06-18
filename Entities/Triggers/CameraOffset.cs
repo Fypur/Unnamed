@@ -26,7 +26,7 @@ namespace Platformer
                 Engine.Cam.Offset = Offset * Ease.QuintInAndOut(Ease.Reverse(timer.Value / timer.MaxValue));
             }, () => Engine.Cam.Offset = Offset));*/
 
-            Engine.Cam.Offset = Offset;
+            Engine.Cam.InBoundsOffset = Offset;
         }
 
         public override void OnTriggerExit(Player player)
@@ -39,7 +39,7 @@ namespace Platformer
                 }, () => Engine.Cam.Offset = Vector2.Zero));
             }*/
 
-            Engine.Cam.Offset = Vector2.Zero;
+            Engine.Cam.InBoundsOffset = Vector2.Zero;
         }
     }
 }

@@ -218,7 +218,7 @@ namespace Platformer
                 if (p.Range == 360)
                     light.AddComponent(new CircleLight(Vector2.Zero, p.Length, new Color(p.Color, p.Opacity), new Color(p.Color, 0)));
                 else
-                    light.AddComponent(new QuadPointLight(Vector2.Zero, Vector2.Zero, p.Direction, p.Range, p.Length, new Color(p.Color, p.Opacity), new Color(p.Color, 0)));
+                    light.AddComponent(new ArcLight(Vector2.Zero, p.Direction, p.Range, p.Length, new Color(p.Color, p.Opacity), new Color(p.Color, 0)));
 
                 Light l = light.GetComponent<Light>();
                 l.CollideWithWalls = p.CollideWithWalls;
@@ -261,6 +261,23 @@ namespace Platformer
                         break;
                     case 4:
                         entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new ChaseBoss(p.Positions, p.Id) }));
+                        break;
+                    case 5:
+                        if (p.Id == 0 && Engine.CurrentMap.Data.GetEntities<PushingFire>().Count == 0)
+                            entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new PushingFire(level.Position.ToVector2()) }));
+                        else if (p.Id == 1)
+                        {
+                            Trigger trig = new Trigger(p.Position, p.Size, new() { typeof(Player) }, null);
+
+                            trig.OnTriggerEnterAction = (p) =>
+                            {
+                                var e = Engine.CurrentMap.Data.GetEntities<PushingFire>();
+                                for (int i = 0; i < e.Count; i++)
+                                    e[i].SelfDestroy();
+                            };
+
+                            entities.Add(trig);
+                        }
                         break;
 
                 }

@@ -35,16 +35,19 @@ namespace Platformer
             spawned = true;
 
             foreach (Entity e in Spawned)
+            {
+                Engine.CurrentMap.CurrentLevel.DestroyOnUnload(e);
                 Engine.CurrentMap.Instantiate(e);
+            }
         }
 
         public override void OnDestroy()
         {
             base.OnDestroy();
 
-            if(spawned)
+            /*if(spawned)
                 foreach (Entity e in Spawned)
-                    Engine.CurrentMap.Destroy(e);
+                    Engine.CurrentMap.Destroy(e);*/
         }
     }
 }

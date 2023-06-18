@@ -26,7 +26,7 @@ namespace Platformer
         private const float maxJetpackSpeedY = 120;
         private const float maxJetpackTime = 0.5f;
         private const float maxPotentialFallingSpeed = 400;
-        private const int maxHealth = 3;
+        private const int maxHealth = 1;
         private const float invicibilityTime = 2;
         
         private const float acceleration = 1500f;
@@ -68,6 +68,7 @@ namespace Platformer
         public Vector2 JetpackDirectionalPowerCoef = Vector2.Zero;
         public Vector2 RespawnPoint;
         public event Action OnDeath = delegate { };
+        public event Action OnDeathTransition = delegate { };
         public Vector2 PrevVelocity;
         public int Health = maxHealth;
 
@@ -1213,9 +1214,12 @@ namespace Platformer
 
                 Vector2 offset = Vector2.Zero;
                 foreach (CameraOffset camOffset in Engine.CurrentMap.Data.GetEntities<CameraOffset>())
-                    Engine.Cam.CenteredPos += camOffset.Offset;
-                
-                
+                {
+                    if(camOffset.Collider.Collide(Collider))
+                        Engine.Cam.CenteredPos += camOffset.Offset;
+                }
+
+                OnDeathTransition?.Invoke();
 
                 Levels.ReloadLastLevelFetched();
                 Active = true;

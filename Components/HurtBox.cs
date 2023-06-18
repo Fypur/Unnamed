@@ -25,7 +25,7 @@ namespace Platformer
         {
             base.Added();
 
-            trigger.Collider.DebugColor = Color.Red;
+            Trigger.Collider.DebugColor = Color.Red;
         }
 
         public override void OnTriggerEnter(Player player)

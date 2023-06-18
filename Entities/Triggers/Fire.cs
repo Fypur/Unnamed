@@ -11,19 +11,7 @@ namespace Platformer
     public class Fire : DeathTrigger
     {
         private const float coefFire = 0.05f;
-
-        public ParticleType FireParticle = new ParticleType() 
-        {
-            LifeMin = 0.4f,
-            LifeMax = 3f,
-            Size = 5,
-            SizeRange = 2,
-            SizeChange = ParticleType.FadeModes.Linear,
-            Color = Color.Red,
-            Color2 = Color.Yellow,
-            SpeedMin = 5,
-            SpeedMax = 10
-        };
+        private readonly ParticleType fireParticle = Particles.Fire.Copy();
 
         public Fire(Rectangle bounds, Direction direction) : base(bounds)
         {
@@ -51,31 +39,31 @@ namespace Platformer
                 default:
                 case Direction.Up:
                     amountEmitted = (int)(Size.X * coefFire);
-                    FireParticle.Direction = -90;
+                    fireParticle.Direction = -90;
                     emitRect = new Rectangle(amountMoved, Bounds.Height - 1, Bounds.Width - amountMoved * 2, 1);
                     //FireParticle.Acceleration = -Vector2.UnitY * Accel;
                     break;
                 case Direction.Down:
                     amountEmitted = (int)(Size.X * coefFire);
-                    FireParticle.Direction = 90;
+                    fireParticle.Direction = 90;
                     emitRect = new Rectangle(amountMoved, 0, Bounds.Width - amountMoved * 2, 1);
                     //FireParticle.Acceleration = Vector2.UnitY * Accel;
                     break;
                 case Direction.Left:
                     amountEmitted = (int)(Size.Y * coefFire);
-                    FireParticle.Direction = 180;
+                    fireParticle.Direction = 180;
                     emitRect = new Rectangle(Bounds.Width - 1, amountMoved, 1, Bounds.Height - amountMoved * 2);
                     //FireParticle.Acceleration = -Vector2.UnitX * Accel;
                     break;
                 case Direction.Right:
                     amountEmitted = (int)(Size.Y * coefFire);
-                    FireParticle.Direction = 0;
+                    fireParticle.Direction = 0;
                     emitRect = new Rectangle(0, amountMoved, 1, Bounds.Height - amountMoved * 2);
                     //FireParticle.Acceleration = Vector2.UnitX * Accel;
                     break;
             }
 
-            AddComponent(new ParticleEmitter(Engine.CurrentMap.MiddlegroundSystem, FireParticle, emitRect, amountEmitted));
+            AddComponent(new ParticleEmitter(Engine.CurrentMap.MiddlegroundSystem, fireParticle, emitRect, amountEmitted));
         }
     }
 }

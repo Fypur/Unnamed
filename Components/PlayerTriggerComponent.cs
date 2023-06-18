@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Platformer
 {
-    public abstract class PlayerTriggerComponent : TriggerComponent
+    public class PlayerTriggerComponent : TriggerComponent
     {
         protected virtual bool Conditions(Player player) => true;
 
