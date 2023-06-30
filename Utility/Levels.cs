@@ -57,6 +57,8 @@ namespace Platformer
                     
                 entities.Add(plat);
 
+                if(p.Children.Length > 0)
+                    IidsChildren[plat] = new();
                 foreach (EntityRef child in p.Children)
                     IidsChildren[plat].Add(child.EntityIid);
             }
@@ -104,7 +106,7 @@ namespace Platformer
                 entities.Add(new DeathTrigger(p.Position, p.Size));
 
             foreach (LDtkTypes.Fire p in level.GetEntities<LDtkTypes.Fire>())
-                entities.Add(new Fire(p.Position, p.Size, p.Direction.ToDirection()));
+                AddIfChild(new Fire(p.Position, p.Size, p.Direction.ToDirection()), p.Iid);
 
             foreach (LDtkTypes.JumpThru p in level.GetEntities<LDtkTypes.JumpThru>())
                 entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), "industrial2"));
@@ -138,7 +140,7 @@ namespace Platformer
             }
                 
             foreach (LDtkTypes.TextSpawn p in level.GetEntities<LDtkTypes.TextSpawn>())
-                entities.Add(new TextSpawn(p.Position, p.Size, p.TextPos, p.Text));
+                entities.Add(new TextSpawn(p.Position, p.Size, p.TextPos + new Vector2(p.XOffset, p.YOffset), p.Color, p.Text));
 
             foreach (LDtkTypes.JetpackBooster p in level.GetEntities<LDtkTypes.JetpackBooster>())
                 entities.Add(new JetpackBooster(p.Position, p.Size, p.Direction.ToDirection()));
@@ -269,7 +271,7 @@ namespace Platformer
                         {
                             Trigger trig = new Trigger(p.Position, p.Size, new() { typeof(Player) }, null);
 
-                            trig.OnTriggerEnterAction = (p) =>
+                            trig.OnTriggerEnterAction = (entity) =>
                             {
                                 var e = Engine.CurrentMap.Data.GetEntities<PushingFire>();
                                 for (int i = 0; i < e.Count; i++)
@@ -279,7 +281,46 @@ namespace Platformer
                             entities.Add(trig);
                         }
                         break;
+                    case 6:
+                        Trigger trig2 = new Trigger(p.Position, p.Size, new() { typeof(Player) }, null);
 
+                        bool trigged = false;
+                        trig2.OnTriggerEnterAction = (entity) =>
+                        {
+                            if (trigged)
+                                return;
+
+                            trigged = true;
+                            Vector2[] fPos = new Vector2[p.Children.Length];
+                            for (int i = 0; i < p.Children.Length; i++)
+                                fPos[i] = level.GetEntityRef<LDtkTypes.FallingPlatform>(p.Children[i]).Position;
+
+                            foreach (FallingPlatform f in Engine.CurrentMap.Data.GetEntities<FallingPlatform>())
+                                if (fPos.Contains(f.Pos))
+                                    f.Fall();
+                        };
+
+                        entities.Add(trig2);
+                        break;
+                    case 7:
+                        Trigger trig3 = new Trigger(p.Position, p.Size, new() { typeof(Player) }, null);
+
+                        trig3.OnTriggerEnterAction = (entity) =>
+                        {
+                            var s = Engine.CurrentMap.Data.GetEntity<SwingTriggered>();
+
+                            s.AddComponent(new Shaker(0.4f, 4, null, true));
+
+                            trig3.AddComponent(new Timer(0.4f, true, null, () =>
+                            {
+                                
+                                s.GravityScale = 0.7f;
+                                s.Attached = false;
+                            }));
+                        };
+
+                        entities.Add(trig3);
+                        break;
                 }
             }
 
@@ -583,7 +624,7 @@ namespace Platformer
                         if (minX == int.MaxValue)
                             minX = level.Position.X + level.PxWid;
                         
-                        entities.Add(new DeathTrigger(new Vector2(x, level.Position.Y + level.Size.Y), new Vector2(minX - x, intGrid.TileSize), true));
+                        entities.Add(new DeathTrigger(new Vector2(x, level.Position.Y + level.Size.Y + 10), new Vector2(minX - x, intGrid.TileSize), true));
                         x = minX + r.Width;
                     }
                     

@@ -43,6 +43,9 @@
 				<Loop id="Ceiling" path="ceiling" delay="0.1"/>
 			</ProjectorLight>
 
+			<JetpackBooster path="">
+				<Loop id="right" path="jetpackBooster" delay="0.05"/>
+			</JetpackBooster>
 			
 			<Folder path ="scenery">
 				<JetpackTutorialScreen start="jetpackTutorialScreen">

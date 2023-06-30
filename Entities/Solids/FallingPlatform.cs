@@ -47,14 +47,14 @@ namespace Platformer
             AddComponent(new Shaker(shakeTime, 1.2f, null, true));
             AddComponent(new Timer(shakeTime, true, null, () =>
             {
-                gravityScale = constGravityScale;
+                GravityScale = constGravityScale;
 
                 if (Respawning)
                 {
                     AddComponent(new Timer(respawnTime, true, null, () => {
                         wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
                         {
-                            Pos = initPos; Velocity = Vector2.Zero; gravityScale = 0; previousOnGround = false; hasFallen = false;
+                            Pos = initPos; Velocity = Vector2.Zero; GravityScale = 0; previousOnGround = false; hasFallen = false;
                             trig.Trigger.Active = true;
                         });
                         Engine.CurrentMap.Instantiate(wipe);

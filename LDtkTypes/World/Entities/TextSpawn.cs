@@ -19,5 +19,8 @@ public class TextSpawn : ILDtkEntity
 
     public string Text { get; set; }
     public Vector2 TextPos { get; set; }
+    public Color Color { get; set; }
+    public int XOffset { get; set; }
+    public int YOffset { get; set; }
 }
 #pragma warning restore

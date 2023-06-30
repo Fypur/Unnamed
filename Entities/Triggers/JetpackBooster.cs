@@ -14,13 +14,6 @@ namespace Platformer
         private float boostX = 2.4f;
         private float boostY = 2.4f;
         private Vector2 boostingDir;
-        
-        private static readonly NineSliceSimple nineSliceUp =
-            new NineSliceSimple(DataManager.Objects["JetpackBooster"].CropTo(Vector2.Zero, new Vector2(8)), DataManager.Objects["JetpackBooster"].CropTo(new Vector2(8, 0), new Vector2(8)), DataManager.Objects["JetpackBooster"].CropTo(new Vector2(0, 8), new Vector2(16)), true);
-
-        private static readonly NineSliceSimple nineSliceDown = new NineSliceSimple(nineSliceUp.TopLeft, nineSliceUp.Top, nineSliceUp.Fill.FlipY(), true);
-        private static readonly NineSliceSimple nineSliceRight = new NineSliceSimple(nineSliceUp.TopLeft, nineSliceUp.Top, nineSliceUp.Fill.Rotate90(), true);
-        private static readonly NineSliceSimple nineSliceLeft = new NineSliceSimple(nineSliceUp.TopLeft, nineSliceUp.Top, nineSliceRight.Fill.FlipX(), true);
 
         public JetpackBooster(Rectangle bounds, Direction direction) : this(bounds.Location.ToVector2(), bounds.Width, bounds.Height, direction)
         { }
@@ -30,15 +23,33 @@ namespace Platformer
 
         public JetpackBooster(Vector2 position, int width, int height, Direction direction) : base(position, width, height, new Sprite())
         {
-            switch (direction)
+            /*switch (direction)
             {
                 case Direction.Left: Sprite.NineSliceSettings = nineSliceLeft; break;
                 case Direction.Right: Sprite.NineSliceSettings = nineSliceRight; break;
                 case Direction.Up: Sprite.NineSliceSettings = nineSliceUp; break;
                 case Direction.Down: Sprite.NineSliceSettings = nineSliceDown; break;
             }
+            */
 
+            Sprite.Add(Sprite.AllAnimData["JetpackBooster"]);
+            Sprite.Play("right");
+            Sprite.Color.A = 170;
             boostingDir = DirectionToVector2(direction);
+        }
+
+        public override void Render()
+        {
+            Sprite.Color.A = 220;
+            base.Render();
+            for (int i = 0; i < Width / Sprite.Width; i++)
+            {
+                for (int j = 0; j < Height / Sprite.Height; j++)
+                {
+                    Sprite.Offset = new Vector2(Sprite.Width * i, Sprite.Height * j);
+                    Sprite.Render();
+                }
+            }
         }
 
         public override void OnTriggerEnter(Player player)

@@ -28,7 +28,7 @@ namespace Platformer
         {
             base.LateUpdate();
 
-            Vector2 move = Engine.Cam.WholePos - Engine.Cam.PreviousPos;
+            Vector2 move = Engine.Cam.PreviousPos - Engine.Cam.WholePos;
 
             for (int i = 0; i < Tiles.Length; i++)
             {

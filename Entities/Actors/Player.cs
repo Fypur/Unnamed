@@ -522,10 +522,8 @@ namespace Platformer
                     {
                         //Pos.Y = jumpThru.Collider.AbsoluteTop - 1 - Height;
 
-                        Debug.Log(jumpThru.Collider.AbsoluteTop);
                         MoveY(jumpThru.Collider.AbsoluteTop - 1 - Collider.AbsoluteBottom);
                         Velocity.Y = 0;
-                        Debug.Log("y");
                         break;
                     }
                 }
@@ -536,7 +534,7 @@ namespace Platformer
             collisionX = collisionY = false;
             previousOnGround = onGround;
 
-            Debug.LogUpdate("Player Health : " + Health);
+            //Debug.LogUpdate("Player Health : " + Health);
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
             MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);

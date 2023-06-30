@@ -17,6 +17,7 @@ namespace Platformer
         public enum Types { Slow, Normal, Fast, VeryFast }
 
         public Vector2[] Positions;
+        public bool Attached = true;
         
         private int currentPosIndex;
         private bool movingForwards = true;
@@ -94,25 +95,30 @@ namespace Platformer
         {
             base.Update();
 
-            if (isMoving)
-                Velocity += normalizedDir * acceleration;
-
-            Velocity -= Velocity * friction;
-            Velocity = Vector2.Clamp(Velocity, -new Vector2(maxSpeed), new Vector2(maxSpeed));
-            if(Engine.Deltatime != 0)
-                Velocity = (VectorHelper.ClosestOnSegment(ExactPos + Velocity * Engine.Deltatime, Positions[currentPosIndex], nextPos) - ExactPos) / Engine.Deltatime;
-
-            if (Vector2.DistanceSquared(ExactPos + Velocity * Engine.Deltatime, nextPos) < 2)
+            if (Attached)
             {
-                Velocity = Vector2.Zero;
+                if (isMoving)
+                    Velocity += normalizedDir * acceleration;
 
-                if (movingForwards)
-                    currentPosIndex++;
-                else
-                    currentPosIndex--;
+                Velocity -= Velocity * friction;
+                Velocity = Vector2.Clamp(Velocity, -new Vector2(maxSpeed), new Vector2(maxSpeed));
+                if (Engine.Deltatime != 0)
+                    Velocity = (VectorHelper.ClosestOnSegment(ExactPos + Velocity * Engine.Deltatime, Positions[currentPosIndex], nextPos) - ExactPos) / Engine.Deltatime;
 
-                Trigger();
+                if (Vector2.DistanceSquared(ExactPos + Velocity * Engine.Deltatime, nextPos) < 2)
+                {
+                    Velocity = Vector2.Zero;
+
+                    if (movingForwards)
+                        currentPosIndex++;
+                    else
+                        currentPosIndex--;
+
+                    Trigger();
+                }
             }
+
+            Velocity += gravityVector * GravityScale;
 
             Move(Velocity * Engine.Deltatime);
         }

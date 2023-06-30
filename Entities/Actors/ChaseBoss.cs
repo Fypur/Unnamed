@@ -19,9 +19,20 @@ namespace Platformer
 
             if (id == 0)
                 AddComponent(new Coroutine(Room1()));
-            else
+            else if(id == 1)
                 AddComponent(new Coroutine(Jump(Positions[1], 0.4f, 300),
                     Jump(Positions[2], 0.4f, 100), Coroutine.WaitSeconds(0.3f), Jump(Positions[3], 0.4f, 100), Coroutine.WaitSeconds(0.2f), MachineGun(45, 13, true)
+                    ));
+            else if(id == 2)
+                AddComponent(new Coroutine(
+                    Jump(Positions[1], 0.4f, 300),
+                    Coroutine.WaitSeconds(0.1f),
+                    Jump(Positions[2], 0.4f, 100),
+                    Coroutine.WaitSeconds(0.2f),
+                    Jump(Positions[3], 0.4f, 100),
+                    Coroutine.WaitSeconds(0.2f),
+                    Jump(Positions[4], 0.4f, 100),
+                    MachineGun(45, 13, false)
                     ));
 
             GetComponent<Coroutine>().Enumerator.MoveNext();
@@ -86,7 +97,8 @@ namespace Platformer
 
             for (int i = 1; i <= numBullets; i++)
             {
-                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, i * range / numBullets + 180));
+                var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, i * range / numBullets + 180));
+                Engine.CurrentMap.CurrentLevel.DestroyOnUnload(m);
                 Engine.Cam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.1f);
             }
@@ -136,8 +148,8 @@ namespace Platformer
 
             for (int i = 1; i <= numBullets; i++)
             {
-            Debug.LogUpdate("ey");
-                Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, rightSide ? -i * range / numBullets : i * range / numBullets + 180));
+                var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, rightSide ? -i * range / numBullets : i * range / numBullets + 180));
+                Engine.CurrentMap.CurrentLevel.DestroyOnUnload(m);
                 Engine.Cam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.1f);
             }

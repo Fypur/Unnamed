@@ -26,7 +26,7 @@ namespace Platformer
             currentPosIndex = initialIndexPosition;
             SwingingPoint.SwingingPoints.Add(this);
             MaxSwingDistance = maxSwingDistance;
-            gravityScale = 1;
+            GravityScale = 1;
 
             AddComponent(new LineRenderer(RailPositions.ToList(), Drawing.PointTexture, 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
@@ -37,7 +37,7 @@ namespace Platformer
             currentPosIndex = initialIndex;
             SwingingPoint.SwingingPoints.Add(this);
             MaxSwingDistance = maxSwingDistance;
-            gravityScale = 1;
+            GravityScale = 1;
 
             AddComponent(new LineRenderer(RailPositions.ToList(), Drawing.PointTexture, 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }

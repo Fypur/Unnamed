@@ -50,16 +50,20 @@ namespace Platformer
             /*if (Collider.Collide(Engine.Player))
                 ((Player)Engine.Player).InstaDeath();*/
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(fire, new Rectangle(Bounds.X + Width, Bounds.Y, Bounds.Width, Bounds.Height), 5);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(fire, new Rectangle(Bounds.X + ((Speed == 0) ? 0 : Width), Bounds.Y, Bounds.Width, Bounds.Height), 5);
             Debug.LogUpdate(Engine.CurrentMap.MiddlegroundSystem.Particles.Count);
         }
 
         public void ResetPos()
         {
             Pos = Engine.CurrentMap.CurrentLevel.Pos - new Vector2(Speed * Engine.Deltatime * 1.5f, 0);
-            /*float speed = Speed;
 
-            Speed = 0.3f * Speed;
+            float speed = Speed;
+            Speed = 0;
+
+            AddComponent(new Coroutine(Coroutine.WaitUntil(() => Platformer.player.Velocity != Vector2.Zero), Coroutine.Do(() => Speed = speed)));
+
+            /*Speed = 0.3f * Speed;
 
             AddComponent(new Timer(0.35f, true, null, () => Speed = speed));*/
         }
