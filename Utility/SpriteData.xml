@@ -48,6 +48,7 @@
 			</JetpackBooster>
 			
 			<Folder path ="scenery">
+				
 				<JetpackTutorialScreen start="jetpackTutorialScreen">
 					<Loop id="jetpackTutorialScreen" path ="jetpackTutorialScreen" delay ="0.1"/>
 				</JetpackTutorialScreen>
@@ -56,12 +57,19 @@
 					<Anim id="appear" path ="glitch_appear" delay="0.050" goto="loop"/>
 					<Loop id="loop" path ="glitch_loop" delay="0.080"/>
 				</Screen>
+				
 				<LittleScreen path="screen/little" start="ltext">
 					<Anim id="ltext" path ="ltext" delay ="0.025" goto="begintransfer"/>
 					<Anim id="begintransfer" path ="begintransfer" delay ="0.025" goto="transfer"/>
 					<Loop id="transfer" path ="transfer" delay ="0.025" loop="5" goto="completetransfer"/>
 					<Anim id="completetransfer" path ="completetransfer" delay ="0.025" goto="ltext"/>
 				</LittleScreen>
+				
+				<FallingMachine path="fallingMachine" start="standing">
+					<Loop id="standing" path="standing" delay="1"/>
+					<Anim id="falling" path="falling" delay="0.1" goto="fallen"/>
+					<Loop id="fallen" path="fallen" delay="1"/>
+				</FallingMachine>
 
 				<Folder path ="screen">
 					<sc1 path="" start="normal">

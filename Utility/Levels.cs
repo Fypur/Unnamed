@@ -640,6 +640,58 @@ namespace Platformer
                     entities.Add(new StreetLight(p.Position, p.Width(), p.Height()));
             }
 
+            foreach (LDtkTypes.TriggeredDecal p in level.GetEntities<LDtkTypes.TriggeredDecal>())
+            {
+                Trigger trig = new Trigger(new Rectangle(p.Pos1.Value.ToPoint(), p.Pos2.Value.ToPoint() - p.Pos1.Value.ToPoint()), new() { typeof(Player) }, null);
+
+                int tileID = 0;
+                EnumDefinition e = Platformer.LDtkFile.Defs.Enums[3];
+                foreach(var a in e.Values)
+                {
+                    if(p.Type.ToString() == a.Id)
+                    {
+                        tileID = (int)a.TileId;
+                        if (tileID == -1)
+                        {
+                            tileID = a._TileSrcRect[0] / 8 + a._TileSrcRect[1] / 8 * 160 / 8;
+                        }
+
+                        break;
+                    }
+                }
+
+                TilesetDefinition tileset;
+                foreach (TilesetDefinition definition in Platformer.LDtkFile.Defs.Tilesets)
+                    if (e.IconTilesetUid == definition.Uid)
+                    {
+                        tileset = definition;
+                        break;
+                   }
+
+
+                var data = TileData[tileID];
+
+                Sprite s = new();
+                s.Add(Sprite.AllAnimData[data]);
+
+                Tile tile = new Tile(p.Position, p.Width(), p.Height(), s);
+                tile.Layer = -1;
+
+                switch (p.Type)
+                {
+                    case LDtkTypes.TrigDecalType.StreetLight:
+                        trig.OnTriggerEnterAction = (e) => s.Play("blink");
+                        break;
+                    case LDtkTypes.TrigDecalType.FallingMachine:
+                        trig.OnTriggerEnterAction = (e) =>
+                        s.Play("falling");
+                        break;
+                }
+                
+                entities.Add(tile);
+
+                entities.Add(trig);
+            }
 
             int camWidth = ((System.Text.Json.JsonElement)level.FieldInstances[0]._Value).GetInt32();
 
