@@ -11,11 +11,13 @@ namespace Platformer
     public class CameraOffset : PlayerTrigger
     {
         private const float OffsetTransitionTime = 0.4f;
+        public bool OverrideOffset = false;
 
         public Vector2 Offset;
-        public CameraOffset(Vector2 position, Vector2 size, Vector2 offset) : base(position, size, null)
+        public CameraOffset(Vector2 position, Vector2 size, Vector2 offset, bool overrideOffset) : base(position, size, null)
         {
             Offset = offset;
+            OverrideOffset = overrideOffset;
             Collider.DebugColor = Color.GreenYellow;
         }
 
@@ -26,7 +28,10 @@ namespace Platformer
                 Engine.Cam.Offset = Offset * Ease.QuintInAndOut(Ease.Reverse(timer.Value / timer.MaxValue));
             }, () => Engine.Cam.Offset = Offset));*/
 
-            Engine.Cam.InBoundsOffset = Offset;
+            if(OverrideOffset)
+                Engine.Cam.InBoundsOffset = Offset;
+            else
+                Engine.Cam.InBoundsOffset += Offset;
         }
 
         public override void OnTriggerExit(Player player)
@@ -38,8 +43,8 @@ namespace Platformer
                     Engine.Cam.Offset = Offset * Ease.QuintInAndOut(timer.Value / timer.MaxValue);
                 }, () => Engine.Cam.Offset = Vector2.Zero));
             }*/
-
-            Engine.Cam.InBoundsOffset = Vector2.Zero;
+            
+            Engine.Cam.InBoundsOffset -= Offset;
         }
     }
 }

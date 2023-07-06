@@ -43,8 +43,8 @@ namespace Platformer
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "23";
-        public static int InitWorld = 1;
+        public static string InitLevel = "57";
+        public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
 #endif
@@ -434,6 +434,7 @@ namespace Platformer
 
 
             Audio.StopEvent(music);
+            Audio.StopEvent(windAmbience);
         }
 
         public static void PauseOrUnpause()

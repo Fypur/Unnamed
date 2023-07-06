@@ -18,5 +18,8 @@ public class CamOffset : ILDtkEntity
     public Color SmartColor { get; set; }
 
     public Vector2 Offset { get; set; }
+    public bool Override { get; set; }
+    public int OffsetX { get; set; }
+    public int OffsetY { get; set; }
 }
 #pragma warning restore

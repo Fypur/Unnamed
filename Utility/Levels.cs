@@ -181,7 +181,7 @@ namespace Platformer
                 entities.Add(new CameraLock(p.Position, p.Size));
 
             foreach (LDtkTypes.CamOffset p in level.GetEntities<LDtkTypes.CamOffset>())
-                entities.Add(new CameraOffset(p.Position, p.Size, p.Offset - p.Position - new Vector2(intGrid.TileSize / 2)));
+                entities.Add(new CameraOffset(p.Position, p.Size, p.Offset - p.Position - new Vector2(intGrid.TileSize / 2) + new Vector2(p.OffsetX, p.OffsetY), p.Override));
 
             foreach (LDtkTypes.CameraBlock p in level.GetEntities<LDtkTypes.CameraBlock>())
                 entities.Add(new CameraBlock(p.Position, p.Size));
@@ -456,11 +456,11 @@ namespace Platformer
 
                                     if (range == 360)
                                     {
-                                        Light l2 = (Light)light.AddComponent(new CircleLight(location, length, slice.Color, new Color(slice.Color, 0)));
+                                        Light l2 = (Light)light.AddComponent(new CircleLight(location, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
                                         l2.CollideWithWalls = false;
                                     }
                                     else
-                                        light.AddComponent(new QuadPointLight(location, location2, direction, range, length, slice.Color, new Color(slice.Color, 0)));
+                                        light.AddComponent(new QuadPointLight(location, location2, direction, range, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
 
                                     entities.Add(light);
                                 }
@@ -488,7 +488,7 @@ namespace Platformer
                             s.SourceRectangle = new Rectangle(t.Src.X, t.Src.Y, l._GridSize, l._GridSize);
 
                             Tile tile = new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s);
-                            tile.Layer = 0;
+                            tile.Layer = -1;
 
 
                             foreach (Sprite.Animation.Slice slice in slices)
@@ -522,11 +522,11 @@ namespace Platformer
 
                                     if (range == 360)
                                     {
-                                        Light l2 = (Light)tile.AddComponent(new CircleLight(location, length, slice.Color, new Color(slice.Color, 0)));
+                                        Light l2 = (Light)tile.AddComponent(new CircleLight(location, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
                                         l2.CollideWithWalls = false;
                                     }
                                     else
-                                        tile.AddComponent(new QuadPointLight(location, location2, direction, range, length, slice.Color, new Color(slice.Color, 0)));
+                                        tile.AddComponent(new QuadPointLight(location, location2, direction, range, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
 
                                     
                                 }
@@ -543,7 +543,8 @@ namespace Platformer
                         if (!DataManager.Textures.ContainsKey(tileSet))
                             DataManager.Textures[tileSet] = DataManager.Load(tileSet);
 
-                        for (int i = l.GridTiles.Length - 1; i >= 0; i--)
+                        //for (int i = l.GridTiles.Length - 1; i >= 0; i--)
+                        for (int i = 0; i < l.GridTiles.Length; i++)
                         {
                             TileInstance t = l.GridTiles[i];
 
@@ -555,7 +556,7 @@ namespace Platformer
                             s.SourceRectangle = new Rectangle(t.Src.X, t.Src.Y, l._GridSize, l._GridSize);
 
                             Tile tile = new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s);
-                            tile.Layer = -1;
+                            tile.Layer = -2;
 
                             entities.Add(tile);
                         }
@@ -571,7 +572,7 @@ namespace Platformer
                         DataManager.Textures[tileSet] = DataManager.Load(tileSet);
 
 
-                    int layer = l._Identifier == "DecalIntGrid" ? -1 : l._Identifier == "BgTiles" ? -2 : throw new Exception("Tiles layer was not identified");
+                    int layer = l._Identifier == "DecalIntGrid" ? -1 : l._Identifier == "BgTiles" ? -3 : throw new Exception("Tiles layer was not identified");
 
                     foreach (TileInstance t in l.AutoLayerTiles)
                     {
@@ -680,13 +681,14 @@ namespace Platformer
                 switch (p.Type)
                 {
                     case LDtkTypes.TrigDecalType.StreetLight:
-                        trig.OnTriggerEnterAction = (e) => s.Play("blink");
+                        trig.OnTriggerEnterAction += (e) => { s.Play("blink"); };
                         break;
                     case LDtkTypes.TrigDecalType.FallingMachine:
-                        trig.OnTriggerEnterAction = (e) =>
-                        s.Play("falling");
+                        trig.OnTriggerEnterAction += (e) => { s.Play("falling"); };
                         break;
                 }
+
+                trig.OnTriggerEnterAction += (e) => trig.SelfDestroy();
                 
                 entities.Add(tile);
 
@@ -918,7 +920,7 @@ namespace Platformer
         {
             int[,] grid = GetWorldGrid(world, worldDepth, out Vector2 gridPos);
             Sprite[,] sp = GetWorldTileSprites(world, worldDepth, gridPos, grid);
-            int gridSize = world.RawLevels[0].GetIntGrid("IntGrid").TileSize;
+            int gridSize = world.Levels.First().GetIntGrid("IntGrid").TileSize;
             Engine.CurrentMap.Instantiate(new Grid(gridPos, gridSize, gridSize, grid, sp));
         }
 

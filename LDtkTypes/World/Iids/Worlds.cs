@@ -33,7 +33,6 @@ public static class Worlds
         public static readonly System.Guid Filler15 = System.Guid.Parse("da959b00-02f0-11ed-b7f5-2d302dfed621");
         public static readonly System.Guid Filler17 = System.Guid.Parse("e5d47b30-02f0-11ed-b7f5-7faff82a416b");
         public static readonly System.Guid Filler19 = System.Guid.Parse("e12d2180-02f0-11ed-98f0-cf01cea86cf9");
-        public static readonly System.Guid Filler20 = System.Guid.Parse("f9c31e10-02f0-11ed-98f0-e320766c354b");
         public static readonly System.Guid Filler23 = System.Guid.Parse("e1a5b510-02f0-11ed-bfd5-95b5a904b793");
         public static readonly System.Guid Filler24 = System.Guid.Parse("efcee3f0-02f0-11ed-bfd5-5d374c0727ae");
         public static readonly System.Guid Filler16 = System.Guid.Parse("ded6c720-02f0-11ed-b7f5-1b4bbca4c3cf");
@@ -67,6 +66,7 @@ public static class Worlds
         public static readonly System.Guid Test = System.Guid.Parse("efbe4380-02f0-11ed-98f0-efb1d337581d");
         public static readonly System.Guid Lvl57 = System.Guid.Parse("930bc610-02f0-11ed-b8f8-63cd9666263d");
         public static readonly System.Guid Lvl58 = System.Guid.Parse("141ea7f0-02f0-11ed-bfd5-41825b3b763f");
+        public static readonly System.Guid Lvl79 = System.Guid.Parse("a2355bb0-1460-11ee-b6a8-bb05ddf2aace");
     }
     public static class Swing
     {

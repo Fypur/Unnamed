@@ -96,7 +96,7 @@ namespace Platformer
         private bool canUnstick;
         private bool inCoyoteTime;
         private float potentialFallingSpeed;
-        private bool inSwingGraceTime;
+        //private bool inSwingGraceTime;
         private bool heldSwing;
 
         private float jetpackTime;
