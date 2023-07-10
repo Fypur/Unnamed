@@ -43,7 +43,7 @@ namespace Platformer
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "45";
+        public static string InitLevel = "5";
         public static int InitWorld = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -418,8 +418,8 @@ namespace Platformer
 
             PauseMenu = new PauseMenu();
 
-            //windAmbience = Audio.PlayEvent("WindAmbience");
-            //music = Audio.PlayEvent("MusicAtmo");
+            windAmbience = Audio.PlayEvent("WindAmbience");
+            music = Audio.PlayEvent("MusicAtmo");
         }
 
         public static void EndGame()

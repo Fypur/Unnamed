@@ -67,6 +67,8 @@ public static class Worlds
         public static readonly System.Guid Lvl57 = System.Guid.Parse("930bc610-02f0-11ed-b8f8-63cd9666263d");
         public static readonly System.Guid Lvl58 = System.Guid.Parse("141ea7f0-02f0-11ed-bfd5-41825b3b763f");
         public static readonly System.Guid Lvl79 = System.Guid.Parse("a2355bb0-1460-11ee-b6a8-bb05ddf2aace");
+        public static readonly System.Guid Lvl80 = System.Guid.Parse("88e55850-1460-11ee-9832-6d1c2a43ff42");
+        public static readonly System.Guid Lvl81 = System.Guid.Parse("a148a190-1460-11ee-9832-075f9abdaffa");
     }
     public static class Swing
     {

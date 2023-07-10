@@ -572,7 +572,7 @@ namespace Platformer
                         DataManager.Textures[tileSet] = DataManager.Load(tileSet);
 
 
-                    int layer = l._Identifier == "DecalIntGrid" ? -1 : l._Identifier == "BgTiles" ? -3 : throw new Exception("Tiles layer was not identified");
+                    int layer = l._Identifier == "DecalIntGrid" ? -2 : l._Identifier == "BgTiles" ? -3 : throw new Exception("Tiles layer was not identified");
 
                     foreach (TileInstance t in l.AutoLayerTiles)
                     {
