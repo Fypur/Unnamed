@@ -24,11 +24,13 @@ namespace Platformer
 
         public override void OnTriggerEnter(Player player)
         {
+            base.OnTriggerEnter(player);
             player.Safe = true;
         }
 
         public override void OnTriggerExit(Player player)
         {
+            base.OnTriggerExit(player);
             player.Safe = false;
         }
     }

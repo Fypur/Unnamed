@@ -228,8 +228,6 @@ namespace Platformer
                 if(p.BlinkTime is float b)
                     l.StartBlink(b);
 
-
-
                 entities.Add(light);
             }
 
@@ -423,48 +421,7 @@ namespace Platformer
                                 entities.Add(tile);
                             }
 
-                            foreach (Sprite.Animation.Slice slice in slices)
-                            {
-                                if (spriteRect.Contains(slice.Rect.Location))
-                                {
-                                    float direction = float.Parse(slice.Name.Substring(slice.Name.LastIndexOf('D') + 1, slice.Name.IndexOf(" ", slice.Name.LastIndexOf('D')) - slice.Name.LastIndexOf('D')));
-                                    float length = float.Parse(slice.Name.Substring(slice.Name.LastIndexOf('L') + 1, slice.Name.IndexOf(" ", slice.Name.LastIndexOf('L')) - slice.Name.LastIndexOf('L')));
-
-                                    int lR = slice.Name.LastIndexOf('R');
-                                    float range;
-
-                                    if (slice.Name.LastIndexOf(" ") > lR)
-                                        range = float.Parse(slice.Name.Substring(lR + 1, slice.Name.IndexOf(" ", lR) - lR));
-                                    else
-                                        range = float.Parse(slice.Name.Substring(lR + 1));
-
-                                    Vector2 location;
-                                    Vector2 location2;
-
-                                    if (slice.Name[0] == 'F')
-                                    {
-                                        location = new Vector2(slice.Rect.X + slice.Rect.Width - t.Src.X, slice.Rect.Y - t.Src.Y);
-                                        location2 = new Vector2(slice.Rect.X - t.Src.X, slice.Rect.Y + slice.Rect.Height - t.Src.Y);
-                                    }
-                                    else
-                                    {
-                                        location = (slice.Rect.Location - t.Src).ToVector2();
-                                        location2 = (slice.Rect.Location - t.Src + slice.Rect.Size).ToVector2();
-                                    }
-
-                                    Entity light = new Entity(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l.PxOffsetY + level.Position.Y));
-
-                                    if (range == 360)
-                                    {
-                                        Light l2 = (Light)light.AddComponent(new CircleLight(location, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
-                                        l2.CollideWithWalls = false;
-                                    }
-                                    else
-                                        light.AddComponent(new QuadPointLight(location, location2, direction, range, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
-
-                                    entities.Add(light);
-                                }
-                            }
+                            AttachSliceLights(l, t, slices, null, level);
                         }
                     }
                     else if (l._TilesetRelPath.Contains("Lights"))
@@ -490,48 +447,7 @@ namespace Platformer
                             Tile tile = new Tile(new Vector2(t.Px.X + l._PxTotalOffsetX + level.Position.X, t.Px.Y + l._PxTotalOffsetY + level.Position.Y), l._GridSize, l._GridSize, s);
                             tile.Layer = -1;
 
-
-                            foreach (Sprite.Animation.Slice slice in slices)
-                            {
-                                if (s.SourceRectangle.Value.Contains(slice.Rect.Location))
-                                {
-                                    float direction = float.Parse(slice.Name.Substring(slice.Name.LastIndexOf('D') + 1, slice.Name.IndexOf(" ", slice.Name.LastIndexOf('D')) - slice.Name.LastIndexOf('D')));
-                                    float length = float.Parse(slice.Name.Substring(slice.Name.LastIndexOf('L') + 1, slice.Name.IndexOf(" ", slice.Name.LastIndexOf('L')) - slice.Name.LastIndexOf('L')));
-
-                                    int lR = slice.Name.LastIndexOf('R');
-                                    float range;
-
-                                    if (slice.Name.LastIndexOf(" ") > lR)
-                                        range = float.Parse(slice.Name.Substring(lR + 1, slice.Name.IndexOf(" ", lR) - lR));
-                                    else
-                                        range = float.Parse(slice.Name.Substring(lR + 1));
-
-                                    Vector2 location;
-                                    Vector2 location2;
-
-                                    if (slice.Name[0] == 'F')
-                                    {
-                                        location = new Vector2(slice.Rect.X + slice.Rect.Width - t.Src.X, slice.Rect.Y - t.Src.Y);
-                                        location2 = new Vector2(slice.Rect.X - t.Src.X, slice.Rect.Y + slice.Rect.Height - t.Src.Y);
-                                    }
-                                    else
-                                    {
-                                        location = (slice.Rect.Location - t.Src).ToVector2();
-                                        location2 = (slice.Rect.Location - t.Src + slice.Rect.Size).ToVector2();
-                                    }
-
-                                    if (range == 360)
-                                    {
-                                        Light l2 = (Light)tile.AddComponent(new CircleLight(location, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
-                                        l2.CollideWithWalls = false;
-                                    }
-                                    else
-                                        tile.AddComponent(new QuadPointLight(location, location2, direction, range, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
-
-                                    
-                                }
-                            }
-
+                            AttachSliceLights(l, t, slices, tile, level);
 
                             entities.Add(tile);
                         }
@@ -590,6 +506,54 @@ namespace Platformer
                         entities.Add(tile);
                     }
                 }
+            }
+
+            foreach(NeighbourLevel neighbor in level._Neighbours)
+            {
+                LDtkLevel neigh = Platformer.World.LoadLevel(neighbor.LevelIid);
+                Entity e = new Entity(Vector2.Zero);
+                foreach(LayerInstance l in neigh.LayerInstances)
+                {
+                    if(l._Identifier == "AnimatedTiles")
+                    {
+                        List<Sprite.Animation.Slice> slices = (List<Sprite.Animation.Slice>)((object[])DataManager.Textures[System.IO.Path.ChangeExtension(l._TilesetRelPath, null).Substring("Graphics/".Length)].Tag)[1];
+
+                        foreach (TileInstance t in l.GridTiles)
+                            AttachSliceLights(l, t, slices, null, neigh);
+                    }
+                    else if(l._Identifier == "Lights")
+                    {
+                        List<Sprite.Animation.Slice> slices = (List<Sprite.Animation.Slice>)((object[])DataManager.Textures[System.IO.Path.ChangeExtension(l._TilesetRelPath, null)].Tag)[1];
+
+                        foreach (TileInstance t in l.GridTiles)
+                            AttachSliceLights(l, t, slices, null, neigh);
+                    }
+                }
+
+                foreach (LDtkTypes.Light p in neigh.GetEntities<LDtkTypes.Light>())
+                {
+                    Light l;
+                    if (p.Range == 360)
+                        l = (Light)e.AddComponent(new CircleLight(p.Position, p.Length, new Color(p.Color, p.Opacity), new Color(p.Color, 0)));
+                    else
+                        l = (Light)e.AddComponent(new ArcLight(p.Position, p.Direction, p.Range, p.Length, new Color(p.Color, p.Opacity), new Color(p.Color, 0)));
+
+                    l.CollideWithWalls = p.CollideWithWalls;
+
+                    if (p.BlinkTime is float b)
+                        l.StartBlink(b);
+                }
+
+                foreach (LDtkTypes.StreetLight p in neigh.GetEntities<LDtkTypes.StreetLight>())
+                    if(p.TriggerTopLeft == null)
+                        entities.Add(new StreetLight(p.Position, p.Width(), p.Height()));
+
+                foreach (LDtkTypes.GrapplingPoint p in neigh.GetEntities<LDtkTypes.GrapplingPoint>())
+                {
+                    e.AddComponent(new CircleLight(p.Position + p.Size / 2, Math.Min(p.MaxSwingDistance, 100), new Color(Color.LightBlue, 50), new Color(Color.LightBlue, 0)));
+                }
+
+                entities.Add(e);
             }
 
             if (!downNeighbours)
@@ -745,6 +709,55 @@ namespace Platformer
 
                 if (!isChild)
                     entities.Add(entity);
+            }
+
+            void AttachSliceLights(LayerInstance l, TileInstance t, IList<Sprite.Animation.Slice> slices, Entity attachToEntity, LDtkLevel lvl)
+            {
+                foreach (Sprite.Animation.Slice slice in slices)
+                {
+                    if (new Rectangle(t.Src.X, t.Src.Y, l._GridSize, l._GridSize).Contains(slice.Rect.Location))
+                    {
+                        float direction = float.Parse(slice.Name.Substring(slice.Name.LastIndexOf('D') + 1, slice.Name.IndexOf(" ", slice.Name.LastIndexOf('D')) - slice.Name.LastIndexOf('D')));
+                        float length = float.Parse(slice.Name.Substring(slice.Name.LastIndexOf('L') + 1, slice.Name.IndexOf(" ", slice.Name.LastIndexOf('L')) - slice.Name.LastIndexOf('L')));
+
+                        int lR = slice.Name.LastIndexOf('R');
+                        float range;
+
+                        if (slice.Name.LastIndexOf(" ") > lR)
+                            range = float.Parse(slice.Name.Substring(lR + 1, slice.Name.IndexOf(" ", lR) - lR));
+                        else
+                            range = float.Parse(slice.Name.Substring(lR + 1));
+
+                        Vector2 location;
+                        Vector2 location2;
+
+                        if (slice.Name[0] == 'F')
+                        {
+                            location = new Vector2(slice.Rect.X + slice.Rect.Width - t.Src.X, slice.Rect.Y - t.Src.Y);
+                            location2 = new Vector2(slice.Rect.X - t.Src.X, slice.Rect.Y + slice.Rect.Height - t.Src.Y);
+                        }
+                        else
+                        {
+                            location = (slice.Rect.Location - t.Src).ToVector2();
+                            location2 = (slice.Rect.Location - t.Src + slice.Rect.Size).ToVector2();
+                        }
+
+                        if (attachToEntity == null)
+                        {
+                            attachToEntity = new Entity(new Vector2(t.Px.X + l._PxTotalOffsetX + lvl.Position.X, t.Px.Y + l.PxOffsetY + lvl.Position.Y));
+                            entities.Add(attachToEntity);
+                        }
+
+
+                        if (range == 360)
+                        {
+                            Light l2 = (Light)attachToEntity.AddComponent(new CircleLight(location, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
+                            l2.CollideWithWalls = false;
+                        }
+                        else
+                            attachToEntity.AddComponent(new QuadPointLight(location, location2, direction, range, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
+                    }
+                }
             }
 
             //Texture2D RandomTile(string id) => DataManager.GetRandomTilesetTexture(DataManager.Tilesets[1], id, levelRandom);

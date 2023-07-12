@@ -54,11 +54,13 @@ namespace Platformer
 
         public override void OnTriggerEnter(Player player)
         {
+            base.OnTriggerEnter(player);
             player.JetpackDirectionalPowerCoef += boostingDir * new Vector2(boostX, boostY);
         }
 
         public override void OnTriggerExit(Player player)
         {
+            base.OnTriggerExit(player);
             player.JetpackDirectionalPowerCoef -= boostingDir * new Vector2(boostX, boostY);
         }
 

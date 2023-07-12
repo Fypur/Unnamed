@@ -69,7 +69,14 @@ namespace Platformer
                 AddComponent(Sprite);
             }
 
-            text = (TextBox)AddChild(new TextBox(BreakVelocity.ToString(), "Pixel", Pos + HalfSize, width, height, 1, DestroyableColor, true, TextBox.Alignement.Center));
+            text = new TextBox(BreakVelocity.ToString(), "Pixel", Pos + HalfSize, width, height, 1, DestroyableColor, true, TextBox.Alignement.Center);
+        }
+
+        public override void Awake()
+        {
+            base.Awake();
+
+            AddChild(text);
         }
 
         public bool Break(Player player, Vector2 particleDirection, bool collisionDirectionIsX)

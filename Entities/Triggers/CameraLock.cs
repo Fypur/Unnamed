@@ -33,6 +33,8 @@ namespace Platformer
 
         public override void OnTriggerExit(Player player)
         {
+            base.OnTriggerExit(player);
+
             Engine.Cam.Locked = false;
         }
 

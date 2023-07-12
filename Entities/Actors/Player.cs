@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using FMOD.Studio;
+using FMOD;
 
 namespace Platformer
 {
@@ -1097,17 +1098,6 @@ namespace Platformer
             ResetJetpack();
             ResetSwing();
 
-            PlayerStats.DeathCount++;
-
-            foreach (Trigger trig in Engine.CurrentMap.Data.Triggers)
-            {
-                if (trig.Contains(this))
-                {
-                    trig.OnTriggerExit(this);
-                    //trig.OnTriggerEnter(this);
-                }
-            }
-
             Engine.Cam.Shake(0.2f, 2);
 
 
@@ -1165,6 +1155,14 @@ namespace Platformer
             ResetJetpack();
             ResetSwing();
 
+            foreach (Trigger trig in Engine.CurrentMap.Data.Triggers)
+            {
+                if (trig.Contains(this))
+                    trig.OnTriggerExit(this);
+            }
+
+            PlayerStats.DeathCount++;
+
             Visible = false;
 
             OnDeath?.Invoke();
@@ -1210,13 +1208,18 @@ namespace Platformer
                 if (!changedCamPos)
                     Engine.Cam.CenteredPos = ExactPos;
 
-                Vector2 offset = Vector2.Zero;
                 foreach (CameraOffset camOffset in Engine.CurrentMap.Data.GetEntities<CameraOffset>())
                 {
-                    if(camOffset.Collider.Collide(Collider))
-                        Engine.Cam.CenteredPos += camOffset.Offset;
+                    if (camOffset.Collider.Collide(Collider))
+                    {
+                        camOffset.OnTriggerEnter(this);
+                        
+                        //Engine.Cam.InBoundsOffset += camOffset.Offset;
+
+                    }
                 }
 
+                Engine.Cam.CenteredPos = Engine.Cam.InBoundsPos(Engine.Cam.InBoundsPos(Pos, Engine.Cam.Bounds) + Engine.Cam.InBoundsOffset, Engine.Cam.Bounds);
                 OnDeathTransition?.Invoke();
 
                 Levels.ReloadLastLevelFetched();

@@ -40,12 +40,17 @@ namespace Platformer
 
         public override void OnTriggerEnter(Entity entity)
         {
+            base.OnTriggerEnter(entity);
+
             List<Entity> toDestroy = new(destroyOnTransition);
 
             Level oldLevel = Engine.CurrentMap.CurrentLevel;
             SwingingPoint.SwingingPoints.Clear();
 
             cam.SetBoundaries(Rectangle.Empty);
+
+            for (int i = Light.AllLights.Count - 1; i >= 0; i--)
+                Light.AllLights[i].Visible = false;
 
             if (ToLevel == null)
             {

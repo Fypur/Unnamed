@@ -20,6 +20,8 @@ namespace Platformer
 
         public override void OnTriggerEnter(Player player)
         {
+            base.OnTriggerEnter(player);
+
             if (!following)
             {
                 following = true;

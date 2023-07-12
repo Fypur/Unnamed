@@ -43,8 +43,8 @@ namespace Platformer
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "5";
-        public static int InitWorld = 0;
+        public static string InitLevel = "20";
+        public static int InitWorld = 1;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
 #endif
@@ -153,8 +153,9 @@ namespace Platformer
                 player.ExactPos = Input.MousePos;
 
             if (Input.GetKeyDown(Keys.R))
-                Levels.ReloadLastLevelFetched();
-            
+                for (int i = Light.AllLights.Count - 1; i >= 0; i--)
+                    Light.AllLights[i].Visible = false;
+
             if (Input.GetKeyDown(Keys.D2))
                 RefreshLDtk();
 
@@ -405,7 +406,7 @@ namespace Platformer
             BackgroundTile = (ParallaxBackground)Engine.CurrentMap.Instantiate(new ParallaxBackground(new Sprite[] { new Sprite(DataManager.Textures["bg/bg2/Layer 1"]), new Sprite(DataManager.Textures["bg/bg2/Layer 2"]), new Sprite(DataManager.Textures["bg/bg2/Layer 3"]), new Sprite(DataManager.Textures["bg/bg2/Layer 4"]), new Sprite(DataManager.Textures["bg/bg2/Layer 5"]) }, new float[] { 0, 0.05f, 0.1f, 0.15f, 0.2f }));
 
 #if RELEASE
-            if (World.Iid == LDtkTypes.Worlds.World.Iid)
+            if (World.Iid != LDtkTypes.Worlds.Boss.Iid && World.Iid != LDtkTypes.Worlds.SwingJetpack.Iid)
                 player.CanJetpack = false;
 #endif
             Engine.CurrentMap.Data.Actors.Add(Cam);

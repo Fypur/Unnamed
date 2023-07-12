@@ -27,6 +27,8 @@ namespace Platformer
 
         public override void OnTriggerEnter(Player player)
         {
+            base.OnTriggerEnter(player);
+
             if (!player.Is(Player.States.Dead) && Conditions(player))
             {
                 if (InstaDeath)

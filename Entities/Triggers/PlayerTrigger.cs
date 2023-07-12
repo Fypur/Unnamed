@@ -23,7 +23,7 @@ namespace Platformer
 
         public sealed override void OnTriggerEnter(Entity entity)
             => OnTriggerEnter(entity as Player);
-        public virtual void OnTriggerEnter(Player player) { }
+        public virtual void OnTriggerEnter(Player player) { base.OnTriggerEnter(player); }
 
         public sealed override void OnTriggerStay(Entity entity)
             => OnTriggerStay(entity as Player);
@@ -31,6 +31,6 @@ namespace Platformer
 
         public sealed override void OnTriggerExit(Entity entity)
             => OnTriggerExit(entity as Player);
-        public virtual void OnTriggerExit(Player player) { }
+        public virtual void OnTriggerExit(Player player) { base.OnTriggerExit(player); }
     }
 }
