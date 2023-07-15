@@ -43,8 +43,8 @@ namespace Platformer
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "20";
-        public static int InitWorld = 1;
+        public static string InitLevel = "83";
+        public static int InitWorld = 2;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
 #endif
@@ -110,7 +110,6 @@ namespace Platformer
         protected override void Update(GameTime gameTime)
         {
             Input.UpdateState();
-
 #if DEBUG
             /*if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
                 Exit();*/
@@ -153,8 +152,7 @@ namespace Platformer
                 player.ExactPos = Input.MousePos;
 
             if (Input.GetKeyDown(Keys.R))
-                for (int i = Light.AllLights.Count - 1; i >= 0; i--)
-                    Light.AllLights[i].Visible = false;
+                Levels.ReloadLastLevelFetched();
 
             if (Input.GetKeyDown(Keys.D2))
                 RefreshLDtk();
@@ -419,8 +417,8 @@ namespace Platformer
 
             PauseMenu = new PauseMenu();
 
-            windAmbience = Audio.PlayEvent("WindAmbience");
-            music = Audio.PlayEvent("MusicAtmo");
+            //windAmbience = Audio.PlayEvent("WindAmbience");
+            //music = Audio.PlayEvent("MusicAtmo");
         }
 
         public static void EndGame()

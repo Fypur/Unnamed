@@ -27,7 +27,7 @@ namespace Platformer
         private const float maxJetpackSpeedY = 120;
         private const float maxJetpackTime = 0.5f;
         private const float maxPotentialFallingSpeed = 400;
-        private const int maxHealth = 1;
+        private const int maxHealth = 3;
         private const float invicibilityTime = 2;
         
         private const float acceleration = 1500f;
@@ -140,7 +140,7 @@ namespace Platformer
             stateMachine = new StateMachine<States>(States.Idle);
 
             bool startRun = false;
-            stateMachine.RegisterStateFunctions(States.Running, () => { Sprite.Play("run"); Audio.PlayEvent("FootStep"); startRun = true; }, () =>
+            stateMachine.SetStateFunctions(States.Running, () => { Sprite.Play("run"); Audio.PlayEvent("FootStep"); startRun = true; }, () =>
             {
                 if(Rand.NextDouble() < 0.1f)
                     Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.LightBigDust, new Rectangle(Bounds.X + (Facing == 1 ? 2 : 3), Bounds.Bottom - 2, 3, 3), 1);
@@ -154,17 +154,17 @@ namespace Platformer
                 };
             }, () => Sprite.OnFrameChange = null);
 
-            stateMachine.RegisterStateFunctions(States.Jumping, () => Sprite.Play("jump"), null, null);
-            stateMachine.RegisterStateFunctions(States.Ascending, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
-            stateMachine.RegisterStateFunctions(States.Falling, () => Sprite.Play("fall"), null, null);
-            stateMachine.RegisterStateFunctions(States.Idle, () => Sprite.Play("idle"), null, null);
-            stateMachine.RegisterStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Ascending); }, null);
-            stateMachine.RegisterStateFunctions(States.Jetpack, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
+            stateMachine.SetStateFunctions(States.Jumping, () => Sprite.Play("jump"), null, null);
+            stateMachine.SetStateFunctions(States.Ascending, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
+            stateMachine.SetStateFunctions(States.Falling, () => Sprite.Play("fall"), null, null);
+            stateMachine.SetStateFunctions(States.Idle, () => Sprite.Play("idle"), null, null);
+            stateMachine.SetStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Ascending); }, null);
+            stateMachine.SetStateFunctions(States.Jetpack, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
 
             TrailRenderer trail = new TrailRenderer(HalfSize, 0.03f);
             trail.Condition = () => Velocity.Length() > 210;
 
-            stateMachine.RegisterStateFunctions(States.Swinging, () =>
+            stateMachine.SetStateFunctions(States.Swinging, () =>
                 {
                     Sprite.Play("swing");
                     AddComponent(trail);

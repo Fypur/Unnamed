@@ -237,6 +237,8 @@ namespace Platformer
                     entities.Add(new Boss(p.Position));
                 else if (p.Id == 1)
                     entities.Add(new Boss2(p.Position));
+                else if (p.Id == 2)
+                    entities.Add(new Boss3(p.Position));
             }
 
             foreach (LDtkTypes.SpecialTrigger p in level.GetEntities<LDtkTypes.SpecialTrigger>())
@@ -661,14 +663,14 @@ namespace Platformer
 
             int camWidth = ((System.Text.Json.JsonElement)level.FieldInstances[0]._Value).GetInt32();
 
-            if(Engine.RenderTarget.Width != camWidth)
+            if(camWidth != 320)
             {
                 int camHeight = (int)(9 * (float)camWidth / 16);
 
                 Engine.RenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
                 Engine.PrimitivesRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                Engine.LightsRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
                 Platformer.SecondRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                Engine.Cam.Size = new Vector2(camWidth, camHeight);
             }
 
 

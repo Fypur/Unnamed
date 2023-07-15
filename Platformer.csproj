@@ -42,6 +42,14 @@
 	<PropertyGroup Condition="'$(IsLinux)'=='true'">
 		<DefineConstants>Linux</DefineConstants>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Entities\Actors\NewFolder1\**" />
+	  <Compile Remove="Entities\Actors\NewFolder\**" />
+	  <EmbeddedResource Remove="Entities\Actors\NewFolder1\**" />
+	  <EmbeddedResource Remove="Entities\Actors\NewFolder\**" />
+	  <None Remove="Entities\Actors\NewFolder1\**" />
+	  <None Remove="Entities\Actors\NewFolder\**" />
+	</ItemGroup>
   <ItemGroup>
     <None Remove="Icon.bmp" />
   </ItemGroup>
