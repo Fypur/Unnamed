@@ -13,7 +13,7 @@ namespace Platformer
     {
         public List<Vector2> EscapePoints = new();
 
-        public int Health = 1;
+        public int Health = 5;
         private static bool dead;
 
         private readonly States[][] attackSequences = new States[][]
