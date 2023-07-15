@@ -11,7 +11,7 @@ namespace Platformer
     public class HomingMissile : Actor
     {
         private float acceleration = 6f;
-        private float maxSpeed = 120f;
+        private float maxSpeed = 150f;
         public float Rotation = 0;
 
         private Player player;
@@ -42,8 +42,7 @@ namespace Platformer
 
         public override void Update()
         {
-            acceleration = 6f;
-            maxSpeed = 150f;
+            maxSpeed = 200f;
 
             Vector2 rotVec = (Engine.Player.MiddlePos - MiddlePos);
             if(rotVec != Vector2.Zero)

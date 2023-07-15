@@ -265,8 +265,16 @@ namespace Platformer
                         entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new ChaseBoss(p.Positions, p.Id) }));
                         break;
                     case 5:
-                        if (p.Id == 0 && Engine.CurrentMap.Data.GetEntities<PushingFire>().Count == 0)
-                            entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new PushingFire(level.Position.ToVector2()) }));
+                        if (p.Id == 0)
+                        {
+                            if(Engine.CurrentMap.Data.GetEntities<PushingFire>().Count == 0)
+                                entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new PushingFire(level.Position.ToVector2()) }));
+                            else
+                            {
+                                PushingFire pushingFire = Engine.CurrentMap.Data.GetEntity<PushingFire>();
+                                pushingFire.Height = level.PxHei;
+                            }
+                        }
                         else if (p.Id == 1)
                         {
                             Trigger trig = new Trigger(p.Position, p.Size, new() { typeof(Player) }, null);
@@ -663,7 +671,7 @@ namespace Platformer
 
             int camWidth = ((System.Text.Json.JsonElement)level.FieldInstances[0]._Value).GetInt32();
 
-            if(camWidth != 320)
+            if(Engine.RenderTarget.Width != camWidth)
             {
                 int camHeight = (int)(9 * (float)camWidth / 16);
 

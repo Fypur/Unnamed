@@ -43,7 +43,7 @@ namespace Platformer
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "83";
+        public static string InitLevel = "Boss3";
         public static int InitWorld = 2;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -84,7 +84,7 @@ namespace Platformer
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
 #if DEBUG
-            //StartGame();
+            StartGame();
 
             string currentDir = Environment.CurrentDirectory;
             currentDir = currentDir.Replace('\\', '/');
@@ -484,7 +484,10 @@ namespace Platformer
         #if DEBUG
         private void RefreshLDtk()
         {
-            if(waitRefresh)
+            if (Engine.CurrentMap.Data.GetEntities<Player>() == null)
+                return;
+
+            if (waitRefresh)
                 return;
             
             waitRefresh = true;
