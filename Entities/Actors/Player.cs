@@ -161,7 +161,7 @@ namespace Platformer
             stateMachine.SetStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Ascending); }, null);
             stateMachine.SetStateFunctions(States.Jetpack, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
 
-            TrailRenderer trail = new TrailRenderer(HalfSize, 0.03f);
+            TrailRenderer trail = new TrailRenderer(Particles.Trail, HalfSize, 0.03f);
             trail.Condition = () => Velocity.Length() > 210;
 
             stateMachine.SetStateFunctions(States.Swinging, () =>

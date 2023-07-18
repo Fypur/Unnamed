@@ -20,7 +20,7 @@ namespace Platformer
 
         private bool canHitBoss;
 
-        public HomingMissile(Vector2 position, float rotation) : base(position, 10, 5, 0, new Sprite(Color.OrangeRed))
+        public HomingMissile(Vector2 position, float rotation) : base(position, 10, 5, 0, new Sprite(DataManager.Objects["boss/missile"]))
         {
             Rotation = rotation;
 
@@ -28,13 +28,15 @@ namespace Platformer
             Collider = new BoxColliderRotated(-HalfSize, Width, Height, rotation, Vector2.Zero);
             AddComponent(Collider);
 
-            Sprite.Origin = Vector2.One / 2; //To change when texture gets bigger
+            Sprite.Origin = HalfSize; //To change when texture gets bigger
             Sprite.Rotation = MathHelper.ToRadians(Rotation);
 
             AddComponent(new Timer(1, true, null, () => canHitBoss = true));
             AddComponent(new Timer(5, true, null, SelfDestroy));
 
-            trail = (TrailRenderer)AddComponent(new TrailRenderer(Vector2.Zero, 2));
+            trail = (TrailRenderer)AddComponent(new TrailRenderer(Particles.FireTrail, Vector2.Zero, 0.01f));
+
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, Pos, 4);
 
             player = (Player)Engine.Player;
             boss = Engine.CurrentMap.Data.GetEntity<Boss>();

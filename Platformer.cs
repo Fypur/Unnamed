@@ -38,6 +38,7 @@ namespace Platformer
         public static EventInstance windAmbience;
         public static ParallaxBackground BackgroundTile;
         public static BloomFilter BloomFilter;
+        public static float TimeScale = 1;
 
         public static Vector2 GameDefaultSize = new Vector2(320, 180);
 
@@ -115,7 +116,7 @@ namespace Platformer
                 Exit();*/
 #endif
 
-            Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds * TimeScale;
             
             if (Input.GetKeyDown(Keys.D1))
                 PauseOrUnpause();
@@ -161,6 +162,12 @@ namespace Platformer
             {
                 Engine.CurrentMap.Destroy(Engine.CurrentMap.Data.GetEntity<MainMenu>());
                 Engine.CurrentMap.Instantiate(new MainMenu());
+            }
+
+            if (Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.NumPad5))
+            {
+                Engine.CurrentMap.Data.GetEntity<Boss3>().Pos = Input.MousePos;
+                Engine.CurrentMap.Data.GetEntity<Boss3>().Update();
             }
 
 
@@ -309,7 +316,7 @@ namespace Platformer
 
             Drawing.DebugEvents();
 
-
+            //VIGNETTE
             GraphicsDevice.SetRenderTarget(SecondRenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
 
@@ -324,7 +331,7 @@ namespace Platformer
 
 
 
-
+            //BLOOM
             //BloomFilter.BloomThreshold = 0.8f;
             BloomFilter.BloomThreshold = 0.3f;
             //BloomFilter.BloomStreakLength = 0.4f;

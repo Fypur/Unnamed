@@ -15,7 +15,7 @@ namespace Platformer
         private Player player;
         private TrailRenderer trail;
 
-        public ChaseMissile(Vector2[] controlPoints, float time) : base(controlPoints[0], 10, 5, 0, new Sprite(Color.OrangeRed))
+        public ChaseMissile(Vector2[] controlPoints, float time) : base(controlPoints[0], 10, 5, 0, new Sprite(DataManager.Objects["boss/missile"]))
         {
             player = (Player)Engine.Player;
 
@@ -23,10 +23,10 @@ namespace Platformer
             Collider = new BoxColliderRotated(-HalfSize, Width, Height, 0, Vector2.Zero);
             AddComponent(Collider);
 
-            Sprite.Origin = Vector2.One / 2; //To change when texture gets bigger
+            Sprite.Origin = HalfSize; //To change when texture gets bigger
             Sprite.Rotation = MathHelper.ToRadians(0);
 
-            trail = (TrailRenderer)AddComponent(new TrailRenderer(Vector2.Zero, 2));
+            trail = (TrailRenderer)AddComponent(new TrailRenderer(Particles.Fire, Vector2.Zero, 2));
 
             Vector2 initPos = Pos;
             AddComponent(new Timer(time, true, (timer) =>

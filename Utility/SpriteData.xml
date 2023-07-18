@@ -20,6 +20,14 @@
 		
 		</Player>
 
+		<Boss path="Boss" start="idle">
+			<Loop id="idle" path="idle" delay="1"/>
+			<Loop id="jump" path="jump" delay="1"/>
+			<Loop id="wallRight" path="wallRight" delay="1"/>
+			<Loop id="wallLeft" path="wallLeft" delay="1"/>
+			<Anim id="hit" path="hit" goto="idle"/>
+		</Boss>
+
 		<Folder path="Objects">
 
 			<Refill path="refill" start="rotate">

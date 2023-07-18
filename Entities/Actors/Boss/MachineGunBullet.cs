@@ -23,6 +23,8 @@ namespace Platformer
             AddComponent(Collider);
 
             Velocity = VectorHelper.AngleToVector(rotation) * speed;
+
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, Pos, 4);
         }
 
         public override void Update()

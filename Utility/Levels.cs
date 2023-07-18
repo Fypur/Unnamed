@@ -670,15 +670,16 @@ namespace Platformer
             }
 
             int camWidth = ((System.Text.Json.JsonElement)level.FieldInstances[0]._Value).GetInt32();
+            if(Engine.Cam.Size.X != camWidth)
+                Engine.Cam.Size = new Vector2(camWidth, (int)(9 * (float)camWidth / 16));
 
-            if(Engine.RenderTarget.Width != camWidth)
+            if (Engine.RenderTarget.Width != camWidth)
             {
                 int camHeight = (int)(9 * (float)camWidth / 16);
 
                 Engine.RenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
                 Engine.PrimitivesRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
                 Platformer.SecondRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                Engine.Cam.Size = new Vector2(camWidth, camHeight);
             }
 
 

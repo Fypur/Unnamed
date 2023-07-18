@@ -13,7 +13,7 @@ namespace Platformer
 
         static Particles()
         {
-            TrailRenderer.Trail = Trail;
+
         }
 
         public static readonly ParticleType Dust = new ParticleType()
@@ -148,6 +148,19 @@ namespace Platformer
             LifeMin = 0.4f,
             LifeMax = 3f,
             Size = 5,
+            SizeRange = 2,
+            SizeChange = ParticleType.FadeModes.Linear,
+            Color = Color.Red,
+            Color2 = Color.Yellow,
+            SpeedMin = 5,
+            SpeedMax = 10
+        };
+
+        public static ParticleType FireTrail = new ParticleType()
+        {
+            LifeMin = 0.4f,
+            LifeMax = 3f,
+            Size = 2,
             SizeRange = 2,
             SizeChange = ParticleType.FadeModes.Linear,
             Color = Color.Red,
