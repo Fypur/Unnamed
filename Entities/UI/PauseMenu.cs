@@ -36,7 +36,16 @@ namespace Platformer
                     Platformer.Unpause();
                 }));
 
-                elements.Add(new TextSelectable("Return to Main Menu", "LexendDeca", Options.DefaultScreenSize / 2 + new Vector2(0, 50), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () => {
+                elements.Add(new TextSelectable("Save & Exit to Menu", "LexendDeca", Options.DefaultScreenSize / 2 + new Vector2(0, 50), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () => {
+                    Saving.Save(new()
+                    {
+                        CurrentLevel = Levels.LastLDtkLevel.Identifier,
+                        CurrentWorld = Platformer.InitWorld,
+                    });
+
+                    Saving.Load();
+
+
                     Platformer.Unpause();
                     Platformer.PauseMenu.RemoveChild(this);
                     Platformer.EndGame();

@@ -66,6 +66,7 @@
     <Folder Include="Content\Audio\" />
     <Folder Include="Content\Graphics\Objects\RAM\" />
     <Folder Include="ltdk\" />
+    <Folder Include="Saves\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LDtkMonogame" Version="0.7.0" />

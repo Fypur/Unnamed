@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Platformer.MainMenu;
 
 namespace Platformer
 {
@@ -80,7 +81,9 @@ namespace Platformer
 
                 returned.Add(new TextSelectable("Options", "LexendDeca", new Vector2(48, 352), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { SwitchTo(new OptionsSubMenu()); }));
 
-                returned.Add(new TextSelectable("Quit", "LexendDeca", new Vector2(48, 432), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { Platformer.instance.Exit(); }));
+                returned.Add(new TextSelectable("Chapter Select", "LexendDeca", new Vector2(48, 432), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { SwitchTo(new WorldsSubMenu()); }));
+
+                returned.Add(new TextSelectable("Quit", "LexendDeca", new Vector2(48, 512), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { Platformer.instance.Exit(); }));
 
                 MakeList(returned, true);
 
@@ -93,6 +96,7 @@ namespace Platformer
                 Array.Fill(offsets, Vector2.UnitX * -200);
 
                 offsets[0] -= Vector2.UnitX * 500;
+                offsets[3] -= Vector2.UnitX * 100;
 
                 var s = Slide(1, offsets, Children);
                 s.MoveNext();
@@ -105,12 +109,11 @@ namespace Platformer
                 Array.Fill(offsets, Vector2.UnitX * -200);
 
                 offsets[0] -= Vector2.UnitX * 500;
+                offsets[3] -= Vector2.UnitX * 100;
 
-                var s = SlideTo(1, offsets, Children);
+                var s = SlideTo(0.5f, offsets, Children);
                 s.MoveNext();
                 return s;
-
-                //Fix the pause menu and you also gotta do the player clipping up stuff going thru a wall, maybe even jumpthru help. More graphics and music to do and finish this damn menu boy
             }
         }
 
@@ -229,6 +232,103 @@ namespace Platformer
             {
                 base.OnBack();
                 SwitchTo(new OptionsSubMenu());
+            }
+        }
+
+        public class WorldsSubMenu : SubMenu
+        {
+            public WorldsSubMenu()
+                : base(Vector2.Zero, 1280, 720, true)
+            { }
+
+            public override List<UIElement> GetElements()
+            {
+                List<UIElement> returned = new List<UIElement>();
+
+                var h = new UIImage(new Vector2(208, 32), 400, 96, false, new Sprite(Color.White));
+                h.AddChild(new TextBox("Unnamed.", "Pixel", h.Pos + h.HalfSize, h.Width, h.Height, 5, Color.Black, true));
+                returned.Add(h);
+
+                int i = 0;
+                for(i = 0; i < Platformer.MaxWorlds; i++)
+                {
+                    string initLevel = i switch
+                    {
+                        0 => "0",
+                        1 => "20",
+                        2 => "Boss3",
+                        _ => throw new Exception("init level not defined for chapter")
+                    };
+
+                    string name = i switch
+                    {
+                        0 => "Jetpack",
+                        1 => "Swing",
+                        2 => "Boss",
+                        _ => throw new Exception("World Name not defined")
+                    };
+
+                    int wrld = i;
+
+                    TextSelectable t = new TextSelectable(name, "LexendDeca", new Vector2(48, 272 + i * 80), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () =>
+                    {
+                        Engine.CurrentMap.Instantiate(new ScreenWipe(1.5f, Color.White, () =>
+                        {
+                            Platformer.InitLevel = initLevel;
+                            Platformer.InitWorld = wrld;
+                            Platformer.RefreshWorld();
+
+                            ScreenWipe s = (ScreenWipe)Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)][0];
+                            Platformer.StartGame();
+                            Engine.CurrentMap.Data.Entities.Add(s);
+                            Engine.CurrentMap.Data.UIElements.Add(s);
+                            if (!Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(ScreenWipe), out var l))
+                                Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)] = new();
+                            Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)].Add(s);
+                        }));
+                    });
+
+                    if (i > Platformer.WorldsUnlocked)
+                        t.Selectable = false;
+
+                    returned.Add(t);
+                }
+
+                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(48, 272 + i * 80), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => SwitchTo(new MainSubMenu())));
+
+                MakeList(returned, true);
+
+                return returned;
+            }
+
+            public override IEnumerator OnOpen()
+            {
+                Vector2[] offsets = new Vector2[Children.Count];
+                Array.Fill(offsets, Vector2.UnitX * -200);
+
+                offsets[0] -= Vector2.UnitX * 500;
+
+                var s = Slide(1, offsets, Children);
+                s.MoveNext();
+                return s;
+            }
+
+            public override IEnumerator OnClose()
+            {
+                Vector2[] offsets = new Vector2[Children.Count];
+                Array.Fill(offsets, Vector2.UnitX * -200);
+
+                offsets[0] -= Vector2.UnitX * 500;
+
+                var s = SlideTo(0.5f, offsets, Children);
+                s.MoveNext();
+                return s;
+            }
+
+            public override void OnBack()
+            {
+                base.OnBack();
+                SwitchTo(new MainSubMenu());
             }
         }
     }

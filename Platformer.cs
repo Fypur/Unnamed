@@ -8,6 +8,7 @@ using System.IO;
 using Fiourp;
 using LDtk;
 using Platformer.Bloom;
+using System.Text.Json;
 
 namespace Platformer
 {
@@ -39,20 +40,24 @@ namespace Platformer
         public static ParallaxBackground BackgroundTile;
         public static BloomFilter BloomFilter;
         public static float TimeScale = 1;
+        private static Timer freezeTimer;
+        private static bool freezePaused;
 
         public static Vector2 GameDefaultSize = new Vector2(320, 180);
 
         private MainMenu menu;
 #if DEBUG
-        public static string InitLevel = "Boss3";
-        public static int InitWorld = 2;
+        public const int MaxWorlds = 3;
+        public static string InitLevel = "0";
+        public static int InitWorld = 0;
+        public static int WorldsUnlocked = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
 #endif
 
 #if RELEASE
-        private const string InitLevel = "0";
-        private const int InitWorld = 0;
+        private static string InitLevel = "0";
+        private static int InitWorld = 0;
 #endif
 
         public Platformer()
@@ -72,7 +77,7 @@ namespace Platformer
 
             LDtkFile = LDtkFile.FromFile("Content/World.ldtk");
 
-            World = GetWorld();
+            World = RefreshWorld();
 
             base.Initialize();
 
@@ -84,8 +89,10 @@ namespace Platformer
             BloomFilter.Load(Engine.Graphics.GraphicsDevice, Content, RenderTarget.Width, RenderTarget.Height);
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
+            Saving.Load();
+
 #if DEBUG
-            StartGame();
+            //StartGame();
 
             string currentDir = Environment.CurrentDirectory;
             currentDir = currentDir.Replace('\\', '/');
@@ -117,6 +124,7 @@ namespace Platformer
 #endif
 
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds * TimeScale;
+
             
             if (Input.GetKeyDown(Keys.D1))
                 PauseOrUnpause();
@@ -126,10 +134,14 @@ namespace Platformer
 
             if (!Paused)
             {
-                Engine.CurrentMap.Update();
+                freezeTimer?.Update();
                 Engine.Cam.Update();
-                Engine.CurrentMap.LateUpdate();
                 Engine.Cam.LateUpdate();
+                if (!freezePaused)
+                {
+                    Engine.CurrentMap.Update();
+                    Engine.CurrentMap.LateUpdate();
+                }
             }
 
             if(PauseMenu != null)
@@ -399,6 +411,7 @@ namespace Platformer
             Engine.CurrentMap = map;
             Engine.Cam.Size = GameDefaultSize;
 
+            World = RefreshWorld();
             int worldDepth = 0;
 
             var level = Levels.GetLdtkLevel(InitLevel);
@@ -432,6 +445,8 @@ namespace Platformer
         {
             foreach (Entity entity in Engine.CurrentMap.Data.Entities)
                 entity.OnDestroy();
+
+            Engine.CurrentMap.Data = new MapData(); //Need to clear mapdata so that this update cycle is not finished
 
             Engine.CurrentMap = new Map(Vector2.Zero);
             Engine.Cam.SetBoundaries(Rectangle.Empty);
@@ -479,7 +494,13 @@ namespace Platformer
             base.EndRun();
         }
 
-        private static LDtkWorld GetWorld()
+        public static void Freeze(float time)
+        {
+            freezePaused = true;
+            freezeTimer = new Timer(time, false, null, () => freezePaused = false);
+        }
+
+        public static LDtkWorld RefreshWorld()
         {
             if (InitWorld == 0) return JetpackWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.Jetpack.Iid);
             else if (InitWorld == 1) return SwingWorld = LDtkFile.LoadWorld(LDtkTypes.Worlds.Swing.Iid);
@@ -510,7 +531,7 @@ namespace Platformer
                 File.Copy(currentDir.Substring(0, currentDir.LastIndexOf("Platformer/") + 11) + "Content/World.ldtk", currentDir + "/Content/World.ldtk", true);
 
                 LDtkFile = LDtkFile.FromFile("Content/World.ldtk");
-                World = GetWorld();
+                World = RefreshWorld();
                 
                 Engine.CurrentMap.CurrentLevel.Unload();
                 LDtkLevel lvl = World.LoadLevel(Levels.LastLDtkLevel.Iid);

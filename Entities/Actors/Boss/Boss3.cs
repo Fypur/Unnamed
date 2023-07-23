@@ -24,7 +24,7 @@ namespace Platformer
         };
 
         public StateMachine<States> stateMachine;
-        public enum States { Waiting, Jumping, MachineGun, EnergyBeam, Missile, Dead, Hit }
+        public enum States { Waiting, Jumping, MachineGun, EnergyBeam, Missile, Dead, Hit, Cinematic }
         private Player player;
         private bool clockWise;
 
@@ -45,7 +45,7 @@ namespace Platformer
         private const float cannonLength = 12;
 
         private ParticleType dust;
-        private float circleLength = 0;
+        private List<float> circleLengths = new();
 
         private float rotation
         {
@@ -82,41 +82,6 @@ namespace Platformer
             Sprite.Offset = HalfSize;
 
             dust = Particles.Dust.Copy();
-        }
-
-        private void SetCannonPos()
-        {
-            float finalRot = (player.MiddlePos - MiddlePos).ToAngleRad();
-                
-            float rot1 = rotation + 3 * (float)Math.PI / 2 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4;
-            if(rot1 < 0)
-                rot1 += (float)Math.PI * 2;
-            rot1 %= (float)Math.PI * 2;
-
-            Debug.LogUpdate(rot1);
-            Debug.LogUpdate(cannonPart1.Rotation);
-
-            float rot2 = (float)(Rand.NextDouble() * Math.PI * 2);
-
-            cannonPart2.Rotation += 0.01f;
-            cannonPart1.Rotation = Rot(cannonPart1.Rotation, rot1, 0.05f);
-            cannonPart2.Rotation = Rot(cannonPart2.Rotation, rot2, 0.02f);
-            cannon.Rotation = finalRot;
-
-
-            cannonPart1.Offset = rotColl.Rect[0] - Pos + VectorHelper.Rotate(new Vector2(6, 4), rotation);
-            cannonPart2.Offset = cannonPart1.Offset + VectorHelper.Rotate(new Vector2(cannonLength, 0), cannonPart1.Rotation);
-            cannon.Offset = cannonPart2.Offset + VectorHelper.Rotate(new Vector2(cannonLength, 0), cannonPart2.Rotation);
-
-            cannonPos = Pos + cannon.Offset + VectorHelper.Rotate(new Vector2(21, 3), cannon.Rotation);
-        }
-
-        float Rot(float from, float to, float lerp)
-        {
-            if (Math.Abs(to - from) < Math.Abs(to - (float)Math.PI * 2 - from))
-                return MathHelper.Lerp(from, to, lerp);
-            else
-                return MathHelper.Lerp(from, to - (float)Math.PI * 2, lerp);
         }
 
         public override void Awake()
@@ -162,7 +127,8 @@ namespace Platformer
 
             AddComponent(stateMachine);
 
-            stateMachine.Switch(States.Jumping);
+            stateMachine.Switch(States.Cinematic);
+            AddComponent(new Coroutine(Scream()));
         }
 
         public override void Update()
@@ -184,12 +150,18 @@ namespace Platformer
             invulnerable = true;
             Vector2 init = Pos;
             Vector2 jumpPos = MiddlePos.X - Engine.CurrentMap.CurrentLevel.Pos.X < Engine.CurrentMap.CurrentLevel.Size.X / 2 ? jumpPos0 : jumpPos1;
-            if (player.Collider.Collide(jumpPos))
+
+            if (Pos == jumpPos0)
+                jumpPos = jumpPos1;
+            else if (Pos == jumpPos1)
+                jumpPos = jumpPos0;
+
+            if (Vector2.DistanceSquared(player.Pos, jumpPos) <= 40 * 40)
                 jumpPos = jumpPos2;
 
             int id = Rand.NextInt(0, EscapePoints.Count);
             Vector2 target = EscapePoints[id];
-            while (target == Pos || target == jumpPos || player.Collider.Collide(target))
+            while (target == Pos || target == jumpPos || Vector2.DistanceSquared(player.Pos, target) <= 40 * 40)
             {
                 id = Rand.NextInt(0, EscapePoints.Count);
                 target = EscapePoints[id];
@@ -206,10 +178,12 @@ namespace Platformer
             else
                 enumerator = BezierJump(init, jumpPos, t, 0, true);
 
-            while(enumerator.MoveNext())
+            while (enumerator.MoveNext())
             { yield return null; }
 
             EmitLandingParticules();
+
+            
 
             SwitchRot(id, t + 0.1f);
             if ((target == jumpPos0 && Pos == jumpPos1) || (target == jumpPos1 && Pos == jumpPos0))
@@ -498,6 +472,9 @@ namespace Platformer
                     Sprite.OnChange = null;
                 };
 
+                Platformer.Freeze(0.2f);
+                Engine.Cam.Shake(0.4f, 2);
+
                 yield return new Coroutine.WaitForSeconds(0.4f);
 
                 AddComponent(new Timer(0.3f, true, (t) =>
@@ -584,6 +561,94 @@ namespace Platformer
         public override void Render()
         {
             base.Render();
+
+            Drawing.EndPrimitives();
+            Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget, null, BlendState.Opaque);
+
+            foreach(float c in circleLengths)
+            {
+                if (c > 0)
+                    Drawing.DrawCircle(MiddlePos, c, 0.1f, Color.White);
+
+                float t = 1.02f * c - 12;
+                if(t > 0)
+                    Drawing.DrawCircle(MiddlePos, t, 0.1f, Color.Transparent);
+            }
+
+            Drawing.EndPrimitives();
+            Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget);
+        }
+
+        private void SetCannonPos()
+        {
+            float finalRot = (player.MiddlePos - MiddlePos).ToAngleRad();
+
+            float rot1 = rotation + 3 * (float)Math.PI / 2 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4;
+            if (rot1 < 0)
+                rot1 += (float)Math.PI * 2;
+            rot1 %= (float)Math.PI * 2;
+
+            Debug.LogUpdate(rot1);
+            Debug.LogUpdate(cannonPart1.Rotation);
+
+            float rot2 = (float)(Rand.NextDouble() * Math.PI * 2);
+
+            cannonPart2.Rotation += 0.01f;
+            cannonPart1.Rotation = Rot(cannonPart1.Rotation, rot1, 0.05f);
+            cannonPart2.Rotation = Rot(cannonPart2.Rotation, rot2, 0.02f);
+            cannon.Rotation = finalRot;
+
+
+            cannonPart1.Offset = rotColl.Rect[0] - Pos + VectorHelper.Rotate(new Vector2(6, 4), rotation);
+            cannonPart2.Offset = cannonPart1.Offset + VectorHelper.Rotate(new Vector2(cannonLength, 0), cannonPart1.Rotation);
+            cannon.Offset = cannonPart2.Offset + VectorHelper.Rotate(new Vector2(cannonLength, 0), cannonPart2.Rotation);
+
+            cannonPos = Pos + cannon.Offset + VectorHelper.Rotate(new Vector2(21, 3), cannon.Rotation);
+        }
+
+        private float Rot(float from, float to, float lerp)
+        {
+            if (Math.Abs(to - from) < Math.Abs(to - (float)Math.PI * 2 - from))
+                return MathHelper.Lerp(from, to, lerp);
+            else
+                return MathHelper.Lerp(from, to - (float)Math.PI * 2, lerp);
+        }
+
+        private IEnumerator Scream()
+        {
+            player.CanMove = false;
+            Engine.Cam.Shake(0.5f * 5, 1);
+
+            for (int i = 0; i < 5; i++)
+            {
+                AddComponent(new Coroutine(AddCircle()));
+                yield return new Coroutine.WaitForSeconds(0.5f);
+            }
+
+            //Scream sfx
+            yield return new Coroutine.WaitForSeconds(2);
+
+            player.CanMove = true;
+            circleLengths.Clear();
+            stateMachine.Switch(States.Jumping);
+
+            IEnumerator AddCircle()
+            {
+                int index = circleLengths.Count;
+                circleLengths.Add(1);
+                for(int i = 1; i < 500; i++)
+                {
+                    if (index >= circleLengths.Count)
+                        break;
+
+                    player.CanMove = false;
+                    circleLengths[index] = i * 3;
+                    yield return null;
+                }
+
+                if (index < circleLengths.Count)
+                    circleLengths[index] = 0;
+            }
         }
 
         private IEnumerator DestroyWall()

@@ -332,6 +332,9 @@ namespace Platformer
                 }
             }
 
+            foreach (LDtkTypes.ChapterTransition p in level.GetEntities<LDtkTypes.ChapterTransition>())
+                entities.Add(new ChapterTransition(p.Position, p.Size, p.ToLevel));
+
             bool downNeighbours = false;
             List<Rectangle> downNeighboursRect = new();
 
