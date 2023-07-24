@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,12 +12,30 @@ namespace Platformer
     internal class PushingFire : CameraBlock
     {
         public float Speed = 80;
+        public Direction Direction;
+
+        private Vector2 dirVec;
         private ParticleType fire = Particles.Fire.Copy();
-        public PushingFire(Vector2 position, float speed = 64) : base(position, 8, 184)
+        public PushingFire(Vector2 position, float speed = 64, Direction direction = Direction.Right) : base(position, 8, 184)
         {
+            Direction = direction;
+
+            dirVec = direction switch
+            {
+                Direction.Left => -Vector2.UnitX,
+                Direction.Right => Vector2.UnitX,
+                Direction.Up => -Vector2.UnitY,
+                Direction.Down => Vector2.UnitY,
+                _ => throw new Exception("Direction can't be null");
+            };
+
+            make this work
+
             fire.LifeMin = 1f;
             fire.Direction = 0;
             fire.SpeedMin = speed;
+
+
             fire.Acceleration = Vector2.UnitX * (speed + 25);
 
             Speed = speed;

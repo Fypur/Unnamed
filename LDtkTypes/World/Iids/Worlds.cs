@@ -132,6 +132,7 @@ public static class Worlds
         public static readonly System.Guid Boss3 = System.Guid.Parse("3c0d1ee0-1460-11ee-9c3e-577c9aa67001");
         public static readonly System.Guid Lvl76 = System.Guid.Parse("b1767830-ed50-11ed-bda8-033308489f7a");
         public static readonly System.Guid Lvl82 = System.Guid.Parse("18790070-ed50-11ed-9783-edea66013b46");
+        public static readonly System.Guid Lvl83 = System.Guid.Parse("50d7f020-1460-11ee-8446-11edabdc5f83");
     }
     public static class SwingJetpack
     {
