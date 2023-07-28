@@ -47,18 +47,14 @@ namespace Platformer
 
         private MainMenu menu;
 #if DEBUG
-        public const int MaxWorlds = 3;
-        public static string InitLevel = "0";
-        public static int InitWorld = 0;
-        public static int WorldsUnlocked = 0;
         private FileSystemWatcher watcher;
         private bool waitRefresh;
 #endif
 
-#if RELEASE
-        private static string InitLevel = "0";
-        private static int InitWorld = 0;
-#endif
+        public const int MaxWorlds = 3;
+        public static string InitLevel = "0";
+        public static int InitWorld = 0;
+        public static int WorldsUnlocked = 0;
 
         public Platformer()
         {
@@ -92,6 +88,10 @@ namespace Platformer
             Saving.Load();
 
 #if DEBUG
+            InitWorld = 2;
+            InitLevel = "83";
+            WorldsUnlocked = 2;
+
             //StartGame();
 
             string currentDir = Environment.CurrentDirectory;
@@ -135,13 +135,16 @@ namespace Platformer
             if (!Paused)
             {
                 freezeTimer?.Update();
-                Engine.Cam.Update();
-                Engine.Cam.LateUpdate();
+                
                 if (!freezePaused)
-                {
                     Engine.CurrentMap.Update();
+
+                Engine.Cam.Update();
+
+                if (!freezePaused)
                     Engine.CurrentMap.LateUpdate();
-                }
+
+                Engine.Cam.LateUpdate();
             }
 
             if(PauseMenu != null)
@@ -178,8 +181,11 @@ namespace Platformer
 
             if (Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.NumPad5))
             {
-                Engine.CurrentMap.Data.GetEntity<Boss3>().Pos = Input.MousePos;
-                Engine.CurrentMap.Data.GetEntity<Boss3>().Update();
+                var p = Engine.CurrentMap.Data.GetEntity<PushingFire>();
+                if(p != null)
+                    Engine.CurrentMap.Destroy(p);
+
+                Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos + Engine.CurrentMap.CurrentLevel.Size.OnlyY(), 32, Direction.Up));
             }
 
 
@@ -209,11 +215,6 @@ namespace Platformer
             }
             else
                 IsMouseVisible = true;*/
-
-            if (Input.GetKey(Keys.NumPad5))
-                Engine.Cam.Size += Vector2.One;
-            if (Input.GetKey(Keys.NumPad6))
-                Engine.Cam.Size -= Vector2.One;
 
             if (Input.GetKey(Keys.LeftAlt))
             {
@@ -247,13 +248,6 @@ namespace Platformer
 
                 player.Pos = ((RespawnTrigger)Engine.CurrentMap.Data.EntitiesByType[typeof(RespawnTrigger)][0]).RespawnPoint;
             }*/
-
-            if (Input.GetKeyDown(Keys.P))
-            {
-                if (Engine.CurrentMap.Data.GetEntity<PushingFire>() != null)
-                    Engine.CurrentMap.Destroy(Engine.CurrentMap.Data.GetEntity<PushingFire>());
-                Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos, 8));
-            }
 #endif
 
             Input.UpdateOldState();
@@ -434,16 +428,24 @@ namespace Platformer
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, lvlSize);
             //Cam.Pos = player.Pos;
             Cam.FollowsPlayer = true;
+            Cam.Pos = Cam.FollowedPos(player, 3, 3, Cam.StrictFollowBounds, Cam.Bounds);
 
             PauseMenu = new PauseMenu();
 
-            //windAmbience = Audio.PlayEvent("WindAmbience");
-            //music = Audio.PlayEvent("MusicAtmo");
+#if RELEASE
+            windAmbience = Audio.PlayEvent("WindAmbience");
+
+            if(World == JetpackWorld)
+                music = Audio.PlayEvent("Music");
+            else if(World == SwingWorld)
+                music = Audio.PlayEvent("MusicAtmo");
+#endif
         }
 
         public static void EndGame()
         {
-            foreach (Entity entity in Engine.CurrentMap.Data.Entities)
+            List<Entity> l = new(Engine.CurrentMap.Data.Entities);
+            foreach (Entity entity in l)
                 entity.OnDestroy();
 
             Engine.CurrentMap.Data = new MapData(); //Need to clear mapdata so that this update cycle is not finished

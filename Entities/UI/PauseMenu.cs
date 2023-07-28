@@ -30,13 +30,13 @@ namespace Platformer
             {
                 List<UIElement> elements = new List<UIElement>();
 
-                elements.Add(new TextSelectable("Resume", "LexendDeca", Options.DefaultScreenSize / 2 - new Vector2(0, 50), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () =>
+                elements.Add(new TextSelectable("Resume", "LexendDeca", HalfSize - new Vector2(0, 50), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () =>
                 {
                     Platformer.PauseMenu.RemoveChild(this);
                     Platformer.Unpause();
                 }));
 
-                elements.Add(new TextSelectable("Save & Exit to Menu", "LexendDeca", Options.DefaultScreenSize / 2 + new Vector2(0, 50), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () => {
+                elements.Add(new TextSelectable("Save & Exit to Menu", "LexendDeca", HalfSize + new Vector2(0, 50), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () => {
                     Saving.Save(new()
                     {
                         CurrentLevel = Levels.LastLDtkLevel.Identifier,

@@ -26,13 +26,14 @@ namespace Platformer
             Sprite.Origin = HalfSize; //To change when texture gets bigger
             Sprite.Rotation = MathHelper.ToRadians(0);
 
-            trail = (TrailRenderer)AddComponent(new TrailRenderer(Particles.Fire, Vector2.Zero, 2));
+            trail = (TrailRenderer)AddComponent(new TrailRenderer(Particles.FireTrail, Vector2.Zero, 0.01f));
 
             Vector2 initPos = Pos;
             AddComponent(new Timer(time, true, (timer) =>
             {
                 Vector2 next = Bezier.Generic(controlPoints, timer.AmountCompleted());
                 Rotation = VectorHelper.ToAngleRad(next - Pos);
+                Velocity = (next - Pos) / Engine.Deltatime;
                 Pos = next;
             },
             Explode));

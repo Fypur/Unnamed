@@ -48,7 +48,7 @@ namespace Platformer
                 Progress = Ease.CubeInAndOut(reversed);
                 usedPos = Vector2.Lerp(initPos, endPos, Progress);
                 //Pos = initPos + new Vector2(wiped.Width, 0);
-                Width = (int)(wiped.Width * Progress * 2);
+                Width = (int)Math.Ceiling(wiped.Width * Progress * 2);
             },
             () =>
             {
@@ -80,8 +80,9 @@ namespace Platformer
                     }
                     Progress = Ease.CubeInAndOut(reversed);
                     usedPos = Vector2.Lerp(initPos, endPos, Progress);
-                    Pos.X = usedPos.X;
-                    Width = (int)(wiped.Width * Ease.Reverse(Progress - 0.5f, 0.5f) * 2);
+                    Pos.X = (int)Math.Round(usedPos.X);
+                    //Width = (int)Math.Ceiling(wiped.Width * Ease.Reverse(Progress - 0.5f, 0.5f) * 2);
+                    Width = (int)Math.Ceiling(endPos.X - Pos.X);
                 },
                 () =>
                 {

@@ -9,24 +9,34 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiourp", "..\Fiourp\Fiourp.
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15250715-1042-486C-81CA-FA639FC45AFB}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{15250715-1042-486C-81CA-FA639FC45AFB}.Debug|ARM64.Build.0 = Debug|ARM64
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Debug|x64.ActiveCfg = Debug|x64
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Debug|x64.Build.0 = Debug|x64
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Debug|x86.ActiveCfg = Debug|x86
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Debug|x86.Build.0 = Debug|x86
+		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|ARM64.ActiveCfg = Release|ARM64
+		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|ARM64.Build.0 = Release|ARM64
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|x64.ActiveCfg = Release|x64
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|x64.Build.0 = Release|x64
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|x86.ActiveCfg = Release|x86
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|x86.Build.0 = Release|x86
+		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Debug|ARM64.Build.0 = Debug|ARM64
 		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Debug|x64.ActiveCfg = Debug|x64
 		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Debug|x64.Build.0 = Debug|x64
 		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Debug|x86.ActiveCfg = Debug|x86
 		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Debug|x86.Build.0 = Debug|x86
+		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Release|ARM64.ActiveCfg = Release|ARM64
+		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Release|ARM64.Build.0 = Release|ARM64
 		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Release|x64.ActiveCfg = Release|x64
 		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Release|x64.Build.0 = Release|x64
 		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Release|x86.ActiveCfg = Release|x86

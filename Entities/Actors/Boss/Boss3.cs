@@ -45,6 +45,7 @@ namespace Platformer
         private const float cannonLength = 12;
 
         private ParticleType dust;
+        private bool invicibleTimer;
         private List<float> circleLengths = new();
 
         private float rotation
@@ -85,23 +86,9 @@ namespace Platformer
         }
 
         public override void Awake()
-        { 
+        {
+            dead = true;
             base.Awake();
-
-            if (dead)
-            {
-                Visible = false;
-
-                AddComponent(new Coroutine(Wait()));
-                IEnumerator Wait()
-                {
-                    yield return null;
-                    Entity p = Engine.CurrentMap.Data.GetEntity<SolidPlatform>();
-                    if (p != null)
-                        p.SelfDestroy();
-                    SelfDestroy();
-                }
-            }
 
             speedMult = GetSpeed();
 
@@ -126,6 +113,33 @@ namespace Platformer
             stateMachine.SetStateFunctions(States.Dead, () => AddComponent(new Coroutine(DestroyWall())), null, null);
 
             AddComponent(stateMachine);
+
+            if (dead)
+            {
+                Visible = false;
+
+                AddComponent(new Coroutine(Wait()));
+                IEnumerator Wait()
+                {
+                    yield return null;
+                    Entity pl = Engine.CurrentMap.Data.GetEntity<SolidPlatform>();
+                    if (pl != null)
+                        pl.SelfDestroy();
+                    SelfDestroy();
+
+                    player.Health = 1;
+
+                    if(Engine.CurrentMap.Data.GetEntity<PushingFire>() == null)
+                    {
+                        PushingFire p = (PushingFire)Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos, 64));
+                        p.Height = Engine.CurrentMap.CurrentLevel.Height;
+                        p.GetComponent<HurtBox>().Trigger.Height = p.Height;
+                        p.ChangeSpeed(64);
+                    }
+
+                }
+                return;
+            }
 
             stateMachine.Switch(States.Cinematic);
             AddComponent(new Coroutine(Scream()));
@@ -196,7 +210,8 @@ namespace Platformer
 
             EmitLandingParticules();
 
-            invulnerable = false;
+            if(!invicibleTimer)
+                invulnerable = false;
             NextState();
         }
 
@@ -281,7 +296,7 @@ namespace Platformer
             int numBullets = 3;
             float range = 10;
 
-            float initAngle = (player.MiddlePos - MiddlePos).ToAngleDegrees();
+            float initAngle = (player.MiddlePos - cannonPos).ToAngleDegrees();
 
             initAngle -= range / 2 * (clockWise ? 1 : -1);
 
@@ -309,7 +324,7 @@ namespace Platformer
             cannonPart2.Color = Color.Green;
             cannon.Color = Color.Green;
 
-            Vector2 targDir = MiddlePos + (player.MiddlePos - cannonPos).Normalized() * 1000;
+            Vector2 targDir = cannonPos + (player.MiddlePos - cannonPos).Normalized() * 1000;
             Raycast r = new Raycast(Raycast.RayTypes.MapTiles, cannonPos, targDir, true);
 
             if (r.Hit)
@@ -320,7 +335,7 @@ namespace Platformer
             float timer = 0.7f * speedMult;
             for (int i = 0; timer >= 0; i++)
             {
-                targDir = MiddlePos + (player.MiddlePos - cannonPos).Normalized() * 1000;
+                targDir = cannonPos + (player.MiddlePos - cannonPos).Normalized() * 1000;
                 r = new Raycast(Raycast.RayTypes.MapTiles, cannonPos, targDir, true);
                 if (r.Hit)
                     targDir = r.EndPoint;
@@ -444,7 +459,8 @@ namespace Platformer
                 return;
 
             invulnerable = true;
-            AddComponent(new Timer(2, true, null, () => invulnerable = false));
+            invicibleTimer = true;
+            AddComponent(new Timer(2, true, null, () => { invulnerable = false; invicibleTimer = false;  }));
 
             if (!stateMachine.Is(States.Jumping))
             {
@@ -616,7 +632,9 @@ namespace Platformer
 
         private IEnumerator Scream()
         {
+            player.Update();
             player.CanMove = false;
+
             Engine.Cam.Shake(0.5f * 5, 1);
 
             for (int i = 0; i < 5; i++)
@@ -678,13 +696,11 @@ namespace Platformer
                 yield return 0;
             }
 
-            yield return new Coroutine.WaitForSeconds(1.5f);
-
             cannonPart1.Color = Color.Green;
             cannonPart2.Color = Color.Green;
             cannon.Color = Color.Green;
             
-            LineRenderer l = (LineRenderer)AddComponent(new LineRenderer(MiddlePos, targDir, null, 1, Color.LightCoral, null, null));
+            LineRenderer l = (LineRenderer)AddComponent(new LineRenderer(cannonPos, targDir, null, 1, Color.LightCoral, null, null));
 
             timer = 0.7f * speedMult;
             while(timer >= 0)
@@ -771,6 +787,14 @@ namespace Platformer
 
             while (e.MoveNext())
                 yield return null;
+        }
+
+        public override void OnDestroy()
+        {
+            var l = Engine.CurrentMap.Data.GetEntities<HomingMissile>();
+            foreach (var e in l)
+                e.SelfDestroy();
+            base.OnDestroy();
         }
     }
 }
