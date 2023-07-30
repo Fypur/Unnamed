@@ -87,6 +87,10 @@ namespace Platformer
             foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
                 entities.Add(new RailedPullBlock(p.RailPositions, p.MaxSwingDistance, p.Position, p.Width(), p.Height()));
 
+            if (Engine.Player == null)
+                foreach (LDtkTypes.InitPlayerSpawn p in level.GetEntities<LDtkTypes.InitPlayerSpawn>())
+                    Engine.CurrentMap.Instantiate(new Player(p.Position));
+
             foreach (LDtkTypes.RespawnArea p in level.GetEntities<LDtkTypes.RespawnArea>())
             {
                 if(Engine.Player == null)
@@ -112,10 +116,6 @@ namespace Platformer
                 entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), "industrial2"));
             foreach (LDtkTypes.JumpThru2 p in level.GetEntities<LDtkTypes.JumpThru2>())
                 entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), "industrial2"));
-
-            if (Engine.Player == null)
-                foreach (LDtkTypes.InitPlayerSpawn p in level.GetEntities<LDtkTypes.InitPlayerSpawn>())
-                    Engine.CurrentMap.Instantiate(new Player(p.Position));
 
             foreach (LDtkTypes.SwingTriggered p in level.GetEntities<LDtkTypes.SwingTriggered>())
             {
@@ -255,8 +255,11 @@ namespace Platformer
                         List<Entity> spawned = new();
                         foreach (EntityRef entity in p.Children)
                         {
-                            LDtkTypes.ChaseMissile c = level.GetEntityRef<LDtkTypes.ChaseMissile>(p.Children[0]);
-                            spawned.Add(new ChaseMissile(c.ControlPoints.AddAtBeggining(c.Position), c.Time));
+                            foreach(EntityRef child in p.Children)
+                            {
+                                LDtkTypes.ChaseMissile c = level.GetEntityRef<LDtkTypes.ChaseMissile>(child);
+                                spawned.Add(new ChaseMissile(c.ControlPoints.AddAtBeggining(c.Position), c.Time));
+                            }
                         }
 
                         entities.Add(new SpawnTrigger(p.Position, p.Size, spawned));
@@ -287,6 +290,23 @@ namespace Platformer
                             };
 
                             entities.Add(trig);
+                        }
+                        else if (p.Id == 3)
+                        {
+                            var e = Engine.CurrentMap.Data.GetEntities<PushingFire>();
+                            for (int i = 0; i < e.Count; i++)
+                            {
+                                if (e[i].Direction != Direction.Up)
+                                    e[i].SelfDestroy();
+                            }
+
+                            if (Engine.CurrentMap.Data.GetEntities<PushingFire>().Count == 0)
+                                entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new PushingFire(level.Position.ToVector2(), 32, Direction.Up) }));
+                            else
+                            {
+                                PushingFire pushingFire = Engine.CurrentMap.Data.GetEntity<PushingFire>();
+                                pushingFire.Width = level.PxWid;
+                            }
                         }
                         break;
                     case 6:

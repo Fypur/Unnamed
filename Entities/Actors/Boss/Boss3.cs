@@ -14,7 +14,7 @@ namespace Platformer
         public List<Vector2> EscapePoints = new();
 
         public int Health = 5;
-        private static bool dead;
+        private static bool dead = false;
 
         private readonly States[][] attackSequences = new States[][]
         {
@@ -47,6 +47,10 @@ namespace Platformer
         private ParticleType dust;
         private bool invicibleTimer;
         private List<float> circleLengths = new();
+
+        private static Tile healthTile;
+        public static Tile PlayerHealthTile;
+        private int healthTileIndex = 1;
 
         private float rotation
         {
@@ -87,8 +91,13 @@ namespace Platformer
 
         public override void Awake()
         {
-            dead = true;
             base.Awake();
+
+            healthTile = (Tile)Engine.CurrentMap.Instantiate(new Tile(new Vector2(208, 120), 41, 19, new Sprite(DataManager.Objects["scenery/bossScreen1"])));
+            healthTile.Sprite.LayerDepth = 0;
+            PlayerHealthTile = (Tile)Engine.CurrentMap.Instantiate(new Tile(new Vector2(218, 162), 22, 14, new Sprite(DataManager.Objects["scenery/playerHealth4"])));
+            PlayerHealthTile.Sprite.LayerDepth = 0;
+            player.OnDamage += (health) => PlayerHealthTile.Sprite.Texture = DataManager.Objects["scenery/playerHealth" + (health + 1).ToString()];
 
             speedMult = GetSpeed();
 
@@ -128,8 +137,9 @@ namespace Platformer
                     SelfDestroy();
 
                     player.Health = 1;
+                    healthTile.Sprite.Texture = DataManager.Objects["scenery/bossScreen6"];
 
-                    if(Engine.CurrentMap.Data.GetEntity<PushingFire>() == null)
+                    if (Engine.CurrentMap.Data.GetEntity<PushingFire>() == null)
                     {
                         PushingFire p = (PushingFire)Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos, 64));
                         p.Height = Engine.CurrentMap.CurrentLevel.Height;
@@ -477,6 +487,8 @@ namespace Platformer
             IEnumerator Hit2()
             {
                 Health--;
+                healthTileIndex++;
+                healthTile.Sprite.Texture = DataManager.Objects["scenery/bossScreen" + healthTileIndex.ToString()];
 
                 stateMachine.Switch(States.Hit);
 
@@ -577,6 +589,8 @@ namespace Platformer
         public override void Render()
         {
             base.Render();
+
+            //build a boss health bar and player health bar
 
             Drawing.EndPrimitives();
             Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget, null, BlendState.Opaque);
@@ -794,6 +808,10 @@ namespace Platformer
             var l = Engine.CurrentMap.Data.GetEntities<HomingMissile>();
             foreach (var e in l)
                 e.SelfDestroy();
+
+            healthTile.SelfDestroy();
+            PlayerHealthTile.SelfDestroy();
+
             base.OnDestroy();
         }
     }

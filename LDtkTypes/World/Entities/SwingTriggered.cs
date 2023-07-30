@@ -17,7 +17,7 @@ public class SwingTriggered : ILDtkEntity
 
     public Color SmartColor { get; set; }
 
-    public Vector2[]? Positions { get; set; }
+    public Vector2[] Positions { get; set; }
     public Speed Speed { get; set; }
     public float MaxSwingDistance { get; set; }
 }

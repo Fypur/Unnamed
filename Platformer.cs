@@ -89,7 +89,7 @@ namespace Platformer
 
 #if DEBUG
             InitWorld = 2;
-            InitLevel = "83";
+            InitLevel = "82";
             WorldsUnlocked = 2;
 
             //StartGame();
@@ -415,6 +415,22 @@ namespace Platformer
             Levels.LoadWorldGrid(World, worldDepth);
             Engine.CurrentMap.CurrentLevel.LoadNoAutoTile();
 
+            Vector2 groundedRespawnPos = player.RespawnPoint;
+            bool found = false;
+            for (int i = 0; i < 100; i++)
+                if (!player.Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), groundedRespawnPos + new Vector2(0, 1)))
+                    groundedRespawnPos += new Vector2(0, 1);
+                else
+                {
+                    found = true;
+                    break;
+                }
+
+            if (!found)
+                groundedRespawnPos = player.RespawnPoint;
+
+            player.ExactPos = groundedRespawnPos;
+
             BackgroundTile = (ParallaxBackground)Engine.CurrentMap.Instantiate(new ParallaxBackground(new Sprite[] { new Sprite(DataManager.Textures["bg/bg2/Layer 1"]), new Sprite(DataManager.Textures["bg/bg2/Layer 2"]), new Sprite(DataManager.Textures["bg/bg2/Layer 3"]), new Sprite(DataManager.Textures["bg/bg2/Layer 4"]), new Sprite(DataManager.Textures["bg/bg2/Layer 5"]) }, new float[] { 0, 0.05f, 0.1f, 0.15f, 0.2f }));
 
 #if RELEASE
@@ -426,9 +442,9 @@ namespace Platformer
             if (lvlSize.Y == 184)
                 lvlSize.Y = 180;
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, lvlSize);
-            //Cam.Pos = player.Pos;
             Cam.FollowsPlayer = true;
-            Cam.Pos = Cam.FollowedPos(player, 3, 3, Cam.StrictFollowBounds, Cam.Bounds);
+
+            Cam.CenteredPos = Engine.Cam.InBoundsPos(player.Pos, Engine.Cam.Bounds);
 
             PauseMenu = new PauseMenu();
 
@@ -534,7 +550,10 @@ namespace Platformer
 
                 LDtkFile = LDtkFile.FromFile("Content/World.ldtk");
                 World = RefreshWorld();
-                
+
+                if (Engine.CurrentMap.Data.Entities.Contains(menu))
+                    return;
+
                 Engine.CurrentMap.CurrentLevel.Unload();
                 LDtkLevel lvl = World.LoadLevel(Levels.LastLDtkLevel.Iid);
                 new Level(Levels.GetLevelData(lvl)).LoadNoAutoTile();

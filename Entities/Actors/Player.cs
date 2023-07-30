@@ -69,6 +69,7 @@ namespace Platformer
         public Vector2 JetpackDirectionalPowerCoef = Vector2.Zero;
         public Vector2 RespawnPoint;
         public event Action OnDeath = delegate { };
+        public event Action<int> OnDamage = delegate { };
         public event Action OnDeathTransition = delegate { };
         public Vector2 PrevVelocity;
         public int Health = maxHealth;
@@ -1329,6 +1330,7 @@ namespace Platformer
                 return;
 
             Health--;
+            OnDamage?.Invoke(Health);
 
             if (Health <= 0)
             {

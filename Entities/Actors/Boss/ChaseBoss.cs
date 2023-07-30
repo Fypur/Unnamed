@@ -13,6 +13,7 @@ namespace Platformer
     {
         private int id;
         public Vector2[] Positions;
+        private List<float> circleLengths = new();
 
         public ChaseBoss(Vector2[] positions, int id) : base(positions[0] + new Vector2(-4), 32, 32, 0, new Sprite(Color.Red))
         {
@@ -46,8 +47,7 @@ namespace Platformer
                     Jump(Positions[1], 0.4f, 0),
                     Coroutine.WaitSeconds(1f),
                     Jump(Positions[2], 0.4f, 200),
-                    Coroutine.WaitSeconds(0.2f),
-                    //Scream
+                    Scream(1, 0.2f),
                     MachineGun2(170, 90, 12, true)
                     ));
             else if (id == 4)
@@ -58,7 +58,29 @@ namespace Platformer
 
                 AddComponent(new Coroutine(
                     Jump(Positions[1], 0.4f, 300),
-                    Room4()
+                    Room4(),
+                    Scream(3, 0.5f)
+                    ));
+            }
+            else if (id == 5)
+            {
+                var b = Engine.CurrentMap.Data.GetEntity<ChaseBoss>();
+                if (b != null && b != this)
+                    b.SelfDestroy();
+
+                AddComponent(new Coroutine(
+                    Jump(Positions[1], 0.2f, 200),
+                    Coroutine.WaitSeconds(0.5f),
+                    Jump(Positions[2], 0.2f, 100),
+                    Coroutine.WaitSeconds(0.2f),
+                    Jump(Positions[3], 0.2f, 100),
+                    Coroutine.WaitSeconds(0.4f),
+                    Jump(Positions[4], 0.2f, 100),
+                    Coroutine.WaitSeconds(0.4f),
+                    Jump(Positions[5], 0.2f, 100),
+                    Coroutine.WaitSeconds(1),
+                    Jump(Positions[6], 1.5f, 320),
+                    Coroutine.Do(() => Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Bounds, 100))
                     //Scream
                     ));
             }
@@ -137,11 +159,6 @@ namespace Platformer
 
         }
 
-        private IEnumerator Room2()
-        {
-            yield return null;
-        }
-
         private IEnumerator Jump(Vector2 to, float jumpTime, float height)
         {
             float time = 0;
@@ -208,7 +225,60 @@ namespace Platformer
         {
             yield return new Coroutine.WaitForSeconds(0.4f);
             Engine.CurrentMap.Instantiate(new HomingMissile(MiddlePos, -45));
+        }
 
+        public IEnumerator Scream(int numScreams, float screamTime)
+        {
+            Engine.Cam.Shake(screamTime * numScreams, 1);
+
+            for (int i = 0; i < numScreams; i++)
+            {
+                AddComponent(new Coroutine(AddCircle()));
+                yield return new Coroutine.WaitForSeconds(screamTime);
+            }
+
+            //Scream sfx
+
+            IEnumerator AddCircle()
+            {
+                int index = circleLengths.Count;
+                circleLengths.Add(1);
+                for (int i = 1; i < 500; i++)
+                {
+                    if (index >= circleLengths.Count)
+                        break;
+
+                    circleLengths[index] = i * 3;
+                    yield return null;
+                }
+
+                if (index < circleLengths.Count)
+                    circleLengths[index] = 0;
+            }
+        }
+
+        public override void Render()
+        {
+            base.Render();
+
+            Drawing.EndPrimitives();
+            Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget, null, Microsoft.Xna.Framework.Graphics.BlendState.Opaque);
+
+            if (circleLengths.Count >= 1 && circleLengths[0] == 0)
+                circleLengths.RemoveAt(0);
+
+            foreach (float c in circleLengths)
+            {
+                if (c > 0)
+                    Drawing.DrawCircle(MiddlePos, c, 0.1f, Color.White);
+
+                float t = 1.02f * c - 12;
+                if (t > 0)
+                    Drawing.DrawCircle(MiddlePos, t, 0.1f, Color.Transparent);
+            }
+
+            Drawing.EndPrimitives();
+            Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget);
         }
 
         private void OnCollision(Entity entity)
@@ -274,9 +344,6 @@ namespace Platformer
             }
 
             FallClosestFallingPlatform();
-            yield return new Coroutine.WaitForSeconds(0.1f);
-            FallClosestFallingPlatform();
-            yield return new Coroutine.WaitForSeconds(0.1f);
             FallClosestFallingPlatform();
 
             while (coroutine.Enumerator != null) { coroutine.Update(); yield return null; }

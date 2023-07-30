@@ -128,12 +128,11 @@ public static class Worlds
         public static readonly System.Guid Lvl71 = System.Guid.Parse("429ac420-ed50-11ed-be12-3d57cf78585f");
         public static readonly System.Guid Lvl73 = System.Guid.Parse("08111490-ed50-11ed-9415-cfc62fb767f1");
         public static readonly System.Guid Lvl74 = System.Guid.Parse("f9665450-ed50-11ed-a6b9-a7919e58e468");
-        public static readonly System.Guid Lvl75 = System.Guid.Parse("87888ec0-1460-11ee-a11c-3f3320f9a07c");
         public static readonly System.Guid Boss3 = System.Guid.Parse("3c0d1ee0-1460-11ee-9c3e-577c9aa67001");
-        public static readonly System.Guid Lvl76 = System.Guid.Parse("b1767830-ed50-11ed-bda8-033308489f7a");
-        public static readonly System.Guid Lvl82 = System.Guid.Parse("18790070-ed50-11ed-9783-edea66013b46");
-        public static readonly System.Guid Lvl83 = System.Guid.Parse("50d7f020-1460-11ee-8446-11edabdc5f83");
-        public static readonly System.Guid Lvl84 = System.Guid.Parse("e500e620-1460-11ee-9f7a-177e74731e6b");
+        public static readonly System.Guid Lvl75 = System.Guid.Parse("b1767830-ed50-11ed-bda8-033308489f7a");
+        public static readonly System.Guid Lvl76 = System.Guid.Parse("18790070-ed50-11ed-9783-edea66013b46");
+        public static readonly System.Guid Lvl82 = System.Guid.Parse("50d7f020-1460-11ee-8446-11edabdc5f83");
+        public static readonly System.Guid Lvl83 = System.Guid.Parse("e500e620-1460-11ee-9f7a-177e74731e6b");
     }
     public static class SwingJetpack
     {
