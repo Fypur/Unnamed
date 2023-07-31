@@ -80,8 +80,15 @@ namespace Platformer
                     Jump(Positions[5], 0.2f, 100),
                     Coroutine.WaitSeconds(1),
                     Jump(Positions[6], 1.5f, 320),
-                    Coroutine.Do(() => Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Bounds, 100))
-                    //Scream
+                    Coroutine.Do(() => {
+                        Engine.Cam.Shake(0.3f, 2);
+                        ParticleType explosion = new();
+                        explosion.CopyFrom(Particles.Explosion);
+                        explosion.Direction = -90;
+                        explosion.DirectionRange = 180;
+                        explosion.SpeedMin = 10f;
+                        explosion.SpeedMax = 200f;
+                        Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, Bounds, 100); })
                     ));
             }
 

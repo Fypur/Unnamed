@@ -34,6 +34,10 @@ namespace Platformer
             fire.SpeedMin = speed;
             fire.SpeedMax = speed * 2;
 
+            bigFire = fire.Copy();
+            bigFire.Size = 20;
+            bigFire.LifeMax = 1f;
+
             AddComponent(new Coroutine(Coroutine.WaitUntil(() => Platformer.player.Velocity != Vector2.Zero), Coroutine.Do(() => 
             this.Speed = speed)));
 
@@ -65,38 +69,36 @@ namespace Platformer
             {
                 case Direction.Right:
                     rect = new Rectangle((int)(Pos.X - Engine.Cam.Size.X), (int)Pos.Y, (int)(Engine.Cam.Size.X + 10), Height);
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos, Pos + Size.OnlyY(), 5, fire.Direction);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos, Pos + Size.OnlyY(), (int)(312 * Engine.Deltatime), fire.Direction);
                     Pos.Y = Engine.Cam.Pos.Y;
                     if (Engine.Cam.Pos.X > Pos.X + Width)
                         Pos.X = Engine.Cam.Pos.X - Width;
                     break;
                 case Direction.Left:
                     rect = new Rectangle((int)Pos.X, (int)Pos.Y, (int)(Engine.Cam.Size.X + 10), Height);
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos + Size.OnlyX(), Pos + Size, 5, fire.Direction);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos + Size.OnlyX(), Pos + Size, (int)(312 * Engine.Deltatime), fire.Direction);
                     Pos.Y = Engine.Cam.Pos.Y;
                     if (Engine.Cam.Pos.X + Engine.Cam.Width < Pos.X)
                         Pos.X = Engine.Cam.Pos.X + Engine.Cam.Width;
                     break;
                 case Direction.Up:
                     rect = new Rectangle((int)Pos.X, (int)Pos.Y, Width, (int)(Engine.Cam.Size.Y + 10));
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos + Size.OnlyY(), Pos + Size, 5, fire.Direction);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos + Size.OnlyY(), Pos + Size, (int)(312 * Engine.Deltatime), fire.Direction);
                     Pos.X = Engine.Cam.Pos.X;
                     if (Engine.Cam.Pos.Y + Engine.Cam.Height < Pos.Y)
                         Pos.Y = Engine.Cam.Pos.Y + Engine.Cam.Height;
                     break;
                 default: //Down
                     rect = new Rectangle((int)Pos.X, (int)(Pos.Y - Engine.Cam.Size.Y), Width, (int)(Engine.Cam.Size.Y + 10));
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos, Pos + Size.OnlyX(), 5, fire.Direction);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos, Pos + Size.OnlyX(), (int)(312 * Engine.Deltatime), fire.Direction);
                     Pos.X = Engine.Cam.Pos.X;
                     if (Engine.Cam.Pos.Y > Pos.Y + Height)
                         Pos.Y = Engine.Cam.Pos.Y;
                     break;
             }
 
-            bigFire = fire.Copy();
-            bigFire.Size = 20;
-
-            Engine.CurrentMap.MiddlegroundSystem.Emit(bigFire, rect, 5);
+            bigFire.LifeMax = 3f;
+            Engine.CurrentMap.MiddlegroundSystem.Emit(bigFire, rect, (int)(312 * Engine.Deltatime));
         }
 
         public override void Render()
@@ -148,6 +150,10 @@ namespace Platformer
             fire.SpeedMin = speed;
             fire.SpeedMax = speed * 2;
             fire.Acceleration = dirVec * (speed + 25);
+
+            bigFire = fire.Copy();
+            bigFire.Size = 20;
+            bigFire.LifeMax = 1f;
         }
 
         public void ChangeDirection(Direction direction)
@@ -173,6 +179,10 @@ namespace Platformer
             };*/
 
             fire.Acceleration = dirVec * (Speed + 25);
+
+            bigFire = fire.Copy();
+            bigFire.Size = 20;
+            bigFire.LifeMax = 1f;
 
             Width = GetStats(direction, out int height);
             Height = height;

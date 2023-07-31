@@ -185,7 +185,9 @@ namespace Platformer
 
             foreach (LDtkTypes.CameraBlock p in level.GetEntities<LDtkTypes.CameraBlock>())
                 entities.Add(new CameraBlock(p.Position, p.Size));
-                //
+
+            foreach (LDtkTypes.InvisibleWall p in level.GetEntities<LDtkTypes.InvisibleWall>())
+                entities.Add(new InvisibleWall(p.Position + new Vector2(p.OffsetX, p.OffsetY), p.Width(), p.Height()));
 
             foreach (LDtkTypes.Sawblade p in level.GetEntities<LDtkTypes.Sawblade>())
             {
@@ -348,6 +350,19 @@ namespace Platformer
                         };
 
                         entities.Add(trig3);
+                        break;
+                    case 8:
+                        ClosingGate closing = new ClosingGate(p.Position, p.Width(), p.Height(), p.Iid);
+                        LDtkTypes.SpecialTrigger closingPoint = level.GetEntityRef<LDtkTypes.SpecialTrigger>(p.Children[0]);
+
+                         
+                        Trigger trig4 = new Trigger(closingPoint.Position, closingPoint.Size, new() { typeof(Player) }, null);
+                        trig4.OnTriggerEnterAction = (e) => { closing.Close(); };
+                        if (closingPoint.Id == 100)
+                            trig4.OnTriggerEnterAction += (e) => Engine.CurrentMap.Data.GetEntity<Boss3>().Start();
+
+                        entities.Add(closing);
+                        entities.Add(trig4);
                         break;
                 }
             }

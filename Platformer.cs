@@ -89,7 +89,7 @@ namespace Platformer
 
 #if DEBUG
             InitWorld = 2;
-            InitLevel = "82";
+            InitLevel = "76";
             WorldsUnlocked = 2;
 
             //StartGame();

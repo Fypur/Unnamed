@@ -254,9 +254,10 @@ namespace Platformer
 
             PrevVelocity = Velocity;
 
-            onGround = OnGroundCheck(Pos + new Vector2(0, 1), out Entity onGroundEntity);
-            onRightWall = Collider.CollideAt(Pos + new Vector2(1, 0));
-            onWall = Collider.CollideAt(Pos + new Vector2(-1, 0)) || onRightWall;
+            onGround = CollisionCheck(Pos + new Vector2(0, 1), out Entity onGroundEntity);
+            onRightWall = CollisionCheck(Pos + new Vector2(1, 0));
+            onWall = onRightWall || CollisionCheck(Pos + new Vector2(-1, 0));
+
             if (onWall)
             {
                 onFarWall = true;
@@ -264,8 +265,8 @@ namespace Platformer
             }
             else
             {
-                onRightFarWall = Collider.CollideAt(Pos + new Vector2(wallJumpPixelGap, 0));
-                onFarWall = Collider.CollideAt(Pos + new Vector2(-wallJumpPixelGap, 0)) || onRightFarWall;
+                onRightFarWall = CollisionCheck(Pos + new Vector2(wallJumpPixelGap, 0));
+                onFarWall = onRightFarWall || CollisionCheck(Pos + new Vector2(-wallJumpPixelGap, 0));
             }
 
             if (!CanWallJump)
@@ -510,7 +511,7 @@ namespace Platformer
                 }
             }
 
-            if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !OnGroundCheck(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
+            if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !CollisionCheck(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
                 stateMachine.Switch(States.Ascending);
 
             if (xMoving != 0 && !isUnsticking)
@@ -1185,7 +1186,7 @@ namespace Platformer
                 Vector2 groundedRespawnPos = RespawnPoint;
                 bool found =false;
                 for (int i = 0; i < 100; i++)
-                    if (!OnGroundCheck(groundedRespawnPos + new Vector2(0, 1)))
+                    if (!CollisionCheck(groundedRespawnPos + new Vector2(0, 1)))
                         groundedRespawnPos += new Vector2(0, 1);
                     else
                     {
@@ -1307,10 +1308,10 @@ namespace Platformer
             collisionY = true;
         }
 
-        private bool OnGroundCheck(Vector2 position, out Entity groundedEntity)
-            => Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position, out groundedEntity);
-        private bool OnGroundCheck(Vector2 position)
-            => Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position);
+        private bool CollisionCheck(Vector2 position, out Entity groundedEntity)
+            => Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position, out groundedEntity) && groundedEntity is not InvisibleWall;
+        private bool CollisionCheck(Vector2 position)
+            => CollisionCheck(position, out _);
 
         #endregion
 

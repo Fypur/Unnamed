@@ -102,6 +102,8 @@ namespace Platformer
             speedMult = GetSpeed();
 
             List<IdentifierTrigger> idTrigs = Engine.CurrentMap.Data.GetEntities<IdentifierTrigger>();
+
+            idTrigs.RemoveAll((trig) => trig.Id >= 100);
             idTrigs.Sort((t1, t2) => t1.Id.CompareTo(t2.Id));
 
             jumpPos0 = idTrigs[0].Pos;
@@ -155,15 +157,17 @@ namespace Platformer
             AddComponent(new Coroutine(Scream()));
         }
 
+        public void Start()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Update()
         {
             base.Update();
 
             if(!stateMachine.Is(States.EnergyBeam) && !stateMachine.Is(States.Dead))
                 SetCannonPos();
-
-            Debug.LogUpdate("Health : " +  player.Health);
-            Debug.LogUpdate("Boss Health : " +  Health);
 
             if (!stateMachine.Is(States.Dead) && Collider.Collide(Engine.Player))
                 Hit();
