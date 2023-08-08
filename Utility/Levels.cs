@@ -357,9 +357,18 @@ namespace Platformer
 
                          
                         Trigger trig4 = new Trigger(closingPoint.Position, closingPoint.Size, new() { typeof(Player) }, null);
-                        trig4.OnTriggerEnterAction = (e) => { closing.Close(); };
+                        bool activated = false;
+                        trig4.OnTriggerEnterAction = (e) => { if(!activated)
+                                closing.Close(); };
                         if (closingPoint.Id == 100)
-                            trig4.OnTriggerEnterAction += (e) => Engine.CurrentMap.Data.GetEntity<Boss3>().Start();
+                        {
+                            if (ClosingGate.ClosedGates.TryGetValue(p.Iid, out bool closed) && closed)
+                                trig4.OnTriggerEnterAction += (e) => { if (!activated) Engine.CurrentMap.Data.GetEntity<Boss3>().Start(true); };
+                            else
+                                trig4.OnTriggerEnterAction += (e) => { if (!activated) Engine.CurrentMap.Data.GetEntity<Boss3>().Start(false); };
+                        }
+
+                        trig4.OnTriggerEnterAction += (e) => activated = true;
 
                         entities.Add(closing);
                         entities.Add(trig4);

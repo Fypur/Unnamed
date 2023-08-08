@@ -79,7 +79,7 @@ namespace Platformer
 
 
 
-                returned.Add(new TextSelectable("Options", "LexendDeca", new Vector2(48, 352), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { SwitchTo(new OptionsSubMenu()); }));
+                returned.Add(new TextSelectable("Options", "LexendDeca", new Vector2(48, 352), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { SwitchTo(new OptionsSubMenu<MainSubMenu>()); }));
 
                 returned.Add(new TextSelectable("Chapter Select", "LexendDeca", new Vector2(48, 432), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { SwitchTo(new WorldsSubMenu()); }));
 
@@ -117,10 +117,9 @@ namespace Platformer
             }
         }
 
-        public class OptionsSubMenu : SubMenu
+        public class OptionsSubMenu<T> : SubMenu where T : SubMenu, new()
         {
-            public OptionsSubMenu()
-                : base(Vector2.Zero, 1280, 720, true)
+            public OptionsSubMenu() : base(Vector2.Zero, 1280, 720, true)
             { }
 
             public override List<UIElement> GetElements()
@@ -145,7 +144,7 @@ namespace Platformer
 
                 returned.Add(fullscreen);
 
-                returned.Add(new TextSelectable("Controls", "LexendDeca", new Vector2(640, 350), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new ControlsSubMenu())));
+                returned.Add(new TextSelectable("Controls", "LexendDeca", new Vector2(640, 350), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new ControlsSubMenu<OptionsSubMenu<T>>())));
 
 
                 returned.Add(new SwitcherText(new Vector2(640, 400), 750, 50, true, "Music volume", (int)(Audio.GetGroupVolume("Musics") * 10), 0, 10, (volume) => Audio.SetGroupVolume("Musics", volume / (float)10)));
@@ -154,7 +153,7 @@ namespace Platformer
 
                 returned.Add(new SwitcherText(new Vector2(640, 500), 750, 50, true, "Master Volume", (int)(Audio.GetMasterVolume() * 10), 0, 10, (volume) => Audio.SetMasterVolume(volume / (float)10)));
 
-                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(640, 550), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new MainSubMenu())));
+                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(640, 550), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new T())));
 
                 MakeList(returned, true);
 
@@ -164,7 +163,7 @@ namespace Platformer
             public override void OnBack()
             {
                 base.OnBack();
-                SwitchTo(new MainSubMenu());
+                SwitchTo(new T());
             }
 
             public override IEnumerator OnOpen()
@@ -186,7 +185,7 @@ namespace Platformer
             }
         }
 
-        public class ControlsSubMenu : SubMenu
+        public class ControlsSubMenu<T> : SubMenu where T : SubMenu, new()
         {
             public ControlsSubMenu() : base(Vector2.Zero, 1280, 720, true)
             { }
@@ -203,7 +202,7 @@ namespace Platformer
                 ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -50), 700, 100, true, null, Color.White, "LexendDeca", 1, "Jetpack", Player.JetpackControls, null));
                 ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, 100), 700, 100, true, null, Color.White, "LexendDeca", 1, "Rope Swing", Player.SwingControls, null));
 
-                ControlsMenu.Add(new TextSelectable("Back", "LexendDeca", screenSize / 2 + new Vector2(0, 250), 700, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new OptionsSubMenu())));
+                ControlsMenu.Add(new TextSelectable("Back", "LexendDeca", screenSize / 2 + new Vector2(0, 250), 700, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new T())));
 
                 MakeList(ControlsMenu, true);
 
@@ -231,7 +230,7 @@ namespace Platformer
             public override void OnBack()
             {
                 base.OnBack();
-                SwitchTo(new OptionsSubMenu());
+                SwitchTo(new T());
             }
         }
 

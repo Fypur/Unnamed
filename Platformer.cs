@@ -35,8 +35,8 @@ namespace Platformer
 
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
-        public static EventInstance music;
-        public static EventInstance windAmbience;
+        public static EventInstance Music;
+        public static EventInstance WindAmbience;
         public static ParallaxBackground BackgroundTile;
         public static BloomFilter BloomFilter;
         public static float TimeScale = 1;
@@ -89,7 +89,7 @@ namespace Platformer
 
 #if DEBUG
             InitWorld = 2;
-            InitLevel = "76";
+            InitLevel = "75";
             WorldsUnlocked = 2;
 
             //StartGame();
@@ -447,14 +447,17 @@ namespace Platformer
             Cam.CenteredPos = Engine.Cam.InBoundsPos(player.Pos, Engine.Cam.Bounds);
 
             PauseMenu = new PauseMenu();
+            PauseMenu.Active = false;
+            PauseMenu.Visible = false;
+            Engine.CurrentMap.Instantiate(PauseMenu);
 
 #if RELEASE
-            windAmbience = Audio.PlayEvent("WindAmbience");
+            WindAmbience = Audio.PlayEvent("WindAmbience");
 
             if(World == JetpackWorld)
-                music = Audio.PlayEvent("Music");
+                Music = Audio.PlayEvent("Music");
             else if(World == SwingWorld)
-                music = Audio.PlayEvent("MusicAtmo");
+                Music = Audio.PlayEvent("MusicAtmo");
 #endif
         }
 
@@ -471,9 +474,8 @@ namespace Platformer
             Engine.Cam.Pos = Vector2.Zero;
             Engine.Player = null;
 
-
-            Audio.StopEvent(music);
-            Audio.StopEvent(windAmbience);
+            Audio.StopEvent(Music);
+            Audio.StopEvent(WindAmbience);
         }
 
         public static void PauseOrUnpause()

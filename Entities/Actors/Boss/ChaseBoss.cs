@@ -3,9 +3,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Platformer
 {
@@ -15,12 +12,21 @@ namespace Platformer
         public Vector2[] Positions;
         private List<float> circleLengths = new();
 
+        Tuple<Vector2, Vector2, Vector2>[] cannons;
+
+        private float rotation;
+
+
         public ChaseBoss(Vector2[] positions, int id) : base(positions[0] + new Vector2(-4), 32, 32, 0, new Sprite(Color.Red))
         {
             Positions = positions.Addition(new Vector2(-4));
 
             AddComponent(new HurtBox(Vector2.Zero, Width, Height));
             this.id = id;
+
+            /*RemoveComponent(Collider);
+            Collider = new BoxColliderRotated(Vector2.Zero, Width, Height, 0, HalfSize);
+            AddComponent(Collider);*/ //This seems to break the boss's collision detection somehow
         }
 
         public override void Awake()
@@ -29,7 +35,11 @@ namespace Platformer
                 AddComponent(new Coroutine(Room1()));
             else if (id == 1)
                 AddComponent(new Coroutine(Jump(Positions[1], 0.4f, 300),
-                    Jump(Positions[2], 0.4f, 100), Coroutine.WaitSeconds(0.3f), Jump(Positions[3], 0.4f, 100), Coroutine.WaitSeconds(0.2f), MachineGun(45, 13, true)
+                    Jump(Positions[2], 0.4f, 100),
+                    Coroutine.WaitSeconds(0.3f),
+                    Jump(Positions[3], 0.4f, 100),
+                    Coroutine.WaitSeconds(0.2f),
+                    MachineGun(45, 13, true)
                     ));
             else if (id == 2)
                 AddComponent(new Coroutine(
@@ -78,8 +88,11 @@ namespace Platformer
                     Jump(Positions[4], 0.2f, 100),
                     Coroutine.WaitSeconds(0.4f),
                     Jump(Positions[5], 0.2f, 100),
+                    Coroutine.Do(() => {
+                        GetComponent<HurtBox>().Active = false;
+                    }),
                     Coroutine.WaitSeconds(1),
-                    Jump(Positions[6], 1.5f, 320),
+                    Jump(Positions[6], 1.5f, 310),
                     Coroutine.Do(() => {
                         Engine.Cam.Shake(0.3f, 2);
                         ParticleType explosion = new();
@@ -288,6 +301,30 @@ namespace Platformer
             Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget);
         }
 
+        /*private void SetCannonPos()
+        {
+            float finalRot = (Engine.Player.MiddlePos - MiddlePos).ToAngleRad();
+
+            float rot1 = rotation + 3 * (float)Math.PI / 2 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4;
+            if (rot1 < 0)
+                rot1 += (float)Math.PI * 2;
+            rot1 %= (float)Math.PI * 2;
+
+            float rot2 = (float)(Rand.NextDouble() * Math.PI * 2);
+
+            cannonPart2.Rotation += 0.01f;
+            cannonPart1.Rotation = Rot(cannonPart1.Rotation, rot1, 0.05f);
+            cannonPart2.Rotation = Rot(cannonPart2.Rotation, rot2, 0.02f);
+            cannon.Rotation = finalRot;
+
+
+            cannonPart1.Offset = rotColl.Rect[0] - Pos + VectorHelper.Rotate(new Vector2(6, 4), rotation);
+            cannonPart2.Offset = cannonPart1.Offset + VectorHelper.Rotate(new Vector2(cannonLength, 0), cannonPart1.Rotation);
+            cannon.Offset = cannonPart2.Offset + VectorHelper.Rotate(new Vector2(cannonLength, 0), cannonPart2.Rotation);
+
+            cannonPos = Pos + cannon.Offset + VectorHelper.Rotate(new Vector2(21, 3), cannon.Rotation);
+        }*/
+
         private void OnCollision(Entity entity)
         {
             if (entity is FallingPlatform f)
@@ -334,14 +371,16 @@ namespace Platformer
                 origSpeed = p.Speed;
                 p.ChangeSpeed(p.Speed / 2);
             }
-            
+
+            Action fireSpeed = () => p.ChangeSpeed(origSpeed);
+            (Engine.Player as Player).OnDeath += fireSpeed;
 
             Sprite.Color = Color.Yellow;
             float timer = 0;
             while (timer < 1)
                 timer += Engine.Deltatime;
 
-            Coroutine coroutine = new Coroutine(MachineGun2(180, 90, 10, true));
+            Coroutine coroutine = new Coroutine(MachineGun2(180, 80, 10, true));
 
             while (timer < 2)
             {
@@ -364,6 +403,8 @@ namespace Platformer
 
             if (p != null)
                 p.ChangeSpeed(origSpeed);
+
+            (Engine.Player as Player).OnDeath -= fireSpeed;
         }
     }
 }

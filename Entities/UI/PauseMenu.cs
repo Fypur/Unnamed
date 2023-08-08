@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,7 +37,12 @@ namespace Platformer
                     Platformer.Unpause();
                 }));
 
-                elements.Add(new TextSelectable("Save & Exit to Menu", "LexendDeca", HalfSize + new Vector2(0, 50), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () => {
+                elements.Add(new TextSelectable("Options", "LexendDeca", HalfSize + new Vector2(0, 50), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () =>
+                {
+                    SwitchTo(new MainMenu.OptionsSubMenu<MainSubMenu>());
+                }));
+
+                elements.Add(new TextSelectable("Save & Exit to Menu", "LexendDeca", HalfSize + new Vector2(0, 150), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () => {
                     Saving.Save(new()
                     {
                         CurrentLevel = Levels.LastLDtkLevel.Identifier,

@@ -54,6 +54,10 @@
 			<JetpackBooster path="">
 				<Loop id="right" path="jetpackBooster" delay="0.05"/>
 			</JetpackBooster>
+
+			<ClosingGate path="">
+				<Anim id="close" path="closingGate"/>
+			</ClosingGate>
 			
 			<Folder path ="scenery">
 				

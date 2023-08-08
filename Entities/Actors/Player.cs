@@ -27,7 +27,7 @@ namespace Platformer
         private const float maxJetpackSpeedY = 120;
         private const float maxJetpackTime = 0.5f;
         private const float maxPotentialFallingSpeed = 400;
-        private const int maxHealth = 3;
+        private const int initHealth = 1;
         private const float invicibilityTime = 2;
         
         private const float acceleration = 1500f;
@@ -72,7 +72,7 @@ namespace Platformer
         public event Action<int> OnDamage = delegate { };
         public event Action OnDeathTransition = delegate { };
         public Vector2 PrevVelocity;
-        public int Health = maxHealth;
+        public int Health = initHealth;
 
         private bool onGround;
         private bool previousOnGround = true;
@@ -1174,7 +1174,7 @@ namespace Platformer
             Engine.Cam.Shake(0.4f, 1);
 
             //Audio.PlayEvent("DeathExplosion");
-            Health = maxHealth;
+            Health = initHealth;
 
             Velocity = Vector2.Zero;
             Engine.CurrentMap.Instantiate(new ScreenWipe(1, Color.Black, () =>

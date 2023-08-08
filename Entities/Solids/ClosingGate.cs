@@ -12,20 +12,29 @@ namespace Platformer
     {
         private int finalHeight;
         private Guid id;
-        private static Dictionary<Guid, bool> closed = new();
-        public ClosingGate(Vector2 position, int width, int height, Guid id) : base(position, width, 1, new Sprite(Color.Gray))
+        public static Dictionary<Guid, bool> ClosedGates = new();
+        bool closed = false;
+        public ClosingGate(Vector2 position, int width, int height, Guid id) : base(position, width, 1, new Sprite(DataManager.Objects["closingGate1"]))
         {
             Collider.Collidable = false;
             finalHeight = height;
             this.id = id;
+
+            Sprite.Add(Sprite.AllAnimData["ClosingGate"]);
+
+            if (ClosedGates.TryGetValue(id, out bool closed) && closed)
+                Close();
         }
 
         public void Close()
         {
-            if (closed.TryGetValue(id, out bool open) && open)
+            if (closed)
                 return;
 
-            closed[id] = true;
+            Sprite.Play("close");
+
+            closed = true;
+            ClosedGates[id] = true;
             Collider.Collidable = true;
 
             AddComponent(new Timer(1, true, (timer) =>

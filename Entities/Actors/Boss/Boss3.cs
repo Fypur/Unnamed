@@ -1,4 +1,5 @@
 ﻿using Fiourp;
+using LDtkTypes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -93,6 +94,8 @@ namespace Platformer
         {
             base.Awake();
 
+            player.Health = 3;
+
             healthTile = (Tile)Engine.CurrentMap.Instantiate(new Tile(new Vector2(208, 120), 41, 19, new Sprite(DataManager.Objects["scenery/bossScreen1"])));
             healthTile.Sprite.LayerDepth = 0;
             PlayerHealthTile = (Tile)Engine.CurrentMap.Instantiate(new Tile(new Vector2(218, 162), 22, 14, new Sprite(DataManager.Objects["scenery/playerHealth4"])));
@@ -154,12 +157,21 @@ namespace Platformer
             }
 
             stateMachine.Switch(States.Cinematic);
-            AddComponent(new Coroutine(Scream()));
+            Visible = false;
         }
 
-        public void Start()
+        public void Start(bool fast)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            Visible = true;
+
+            if (!fast)
+            {
+                Pos = Pos + new Vector2(120, -208);
+                AddComponent(new Coroutine(BezierJump(Pos, Pos - new Vector2(120, -208), 0.4f, 0, true), Coroutine.WaitSeconds(1), Scream()));
+            }
+            else
+                AddComponent(new Coroutine(Scream()));
         }
 
         public override void Update()
@@ -622,9 +634,6 @@ namespace Platformer
                 rot1 += (float)Math.PI * 2;
             rot1 %= (float)Math.PI * 2;
 
-            Debug.LogUpdate(rot1);
-            Debug.LogUpdate(cannonPart1.Rotation);
-
             float rot2 = (float)(Rand.NextDouble() * Math.PI * 2);
 
             cannonPart2.Rotation += 0.01f;
@@ -650,10 +659,9 @@ namespace Platformer
 
         private IEnumerator Scream()
         {
-            player.Update();
-            player.CanMove = false;
-
+            player.Velocity += (player.MiddlePos - MiddlePos).Normalized() * 300 + new Vector2(0, -200);
             Engine.Cam.Shake(0.5f * 5, 1);
+            AddComponent(new Coroutine(FreezeInput(0.5f * 5 + 2)));
 
             for (int i = 0; i < 5; i++)
             {
@@ -664,9 +672,9 @@ namespace Platformer
             //Scream sfx
             yield return new Coroutine.WaitForSeconds(2);
 
-            player.CanMove = true;
             circleLengths.Clear();
             stateMachine.Switch(States.Jumping);
+            
 
             IEnumerator AddCircle()
             {
@@ -677,13 +685,30 @@ namespace Platformer
                     if (index >= circleLengths.Count)
                         break;
 
-                    player.CanMove = false;
                     circleLengths[index] = i * 3;
                     yield return null;
                 }
 
                 if (index < circleLengths.Count)
                     circleLengths[index] = 0;
+            }
+
+            IEnumerator FreezeInput(float t)
+            {
+                Input.State s = Input.CurrentState;
+                Input.State oldS = Input.OldState;
+
+                float time = 0;
+                while(time < t)
+                {
+                    Input.CurrentState = new Input.State();
+                    Input.OldState = new Input.State();
+                    time += Engine.Deltatime;
+                    yield return null;
+                }
+
+                Input.CurrentState = s;
+                Input.OldState = oldS;
             }
         }
 
