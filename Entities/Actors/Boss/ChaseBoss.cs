@@ -12,17 +12,34 @@ namespace Platformer
         public Vector2[] Positions;
         private List<float> circleLengths = new();
 
-        Tuple<Vector2, Vector2, Vector2>[] cannons;
+        Tuple<Sprite, Sprite, Sprite>[] cannons;
+        Vector2 cannonPos;
 
         private float rotation;
 
 
-        public ChaseBoss(Vector2[] positions, int id) : base(positions[0] + new Vector2(-4), 32, 32, 0, new Sprite(Color.Red))
+        public ChaseBoss(Vector2[] positions, int id) : base(positions[0] + new Vector2(-4), 32, 32, 0, new Sprite(Color.Transparent))
         {
             Positions = positions.Addition(new Vector2(-4));
 
             AddComponent(new HurtBox(Vector2.Zero, Width, Height));
             this.id = id;
+
+            cannons = new Tuple<Sprite, Sprite, Sprite>[3];
+            for(int i = 0; i < 3; i++)
+            {
+                Sprite cannonPart1 = new Sprite(DataManager.Textures["Boss/arm"]);
+                Sprite cannon = new Sprite(DataManager.Textures["Boss/gunArm"]);
+
+                cannonPart1.Origin = Vector2.UnitY;
+                Sprite cannonPart2 = cannonPart1.Copy();
+
+                AddComponent(cannonPart1);
+                AddComponent(cannonPart2);
+                AddComponent(cannon);
+
+                cannons[i] = new(cannonPart1, cannonPart2, cannon);
+            }
 
             /*RemoveComponent(Collider);
             Collider = new BoxColliderRotated(Vector2.Zero, Width, Height, 0, HalfSize);
@@ -277,9 +294,18 @@ namespace Platformer
             }
         }
 
+        public override void Update()
+        {
+            base.Update();
+
+            SetCannonPos();
+        }
+
         public override void Render()
         {
             base.Render();
+
+            Sprite.Color = Color.Transparent;
 
             Drawing.EndPrimitives();
             Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget, null, Microsoft.Xna.Framework.Graphics.BlendState.Opaque);
@@ -301,29 +327,52 @@ namespace Platformer
             Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget);
         }
 
-        /*private void SetCannonPos()
+        private void SetCannonPos()
         {
             float finalRot = (Engine.Player.MiddlePos - MiddlePos).ToAngleRad();
 
-            float rot1 = rotation + 3 * (float)Math.PI / 2 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4;
-            if (rot1 < 0)
-                rot1 += (float)Math.PI * 2;
-            rot1 %= (float)Math.PI * 2;
+            float[] rot1 = new float[] {
+                rotation + 5 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
+                rotation + 6 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
+                rotation + 7 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
+            };
 
-            float rot2 = (float)(Rand.NextDouble() * Math.PI * 2);
+            for(int i = 0; i < 3; i++)
+            {
+                if (rot1[i] < 0)
+                    rot1[i] += (float)Math.PI * 2;
+                rot1[i] %= (float)Math.PI * 2;
+            }
 
-            cannonPart2.Rotation += 0.01f;
-            cannonPart1.Rotation = Rot(cannonPart1.Rotation, rot1, 0.05f);
-            cannonPart2.Rotation = Rot(cannonPart2.Rotation, rot2, 0.02f);
-            cannon.Rotation = finalRot;
+            float[] rot2 = new float[3];
+            for (int i = 0; i < 3; i++)
+                rot2[i] = (float)(Rand.NextDouble() * Math.PI * 2);
+
+            for(int i = 0; i < 3; i++)
+            {
+                cannons[i].Item2.Rotation += 0.01f;
+                cannons[i].Item1.Rotation = Rot(cannons[i].Item1.Rotation, rot1[i], 0.05f);
+                cannons[i].Item2.Rotation = Rot(cannons[i].Item2.Rotation, rot2[i], 0.02f);
+                cannons[i].Item3.Rotation = finalRot;
 
 
-            cannonPart1.Offset = rotColl.Rect[0] - Pos + VectorHelper.Rotate(new Vector2(6, 4), rotation);
-            cannonPart2.Offset = cannonPart1.Offset + VectorHelper.Rotate(new Vector2(cannonLength, 0), cannonPart1.Rotation);
-            cannon.Offset = cannonPart2.Offset + VectorHelper.Rotate(new Vector2(cannonLength, 0), cannonPart2.Rotation);
+                //cannons[i].Item1.Offset = rotColl.Rect[0] - Pos + VectorHelper.Rotate(new Vector2(6, 4), rotation);
+                cannons[i].Item1.Offset = VectorHelper.Rotate(new Vector2(6, 4), rotation);
+                cannons[i].Item2.Offset = cannons[i].Item1.Offset + VectorHelper.Rotate(new Vector2(Boss3.CannonLength, 0), cannons[i].Item1.Rotation);
+                cannons[i].Item3.Offset = cannons[i].Item2.Offset + VectorHelper.Rotate(new Vector2(Boss3.CannonLength, 0), cannons[i].Item2.Rotation);
 
-            cannonPos = Pos + cannon.Offset + VectorHelper.Rotate(new Vector2(21, 3), cannon.Rotation);
-        }*/
+            }
+
+            cannonPos = Pos + cannons[1].Item3.Offset + VectorHelper.Rotate(new Vector2(21, 3), cannons[1].Item3.Rotation);
+
+            float Rot(float from, float to, float lerp)
+            {
+                if (Math.Abs(to - from) < Math.Abs(to - (float)Math.PI * 2 - from))
+                    return MathHelper.Lerp(from, to, lerp);
+                else
+                    return MathHelper.Lerp(from, to - (float)Math.PI * 2, lerp);
+            }
+        }
 
         private void OnCollision(Entity entity)
         {

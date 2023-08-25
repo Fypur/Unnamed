@@ -43,7 +43,7 @@ namespace Platformer
         private Sprite cannonPart2;
         private Sprite cannon;
         private Vector2 cannonPos;
-        private const float cannonLength = 12;
+        public const float CannonLength = 12;
 
         private ParticleType dust;
         private bool invicibleTimer;
@@ -643,8 +643,8 @@ namespace Platformer
 
 
             cannonPart1.Offset = rotColl.Rect[0] - Pos + VectorHelper.Rotate(new Vector2(6, 4), rotation);
-            cannonPart2.Offset = cannonPart1.Offset + VectorHelper.Rotate(new Vector2(cannonLength, 0), cannonPart1.Rotation);
-            cannon.Offset = cannonPart2.Offset + VectorHelper.Rotate(new Vector2(cannonLength, 0), cannonPart2.Rotation);
+            cannonPart2.Offset = cannonPart1.Offset + VectorHelper.Rotate(new Vector2(CannonLength, 0), cannonPart1.Rotation);
+            cannon.Offset = cannonPart2.Offset + VectorHelper.Rotate(new Vector2(CannonLength, 0), cannonPart2.Rotation);
 
             cannonPos = Pos + cannon.Offset + VectorHelper.Rotate(new Vector2(21, 3), cannon.Rotation);
         }
