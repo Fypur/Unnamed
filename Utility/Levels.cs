@@ -373,6 +373,9 @@ namespace Platformer
                         entities.Add(closing);
                         entities.Add(trig4);
                         break;
+                    case 9:
+                        entities.Add(new JetpackPickUp(p.Position));
+                        break;
                 }
             }
 

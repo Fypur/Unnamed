@@ -73,6 +73,7 @@ namespace Platformer
         public event Action OnDeathTransition = delegate { };
         public Vector2 PrevVelocity;
         public int Health = initHealth;
+        public bool CanAnimateSprite = false;
 
         private bool onGround;
         private bool previousOnGround = true;
@@ -250,7 +251,7 @@ namespace Platformer
                 
             }
 
-             Sprite.Active = CanMove;
+            Sprite.Active = CanAnimateSprite || CanMove;
 
             PrevVelocity = Velocity;
 

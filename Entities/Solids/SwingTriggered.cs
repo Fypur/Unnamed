@@ -43,7 +43,7 @@ namespace Platformer
             switch (type)
             {
                 case Types.Slow:
-                    maxSpeed = 60;
+                    maxSpeed = 30;
                     acceleration = 5;
                     break;
                 case Types.Normal:

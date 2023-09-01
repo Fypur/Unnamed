@@ -140,6 +140,18 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/bg/bg2/Layer 5.png
 
+#begin Graphics/bg/mainMenu.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Graphics/bg/mainMenu.png
+
 #begin Graphics/Boss/arm.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor
@@ -817,6 +829,30 @@
 /processorParam:Spacing=0
 /processorParam:InnerPadding=0
 /build:Graphics/Player/jump.aseprite
+
+#begin Graphics/Player/pickUp.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Player/pickUp.aseprite
+
+#begin Graphics/Player/reversePickingUp.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Player/reversePickingUp.aseprite
 
 #begin Graphics/Player/rope.aseprite
 /importer:AsepriteDocumentImporter

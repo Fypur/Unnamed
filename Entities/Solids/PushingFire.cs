@@ -71,34 +71,34 @@ namespace Platformer
                     rect = new Rectangle((int)(Pos.X - Engine.Cam.Size.X), (int)Pos.Y, (int)(Engine.Cam.Size.X + 10), Height);
                     Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos, Pos + Size.OnlyY(), (int)(312 * Engine.Deltatime), fire.Direction);
                     Pos.Y = Engine.Cam.Pos.Y;
-                    if (Engine.Cam.Pos.X > Pos.X + Width)
+                    if (Engine.Cam.Pos.X > Pos.X + Width && Speed != 0)
                         Pos.X = Engine.Cam.Pos.X - Width;
                     break;
                 case Direction.Left:
                     rect = new Rectangle((int)Pos.X, (int)Pos.Y, (int)(Engine.Cam.Size.X + 10), Height);
                     Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos + Size.OnlyX(), Pos + Size, (int)(312 * Engine.Deltatime), fire.Direction);
                     Pos.Y = Engine.Cam.Pos.Y;
-                    if (Engine.Cam.Pos.X + Engine.Cam.Width < Pos.X)
+                    if (Engine.Cam.Pos.X + Engine.Cam.Width < Pos.X && Speed != 0)
                         Pos.X = Engine.Cam.Pos.X + Engine.Cam.Width;
                     break;
                 case Direction.Up:
                     rect = new Rectangle((int)Pos.X, (int)Pos.Y, Width, (int)(Engine.Cam.Size.Y + 10));
                     Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos + Size.OnlyY(), Pos + Size, (int)(312 * Engine.Deltatime), fire.Direction);
                     Pos.X = Engine.Cam.Pos.X;
-                    if (Engine.Cam.Pos.Y + Engine.Cam.Height < Pos.Y)
+                    if (Engine.Cam.Pos.Y + Engine.Cam.Height < Pos.Y && Speed != 0)
                         Pos.Y = Engine.Cam.Pos.Y + Engine.Cam.Height;
                     break;
                 default: //Down
                     rect = new Rectangle((int)Pos.X, (int)(Pos.Y - Engine.Cam.Size.Y), Width, (int)(Engine.Cam.Size.Y + 10));
                     Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos, Pos + Size.OnlyX(), (int)(312 * Engine.Deltatime), fire.Direction);
                     Pos.X = Engine.Cam.Pos.X;
-                    if (Engine.Cam.Pos.Y > Pos.Y + Height)
+                    if (Engine.Cam.Pos.Y > Pos.Y + Height && Speed != 0)
                         Pos.Y = Engine.Cam.Pos.Y;
                     break;
             }
 
             bigFire.LifeMax = 3f;
-            Engine.CurrentMap.MiddlegroundSystem.Emit(bigFire, rect, (int)(312 * Engine.Deltatime));
+            Engine.CurrentMap.MiddlegroundSystem.Emit(bigFire, rect, (int)(240 * Engine.Deltatime));
         }
 
         public override void Render()
@@ -126,7 +126,7 @@ namespace Platformer
                     break;
             }
 
-            Pos = Engine.CurrentMap.CurrentLevel.Pos + Engine.CurrentMap.CurrentLevel.Size / 2 - dirVec * Engine.CurrentMap.CurrentLevel.Size / 2 + dirVec * new Vector2(this.Speed * Engine.Deltatime * 1.5f, 0);
+            //Pos = Engine.CurrentMap.CurrentLevel.Pos + Engine.CurrentMap.CurrentLevel.Size / 2 - dirVec * Engine.CurrentMap.CurrentLevel.Size / 2 + dirVec * new Vector2(this.Speed * Engine.Deltatime * 1.5f, 0);
 
             float speed = this.Speed;
             this.Speed = 0;

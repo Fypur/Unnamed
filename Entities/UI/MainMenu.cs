@@ -12,11 +12,74 @@ namespace Platformer
 {
     public class MainMenu : UIElement
     {
+        ParticleType BigFire;
+        ParticleType Wind;
         public enum ScreenSizes { x1, x2, x3, x4, x5, x6, x7 }
-        public MainMenu() : base(Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(Color.Black))
+        public MainMenu() : base(Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(DataManager.Textures["bg/mainMenu"]))
         {
             Platformer.PauseMenu = null;
             AddChild(new MainSubMenu());
+
+            BigFire = Particles.Fire.Copy();
+            BigFire.Acceleration = -Vector2.UnitY * 100;
+            BigFire.SpeedMin = 5;
+            BigFire.SpeedMax = 200;
+            BigFire.Size = 10;
+            BigFire.SizeRange = 15;
+            BigFire.Direction = -90;
+            BigFire.DirectionRange = 90;
+
+            Wind = new ParticleType()
+            {
+                LifeMin = 1,
+                LifeMax = 4,
+                SpeedMin = 200,
+                SpeedMax = 500,
+                Size = 4,
+                SizeRange = 3,
+                SizeChange = ParticleType.FadeModes.EndSmooth,
+                FadeMode = ParticleType.FadeModes.Linear,
+                Acceleration = Vector2.UnitX * 200,
+                Direction = 0,
+                DirectionRange = 40,
+                Color = new(Color.Gray, 40),
+            };
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            Sprite.Scale = Size / new Vector2(1280, 720);
+
+            BigFire.Color = new Color(BigFire.Color, 150);
+            BigFire.Color2 = new Color(BigFire.Color2.Value, 150);
+            Wind = new ParticleType()
+            {
+                LifeMin = 1,
+                LifeMax = 4,
+                SpeedMin = 200,
+                SpeedMax = 500,
+                Size = 4,
+                SizeRange = 3,
+                SizeChange = ParticleType.FadeModes.EndSmooth,
+                FadeMode = ParticleType.FadeModes.Linear,
+                Acceleration = Vector2.UnitX * 200,
+                Direction = 0,
+                DirectionRange = 40,
+                Color = new(Color.Gray, 100),
+            };
+
+            Engine.CurrentMap.ForegroundSystem.Emit(BigFire, new Rectangle((Pos + new Vector2(0, Size.Y)).ToPoint(), (Pos + Size).ToPoint()), 2); 
+            Engine.CurrentMap.ForegroundSystem.Emit(Wind, Bounds, 2); 
+            //Engine.CurrentMap.ForegroundSystem.Emit(Wind, new Rectangle((Pos - new Vector2(400, 0)).ToPoint(), (Pos + Size - new Vector2(400, 0)).ToPoint()), 2);
+        }
+
+        public override void Render()
+        {
+            base.Render();
+
+            Engine.CurrentMap.ForegroundSystem.Render();
         }
 
         public void SwitchToSubMenu(List<UIElement> subMenu)
@@ -255,7 +318,7 @@ namespace Platformer
                     {
                         0 => "0",
                         1 => "20",
-                        2 => "Boss3",
+                        2 => "75",
                         _ => throw new Exception("init level not defined for chapter")
                     };
 

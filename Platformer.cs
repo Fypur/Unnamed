@@ -42,6 +42,7 @@ namespace Platformer
         public static float TimeScale = 1;
         private static Timer freezeTimer;
         private static bool freezePaused;
+        private static Input.State freezeState;
 
         public static Vector2 GameDefaultSize = new Vector2(320, 180);
 
@@ -88,8 +89,8 @@ namespace Platformer
             Saving.Load();
 
 #if DEBUG
-            InitWorld = 2;
-            InitLevel = "75";
+            InitWorld = 0;
+            InitLevel = "2";
             WorldsUnlocked = 2;
 
             //StartGame();
@@ -249,7 +250,6 @@ namespace Platformer
                 player.Pos = ((RespawnTrigger)Engine.CurrentMap.Data.EntitiesByType[typeof(RespawnTrigger)][0]).RespawnPoint;
             }*/
 #endif
-
             Input.UpdateOldState();
 
             Audio.Update();
@@ -373,7 +373,7 @@ namespace Platformer
             Drawing.End();
 
 
-            Drawing.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+            Drawing.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.UIRender();
 
@@ -517,7 +517,8 @@ namespace Platformer
         public static void Freeze(float time)
         {
             freezePaused = true;
-            freezeTimer = new Timer(time, false, null, () => freezePaused = false);
+            freezeTimer = new Timer(time, false, null, () => { freezePaused = false; Input.OldState = freezeState; });
+            freezeState = Input.CurrentState;
         }
 
         public static LDtkWorld RefreshWorld()

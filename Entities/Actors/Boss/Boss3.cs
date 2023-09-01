@@ -14,7 +14,7 @@ namespace Platformer
     {
         public List<Vector2> EscapePoints = new();
 
-        public int Health = 5;
+        public int Health = 4;
         private static bool dead = false;
 
         private readonly States[][] attackSequences = new States[][]
@@ -96,10 +96,10 @@ namespace Platformer
 
             player.Health = 3;
 
-            healthTile = (Tile)Engine.CurrentMap.Instantiate(new Tile(new Vector2(208, 120), 41, 19, new Sprite(DataManager.Objects["scenery/bossScreen1"])));
-            healthTile.Sprite.LayerDepth = 0;
+            healthTile = (Tile)Engine.CurrentMap.Instantiate(new Tile(new Vector2(211, 120), 34, 19, new Sprite(DataManager.Objects["scenery/bossScreen1"])));
             PlayerHealthTile = (Tile)Engine.CurrentMap.Instantiate(new Tile(new Vector2(218, 162), 22, 14, new Sprite(DataManager.Objects["scenery/playerHealth4"])));
-            PlayerHealthTile.Sprite.LayerDepth = 0;
+            PlayerHealthTile.Layer = -1;
+            healthTile.Layer = 2;
             player.OnDamage += (health) => PlayerHealthTile.Sprite.Texture = DataManager.Objects["scenery/playerHealth" + (health + 1).ToString()];
 
             speedMult = GetSpeed();
@@ -206,7 +206,6 @@ namespace Platformer
                 id = Rand.NextInt(0, EscapePoints.Count);
                 target = EscapePoints[id];
             }
-
 
             float t = 0.4f;
 
@@ -479,7 +478,7 @@ namespace Platformer
                 stateMachine.Switch(States.Waiting);
         }
 
-        private void Hit()
+        public void Hit()
         {
             if (invulnerable)
                 return;
@@ -562,7 +561,8 @@ namespace Platformer
 
         private float GetSpeed()
         {
-            switch (Health)
+            return 1;
+            /*switch (Health)
             {
                 case 1: return 0.5f;
                 case 2: return 0.7f;
@@ -571,7 +571,7 @@ namespace Platformer
                 case 5: return 1;
             }
 
-            return 1;
+            return 1;*/
         }
 
         private IEnumerator BezierJump(Vector2 init, Vector2 to, float jumpTime, float height, bool? cubicIn)

@@ -18,15 +18,15 @@ namespace Platformer
         private float rotation;
 
 
-        public ChaseBoss(Vector2[] positions, int id) : base(positions[0] + new Vector2(-4), 32, 32, 0, new Sprite(Color.Transparent))
+        public ChaseBoss(Vector2[] positions, int id) : base(positions[0] + new Vector2(-4), 24, 16, 0, new Sprite(Color.White))
         {
             Positions = positions.Addition(new Vector2(-4));
 
             AddComponent(new HurtBox(Vector2.Zero, Width, Height));
             this.id = id;
 
-            cannons = new Tuple<Sprite, Sprite, Sprite>[3];
-            for(int i = 0; i < 3; i++)
+            cannons = new Tuple<Sprite, Sprite, Sprite>[2];
+            for(int i = 0; i < 2; i++)
             {
                 Sprite cannonPart1 = new Sprite(DataManager.Textures["Boss/arm"]);
                 Sprite cannon = new Sprite(DataManager.Textures["Boss/gunArm"]);
@@ -40,6 +40,10 @@ namespace Platformer
 
                 cannons[i] = new(cannonPart1, cannonPart2, cannon);
             }
+
+            Sprite.Add(Sprite.AllAnimData["Boss"]);
+            Sprite.Origin = HalfSize;
+            Sprite.Offset = HalfSize;
 
             /*RemoveComponent(Collider);
             Collider = new BoxColliderRotated(Vector2.Zero, Width, Height, 0, HalfSize);
@@ -84,6 +88,7 @@ namespace Platformer
                     b.SelfDestroy();
 
                 AddComponent(new Coroutine(
+                    Coroutine.Do(() => FallClosestFallingPlatform()),
                     Jump(Positions[1], 0.4f, 300),
                     Room4(),
                     Scream(3, 0.5f)
@@ -95,8 +100,9 @@ namespace Platformer
                 if (b != null && b != this)
                     b.SelfDestroy();
 
+                float t = 0.3f;
                 AddComponent(new Coroutine(
-                    Jump(Positions[1], 0.2f, 200),
+                    /*Jump(Positions[1], 0.2f, 200),
                     Coroutine.WaitSeconds(0.5f),
                     Jump(Positions[2], 0.2f, 100),
                     Coroutine.WaitSeconds(0.2f),
@@ -109,7 +115,23 @@ namespace Platformer
                         GetComponent<HurtBox>().Active = false;
                     }),
                     Coroutine.WaitSeconds(1),
+                    Jump(Positions[6], 1.5f, 310),*/
+
+                    Coroutine.Do(() => {
+                        GetComponent<HurtBox>().Active = false;
+                    }),
+                    Jump(Positions[1], t, 200),
+                    Coroutine.WaitSeconds(0.5f),
+                    Jump(Positions[2], t, 100),
+                    Coroutine.WaitSeconds(0.2f),
+                    Jump(Positions[3], t, 100),
+                    Coroutine.WaitSeconds(0.4f),
+                    Jump(Positions[4], t, 100),
+                    Coroutine.WaitSeconds(0.4f),
+                    Jump(Positions[5], t, 100),
+                    Coroutine.WaitSeconds(1),
                     Jump(Positions[6], 1.5f, 310),
+
                     Coroutine.Do(() => {
                         Engine.Cam.Shake(0.3f, 2);
                         ParticleType explosion = new();
@@ -200,6 +222,8 @@ namespace Platformer
         {
             float time = 0;
             Vector2 initPos = Pos;
+            Sprite.Rotation = 0;
+            bool forward = Rand.NextDouble() < 0.5f;
 
             Vector2[] controlPoints = new Vector2[] { initPos, new Vector2((initPos.X + to.X) / 2, initPos.Y - height), to };
             while (time < jumpTime)
@@ -209,12 +233,18 @@ namespace Platformer
                 MoveX(aim.X - Pos.X, OnCollision);
                 MoveY(aim.Y - Pos.Y, OnCollision);
 
+                if(forward)
+                    Sprite.Rotation = MathHelper.Lerp(0, (float)Math.PI * 2, time / jumpTime);
+                else
+                    Sprite.Rotation = MathHelper.Lerp(0, (float)-Math.PI * 2, time / jumpTime);
+
                 time += Engine.Deltatime;
                 yield return 0;
             }
 
             MoveX(to.X - Pos.X, OnCollision);
             MoveY(to.Y - Pos.Y, OnCollision);
+            Sprite.Rotation = 0;
 
             Engine.Cam.LightShake();
 
@@ -224,44 +254,52 @@ namespace Platformer
 
         private IEnumerator MachineGun(float range, int numBullets, bool rightSide)
         {
-            Sprite.Color = Color.Yellow;
+            cannons[1].Item1.Color = Color.Yellow;
+            cannons[1].Item2.Color = Color.Yellow;
+            cannons[1].Item3.Color = Color.Yellow;
 
             yield return new Coroutine.WaitForSeconds(0.2f);
 
             for (int i = 1; i <= numBullets; i++)
             {
-                var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, rightSide ? -i * range / numBullets : i * range / numBullets + 180));
+                var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(cannonPos, rightSide ? -i * range / numBullets : i * range / numBullets + 180));
                 Engine.CurrentMap.CurrentLevel.DestroyOnUnload(m);
                 Engine.Cam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.1f);
             }
 
-            Sprite.Color = Color.Red;
+            cannons[1].Item1.Color = Color.White;
+            cannons[1].Item2.Color = Color.White;
+            cannons[1].Item3.Color = Color.White;
         }
 
         public IEnumerator MachineGun2(float middleAngle, float range, int numBullets, bool clockWise)
         {
-            Sprite.Color = Color.Yellow;
+            cannons[1].Item1.Color = Color.Yellow;
+            cannons[1].Item2.Color = Color.Yellow;
+            cannons[1].Item3.Color = Color.Yellow;
 
             middleAngle -= range / 2 * (clockWise ? 1 : -1);
 
             float increment = range / numBullets * (clockWise ? 1 : -1);
             for (int i = 0; i < numBullets; i++)
             {
-                var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, middleAngle + i * increment));
+                var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(cannonPos, middleAngle + i * increment));
                 Engine.CurrentMap.CurrentLevel.EntityData.Add(m);
 
                 Engine.Cam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.1f);
             }
 
-            Sprite.Color = Color.Red;
+            cannons[1].Item1.Color = Color.White;
+            cannons[1].Item2.Color = Color.White;
+            cannons[1].Item3.Color = Color.White;
         }
 
         public IEnumerator Missile()
         {
             yield return new Coroutine.WaitForSeconds(0.4f);
-            Engine.CurrentMap.Instantiate(new HomingMissile(MiddlePos, -45));
+            Engine.CurrentMap.Instantiate(new HomingMissile(cannonPos, -45));
         }
 
         public IEnumerator Scream(int numScreams, float screamTime)
@@ -303,9 +341,12 @@ namespace Platformer
 
         public override void Render()
         {
-            base.Render();
+            if (Engine.Player.MiddlePos.X < MiddlePos.X)
+                Sprite.SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipHorizontally;
+            else
+                Sprite.SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
 
-            Sprite.Color = Color.Transparent;
+            base.Render();
 
             Drawing.EndPrimitives();
             Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget, null, Microsoft.Xna.Framework.Graphics.BlendState.Opaque);
@@ -333,11 +374,11 @@ namespace Platformer
 
             float[] rot1 = new float[] {
                 rotation + 5 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
-                rotation + 6 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
                 rotation + 7 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
+                //rotation + 4 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
             };
 
-            for(int i = 0; i < 3; i++)
+            for(int i = 0; i < 2; i++)
             {
                 if (rot1[i] < 0)
                     rot1[i] += (float)Math.PI * 2;
@@ -345,10 +386,10 @@ namespace Platformer
             }
 
             float[] rot2 = new float[3];
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 2; i++)
                 rot2[i] = (float)(Rand.NextDouble() * Math.PI * 2);
 
-            for(int i = 0; i < 3; i++)
+            for(int i = 0; i < 2; i++)
             {
                 cannons[i].Item2.Rotation += 0.01f;
                 cannons[i].Item1.Rotation = Rot(cannons[i].Item1.Rotation, rot1[i], 0.05f);
@@ -424,7 +465,9 @@ namespace Platformer
             Action fireSpeed = () => p.ChangeSpeed(origSpeed);
             (Engine.Player as Player).OnDeath += fireSpeed;
 
-            Sprite.Color = Color.Yellow;
+            cannons[1].Item1.Color = Color.Yellow;
+            cannons[1].Item2.Color = Color.Yellow;
+            cannons[1].Item3.Color = Color.Yellow;
             float timer = 0;
             while (timer < 1)
                 timer += Engine.Deltatime;

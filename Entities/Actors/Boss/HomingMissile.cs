@@ -15,7 +15,7 @@ namespace Platformer
         public float Rotation = 0;
 
         private Player player;
-        private Boss boss;
+        private Boss3 boss;
         private TrailRenderer trail;
 
         private bool canHitBoss;
@@ -39,7 +39,7 @@ namespace Platformer
             Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, Pos, 4);
 
             player = (Player)Engine.Player;
-            boss = Engine.CurrentMap.Data.GetEntity<Boss>();
+            boss = Engine.CurrentMap.Data.GetEntity<Boss3>();
         }
 
         public override void Update()
@@ -79,7 +79,7 @@ namespace Platformer
 
             if (boss != null && canHitBoss && Collider.Collide(boss.Collider))
             {
-                boss.Damage();
+                boss.Hit();
                 SelfDestroy();
             }
         }

@@ -17,7 +17,8 @@
 			<Loop id="fall" path="fall" delay="1"/>
 			<Loop id="swing" path="swing" delay="1"/>
 			<Loop id="wallSlide" path="wallSlide" delay="1"/>
-		
+			<Anim id="pickUp" path="pickUp"/>
+			<Anim id="pickUpReverse" path="reversePickingUp" goto="idle"/>
 		</Player>
 
 		<Boss path="Boss" start="idle">
