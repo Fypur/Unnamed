@@ -142,7 +142,7 @@ namespace Platformer
             stateMachine = new StateMachine<States>(States.Idle);
 
             bool startRun = false;
-            stateMachine.SetStateFunctions(States.Running, () => { Sprite.Play("run"); Audio.PlayEvent("FootStep"); startRun = true; }, () =>
+            stateMachine.SetStateFunctions(States.Running, () => { Sprite.Play("run"); Audio.PlayEvent("SFX/Player/FootStep"); startRun = true; }, () =>
             {
                 if(Rand.NextDouble() < 0.1f)
                     Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.LightBigDust, new Rectangle(Bounds.X + (Facing == 1 ? 2 : 3), Bounds.Bottom - 2, 3, 3), 1);
@@ -150,7 +150,7 @@ namespace Platformer
                 Sprite.OnFrameChange = () =>
                 {
                     if ((!startRun && Sprite.CurrentFrame == 1) || Sprite.CurrentFrame == 3)
-                        Audio.PlayEvent("FootStep");
+                        Audio.PlayEvent("SFX/Player/FootStep");
 
                     startRun = false;
                 };
@@ -220,9 +220,9 @@ namespace Platformer
             jetpackTime = maxJetpackTime;
             boostBar = (BoostBar)AddChild(new BoostBar(Pos + new Vector2(1, -5), Width - 1, 1, 0.5f));
 
-            swingAudio = (Sound3D)AddComponent(new Sound3D("Swing"));
+            swingAudio = (Sound3D)AddComponent(new Sound3D("SFX/Player/Swing"));
             swingAudio.Sound.stop(STOP_MODE.IMMEDIATE);
-            jetpackAudio = (Sound3D)AddComponent(new Sound3D("Jetpack"));
+            jetpackAudio = (Sound3D)AddComponent(new Sound3D("SFX/Player/Jetpack"));
             jetpackAudio.Sound.stop(STOP_MODE.IMMEDIATE);
 
             AddComponent(new CircleLight(HalfSize, 40, new Color(Color.White, 5), new Color(Color.White, 0)));
@@ -851,7 +851,7 @@ namespace Platformer
 
             float lift = LiftBoost.Y;
 
-            var j = Audio.PlayEvent("Jump");
+            var j = Audio.PlayEvent("SFX/Player/Jump");
             PlayerStats.JumpCount++;
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
@@ -899,7 +899,7 @@ namespace Platformer
         {
             stateMachine.Switch(States.Jumping);
 
-            Audio.PlayEvent("Jump");
+            Audio.PlayEvent("SFX/Player/Jump");
             PlayerStats.JumpCount++;
 
             int wallJumpingDirection = onRightWall ? -1 : 1;
@@ -1111,7 +1111,7 @@ namespace Platformer
             }
             else
             {
-                Audio.PlayEvent("DeathInit");
+                Audio.PlayEvent("SFX/Player/DeathInit");
 
                 Vector2 startPos = Pos;
                 Vector2 endPos = Pos - Velocity.Normalized() * 15;
@@ -1174,7 +1174,7 @@ namespace Platformer
             Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Bounds, 100);
             Engine.Cam.Shake(0.4f, 1);
 
-            //Audio.PlayEvent("DeathExplosion");
+            Audio.PlayEvent("SFX/Player/DeathExplosion");
             Health = initHealth;
 
             Velocity = Vector2.Zero;

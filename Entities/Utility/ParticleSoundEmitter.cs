@@ -14,7 +14,7 @@ namespace Platformer
         public ParticleSoundEmitter(Vector2 position, ParticleType particleType, int amount, float? direction, Color color, Guid iid) : base(position)
         {
             AddComponent(new ParticleEmitter(Engine.CurrentMap.BackgroundSystem, particleType, Vector2.Zero, amount, direction, color));
-            AddComponent(new Sound3D("WaterLeak"));
+            AddComponent(new Sound3D("Ambience/WaterLeak"));
 
             Iid = iid;
             Levels.LevelNonRespawn.Add(Iid);

@@ -37,7 +37,7 @@ namespace Platformer
                 };
             }
 
-            sound = (Sound3D)AddComponent(new Sound3D("StreetLight"));
+            sound = (Sound3D)AddComponent(new Sound3D("Ambience/StreetLight"));
         }
 
         public override void Update()

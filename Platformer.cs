@@ -452,12 +452,12 @@ namespace Platformer
             Engine.CurrentMap.Instantiate(PauseMenu);
 
 #if RELEASE
-            WindAmbience = Audio.PlayEvent("WindAmbience");
+            WindAmbience = Audio.PlayEvent("Ambience/WindAmbience");
 
             if(World == JetpackWorld)
-                Music = Audio.PlayEvent("Music");
+                Music = Audio.PlayEvent("Soundtrack/Music");
             else if(World == SwingWorld)
-                Music = Audio.PlayEvent("MusicAtmo");
+                Music = Audio.PlayEvent("Soundtrack/MusicAtmo");
 #endif
         }
 
