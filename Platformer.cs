@@ -56,6 +56,7 @@ namespace Platformer
         public static string InitLevel = "0";
         public static int InitWorld = 0;
         public static int WorldsUnlocked = 0;
+        public static SaveData Save;
 
         public Platformer()
         {
@@ -86,11 +87,13 @@ namespace Platformer
             BloomFilter.Load(Engine.Graphics.GraphicsDevice, Content, RenderTarget.Width, RenderTarget.Height);
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
-            Saving.Load();
+            Save = Saving.Load();
+
+            LoadSave(Save);
 
 #if DEBUG
+            InitLevel = "77";
             InitWorld = 0;
-            InitLevel = "2";
             WorldsUnlocked = 2;
 
             //StartGame();
@@ -434,10 +437,11 @@ namespace Platformer
             BackgroundTile = (ParallaxBackground)Engine.CurrentMap.Instantiate(new ParallaxBackground(new Sprite[] { new Sprite(DataManager.Textures["bg/bg2/Layer 1"]), new Sprite(DataManager.Textures["bg/bg2/Layer 2"]), new Sprite(DataManager.Textures["bg/bg2/Layer 3"]), new Sprite(DataManager.Textures["bg/bg2/Layer 4"]), new Sprite(DataManager.Textures["bg/bg2/Layer 5"]) }, new float[] { 0, 0.05f, 0.1f, 0.15f, 0.2f }));
 
 #if RELEASE
-            if (World.Iid != LDtkTypes.Worlds.Boss.Iid && World.Iid != LDtkTypes.Worlds.SwingJetpack.Iid)
-                player.CanJetpack = false;
+            player.CanJetpack = World.Iid == LDtkTypes.Worlds.Boss.Iid || World.Iid == LDtkTypes.Worlds.SwingJetpack.Iid || Save.CanJetpack;
 #endif
-            Engine.CurrentMap.Data.Actors.Add(Cam);
+
+
+                Engine.CurrentMap.Data.Actors.Add(Cam);
             Vector2 lvlSize = Engine.CurrentMap.CurrentLevel.Size;
             if (lvlSize.Y == 184)
                 lvlSize.Y = 180;
@@ -474,8 +478,22 @@ namespace Platformer
             Engine.Cam.Pos = Vector2.Zero;
             Engine.Player = null;
 
+            Levels.LevelNonRespawn.Clear();
+            Boss3.Dead = false;
+
             Audio.StopEvent(Music);
             Audio.StopEvent(WindAmbience);
+        }
+
+        public static void LoadSave(SaveData save)
+        {
+            InitLevel = save.CurrentLevel;
+            InitWorld = save.CurrentWorld;
+            WorldsUnlocked = save.WorldUnlocked;
+
+            Save = save;
+
+            RefreshWorld();
         }
 
         public static void PauseOrUnpause()

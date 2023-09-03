@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fiourp;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,22 +9,20 @@ using System.Threading.Tasks;
 
 namespace Platformer
 {
+    public class SaveData
+    {
+        public int WorldUnlocked { get; set; }
+        public string CurrentLevel { get; set; }
+        public int CurrentWorld { get; set; }
+        public bool CanJetpack { get; set; }
+
+        public SaveData()
+        { }
+    }
+
     public static class Saving
     {
-        public static SaveData LastSaveData = GetLastSaveData();
-        public class SaveData
-        {
-            public int WorldUnlocked { get; set; }
-            public string CurrentLevel { get; set; }
-            public int CurrentWorld { get; set; }
-
-            public SaveData()
-            {
-                WorldUnlocked = LastSaveData != null ? LastSaveData.WorldUnlocked : Platformer.WorldsUnlocked;
-                CurrentLevel = LastSaveData != null ? LastSaveData.CurrentLevel : Platformer.InitLevel;
-                CurrentWorld = LastSaveData != null ? LastSaveData.CurrentWorld : Platformer.InitWorld;
-            }
-        }
+        public static SaveData LastSaveData = Load();
 
         public static void Save(SaveData save)
         {
@@ -34,31 +33,18 @@ namespace Platformer
             f.Write(s);
         }
 
-        public static bool Load()
+        public static SaveData Load()
         {
             if (File.Exists("Saves/save.json"))
-            {
-                SaveData s = JsonSerializer.Deserialize<SaveData>(File.ReadAllText("Saves/save.json"));
-                Platformer.InitLevel = s.CurrentLevel;
-                Platformer.InitWorld = s.CurrentWorld;
-                Platformer.WorldsUnlocked = s.WorldUnlocked;
-                Platformer.RefreshWorld();
-
-                return true;
-            }
-            else
-                return false;
+                return JsonSerializer.Deserialize<SaveData>(File.ReadAllText("Saves/save.json"));
+            
+            return null;
         }
-
-        private static SaveData GetLastSaveData()
+        
+        public static void SaveAndLoad(SaveData s)
         {
-            Load();
-            return new SaveData()
-            {
-                WorldUnlocked = Platformer.WorldsUnlocked,
-                CurrentLevel = Platformer.InitLevel,
-                CurrentWorld = Platformer.InitWorld,
-            };
+            Save(s);
+            Platformer.LoadSave(s);
         }
     }
 }

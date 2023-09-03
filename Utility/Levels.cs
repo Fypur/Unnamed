@@ -14,7 +14,7 @@ namespace Platformer
     public static class Levels
     {
         /// <summary>
-        /// The first GUID corresponds to the level, the second correspond to the objects which don't respawn
+        /// IIds of entities that won't be respawned again
         /// </summary>
         public static List<Guid> LevelNonRespawn = new();
         public static int LevelIndex;
@@ -374,8 +374,15 @@ namespace Platformer
                         entities.Add(trig4);
                         break;
                     case 9:
-                        entities.Add(new JetpackPickUp(p.Position));
+                        if(!LevelNonRespawn.Contains(p.Iid))
+                            entities.Add(new JetpackPickUp(p.Position, p.Iid, p.Id));
                         break;
+                    case 10:
+                        entities.Add(new Ghost(p.Id));
+                        break;
+                    /*case 11:
+                        entities.Add(new JetpackRemove(p.Position, p.Size));
+                        break;*/
                 }
             }
 
@@ -388,6 +395,10 @@ namespace Platformer
             foreach (NeighbourLevel n in level._Neighbours)
             {
                 LDtkLevel neigh = Platformer.World.LoadLevel(n.LevelIid);
+
+                if (neigh.Identifier.Contains("Filler"))
+                    continue;
+
                 Rectangle lvlRect = new Rectangle(level.Position, level.Size);
                 Rectangle neighRect = new Rectangle(neigh.Position, neigh.Size);
 
@@ -519,8 +530,8 @@ namespace Platformer
                         if (!DataManager.Textures.ContainsKey(tileSet))
                             DataManager.Textures[tileSet] = DataManager.Load(tileSet);
 
-                        //for (int i = l.GridTiles.Length - 1; i >= 0; i--)
-                        for (int i = 0; i < l.GridTiles.Length; i++)
+                        for (int i = l.GridTiles.Length - 1; i >= 0; i--)
+                        //for (int i = 0; i < l.GridTiles.Length; i++)
                         {
                             TileInstance t = l.GridTiles[i];
 
@@ -572,6 +583,10 @@ namespace Platformer
             {
                 LDtkLevel neigh = Platformer.World.LoadLevel(neighbor.LevelIid);
                 Entity e = new Entity(Vector2.Zero);
+
+                if (neigh.Identifier.Contains("Filler"))
+                    continue;
+
                 foreach(LayerInstance l in neigh.LayerInstances)
                 {
                     if(l._Identifier == "AnimatedTiles")

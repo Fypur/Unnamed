@@ -19,6 +19,7 @@
 			<Loop id="wallSlide" path="wallSlide" delay="1"/>
 			<Anim id="pickUp" path="pickUp"/>
 			<Anim id="pickUpReverse" path="reversePickingUp" goto="idle"/>
+			<Anim id="projected" path="projected"/>
 		</Player>
 
 		<Boss path="Boss" start="idle">

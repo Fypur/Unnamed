@@ -318,7 +318,7 @@ namespace Platformer
                     {
                         0 => "0",
                         1 => "20",
-                        2 => "75",
+                        2 => "69",
                         _ => throw new Exception("init level not defined for chapter")
                     };
 

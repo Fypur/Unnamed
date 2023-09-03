@@ -35,6 +35,9 @@ public static class Worlds
         public static readonly System.Guid Filler19 = System.Guid.Parse("e12d2180-02f0-11ed-98f0-cf01cea86cf9");
         public static readonly System.Guid Filler23 = System.Guid.Parse("e1a5b510-02f0-11ed-bfd5-95b5a904b793");
         public static readonly System.Guid Filler24 = System.Guid.Parse("efcee3f0-02f0-11ed-bfd5-5d374c0727ae");
+        public static readonly System.Guid Filler69 = System.Guid.Parse("91f79380-3b70-11ee-b629-49c9728af334");
+        public static readonly System.Guid Filler70 = System.Guid.Parse("468e0b80-3b70-11ee-b629-099a207d89f9");
+        public static readonly System.Guid Filler71 = System.Guid.Parse("56550be0-3b70-11ee-b629-75408ef94023");
         public static readonly System.Guid Filler16 = System.Guid.Parse("ded6c720-02f0-11ed-b7f5-1b4bbca4c3cf");
         public static readonly System.Guid Filler2 = System.Guid.Parse("76ed33e0-dbe0-11ec-ade3-bbfed3626367");
         public static readonly System.Guid Filler18 = System.Guid.Parse("4a8dd9e0-02f0-11ed-b7f5-373afd4e8e49");
@@ -43,6 +46,7 @@ public static class Worlds
         public static readonly System.Guid Filler4 = System.Guid.Parse("7da9c040-dbe0-11ec-ade3-cf035025711c");
         public static readonly System.Guid Filler5 = System.Guid.Parse("7f0d47e0-dbe0-11ec-ade3-e7ffcbe5882c");
         public static readonly System.Guid Filler6 = System.Guid.Parse("24efc1e0-02f0-11ed-8b01-a1978edc4d7f");
+        public static readonly System.Guid Filler54 = System.Guid.Parse("431f0f60-3b70-11ee-931d-addf40d88975");
         public static readonly System.Guid Filler25 = System.Guid.Parse("2c57f790-02f0-11ed-8b01-a3ae4700641a");
         public static readonly System.Guid Filler11 = System.Guid.Parse("8829d6e0-02f0-11ed-9e82-533fe9573e32");
         public static readonly System.Guid Filler22 = System.Guid.Parse("beb9ffd0-02f0-11ed-bfd5-2fbca0851242");
@@ -52,21 +56,21 @@ public static class Worlds
         public static readonly System.Guid Filler9 = System.Guid.Parse("20b916f0-02f0-11ed-8b14-fda3e3c8e0b1");
         public static readonly System.Guid Filler12 = System.Guid.Parse("ab3aa670-02f0-11ed-b7f5-29ba2ea59064");
         public static readonly System.Guid Filler13 = System.Guid.Parse("b6562020-02f0-11ed-b7f5-85f788b64b29");
-        public static readonly System.Guid Lvl45 = System.Guid.Parse("21974330-dbe0-11ec-8199-13d8f87d5447");
-        public static readonly System.Guid Lvl46 = System.Guid.Parse("42f77670-dbe0-11ec-a040-3da9896d5f95");
-        public static readonly System.Guid Lvl47 = System.Guid.Parse("9e6bbe50-02f0-11ed-9475-dde0c14735b2");
-        public static readonly System.Guid Lvl48 = System.Guid.Parse("ef7126d0-02f0-11ed-8b14-d77f955dd3ff");
-        public static readonly System.Guid Lvl49 = System.Guid.Parse("3c7994f0-02f0-11ed-8b14-2d0a55718db1");
-        public static readonly System.Guid Lvl50 = System.Guid.Parse("31f431c0-02f0-11ed-8b14-ff016891cb58");
-        public static readonly System.Guid Lvl51 = System.Guid.Parse("8a2041d0-02f0-11ed-8b14-55e015246f5e");
-        public static readonly System.Guid Lvl52 = System.Guid.Parse("18593bc0-02f0-11ed-8b14-e7d5af607207");
-        public static readonly System.Guid Lvl53 = System.Guid.Parse("e8494c60-02f0-11ed-950f-8d3e856b5577");
-        public static readonly System.Guid Lvl54 = System.Guid.Parse("f5614000-02f0-11ed-98f0-e541299d86ae");
-        public static readonly System.Guid Lvl55 = System.Guid.Parse("2a6b6fa0-02f0-11ed-98f0-2315c7b51b73");
+        public static readonly System.Guid Lvl48 = System.Guid.Parse("21974330-dbe0-11ec-8199-13d8f87d5447");
+        public static readonly System.Guid Lvl49 = System.Guid.Parse("42f77670-dbe0-11ec-a040-3da9896d5f95");
+        public static readonly System.Guid Lvl50 = System.Guid.Parse("9e6bbe50-02f0-11ed-9475-dde0c14735b2");
+        public static readonly System.Guid Lvl51 = System.Guid.Parse("ef7126d0-02f0-11ed-8b14-d77f955dd3ff");
+        public static readonly System.Guid Lvl52 = System.Guid.Parse("3c7994f0-02f0-11ed-8b14-2d0a55718db1");
+        public static readonly System.Guid Lvl53 = System.Guid.Parse("31f431c0-02f0-11ed-8b14-ff016891cb58");
+        public static readonly System.Guid Lvl54 = System.Guid.Parse("8a2041d0-02f0-11ed-8b14-55e015246f5e");
+        public static readonly System.Guid Lvl55 = System.Guid.Parse("18593bc0-02f0-11ed-8b14-e7d5af607207");
+        public static readonly System.Guid Lvl57 = System.Guid.Parse("e8494c60-02f0-11ed-950f-8d3e856b5577");
+        public static readonly System.Guid Lvl58 = System.Guid.Parse("f5614000-02f0-11ed-98f0-e541299d86ae");
+        public static readonly System.Guid Lvl75 = System.Guid.Parse("2a6b6fa0-02f0-11ed-98f0-2315c7b51b73");
         public static readonly System.Guid Test = System.Guid.Parse("efbe4380-02f0-11ed-98f0-efb1d337581d");
-        public static readonly System.Guid Lvl57 = System.Guid.Parse("930bc610-02f0-11ed-b8f8-63cd9666263d");
-        public static readonly System.Guid Lvl58 = System.Guid.Parse("141ea7f0-02f0-11ed-bfd5-41825b3b763f");
-        public static readonly System.Guid Lvl79 = System.Guid.Parse("a2355bb0-1460-11ee-b6a8-bb05ddf2aace");
+        public static readonly System.Guid Lvl76 = System.Guid.Parse("930bc610-02f0-11ed-b8f8-63cd9666263d");
+        public static readonly System.Guid Lvl77 = System.Guid.Parse("141ea7f0-02f0-11ed-bfd5-41825b3b763f");
+        public static readonly System.Guid Lvl78 = System.Guid.Parse("a2355bb0-1460-11ee-b6a8-bb05ddf2aace");
     }
     public static class Swing
     {
@@ -100,20 +104,45 @@ public static class Worlds
         public static readonly System.Guid Lvl42 = System.Guid.Parse("d071e260-2a00-11ed-ad69-d1c9c2a490cf");
         public static readonly System.Guid Lvl43 = System.Guid.Parse("84e6de30-5110-11ed-8505-49e4576268df");
         public static readonly System.Guid Lvl44 = System.Guid.Parse("d1fc8c40-7820-11ed-9cc3-5da030c748a1");
-        public static readonly System.Guid Lvl56 = System.Guid.Parse("04c5de80-7820-11ed-9cc3-fd8b6c066066");
-        public static readonly System.Guid Lvl59 = System.Guid.Parse("05cecff0-5110-11ed-ae3b-510fe3057bca");
-        public static readonly System.Guid Lvl60 = System.Guid.Parse("0742cde0-5110-11ed-ace6-1fee1b310122");
-        public static readonly System.Guid Lvl61 = System.Guid.Parse("5c923460-c640-11ed-9e4a-959cd9b16bb5");
-        public static readonly System.Guid Lvl62 = System.Guid.Parse("9417d6a0-ed50-11ed-a45c-a513ccdef848");
-        public static readonly System.Guid Lvl63 = System.Guid.Parse("5d672b40-ed50-11ed-96eb-a78cca55e38a");
-        public static readonly System.Guid Lvl64 = System.Guid.Parse("95a31d60-ed50-11ed-96eb-3ffd481069ae");
-        public static readonly System.Guid Lvl65 = System.Guid.Parse("b10be1a0-ed50-11ed-96eb-df5758515932");
-        public static readonly System.Guid Lvl66 = System.Guid.Parse("84a4e870-ed50-11ed-bfec-6373fe016e1b");
-        public static readonly System.Guid Lvl67 = System.Guid.Parse("f2312070-ed50-11ed-bda8-47a771777422");
-        public static readonly System.Guid Lvl69 = System.Guid.Parse("cae7c0e0-ed50-11ed-a0da-0d39cb0c2262");
-        public static readonly System.Guid Lvl70 = System.Guid.Parse("bd7864c0-ed50-11ed-a0da-d91f33cf1bb0");
-        public static readonly System.Guid Lvl72 = System.Guid.Parse("b3293740-ed50-11ed-be12-ed0ee2cd9844");
-        public static readonly System.Guid Lvl78 = System.Guid.Parse("8c6635a0-1460-11ee-aa84-539bbe1ee235");
+        public static readonly System.Guid Lvl45 = System.Guid.Parse("04c5de80-7820-11ed-9cc3-fd8b6c066066");
+        public static readonly System.Guid Lvl46 = System.Guid.Parse("05cecff0-5110-11ed-ae3b-510fe3057bca");
+        public static readonly System.Guid Lvl47 = System.Guid.Parse("5c923460-c640-11ed-9e4a-959cd9b16bb5");
+        public static readonly System.Guid Lvl56 = System.Guid.Parse("9417d6a0-ed50-11ed-a45c-a513ccdef848");
+        public static readonly System.Guid Lvl59 = System.Guid.Parse("5d672b40-ed50-11ed-96eb-a78cca55e38a");
+        public static readonly System.Guid Lvl60 = System.Guid.Parse("95a31d60-ed50-11ed-96eb-3ffd481069ae");
+        public static readonly System.Guid Lvl61 = System.Guid.Parse("b10be1a0-ed50-11ed-96eb-df5758515932");
+        public static readonly System.Guid Lvl62 = System.Guid.Parse("84a4e870-ed50-11ed-bfec-6373fe016e1b");
+        public static readonly System.Guid Lvl63 = System.Guid.Parse("f2312070-ed50-11ed-bda8-47a771777422");
+        public static readonly System.Guid Lvl64 = System.Guid.Parse("8c6635a0-1460-11ee-aa84-539bbe1ee235");
+        public static readonly System.Guid Filler20 = System.Guid.Parse("370c5490-3b70-11ee-8882-0fe4aaaea474");
+        public static readonly System.Guid Filler26 = System.Guid.Parse("554c2a70-3b70-11ee-8882-67ea0f50b81f");
+        public static readonly System.Guid Filler45 = System.Guid.Parse("5a1ba1f0-3b70-11ee-8882-237da337adb0");
+        public static readonly System.Guid Filler46 = System.Guid.Parse("ab3cacf1-3b70-11ee-8882-dd2329858476");
+        public static readonly System.Guid Filler27 = System.Guid.Parse("5f57e1d0-3b70-11ee-8882-43808bd4e001");
+        public static readonly System.Guid Filler28 = System.Guid.Parse("67725080-3b70-11ee-8882-b9ac6f530eed");
+        public static readonly System.Guid Filler34 = System.Guid.Parse("11b16220-3b70-11ee-8882-d9ae8c37c7ee");
+        public static readonly System.Guid Filler36 = System.Guid.Parse("31c55bc0-3b70-11ee-8882-932f2ba0c846");
+        public static readonly System.Guid Filler37 = System.Guid.Parse("39eee5a0-3b70-11ee-8882-51b9fcfbb6b6");
+        public static readonly System.Guid Filler38 = System.Guid.Parse("4a243830-3b70-11ee-8882-53de301e286e");
+        public static readonly System.Guid Filler40 = System.Guid.Parse("735850b7-3b70-11ee-8882-076a4af58df1");
+        public static readonly System.Guid Filler39 = System.Guid.Parse("56b67360-3b70-11ee-8882-35928392ab9b");
+        public static readonly System.Guid Filler41 = System.Guid.Parse("8e240e70-3b70-11ee-8882-f3c70c65a838");
+        public static readonly System.Guid Filler42 = System.Guid.Parse("96023778-3b70-11ee-8882-3b35f3c3d02f");
+        public static readonly System.Guid Filler47 = System.Guid.Parse("e442b060-3b70-11ee-8882-6bb94a12d14e");
+        public static readonly System.Guid Filler48 = System.Guid.Parse("692cb870-3b70-11ee-8882-53a6b7300277");
+        public static readonly System.Guid Filler43 = System.Guid.Parse("b260a320-3b70-11ee-8882-676ba1540ea3");
+        public static readonly System.Guid Filler49 = System.Guid.Parse("7ba6a3d0-3b70-11ee-8882-c7e12777e8bb");
+        public static readonly System.Guid Filler44 = System.Guid.Parse("bfd66080-3b70-11ee-8882-b748d4103866");
+        public static readonly System.Guid Filler50 = System.Guid.Parse("a4f7ba30-3b70-11ee-8882-8714d0010c8d");
+        public static readonly System.Guid Filler51 = System.Guid.Parse("b2828630-3b70-11ee-8882-b9418a1b3b56");
+        public static readonly System.Guid Filler53 = System.Guid.Parse("c9e32c80-3b70-11ee-8882-9b14162c3332");
+        public static readonly System.Guid Filler52 = System.Guid.Parse("bffc1420-3b70-11ee-8882-95e4180d06b6");
+        public static readonly System.Guid Filler35 = System.Guid.Parse("155515c0-3b70-11ee-8882-730f3043a196");
+        public static readonly System.Guid Filler33 = System.Guid.Parse("093c9e70-3b70-11ee-8882-07b5ef4f6a2e");
+        public static readonly System.Guid Filler29 = System.Guid.Parse("73c89420-3b70-11ee-8882-4f98ea454700");
+        public static readonly System.Guid Filler30 = System.Guid.Parse("d2a84c60-3b70-11ee-8882-339149386484");
+        public static readonly System.Guid Filler31 = System.Guid.Parse("f85b2d60-3b70-11ee-8882-4dfa3a0ef3f1");
+        public static readonly System.Guid Filler32 = System.Guid.Parse("02fd7f70-3b70-11ee-8882-ef91c299439d");
     }
     public static class Boss
     {
@@ -122,22 +151,36 @@ public static class Worlds
         public static readonly System.Guid BossRoom = System.Guid.Parse("b5ebde70-ed50-11ed-96eb-4b466b31ad93");
         public static readonly System.Guid BossRoom2 = System.Guid.Parse("ba3ffc80-ed50-11ed-9715-db9ee56f3167");
         public static readonly System.Guid Chase = System.Guid.Parse("f3ab40b0-ed50-11ed-9715-5f97038aa3bb");
-        public static readonly System.Guid Lvl68 = System.Guid.Parse("ee7ad250-ed50-11ed-a0da-a50057c597c2");
-        public static readonly System.Guid Lvl71 = System.Guid.Parse("429ac420-ed50-11ed-be12-3d57cf78585f");
-        public static readonly System.Guid Lvl73 = System.Guid.Parse("08111490-ed50-11ed-9415-cfc62fb767f1");
-        public static readonly System.Guid Lvl74 = System.Guid.Parse("f9665450-ed50-11ed-a6b9-a7919e58e468");
+        public static readonly System.Guid Lvl65 = System.Guid.Parse("ee7ad250-ed50-11ed-a0da-a50057c597c2");
+        public static readonly System.Guid Lvl66 = System.Guid.Parse("429ac420-ed50-11ed-be12-3d57cf78585f");
+        public static readonly System.Guid Lvl67 = System.Guid.Parse("08111490-ed50-11ed-9415-cfc62fb767f1");
+        public static readonly System.Guid Lvl68 = System.Guid.Parse("f9665450-ed50-11ed-a6b9-a7919e58e468");
         public static readonly System.Guid Boss3 = System.Guid.Parse("3c0d1ee0-1460-11ee-9c3e-577c9aa67001");
-        public static readonly System.Guid Lvl75 = System.Guid.Parse("b1767830-ed50-11ed-bda8-033308489f7a");
-        public static readonly System.Guid Lvl76 = System.Guid.Parse("18790070-ed50-11ed-9783-edea66013b46");
-        public static readonly System.Guid Lvl80 = System.Guid.Parse("50d7f020-1460-11ee-8446-11edabdc5f83");
-        public static readonly System.Guid Lvl81 = System.Guid.Parse("e500e620-1460-11ee-9f7a-177e74731e6b");
-        public static readonly System.Guid Lvl82 = System.Guid.Parse("2048d5f0-1460-11ee-95f4-e5f9c33e429a");
+        public static readonly System.Guid Lvl69 = System.Guid.Parse("b1767830-ed50-11ed-bda8-033308489f7a");
+        public static readonly System.Guid Lvl70 = System.Guid.Parse("18790070-ed50-11ed-9783-edea66013b46");
+        public static readonly System.Guid Lvl71 = System.Guid.Parse("50d7f020-1460-11ee-8446-11edabdc5f83");
+        public static readonly System.Guid Lvl72 = System.Guid.Parse("e500e620-1460-11ee-9f7a-177e74731e6b");
+        public static readonly System.Guid Lvl73 = System.Guid.Parse("2048d5f0-1460-11ee-95f4-e5f9c33e429a");
+        public static readonly System.Guid Filler55 = System.Guid.Parse("4ed08680-3b70-11ee-b629-bbe629af103d");
+        public static readonly System.Guid Filler57 = System.Guid.Parse("767b66f0-3b70-11ee-b629-5b03afa5d194");
+        public static readonly System.Guid Filler58 = System.Guid.Parse("ad219350-3b70-11ee-b629-2d2ef243ba99");
+        public static readonly System.Guid Filler60 = System.Guid.Parse("b176e3b0-3b70-11ee-b629-39094e98d607");
+        public static readonly System.Guid Filler62 = System.Guid.Parse("b584a3c0-3b70-11ee-b629-dd97d13e88b2");
+        public static readonly System.Guid Filler63 = System.Guid.Parse("b793d4b0-3b70-11ee-b629-41ca7398e6c6");
+        public static readonly System.Guid Filler64 = System.Guid.Parse("b9aa7fb0-3b70-11ee-b629-774fc2f4996e");
+        public static readonly System.Guid Filler65 = System.Guid.Parse("bc14c8f0-3b70-11ee-b629-791db9a4ceec");
+        public static readonly System.Guid Filler66 = System.Guid.Parse("bda04af0-3b70-11ee-b629-c7564c2ee32f");
+        public static readonly System.Guid Filler67 = System.Guid.Parse("c2236210-3b70-11ee-b629-d30bf4db8adf");
+        public static readonly System.Guid Filler68 = System.Guid.Parse("c63d0900-3b70-11ee-b629-15c2075d4e72");
+        public static readonly System.Guid Filler61 = System.Guid.Parse("b3204df0-3b70-11ee-b629-7d3c10b7e7bb");
+        public static readonly System.Guid Filler59 = System.Guid.Parse("afe71bf0-3b70-11ee-b629-bfdc0c5bf721");
+        public static readonly System.Guid Filler56 = System.Guid.Parse("6690b1f0-3b70-11ee-b629-eb557d742ffc");
     }
     public static class SwingJetpack
     {
         public static readonly System.Guid Iid = System.Guid.Parse("51547760-ed50-11ed-be12-af7256309b48");
 
-        public static readonly System.Guid Lvl77 = System.Guid.Parse("ab3d94c0-ed50-11ed-8ebd-09cf83543ed0");
+        public static readonly System.Guid Lvl74 = System.Guid.Parse("ab3d94c0-ed50-11ed-8ebd-09cf83543ed0");
     }
 }
 #pragma warning restore

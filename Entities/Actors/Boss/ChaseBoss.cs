@@ -52,10 +52,12 @@ namespace Platformer
 
         public override void Awake()
         {
+            Coroutine c = new(Jump(Vector2.Zero, 0, 0));
+
             if (id == 0)
-                AddComponent(new Coroutine(Room1()));
+                c = (Coroutine)AddComponent(new Coroutine(Room1()));
             else if (id == 1)
-                AddComponent(new Coroutine(Jump(Positions[1], 0.4f, 300),
+                c = (Coroutine)AddComponent(new Coroutine(Jump(Positions[1], 0.4f, 300),
                     Jump(Positions[2], 0.4f, 100),
                     Coroutine.WaitSeconds(0.3f),
                     Jump(Positions[3], 0.4f, 100),
@@ -63,7 +65,7 @@ namespace Platformer
                     MachineGun(45, 13, true)
                     ));
             else if (id == 2)
-                AddComponent(new Coroutine(
+                c = (Coroutine)AddComponent(new Coroutine(
                     Jump(Positions[1], 0.4f, 300),
                     Coroutine.WaitSeconds(0.1f),
                     Jump(Positions[2], 0.4f, 100),
@@ -74,7 +76,7 @@ namespace Platformer
                     MachineGun(45, 13, false)
                     ));
             else if (id == 3)
-                AddComponent(new Coroutine(
+                c = (Coroutine)AddComponent(new Coroutine(
                     Jump(Positions[1], 0.4f, 0),
                     Coroutine.WaitSeconds(1f),
                     Jump(Positions[2], 0.4f, 200),
@@ -87,7 +89,7 @@ namespace Platformer
                 if (b != null && b!= this)
                     b.SelfDestroy();
 
-                AddComponent(new Coroutine(
+                c = (Coroutine)AddComponent(new Coroutine(
                     Coroutine.Do(() => FallClosestFallingPlatform()),
                     Jump(Positions[1], 0.4f, 300),
                     Room4(),
@@ -101,7 +103,7 @@ namespace Platformer
                     b.SelfDestroy();
 
                 float t = 0.3f;
-                AddComponent(new Coroutine(
+                c = (Coroutine)AddComponent(new Coroutine(
                     /*Jump(Positions[1], 0.2f, 200),
                     Coroutine.WaitSeconds(0.5f),
                     Jump(Positions[2], 0.2f, 100),
@@ -143,10 +145,44 @@ namespace Platformer
                         Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, Bounds, 100); })
                     ));
             }
+            else if (id == 6)
+            {
+                Pos = Positions[0] + new Vector2(50, -50);
 
-            GetComponent<Coroutine>().Enumerator.MoveNext();
+                AddComponent(new Coroutine(FreezeInput(4f)));
+                GetComponent<HurtBox>().Active = false;
+
+                c = (Coroutine)AddComponent(new Coroutine(
+                    Jump(Positions[1], 0.5f, 100),
+                    Coroutine.Do(() => AddComponent(new Coroutine(ProjectPlayer()))),
+                    Coroutine.WaitSeconds(1f),
+                    Jump(Positions[2], 0.2f, 40),
+                    Coroutine.WaitSeconds(2f),
+                    Jump(Positions[3] + new Vector2(-100, -200), 0.5f, 150)
+                    ));
+            }
+
+            c.Enumerator.MoveNext();
 
             base.Awake();
+        }
+
+        IEnumerator FreezeInput(float t)
+        {
+            Input.State s = Input.CurrentState;
+            Input.State oldS = Input.OldState;
+
+            float time = 0;
+            while (time < t)
+            {
+                Input.CurrentState = new Input.State();
+                Input.OldState = new Input.State();
+                time += Engine.Deltatime;
+                yield return null;
+            }
+
+            Input.CurrentState = s;
+            Input.OldState = oldS;
         }
 
         private IEnumerator Room1()
@@ -497,6 +533,26 @@ namespace Platformer
                 p.ChangeSpeed(origSpeed);
 
             (Engine.Player as Player).OnDeath -= fireSpeed;
+        }
+
+        private IEnumerator ProjectPlayer()
+        {
+            Player player = Platformer.player;
+
+            float t = 0;
+            float mT = 0.4f;
+
+            player.Sprite.Play("projected");
+            player.CanMove = false;
+            while(t < mT)
+            {
+                player.Pos = Bezier.Quadratic(new Vector2[] { player.Pos, (player.Pos + new Vector2(6323, -2172)) / 2 + new Vector2(0, -20), new Vector2(6323, -2168) }, t / mT);
+                player.Sprite.Rotation = Sprite.Rotation = MathHelper.Lerp(0, -(float)Math.PI * 2 - (float)Math.PI / 4, t / mT);
+                t += Engine.Deltatime;
+                yield return null;
+            }
+
+            //player.Sprite.Rotation = -(float)Math.PI / 2;
         }
     }
 }

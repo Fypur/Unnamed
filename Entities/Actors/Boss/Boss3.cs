@@ -15,7 +15,7 @@ namespace Platformer
         public List<Vector2> EscapePoints = new();
 
         public int Health = 4;
-        private static bool dead = false;
+        public static bool Dead = false;
 
         private readonly States[][] attackSequences = new States[][]
         {
@@ -99,7 +99,7 @@ namespace Platformer
             healthTile = (Tile)Engine.CurrentMap.Instantiate(new Tile(new Vector2(211, 120), 34, 19, new Sprite(DataManager.Objects["scenery/bossScreen1"])));
             PlayerHealthTile = (Tile)Engine.CurrentMap.Instantiate(new Tile(new Vector2(218, 162), 22, 14, new Sprite(DataManager.Objects["scenery/playerHealth4"])));
             PlayerHealthTile.Layer = -1;
-            healthTile.Layer = 2;
+            healthTile.Layer = -1;
             player.OnDamage += (health) => PlayerHealthTile.Sprite.Texture = DataManager.Objects["scenery/playerHealth" + (health + 1).ToString()];
 
             speedMult = GetSpeed();
@@ -128,7 +128,7 @@ namespace Platformer
 
             AddComponent(stateMachine);
 
-            if (dead)
+            if (Dead)
             {
                 Visible = false;
 
@@ -574,7 +574,7 @@ namespace Platformer
             return 1;*/
         }
 
-        private IEnumerator BezierJump(Vector2 init, Vector2 to, float jumpTime, float height, bool? cubicIn)
+        public IEnumerator BezierJump(Vector2 init, Vector2 to, float jumpTime, float height, bool? cubicIn)
         {
             float time = 0;
 
@@ -625,7 +625,7 @@ namespace Platformer
             Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget);
         }
 
-        private void SetCannonPos()
+        public void SetCannonPos(float jitter = 1)
         {
             float finalRot = (player.MiddlePos - MiddlePos).ToAngleRad();
 
@@ -636,9 +636,9 @@ namespace Platformer
 
             float rot2 = (float)(Rand.NextDouble() * Math.PI * 2);
 
-            cannonPart2.Rotation += 0.01f;
-            cannonPart1.Rotation = Rot(cannonPart1.Rotation, rot1, 0.05f);
-            cannonPart2.Rotation = Rot(cannonPart2.Rotation, rot2, 0.02f);
+            cannonPart2.Rotation += 0.01f * jitter;
+            cannonPart1.Rotation = Rot(cannonPart1.Rotation, rot1, 0.05f * jitter);
+            cannonPart2.Rotation = Rot(cannonPart2.Rotation, rot2, 0.02f * jitter);
             cannon.Rotation = finalRot;
 
 
@@ -714,7 +714,7 @@ namespace Platformer
 
         private IEnumerator DestroyWall()
         {
-            dead = true;
+            Dead = true;
 
             IEnumerator e;
             if (Pos != jumpPos0)

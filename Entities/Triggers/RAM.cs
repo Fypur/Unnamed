@@ -56,11 +56,7 @@ namespace Platformer
 
         public override void WhileWait(Player player)
         {
-            Sprite.Color = Color.Lerp(Color.White, Color.Black, player.SafePercentage);
-            if(player.SafePercentage > 0.2f)
-                emittedAmount += player.SafePercentage;
-            Engine.CurrentMap.MiddlegroundSystem.Emit(WaitingParticle, MiddlePos,  (int)emittedAmount);
-            emittedAmount -= (int)emittedAmount;
+            
         }
 
         public override void OnCollected(Player player)
