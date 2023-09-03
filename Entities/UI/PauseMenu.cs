@@ -47,10 +47,11 @@ namespace Platformer
                     {
                         CurrentLevel = Levels.LastLDtkLevel.Identifier,
                         CurrentWorld = Platformer.InitWorld,
+                        WorldUnlocked = Platformer.WorldsUnlocked,
+                        CanJetpack = Platformer.player.CanJetpack
                     });
 
-                    Saving.Load();
-
+                    Platformer.LoadSave(Saving.Load());
 
                     Platformer.Unpause();
                     Platformer.PauseMenu.RemoveChild(this);

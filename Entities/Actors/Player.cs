@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using FMOD.Studio;
-using FMOD;
 
 namespace Platformer
 {
@@ -61,7 +60,6 @@ namespace Platformer
 
         public bool CanMove = true;
         public bool Safe = true;
-        public float SafePercentage = 0;
         public bool Jetpacking;
         public bool CanJetpack = true;
         public bool CanWallJump = true;
@@ -255,9 +253,9 @@ namespace Platformer
 
             PrevVelocity = Velocity;
 
-            onGround = CollisionCheck(Pos + new Vector2(0, 1), out Entity onGroundEntity);
-            onRightWall = CollisionCheck(Pos + new Vector2(1, 0));
-            onWall = onRightWall || CollisionCheck(Pos + new Vector2(-1, 0));
+            onGround = CollisionCheck(Pos + new Vector2(0, 1), true, out Entity onGroundEntity);
+            onRightWall = CollisionCheck(Pos + new Vector2(1, 0), false);
+            onWall = onRightWall || CollisionCheck(Pos + new Vector2(-1, 0), false);
 
             if (onWall)
             {
@@ -266,8 +264,8 @@ namespace Platformer
             }
             else
             {
-                onRightFarWall = CollisionCheck(Pos + new Vector2(wallJumpPixelGap, 0));
-                onFarWall = onRightFarWall || CollisionCheck(Pos + new Vector2(-wallJumpPixelGap, 0));
+                onRightFarWall = CollisionCheck(Pos + new Vector2(wallJumpPixelGap, 0), false);
+                onFarWall = onRightFarWall || CollisionCheck(Pos + new Vector2(-wallJumpPixelGap, 0), false);
             }
 
             if (!CanWallJump)
@@ -365,30 +363,12 @@ namespace Platformer
             /*if (normalMouvement && !stateMachine.Is(States.Swinging) && !Jetpacking)
                 Velocity.X = Math.Clamp(Velocity.X, -maxSpeed, maxSpeed);*/
 
+            //System.IO.File.AppendAllText("C:\\Users\\zddng\\Documents\\Monogame\\Platformer\\recorded.csv", $"{Pos.X},{Pos.Y},{Sprite.Rotation},{Sprite.CurrentAnimationFrame.Name},{Jetpacking}\n");
+
             if (Velocity.X <= 1 && Velocity.X >= -1)
                 Velocity.X = 0;
 
-            if (!Safe && SafePercentage == 0)
-            {
-                SafePercentage = 0.01f;
-                if (onGround && !(onGroundEntity is JumpThru) && xMoving == 0)
-                    AddComponent(new Timer(safeTime, true, (timer) =>
-                    {
-                        SafePercentage = Ease.Reverse(timer.Value / timer.MaxValue);
-                        if (!(onGround && !(onGroundEntity is JumpThru)) || xMoving != 0)
-                        {
-                            SafePercentage = 0;
-                            RemoveComponent(timer);
-                        }
-                    },
-                    () => { SafePercentage = 1; Safe = true; })); ;
-            }
-
-            if (!onGround || xMoving != 0)
-            {
-                Safe = false;
-                SafePercentage = 0;
-            }
+            Safe = onGround;
 
             {
                 if (previousOnGround && !onGround)
@@ -512,7 +492,7 @@ namespace Platformer
                 }
             }
 
-            if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !CollisionCheck(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1)))
+            if ((stateMachine.Is(States.Running) || stateMachine.Is(States.Idle)) && !CollisionCheck(Pos + Velocity * Engine.Deltatime + new Vector2(0, 1), true))
                 stateMachine.Switch(States.Ascending);
 
             if (xMoving != 0 && !isUnsticking)
@@ -1187,7 +1167,7 @@ namespace Platformer
                 Vector2 groundedRespawnPos = RespawnPoint;
                 bool found =false;
                 for (int i = 0; i < 100; i++)
-                    if (!CollisionCheck(groundedRespawnPos + new Vector2(0, 1)))
+                    if (!CollisionCheck(groundedRespawnPos + new Vector2(0, 1), true))
                         groundedRespawnPos += new Vector2(0, 1);
                     else
                     {
@@ -1309,10 +1289,15 @@ namespace Platformer
             collisionY = true;
         }
 
-        private bool CollisionCheck(Vector2 position, out Entity groundedEntity)
-            => Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position, out groundedEntity) && groundedEntity is not InvisibleWall;
-        private bool CollisionCheck(Vector2 position)
-            => CollisionCheck(position, out _);
+        private bool CollisionCheck(Vector2 position, bool platforms, out Entity groundedEntity)
+        {
+            if(platforms)
+                return Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position, out groundedEntity) && groundedEntity is not InvisibleWall;
+            else
+                return Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Solids), position, out groundedEntity) && groundedEntity is not InvisibleWall;
+        }
+        private bool CollisionCheck(Vector2 position, bool platforms)
+            => CollisionCheck(position, platforms, out _);
 
         #endregion
 

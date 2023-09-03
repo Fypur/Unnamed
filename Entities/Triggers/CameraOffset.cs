@@ -16,7 +16,7 @@ namespace Platformer
         public CameraOffset(Vector2 position, Vector2 size, Vector2 offset, bool overrideOffset) : base(position, size, null)
         {
             Offset = offset;
-            OverrideOffset = overrideOffset;
+            //OverrideOffset = overrideOffset;
             Collider.DebugColor = Color.GreenYellow;
         }
 
@@ -24,10 +24,11 @@ namespace Platformer
         {
             base.OnTriggerEnter(player);
 
-            if(OverrideOffset)
+            /*if(OverrideOffset)
                 Engine.Cam.InBoundsOffset = Offset;
-            else
-                Engine.Cam.InBoundsOffset += Offset;
+            else*/
+
+            Engine.Cam.InBoundsOffset += Offset;
         }
 
         public override void OnTriggerExit(Player player)

@@ -17,5 +17,6 @@ public class DeathTrigger : ILDtkEntity
 
     public Color SmartColor { get; set; }
 
+    public bool InstaDeath { get; set; }
 }
 #pragma warning restore

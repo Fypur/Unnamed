@@ -37,11 +37,12 @@ namespace Platformer
                 if(Platformer.WorldsUnlocked < Platformer.InitWorld)
                     Platformer.WorldsUnlocked = Platformer.InitWorld;
 
-                Saving.Save(new()
+                Saving.SaveAndLoad(new()
                 {
                     CurrentLevel = Platformer.InitLevel,
                     CurrentWorld = Platformer.InitWorld,
                     WorldUnlocked = Platformer.WorldsUnlocked,
+                    CanJetpack = Platformer.World.Iid == LDtkTypes.Worlds.Boss.Iid || Platformer.World.Iid == LDtkTypes.Worlds.SwingJetpack.Iid,
                 });
 
                 ScreenWipe s = (ScreenWipe)Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)][0];

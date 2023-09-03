@@ -842,6 +842,18 @@
 /processorParam:InnerPadding=0
 /build:Graphics/Player/pickUp.aseprite
 
+#begin Graphics/Player/projected.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:Graphics/Player/projected.aseprite
+
 #begin Graphics/Player/reversePickingUp.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor
