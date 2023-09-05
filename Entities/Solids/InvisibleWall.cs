@@ -13,5 +13,13 @@ namespace Platformer
         public InvisibleWall(Vector2 position, int width, int height) : base(position, width, height, null)
         {
         }
+
+        public override bool CollidingConditions(Collider other)
+        {
+            if (other.ParentEntity is not Player)
+                return false;
+
+            return base.CollidingConditions(other);
+        }
     }
 }

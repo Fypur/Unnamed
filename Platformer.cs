@@ -89,7 +89,8 @@ namespace Platformer
 
             Save = Saving.Load();
 
-            LoadSave(Save);
+            LoadWorldSave(Save);
+            LoadOptionsSave(Save);
 
 #if DEBUG
             InitLevel = "77";
@@ -129,8 +130,7 @@ namespace Platformer
 
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds * TimeScale;
 
-            
-            if (Input.GetKeyDown(Keys.D1))
+            if (Input.GetKeyDown(Keys.Escape))
                 PauseOrUnpause();
 
             if (Input.GetKeyDown(Keys.F11))
@@ -151,7 +151,7 @@ namespace Platformer
                 Engine.Cam.LateUpdate();
             }
 
-            if(PauseMenu != null)
+            if (PauseMenu != null && !Input.GetKeyDown(Keys.Escape))
             {
                 PauseMenu.Update();
                 PauseMenu.LateUpdate();
@@ -485,15 +485,27 @@ namespace Platformer
             Audio.StopEvent(WindAmbience);
         }
 
-        public static void LoadSave(SaveData save)
+        public static void LoadWorldSave(SaveData save)
         {
             InitLevel = save.CurrentLevel;
-            InitWorld = save.CurrentWorld;
-            WorldsUnlocked = save.WorldUnlocked;
+            InitWorld = save.CurrentWorld.Value;
+            WorldsUnlocked = save.WorldUnlocked.Value;
 
             Save = save;
 
             RefreshWorld();
+        }
+
+        public static void LoadOptionsSave(SaveData save)
+        {
+            Options.SetSize(save.ScreenSize.Value);
+            Audio.SetMasterVolume(save.MasterVolume.Value / 10);
+            Audio.SetGroupVolume("Musics", save.MusicVolume.Value / 10);
+            Audio.SetGroupVolume("Sound effects", save.SFXVolume.Value / 10);
+
+            Player.JumpControls = new(save.jumpControls);
+            Player.JetpackControls = new(save.jetpackControls);
+            Player.SwingControls = new(save.swingControls);
         }
 
         public static void PauseOrUnpause()

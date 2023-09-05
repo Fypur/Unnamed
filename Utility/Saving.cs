@@ -11,24 +11,56 @@ namespace Platformer
 {
     public class SaveData
     {
-        public int WorldUnlocked { get; set; }
+        public int? WorldUnlocked { get; set; }
         public string CurrentLevel { get; set; }
-        public int CurrentWorld { get; set; }
-        public bool CanJetpack { get; set; }
+        public int? CurrentWorld { get; set; }
+        public bool? CanJetpack { get; set; }
+        public int? ScreenSize { get; set; }
+        public int? MasterVolume { get; set; }
+        public int? MusicVolume { get; set; }
+        public int? SFXVolume { get; set; }
+        public Control[] jumpControls { get; set; }
+        public Control[] jetpackControls { get; set; }
+        public Control[] swingControls { get; set; }
 
         public SaveData()
-        { }
+        {
+
+        }
     }
 
     public static class Saving
     {
         public static SaveData LastSaveData = Load();
+        public static Type SaveType = typeof(SaveData);
 
         public static void Save(SaveData save)
         {
-            LastSaveData = save;
+            //LastSaveData = save;
 
-            string s = JsonSerializer.Serialize<SaveData>(save);
+            SaveData l = Load();
+
+            if (l != null && save != null)
+            {
+                foreach (System.Reflection.PropertyInfo property in SaveType.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
+                {
+                    object toValue = SaveType.GetProperty(property.Name).GetValue(save, null);
+                    if (toValue == null)
+                    {
+                        object selfValue = SaveType.GetProperty(property.Name).GetValue(l, null);
+
+                        if(selfValue != null)
+                        {
+                            //var val = Convert.ChangeType(selfValue, property.PropertyType);
+                            property.SetValue(save, selfValue, null);
+                        }
+                    }
+                }
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions();
+            options.WriteIndented = true;
+            string s = JsonSerializer.Serialize<SaveData>(save, options);
             using StreamWriter f = File.CreateText("Saves/save.json");
             f.Write(s);
         }
@@ -44,7 +76,7 @@ namespace Platformer
         public static void SaveAndLoad(SaveData s)
         {
             Save(s);
-            Platformer.LoadSave(s);
+            Platformer.LoadWorldSave(s);
         }
     }
 }

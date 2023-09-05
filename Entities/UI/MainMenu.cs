@@ -209,12 +209,11 @@ namespace Platformer
 
                 returned.Add(new TextSelectable("Controls", "LexendDeca", new Vector2(640, 350), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new ControlsSubMenu<OptionsSubMenu<T>>())));
 
+                returned.Add(new SwitcherText(new Vector2(640, 400), 750, 50, true, "Master Volume", (int)(Audio.GetMasterVolume() * 10), 0, 10, (volume) => Audio.SetMasterVolume(volume / (float)10)));
 
-                returned.Add(new SwitcherText(new Vector2(640, 400), 750, 50, true, "Music volume", (int)(Audio.GetGroupVolume("Musics") * 10), 0, 10, (volume) => Audio.SetGroupVolume("Musics", volume / (float)10)));
+                returned.Add(new SwitcherText(new Vector2(640, 450), 750, 50, true, "Music volume", (int)(Audio.GetGroupVolume("Musics") * 10), 0, 10, (volume) => Audio.SetGroupVolume("Musics", volume / (float)10)));
 
-                returned.Add(new SwitcherText(new Vector2(640, 450), 750, 50, true, "Sound Effects volume", (int)(Audio.GetGroupVolume("Sound Effects") * 10), 0, 10, (volume) => Audio.SetGroupVolume("Sound Effects", volume / (float)10)));
-
-                returned.Add(new SwitcherText(new Vector2(640, 500), 750, 50, true, "Master Volume", (int)(Audio.GetMasterVolume() * 10), 0, 10, (volume) => Audio.SetMasterVolume(volume / (float)10)));
+                returned.Add(new SwitcherText(new Vector2(640, 500), 750, 50, true, "Sound Effects volume", (int)(Audio.GetGroupVolume("Sound Effects") * 10), 0, 10, (volume) => Audio.SetGroupVolume("Sound Effects", volume / (float)10)));
 
                 returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(640, 550), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new T())));
 
@@ -227,6 +226,17 @@ namespace Platformer
             {
                 base.OnBack();
                 SwitchTo(new T());
+
+                Saving.Save(new SaveData()
+                {
+                    ScreenSize = Options.CurrentScreenSizeMultiplier,
+                    MasterVolume = (int)(Audio.GetMasterVolume() * 10),
+                    MusicVolume = (int)(Audio.GetGroupVolume("Musics") * 10),
+                    SFXVolume = (int)(Audio.GetGroupVolume("Sound Effects") * 10),
+                    jumpControls = Player.JumpControls.Controls.ToArray(),
+                    jetpackControls = Player.JetpackControls.ToArray(),
+                    swingControls = Player.SwingControls.ToArray()
+                });
             }
 
             public override IEnumerator OnOpen()
@@ -258,7 +268,7 @@ namespace Platformer
                 List<UIElement> ControlsMenu = new();
                 Vector2 screenSize = Options.DefaultScreenSize;
 
-                ControlsMenu.Add(new TextBox($"Change Controls: {Input.UIAction1.GetAllControlNames(" or ")} \nClear Controls: {Input.UIActionBack.GetAllControlNames(" or ")}", "Recursive", screenSize.OnlyX() / 2, 1000, 200, 0.3f, Color.White, true, TextBox.Alignement.Center));
+                ControlsMenu.Add(new TextBox($"Change Controls: {Input.UIAction1.GetAllControlNames(" or ")} \n                     Clear Controls: {Input.ButtonClear.GetAllControlNames(" or ")}", "Recursive", new Vector2(1280 / 2, 100), 1000, 200, 0.3f, Color.White, true, TextBox.Alignement.TopCenter));
 
                 ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -200), 700, 100, true, null, Color.White, "LexendDeca", 1, "Jump", Player.JumpControls, null));
 

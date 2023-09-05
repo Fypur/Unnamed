@@ -51,7 +51,7 @@ namespace Platformer
                         CanJetpack = Platformer.player.CanJetpack
                     });
 
-                    Platformer.LoadSave(Saving.Load());
+                    Platformer.LoadWorldSave(Saving.Load());
 
                     Platformer.Unpause();
                     Platformer.PauseMenu.RemoveChild(this);

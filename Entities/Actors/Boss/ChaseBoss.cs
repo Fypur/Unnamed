@@ -16,9 +16,9 @@ namespace Platformer
         Vector2 cannonPos;
 
         private float rotation;
+        private Guid iid;
 
-
-        public ChaseBoss(Vector2[] positions, int id) : base(positions[0] + new Vector2(-4), 24, 16, 0, new Sprite(Color.White))
+        public ChaseBoss(Vector2[] positions, int id, Guid iid) : base(positions[0] + new Vector2(-4), 24, 16, 0, new Sprite(Color.White))
         {
             Positions = positions.Addition(new Vector2(-4));
 
@@ -26,7 +26,7 @@ namespace Platformer
             this.id = id;
 
             cannons = new Tuple<Sprite, Sprite, Sprite>[2];
-            for(int i = 0; i < 2; i++)
+            for (int i = 0; i < 2; i++)
             {
                 Sprite cannonPart1 = new Sprite(DataManager.Textures["Boss/arm"]);
                 Sprite cannon = new Sprite(DataManager.Textures["Boss/gunArm"]);
@@ -44,6 +44,7 @@ namespace Platformer
             Sprite.Add(Sprite.AllAnimData["Boss"]);
             Sprite.Origin = HalfSize;
             Sprite.Offset = HalfSize;
+            this.iid = iid;
 
             /*RemoveComponent(Collider);
             Collider = new BoxColliderRotated(Vector2.Zero, Width, Height, 0, HalfSize);
@@ -104,21 +105,6 @@ namespace Platformer
 
                 float t = 0.3f;
                 c = (Coroutine)AddComponent(new Coroutine(
-                    /*Jump(Positions[1], 0.2f, 200),
-                    Coroutine.WaitSeconds(0.5f),
-                    Jump(Positions[2], 0.2f, 100),
-                    Coroutine.WaitSeconds(0.2f),
-                    Jump(Positions[3], 0.2f, 100),
-                    Coroutine.WaitSeconds(0.4f),
-                    Jump(Positions[4], 0.2f, 100),
-                    Coroutine.WaitSeconds(0.4f),
-                    Jump(Positions[5], 0.2f, 100),
-                    Coroutine.Do(() => {
-                        GetComponent<HurtBox>().Active = false;
-                    }),
-                    Coroutine.WaitSeconds(1),
-                    Jump(Positions[6], 1.5f, 310),*/
-
                     Coroutine.Do(() => {
                         GetComponent<HurtBox>().Active = false;
                     }),
@@ -155,9 +141,9 @@ namespace Platformer
                 c = (Coroutine)AddComponent(new Coroutine(
                     Jump(Positions[1], 0.5f, 100),
                     Coroutine.Do(() => AddComponent(new Coroutine(ProjectPlayer()))),
-                    Coroutine.WaitSeconds(1f),
+                    Coroutine.WaitSeconds(1.5f),
                     Jump(Positions[2], 0.2f, 40),
-                    Coroutine.WaitSeconds(2f),
+                    Coroutine.WaitSeconds(1.5f),
                     Jump(Positions[3] + new Vector2(-100, -200), 0.5f, 150)
                     ));
             }
@@ -546,13 +532,86 @@ namespace Platformer
             player.CanMove = false;
             while(t < mT)
             {
-                player.Pos = Bezier.Quadratic(new Vector2[] { player.Pos, (player.Pos + new Vector2(6323, -2172)) / 2 + new Vector2(0, -20), new Vector2(6323, -2168) }, t / mT);
-                player.Sprite.Rotation = Sprite.Rotation = MathHelper.Lerp(0, -(float)Math.PI * 2 - (float)Math.PI / 4, t / mT);
+                player.Pos = Bezier.Quadratic(new Vector2[] { player.Pos, (player.Pos + new Vector2(6330, -2172)) / 2 + new Vector2(0, -20), new Vector2(6330, -2168) }, t / mT);
+                player.Sprite.Rotation = MathHelper.Lerp(0, -(float)Math.PI * 2 - (float)Math.PI / 4, t / mT);
                 t += Engine.Deltatime;
                 yield return null;
             }
 
-            //player.Sprite.Rotation = -(float)Math.PI / 2;
+            Entity light = Engine.CurrentMap.Instantiate(new Entity(player.MiddlePos));
+            light.AddComponent(new CircleLight(Vector2.Zero, 4, new Color(Color.White, 200), new Color(Color.White, 0)));
+
+            t = 0;
+            mT = 3f;
+            float mT2 = 0.2f;
+            while (t < mT)
+            {
+                /*if (t <= mT2)
+                {
+                    player.Pos = Bezier.Quadratic(new Vector2[] { player.Pos, (player.Pos + new Vector2(6323, -2170)) / 2 + new Vector2(0, -20), new Vector2(6323, -2170) }, t / mT2);
+                    player.Sprite.Rotation = MathHelper.Lerp(-0.490887642f, -0.490887642f + (float)Math.PI * 2, t / mT2);
+                }
+                else
+                {
+                    player.Sprite.Rotation = -0.490887642f;
+                    player.Pos = new Vector2(6323, -2170);
+                }*/
+
+                light.Pos = Bezier.Quadratic(new Vector2[] { light.Pos, (light.Pos + new Vector2(6306, -2086)) / 2 + new Vector2(0, -60), new Vector2(6306, -2086) }, t / mT); 
+
+                t += Engine.Deltatime;
+                yield return null;
+            }
+
+            yield return new Coroutine.WaitForSeconds(2f);
+
+            t = 0;
+            mT = 0.1f;
+
+            float initRot = player.Sprite.Rotation;
+            Vector2 initPos = Vector2.Round(player.Pos);
+            while(t < mT)
+            {
+                player.Pos = initPos + new Vector2(0, -3) * t / mT;
+                player.Sprite.Rotation = MathHelper.Lerp(initRot, 0, t / mT);
+                t += Engine.Deltatime;
+            }
+
+            player.Pos = initPos + new Vector2(0, -3);
+            player.Sprite.Rotation = 0;
+            player.Sprite.Play("pickUpReverse");
+
+            player.CanAnimateSprite = true;
+            player.CanJetpack = false;
+
+            light.SelfDestroy();
+
+            yield return new Coroutine.WaitForSeconds(1.5f);
+
+            TextBox s = (TextBox)AddChild(new TextBox("Jetpack has been lost", "LexendDeca", Engine.Cam.Pos + Engine.Cam.Size / 2, 800, 20, 1, Color.Transparent, true, TextBox.Alignement.Center));
+
+            for (t = 0; t < 0.5f; t += Engine.Deltatime)
+            {
+                s.Color = new Color(Color.White, t / 0.5f);
+                yield return null;
+            }
+
+            s.Color = Color.White;
+
+            //yield return new Coroutine.PausedUntil(Player.JumpControls.Is);
+            yield return new Coroutine.WaitForSeconds(2.5f);
+
+            //Levels.LevelNonRespawn.Add(iid);
+
+            for (t = 0.5f; t > 0; t -= Engine.Deltatime)
+            {
+                s.Color = new Color(Color.White, t / 0.5f);
+                yield return null;
+            }
+
+            s.SelfDestroy();
+
+            player.CanMove = true;
         }
     }
 }

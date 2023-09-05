@@ -267,7 +267,8 @@ namespace Platformer
                         entities.Add(new SpawnTrigger(p.Position, p.Size, spawned));
                         break;
                     case 4:
-                        entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new ChaseBoss(p.Positions, p.Id) }));
+                        if(!LevelNonRespawn.Contains(p.Iid))
+                            entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new ChaseBoss(p.Positions, p.Id, p.Iid) }));
                         break;
                     case 5:
                         if (p.Id == 0)
