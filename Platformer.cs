@@ -93,8 +93,8 @@ namespace Platformer
             LoadOptionsSave(Save);
 
 #if DEBUG
-            InitLevel = "77";
-            InitWorld = 0;
+            InitLevel = "73";
+            InitWorld = 2;
             WorldsUnlocked = 2;
 
             //StartGame();

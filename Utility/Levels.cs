@@ -381,9 +381,9 @@ namespace Platformer
                     case 10:
                         entities.Add(new Ghost(p.Id));
                         break;
-                    /*case 11:
-                        entities.Add(new JetpackRemove(p.Position, p.Size));
-                        break;*/
+                    case 11:
+                        entities.Add(new EndCinematic(p.Position, p.Size, p.Positions));
+                        break;
                 }
             }
 
