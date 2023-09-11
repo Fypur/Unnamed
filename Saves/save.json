@@ -2,5 +2,93 @@
   "WorldUnlocked": 0,
   "CurrentLevel": "Lvl0",
   "CurrentWorld": 0,
-  "CanJetpack": false
+  "CanJetpack": false,
+  "ScreenSize": 4,
+  "MasterVolume": 5,
+  "MusicVolume": 10,
+  "SFXVolume": 10,
+  "jumpControls": [
+    {
+      "Key": 67,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 67
+    },
+    {
+      "Key": 73,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 73
+    },
+    {
+      "Key": null,
+      "MouseButton": 0,
+      "ControllerButton": null,
+      "Value": 0
+    },
+    {
+      "Key": null,
+      "MouseButton": null,
+      "ControllerButton": 8192,
+      "Value": 8192
+    }
+  ],
+  "jetpackControls": [
+    {
+      "Key": 88,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 88
+    },
+    {
+      "Key": 79,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 79
+    },
+    {
+      "Key": null,
+      "MouseButton": 1,
+      "ControllerButton": null,
+      "Value": 1
+    },
+    {
+      "Key": null,
+      "MouseButton": null,
+      "ControllerButton": 32768,
+      "Value": 32768
+    }
+  ],
+  "swingControls": [
+    {
+      "Key": 87,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 87
+    },
+    {
+      "Key": 80,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 80
+    },
+    {
+      "Key": null,
+      "MouseButton": 2,
+      "ControllerButton": null,
+      "Value": 2
+    },
+    {
+      "Key": null,
+      "MouseButton": null,
+      "ControllerButton": 8388608,
+      "Value": 8388608
+    },
+    {
+      "Key": null,
+      "MouseButton": null,
+      "ControllerButton": 4194304,
+      "Value": 4194304
+    }
+  ]
 }

@@ -15,7 +15,7 @@ namespace Platformer
         ParticleType BigFire;
         ParticleType Wind;
         public enum ScreenSizes { x1, x2, x3, x4, x5, x6, x7 }
-        public MainMenu() : base(Vector2.Zero, (int)Engine.ScreenSize.X, (int)Engine.ScreenSize.Y, new Sprite(DataManager.Textures["bg/mainMenu"]))
+        public MainMenu() : base(Vector2.Zero, 1280, 720, new Sprite(DataManager.Textures["bg/mainMenu"]))
         {
             Platformer.PauseMenu = null;
             AddChild(new MainSubMenu());
@@ -28,32 +28,9 @@ namespace Platformer
             BigFire.SizeRange = 15;
             BigFire.Direction = -90;
             BigFire.DirectionRange = 90;
-
-            Wind = new ParticleType()
-            {
-                LifeMin = 1,
-                LifeMax = 4,
-                SpeedMin = 200,
-                SpeedMax = 500,
-                Size = 4,
-                SizeRange = 3,
-                SizeChange = ParticleType.FadeModes.EndSmooth,
-                FadeMode = ParticleType.FadeModes.Linear,
-                Acceleration = Vector2.UnitX * 200,
-                Direction = 0,
-                DirectionRange = 40,
-                Color = new(Color.Gray, 40),
-            };
-        }
-
-        public override void Update()
-        {
-            base.Update();
-
-            Sprite.Scale = Size / new Vector2(1280, 720);
-
             BigFire.Color = new Color(BigFire.Color, 150);
             BigFire.Color2 = new Color(BigFire.Color2.Value, 150);
+
             Wind = new ParticleType()
             {
                 LifeMin = 1,
@@ -69,6 +46,13 @@ namespace Platformer
                 DirectionRange = 40,
                 Color = new(Color.Gray, 100),
             };
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            Sprite.Scale = Size / new Vector2(1280, 720);
 
             Engine.CurrentMap.ForegroundSystem.Emit(BigFire, new Rectangle((Pos + new Vector2(0, Size.Y)).ToPoint(), (Pos + Size).ToPoint()), 2); 
             Engine.CurrentMap.ForegroundSystem.Emit(Wind, Bounds, 2); 
@@ -215,7 +199,7 @@ namespace Platformer
 
                 returned.Add(new SwitcherText(new Vector2(640, 500), 750, 50, true, "Sound Effects volume", (int)(Audio.GetGroupVolume("Sound Effects") * 10), 0, 10, (volume) => Audio.SetGroupVolume("Sound Effects", volume / (float)10)));
 
-                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(640, 550), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new T())));
+                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(640, 550), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, OnBack));
 
                 MakeList(returned, true);
 
@@ -335,8 +319,8 @@ namespace Platformer
                     string name = i switch
                     {
                         0 => "Jetpack",
-                        1 => "Swing",
-                        2 => "Boss",
+                        1 => Platformer.WorldsUnlocked >= 1  ? "Swing" : "___",
+                        2 => Platformer.WorldsUnlocked >= 2 ? "Boss" : "___",
                         _ => throw new Exception("World Name not defined")
                     };
 

@@ -40,6 +40,7 @@ namespace Platformer
         public static ParallaxBackground BackgroundTile;
         public static BloomFilter BloomFilter;
         public static float TimeScale = 1;
+        public static bool CanPause = true;
         private static Timer freezeTimer;
         private static bool freezePaused;
         private static Input.State freezeState;
@@ -87,16 +88,9 @@ namespace Platformer
             BloomFilter.Load(Engine.Graphics.GraphicsDevice, Content, RenderTarget.Width, RenderTarget.Height);
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
-            Save = Saving.Load();
-
-            LoadWorldSave(Save);
-            LoadOptionsSave(Save);
-
 #if DEBUG
-            InitLevel = "73";
-            InitWorld = 2;
-            WorldsUnlocked = 2;
-
+            InitLevel = "Lvl16";
+            InitWorld = 0;
             //StartGame();
 
             string currentDir = Environment.CurrentDirectory;
@@ -113,11 +107,14 @@ namespace Platformer
         {
             Drawing.Init(new SpriteBatch(GraphicsDevice), Content.Load<SpriteFont>("font"));
 
-
-
             Engine.CurrentMap = new Map(Vector2.Zero);
 
+            Save = Saving.Load();
+            LoadWorldSave(Save);
+            LoadOptionsSave(Save);
+
             menu = (MainMenu)Engine.CurrentMap.Instantiate(new MainMenu());
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -368,7 +365,7 @@ namespace Platformer
 
 
             GraphicsDevice.SetRenderTarget(null);
-            Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
             Drawing.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
             //Drawing.Draw(Engine.LightsRenderTarget, new Rectangle(new Point(0, 0), new Point(3000, 3000)), Color.White);
@@ -383,7 +380,7 @@ namespace Platformer
             Drawing.End();
             
 
-            Drawing.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+            Drawing.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
             Engine.CurrentMap.UIOverlayRender();
 
@@ -437,7 +434,7 @@ namespace Platformer
             BackgroundTile = (ParallaxBackground)Engine.CurrentMap.Instantiate(new ParallaxBackground(new Sprite[] { new Sprite(DataManager.Textures["bg/bg2/Layer 1"]), new Sprite(DataManager.Textures["bg/bg2/Layer 2"]), new Sprite(DataManager.Textures["bg/bg2/Layer 3"]), new Sprite(DataManager.Textures["bg/bg2/Layer 4"]), new Sprite(DataManager.Textures["bg/bg2/Layer 5"]) }, new float[] { 0, 0.05f, 0.1f, 0.15f, 0.2f }));
 
 #if RELEASE
-            player.CanJetpack = World.Iid == LDtkTypes.Worlds.Boss.Iid || World.Iid == LDtkTypes.Worlds.SwingJetpack.Iid || Save.CanJetpack;
+            player.CanJetpack = World.Iid == LDtkTypes.Worlds.Boss.Iid || World.Iid == LDtkTypes.Worlds.SwingJetpack.Iid || Save.CanJetpack.Value;
 #endif
 
 
@@ -455,14 +452,14 @@ namespace Platformer
             PauseMenu.Visible = false;
             Engine.CurrentMap.Instantiate(PauseMenu);
 
-#if RELEASE
             WindAmbience = Audio.PlayEvent("Ambience/WindAmbience");
 
             if(World == JetpackWorld)
                 Music = Audio.PlayEvent("Soundtrack/Music");
             else if(World == SwingWorld)
                 Music = Audio.PlayEvent("Soundtrack/MusicAtmo");
-#endif
+            else if(World == BossWorld)
+                Music = Audio.PlayEvent("Soundtrack/Chase");
         }
 
         public static void EndGame()
@@ -480,6 +477,9 @@ namespace Platformer
 
             Levels.LevelNonRespawn.Clear();
             Boss3.Dead = false;
+            ClosingGate.ClosedGates.Clear();
+
+            Platformer.CanPause = true;
 
             Audio.StopEvent(Music);
             Audio.StopEvent(WindAmbience);
@@ -499,9 +499,9 @@ namespace Platformer
         public static void LoadOptionsSave(SaveData save)
         {
             Options.SetSize(save.ScreenSize.Value);
-            Audio.SetMasterVolume(save.MasterVolume.Value / 10);
-            Audio.SetGroupVolume("Musics", save.MusicVolume.Value / 10);
-            Audio.SetGroupVolume("Sound effects", save.SFXVolume.Value / 10);
+            Audio.SetMasterVolume(save.MasterVolume.Value / 10f);
+            Audio.SetGroupVolume("Musics", save.MusicVolume.Value / 10f);
+            Audio.SetGroupVolume("Sound effects", save.SFXVolume.Value / 10f);
 
             Player.JumpControls = new(save.jumpControls);
             Player.JetpackControls = new(save.jetpackControls);
@@ -518,7 +518,7 @@ namespace Platformer
 
         public static void Pause()
         {
-            if (Paused || Engine.CurrentMap.Data.UIElements.Exists((element) => element is MainMenu))
+            if (Paused || Engine.CurrentMap.Data.UIElements.Exists((element) => element is MainMenu) || !CanPause)
                 return;
 
             Paused = true;

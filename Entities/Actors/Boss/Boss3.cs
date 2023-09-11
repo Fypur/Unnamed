@@ -561,8 +561,7 @@ namespace Platformer
 
         private float GetSpeed()
         {
-            return 1;
-            /*switch (Health)
+            switch (Health)
             {
                 case 1: return 0.5f;
                 case 2: return 0.7f;
@@ -571,7 +570,7 @@ namespace Platformer
                 case 5: return 1;
             }
 
-            return 1;*/
+            return 1;
         }
 
         public IEnumerator BezierJump(Vector2 init, Vector2 to, float jumpTime, float height, bool? cubicIn)
