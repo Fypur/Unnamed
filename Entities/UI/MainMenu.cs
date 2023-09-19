@@ -197,7 +197,7 @@ namespace Platformer
 
                 returned.Add(new SwitcherText(new Vector2(640, 450), 750, 50, true, "Music volume", (int)(Audio.GetGroupVolume("Musics") * 10), 0, 10, (volume) => Audio.SetGroupVolume("Musics", volume / (float)10)));
 
-                returned.Add(new SwitcherText(new Vector2(640, 500), 750, 50, true, "Sound Effects volume", (int)(Audio.GetGroupVolume("Sound Effects") * 10), 0, 10, (volume) => Audio.SetGroupVolume("Sound Effects", volume / (float)10)));
+                returned.Add(new SwitcherText(new Vector2(640, 500), 750, 50, true, "Sound Effects volume", (int)(Audio.GetGroupVolume("GonePause/Sound Effects") * 10), 0, 10, (volume) => { Audio.SetGroupVolume("GonePause/Sound Effects", volume / (float)10); Audio.SetGroupVolume("Ambience", volume / (float)10); }));
 
                 returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(640, 550), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, OnBack));
 
@@ -216,7 +216,7 @@ namespace Platformer
                     ScreenSize = Options.CurrentScreenSizeMultiplier,
                     MasterVolume = (int)(Audio.GetMasterVolume() * 10),
                     MusicVolume = (int)(Audio.GetGroupVolume("Musics") * 10),
-                    SFXVolume = (int)(Audio.GetGroupVolume("Sound Effects") * 10),
+                    SFXVolume = (int)(Audio.GetGroupVolume("GonePause/Sound Effects") * 10),
                     jumpControls = Player.JumpControls.Controls.ToArray(),
                     jetpackControls = Player.JetpackControls.ToArray(),
                     swingControls = Player.SwingControls.ToArray()

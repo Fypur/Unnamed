@@ -129,9 +129,12 @@ namespace Platformer
 
             s.SelfDestroy();
 
-            yield return new Coroutine.PausedUntil(() => Engine.CurrentMap.Data.GetEntity<TextSpawn>().TextBox.Text == "");
+            if (id == 1)
+            {
+                yield return new Coroutine.PausedUntil(() => Engine.CurrentMap.Data.GetEntity<TextSpawn>().TextBox.Text == "");
 
-            Engine.CurrentMap.Data.GetEntity<TextSpawn>().TextBox.ProgressiveDraw("You Just a got a jetpack!\nHold X or Square and the 4\narrow keys to use it", 0.01f, true);
+                Engine.CurrentMap.Data.GetEntity<TextSpawn>().TextBox.ProgressiveDraw("You Just a got a jetpack!\nHold X or Square and the 4\narrow keys to use it", 0.01f, true);
+            }
 
             SelfDestroy();
         }

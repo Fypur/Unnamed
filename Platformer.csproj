@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Audio\" />
+    <Folder Include="Content\Audio\Desktop\" />
     <Folder Include="Content\Graphics\Objects\RAM\" />
   </ItemGroup>
   <ItemGroup>

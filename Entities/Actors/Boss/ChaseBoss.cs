@@ -133,7 +133,14 @@ namespace Platformer
             }
             else if (id == 6)
             {
+                if (Levels.LevelNonRespawn.Contains(iid))
+                {
+                    SelfDestroy();
+                    return;
+                }
+
                 Pos = Positions[0] + new Vector2(50, -50);
+                Platformer.Music.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 
                 AddComponent(new Coroutine(FreezeInput(4f)));
                 GetComponent<HurtBox>().Active = false;
@@ -589,6 +596,8 @@ namespace Platformer
             yield return new Coroutine.WaitForSeconds(1.5f);
 
             TextBox s = (TextBox)AddChild(new TextBox("Jetpack has been lost", "LexendDeca", Engine.Cam.Pos + Engine.Cam.Size / 2, 800, 20, 1, Color.Transparent, true, TextBox.Alignement.Center));
+
+            Levels.LevelNonRespawn.Add(iid);
 
             for (t = 0; t < 0.5f; t += Engine.Deltatime)
             {

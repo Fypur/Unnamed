@@ -41,6 +41,9 @@ namespace Platformer
             //Put Image and Game Logo
             //Text: The End
 
+            Audio.StopEvent(Platformer.Music, true);
+            player.Sprite.OnFrameChange = null;
+
             AddComponent(new Coroutine(
                 FreezeInput(1.5f),
                 Coroutine.Do(() =>
@@ -62,8 +65,9 @@ namespace Platformer
 
             Vector2 init = player.Pos;
             player.Sprite.Play(anim);
+            player.Sprite.OnFrameChange = null;
 
-            while(t < time)
+            while (t < time)
             {
                 if (XYOrBoth == null)
                     player.Pos = Vector2.Lerp(init, to, ease == null ? t / time : ease(t / time));
@@ -71,6 +75,8 @@ namespace Platformer
                     player.Pos.X = MathHelper.Lerp(init.X, to.X, ease == null ? t / time : ease(t / time));
                 else if (XYOrBoth == false)
                     player.Pos.Y = MathHelper.Lerp(init.Y, to.Y, ease == null ? t / time : ease(t / time));
+
+                player.Sprite.OnFrameChange = null;
                 t += Engine.Deltatime;
                 yield return null;
             }

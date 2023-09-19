@@ -142,7 +142,7 @@ namespace Platformer
                     SelfDestroy();
 
                     player.Health = 1;
-                    healthTile.Sprite.Texture = DataManager.Objects["scenery/bossScreen6"];
+                    healthTile.Sprite.Texture = DataManager.Objects["scenery/bossScreen5"];
 
                     if (Engine.CurrentMap.Data.GetEntity<PushingFire>() == null)
                     {
@@ -659,6 +659,11 @@ namespace Platformer
         private IEnumerator Scream()
         {
             player.Velocity += (player.MiddlePos - MiddlePos).Normalized() * 300 + new Vector2(0, -200);
+
+            Platformer.Music.getPlaybackState(out FMOD.Studio.PLAYBACK_STATE state);
+            if (state != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+                Platformer.Music = Audio.PlayEvent("Soundtrack/Chase");
+
             Engine.Cam.Shake(0.5f * 5, 1);
             AddComponent(new Coroutine(FreezeInput(0.5f * 5 + 2)));
 
@@ -669,6 +674,7 @@ namespace Platformer
             }
 
             //Scream sfx
+
             yield return new Coroutine.WaitForSeconds(2);
 
             circleLengths.Clear();

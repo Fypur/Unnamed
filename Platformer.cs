@@ -127,7 +127,7 @@ namespace Platformer
 
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds * TimeScale;
 
-            if (Input.GetKeyDown(Keys.Escape))
+            if (Input.GetKeyDown(Keys.S) || Input.GetKeyDown(Keys.Escape))
                 PauseOrUnpause();
 
             if (Input.GetKeyDown(Keys.F11))
@@ -458,8 +458,8 @@ namespace Platformer
                 Music = Audio.PlayEvent("Soundtrack/Music");
             else if(World == SwingWorld)
                 Music = Audio.PlayEvent("Soundtrack/MusicAtmo");
-            else if(World == BossWorld)
-                Music = Audio.PlayEvent("Soundtrack/Chase");
+            /*else if(World == BossWorld)
+                Music = Audio.PlayEvent("Soundtrack/Chase");*/
         }
 
         public static void EndGame()
@@ -501,7 +501,8 @@ namespace Platformer
             Options.SetSize(save.ScreenSize.Value);
             Audio.SetMasterVolume(save.MasterVolume.Value / 10f);
             Audio.SetGroupVolume("Musics", save.MusicVolume.Value / 10f);
-            Audio.SetGroupVolume("Sound effects", save.SFXVolume.Value / 10f);
+            Audio.SetGroupVolume("GonePause/Sound effects", save.SFXVolume.Value / 10f);
+            Audio.SetGroupVolume("Ambience", save.SFXVolume.Value / 10f);
 
             Player.JumpControls = new(save.jumpControls);
             Player.JetpackControls = new(save.jetpackControls);
@@ -522,6 +523,7 @@ namespace Platformer
                 return;
 
             Paused = true;
+            Audio.SetGroupVolume("GonePause", 0);
             PauseMenu.Show();
             PreviousPauseOldState = Input.OldState;
         }
@@ -531,6 +533,7 @@ namespace Platformer
             if (!Paused)
                 return;
 
+            Audio.SetGroupVolume("GonePause", 1);
             PauseMenu.Children = new();
             Paused = false;
             Input.OldState = PreviousPauseOldState;
