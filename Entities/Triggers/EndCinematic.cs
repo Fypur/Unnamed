@@ -143,7 +143,7 @@ namespace Platformer
             enumerator = DoInTime(1f, (t, mT) => text.Color = new Color(Color.White, Ease.Reverse(t / mT)));
             while (enumerator.MoveNext()) { yield return null; }
 
-            text.SetText("With Inspiration from:\n            Celeste\n         Hollow Knight\n              Ori");
+            text.SetText("With Inspiration from:\n            Celeste\n       Hollow Knight\n               Ori");
 
             enumerator = DoInTime(1f, (t, mT) => text.Color = new Color(Color.White, t / mT));
             while (enumerator.MoveNext()) { yield return null; }

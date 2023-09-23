@@ -91,6 +91,7 @@ namespace Platformer
 #if DEBUG
             InitLevel = "Lvl16";
             InitWorld = 0;
+            WorldsUnlocked = 2;
             //StartGame();
 
             string currentDir = Environment.CurrentDirectory;
@@ -180,7 +181,7 @@ namespace Platformer
                 Engine.CurrentMap.Instantiate(new MainMenu());
             }
 
-            if (Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.NumPad5))
+                if (Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.NumPad5))
             {
                 var p = Engine.CurrentMap.Data.GetEntity<PushingFire>();
                 if(p != null)

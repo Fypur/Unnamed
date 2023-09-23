@@ -228,7 +228,9 @@ namespace Platformer
             Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 0, Particles.Dust.Color);
             Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 180, Particles.Dust.Color);
 
-            Sprite.Color = Color.Yellow;
+            cannons[1].Item1.Color = Color.Yellow;
+            cannons[1].Item2.Color = Color.Yellow;
+            cannons[1].Item3.Color = Color.Yellow;
 
             yield return new Coroutine.WaitForSeconds(0.2f);
 
@@ -243,8 +245,9 @@ namespace Platformer
                 yield return new Coroutine.WaitForSeconds(0.1f);
             }
 
-            Sprite.Color = Color.Red;
-
+            cannons[1].Item1.Color = Color.White;
+            cannons[1].Item2.Color = Color.White;
+            cannons[1].Item3.Color = Color.White;
         }
 
         private IEnumerator Jump(Vector2 to, float jumpTime, float height)

@@ -106,8 +106,8 @@ namespace Platformer
             {
                 List<UIElement> returned = new List<UIElement>();
 
-                var h = new UIImage(new Vector2(208, 32), 400, 96, false, new Sprite(Color.White));
-                h.AddChild(new TextBox("Unnamed.", "Pixel", h.Pos + h.HalfSize, h.Width, h.Height, 5, Color.Black, true));
+                var h = new UIImage(new Vector2(150, 44), 400, 96, false, new Sprite(DataManager.Textures["bg/LogoSmall"]));
+                //h.AddChild(new TextBox("Unnamed.", "Pixel", h.Pos + h.HalfSize, h.Width, h.Height, 5, Color.Black, true));
                 returned.Add(h);
 
                 returned.Add(new TextSelectable("Play", "LexendDeca", new Vector2(48, 272), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () =>
