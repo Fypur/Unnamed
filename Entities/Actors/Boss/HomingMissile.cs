@@ -42,6 +42,11 @@ namespace Platformer
             boss = Engine.CurrentMap.Data.GetEntity<Boss3>();
         }
 
+        public override void Awake()
+        {
+            AddComponent(new Sound3D("SFX/Boss/Missile"));
+        }
+
         public override void Update()
         {
             maxSpeed = 200f;

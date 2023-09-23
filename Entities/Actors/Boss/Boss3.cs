@@ -207,11 +207,15 @@ namespace Platformer
                 target = EscapePoints[id];
             }
 
-            float t = 0.4f;
-
-            SwitchRot(0, t);
+            AddComponent(new Sound3D("SFX/Boss/Jump", autoRemove: true));
 
             IEnumerator enumerator;
+            float t = 0.4f;
+            SwitchRot(0, t);
+            AddComponent(new Timer(t - 0.3f, true, null, () =>
+            {
+                AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
+            }));
             if ((jumpPos == jumpPos0 && Pos == jumpPos1) || (jumpPos == jumpPos1 && Pos == jumpPos0))
                 enumerator = BezierJump(init, jumpPos, t, 200, null);
             else
@@ -219,20 +223,21 @@ namespace Platformer
 
             while (enumerator.MoveNext())
             { yield return null; }
-
             EmitLandingParticules();
 
-            
-
-            SwitchRot(id, t + 0.1f);
+            t += 0.1f;
+            SwitchRot(id, t);
+            AddComponent(new Timer(t - 0.3f, true, null, () =>
+            {
+                AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
+            }));
             if ((target == jumpPos0 && Pos == jumpPos1) || (target == jumpPos1 && Pos == jumpPos0))
-                enumerator = BezierJump(jumpPos, target, t + 0.1f, 200, null);
+                enumerator = BezierJump(jumpPos, target, t, 200, null);
             else
-                enumerator = BezierJump(jumpPos, target, t + 0.1f, 0, false);
+                enumerator = BezierJump(jumpPos, target, t, 0, false);
 
             while (enumerator.MoveNext())
                 yield return null;
-
             EmitLandingParticules();
 
             if(!invicibleTimer)

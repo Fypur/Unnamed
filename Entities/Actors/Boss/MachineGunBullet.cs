@@ -1,10 +1,5 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Platformer
 {
@@ -25,6 +20,11 @@ namespace Platformer
             Velocity = VectorHelper.AngleToVector(rotation) * speed;
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, Pos, 4);
+        }
+
+        public override void Awake()
+        {
+            AddComponent(new Sound3D("SFX/Boss/MachineGun", autoRemove: true));
         }
 
         public override void Update()

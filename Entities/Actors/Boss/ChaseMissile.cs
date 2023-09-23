@@ -1,10 +1,6 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Platformer
 {
@@ -37,6 +33,11 @@ namespace Platformer
                 Pos = next;
             },
             Explode));
+        }
+
+        public override void Awake()
+        {
+            AddComponent(new Sound3D("SFX/Boss/Missile"));
         }
 
         public override void Update()
