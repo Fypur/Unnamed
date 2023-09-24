@@ -72,6 +72,8 @@ namespace Platformer
                 if (Vector2.DistanceSquared(MiddlePos, falling.MiddlePos) < 10 * 10)
                     falling.Fall();
 
+            AddComponent(new Sound3D("SFX/Boss/MissileExplode", autoRemove: true));
+
             SelfDestroy();
         }
 

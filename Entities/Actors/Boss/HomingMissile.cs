@@ -101,6 +101,8 @@ namespace Platformer
             Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Bounds, 100);
             Engine.Cam.Shake(0.4f, 1);
 
+            AddComponent(new Sound3D("SFX/Boss/MissileExplode", autoRemove: true));
+
             /*if (Vector2.DistanceSquared(MiddlePos, player.MiddlePos) < 25 * 25)
                 player.Damage();*/
         }
