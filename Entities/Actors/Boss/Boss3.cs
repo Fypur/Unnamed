@@ -666,8 +666,21 @@ namespace Platformer
             player.Velocity += (player.MiddlePos - MiddlePos).Normalized() * 300 + new Vector2(0, -200);
 
             Platformer.Music.getPlaybackState(out FMOD.Studio.PLAYBACK_STATE state);
-            if (state != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+
+            if(state != FMOD.Studio.PLAYBACK_STATE.PLAYING)
                 Platformer.Music = Audio.PlayEvent("Soundtrack/Chase");
+            else
+            {
+                Platformer.Music.getDescription(out var description);
+                description.getPath(out var path);
+                if (!path.Contains("Chase"))
+                {
+                    Audio.StopEvent(Platformer.Music, true);
+                    Platformer.Music = Audio.PlayEvent("Soundtrack/Chase");
+                }
+            }
+
+            
 
             Engine.Cam.Shake(0.5f * 5, 1);
             AddComponent(new Coroutine(FreezeInput(0.5f * 5 + 2)));

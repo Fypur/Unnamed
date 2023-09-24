@@ -106,7 +106,8 @@ namespace Platformer
             {
                 List<UIElement> returned = new List<UIElement>();
 
-                var h = new UIImage(new Vector2(150, 44), 400, 96, false, new Sprite(DataManager.Textures["bg/LogoSmall"]));
+                var h = new UIImage(new Vector2(1280 / 2, 576 - 260), 538, 275, false, new Sprite(DataManager.Textures["bg/Logo"]));
+                h.Sprite.Scale = Vector2.One * Options.CurrentScreenSizeMultiplier / Options.DefaultUISizeMultiplier;
                 //h.AddChild(new TextBox("Unnamed.", "Pixel", h.Pos + h.HalfSize, h.Width, h.Height, 5, Color.Black, true));
                 returned.Add(h);
 
@@ -142,7 +143,7 @@ namespace Platformer
                 Vector2[] offsets = new Vector2[Children.Count];
                 Array.Fill(offsets, Vector2.UnitX * -200);
 
-                offsets[0] -= Vector2.UnitX * 500;
+                offsets[0] += Vector2.UnitX * 900;
                 offsets[3] -= Vector2.UnitX * 100;
 
                 var s = Slide(1, offsets, Children);
@@ -155,12 +156,18 @@ namespace Platformer
                 Vector2[] offsets = new Vector2[Children.Count];
                 Array.Fill(offsets, Vector2.UnitX * -200);
 
-                offsets[0] -= Vector2.UnitX * 500;
+                offsets[0] += Vector2.UnitX * 900;
                 offsets[3] -= Vector2.UnitX * 100;
 
                 var s = SlideTo(0.5f, offsets, Children);
                 s.MoveNext();
                 return s;
+            }
+
+            public override void OnSizeChange()
+            {
+                base.OnSizeChange();
+                Children[0].Sprite.Scale = Vector2.One * Options.CurrentScreenSizeMultiplier / Options.DefaultUISizeMultiplier;
             }
         }
 

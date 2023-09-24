@@ -459,8 +459,14 @@ namespace Platformer
                 Music = Audio.PlayEvent("Soundtrack/Music");
             else if(World == SwingWorld)
                 Music = Audio.PlayEvent("Soundtrack/MusicAtmo");
-            /*else if(World == BossWorld)
-                Music = Audio.PlayEvent("Soundtrack/Chase");*/
+            else if(World == BossWorld)
+            {
+                if(int.TryParse(InitLevel.Substring(InitLevel.Length - 2), out int last) && (last == 69 || last == 70))
+                    Music = Audio.PlayEvent("Soundtrack/Prefight");
+                else
+                    Music = Audio.PlayEvent("Soundtrack/Chase");
+
+            }
         }
 
         public static void EndGame()
