@@ -5,8 +5,9 @@
 	  <LangVersion>latest</LangVersion>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
-    <Platforms>x86;x64;ARM64</Platforms>
+    <Platforms>x86;x64</Platforms>
     <PlatformTarget>x64</PlatformTarget>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 	<Target Name="Codegen" BeforeTargets="BeforeBuild">
 		<Exec Command="ldtkgen -i Content/World.ldtk --PointAsVector2" />
@@ -21,18 +22,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DefineConstants>$(DefineConstants)TRACE;WIN64</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <DefineConstants>$(DefineConstants)TRACE;WIN64</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <DefineConstants>$(DefineConstants)TRACE;WIN32</DefineConstants>
     <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DefineConstants>$(DefineConstants)TRACE;WIN64</DefineConstants>
-    <Optimize>True</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <DefineConstants>$(DefineConstants)TRACE;WIN64</DefineConstants>
     <Optimize>True</Optimize>
   </PropertyGroup>
