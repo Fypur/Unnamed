@@ -168,6 +168,7 @@ namespace Platformer
             if (!fast)
             {
                 Pos = Pos + new Vector2(120, -208);
+                invulnerable = true;
                 AddComponent(new Coroutine(BezierJump(Pos, Pos - new Vector2(120, -208), 0.4f, 0, true), Coroutine.WaitSeconds(1), Scream()));
             }
             else
@@ -663,6 +664,7 @@ namespace Platformer
 
         private IEnumerator Scream()
         {
+            invulnerable = true;
             player.Velocity += (player.MiddlePos - MiddlePos).Normalized() * 300 + new Vector2(0, -200);
 
             Platformer.Music.getPlaybackState(out FMOD.Studio.PLAYBACK_STATE state);
@@ -697,7 +699,8 @@ namespace Platformer
 
             circleLengths.Clear();
             stateMachine.Switch(States.Jumping);
-            
+            invulnerable = false;
+
 
             IEnumerator AddCircle()
             {

@@ -103,6 +103,9 @@ namespace Platformer
                 if (b != null && b != this)
                     b.SelfDestroy();
 
+                AddComponent(new Coroutine(FreezeWithInput(7f, () => 
+                Engine.Player.Pos.Y < -1305)));
+
                 float t = 0.3f;
                 c = (Coroutine)AddComponent(new Coroutine(
                     Coroutine.Do(() => {
@@ -171,6 +174,27 @@ namespace Platformer
                 Input.CurrentState = new Input.State();
                 Input.OldState = new Input.State();
                 time += Engine.Deltatime;
+                yield return null;
+            }
+
+            Input.CurrentState = s;
+            Input.OldState = oldS;
+        }
+
+        IEnumerator FreezeWithInput(float t, Func<bool> early = null)
+        {
+            Input.State s = Input.CurrentState;
+            Input.State oldS = Input.OldState;
+
+            float time = 0;
+
+            Func<bool> a = () => early == null ? false : early();
+            while (time < t && !a())
+            {
+                Input.CurrentState = s;
+                Input.OldState = oldS;
+                time += Engine.Deltatime;
+                Debug.LogUpdate(Engine.Player.Pos);
                 yield return null;
             }
 

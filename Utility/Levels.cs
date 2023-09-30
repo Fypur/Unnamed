@@ -1,9 +1,9 @@
 ﻿using Fiourp;
 using LDtk;
-using LDtk.JsonPartials;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -384,6 +384,49 @@ namespace Platformer
                     case 11:
                         entities.Add(new EndCinematic(p.Position, p.Size, p.Positions));
                         break;
+                    case 12:
+                        Trigger trig5 = new Trigger(p.Position, p.Size, new() { typeof(Player) }, null);
+
+                        trig5.OnTriggerEnterAction = (entity) =>
+                        {
+                            Platformer.Music.getPlaybackState(out FMOD.Studio.PLAYBACK_STATE state);
+
+                            if (state != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+                                Platformer.Music = Audio.PlayEvent("Soundtrack/Prefight");
+                            else
+                            {
+                                Platformer.Music.getDescription(out var description);
+                                description.getPath(out var path);
+                                if (!path.Contains("Prefight"))
+                                {
+                                    Audio.StopEvent(Platformer.Music, true);
+                                    Platformer.Music = Audio.PlayEvent("Soundtrack/Prefight");
+                                }
+                            }
+
+                            trig5.AddComponent(new Coroutine(FreezeInput(1.4f)));
+
+                            IEnumerator FreezeInput(float t)
+                            {
+                                Input.State s = Input.CurrentState;
+                                Input.State oldS = Input.OldState;
+
+                                float time = 0;
+                                while (time < t)
+                                {
+                                    Input.CurrentState = new Input.State();
+                                    Input.OldState = new Input.State();
+                                    time += Engine.Deltatime;
+                                    yield return null;
+                                }
+
+                                Input.CurrentState = s;
+                                Input.OldState = oldS;
+                            }
+                        };
+
+                        entities.Add(trig5);
+                        break;
                 }
             }
 
@@ -691,12 +734,7 @@ namespace Platformer
                 {
                     if(p.Type.ToString() == a.Id)
                     {
-                        tileID = (int)a.TileId;
-                        if (tileID == -1)
-                        {
-                            tileID = a._TileSrcRect[0] / 8 + a._TileSrcRect[1] / 8 * 160 / 8;
-                        }
-
+                        tileID = a.TileRect.X / 8 + a.TileRect.Y / 8 * 160 / 8;
                         break;
                     }
                 }

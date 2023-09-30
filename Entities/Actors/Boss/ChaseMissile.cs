@@ -37,7 +37,7 @@ namespace Platformer
 
         public override void Awake()
         {
-            AddComponent(new Sound3D("SFX/Boss/Missile"));
+            AddComponent(new Timer(Rand.NextFloat(0, 0.2f), true, null, () => AddComponent(new Sound3D("SFX/Boss/Missile"))));
         }
 
         public override void Update()

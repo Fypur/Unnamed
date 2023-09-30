@@ -72,7 +72,7 @@
     <Folder Include="Content\Graphics\Objects\RAM\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="LDtkMonogame" Version="0.7.0" />
+    <PackageReference Include="LDtkMonogame" Version="1.1.2" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
   </ItemGroup>

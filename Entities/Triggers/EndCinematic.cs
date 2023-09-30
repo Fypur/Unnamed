@@ -42,7 +42,6 @@ namespace Platformer
             //Text: The End
 
             Audio.StopEvent(Platformer.Music, true);
-            player.Sprite.OnFrameChange = null;
 
             AddComponent(new Coroutine(
                 FreezeInput(1.5f),
@@ -52,9 +51,13 @@ namespace Platformer
                     player.CanAnimateSprite = true;
                 }),
                 MovePlayer(positions[0], 0.7f, "run", null, null),
+                Coroutine.Do(() =>
+                {
+                    player.GetComponent<StateMachine<Player.States>>().Switch(Player.States.Ascending); //no more sound
+                }),
                 Coroutine.Do(() => AddComponent(new Coroutine(MovePlayer(positions[2], 1.2f, "jump", null, true)))),
                 MovePlayer(positions[1], 0.4f, "jump", Ease.CubicOut, false),
-                MovePlayer(positions[2], 0.7f, "jump", Ease.CubicIn, false),
+                MovePlayer(positions[2], 0.7f, "fall", Ease.CubicIn, false),
                 Credits()
                 ));
         }
@@ -65,7 +68,6 @@ namespace Platformer
 
             Vector2 init = player.Pos;
             player.Sprite.Play(anim);
-            player.Sprite.OnFrameChange = null;
 
             while (t < time)
             {
@@ -76,7 +78,6 @@ namespace Platformer
                 else if (XYOrBoth == false)
                     player.Pos.Y = MathHelper.Lerp(init.Y, to.Y, ease == null ? t / time : ease(t / time));
 
-                player.Sprite.OnFrameChange = null;
                 t += Engine.Deltatime;
                 yield return null;
             }

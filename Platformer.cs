@@ -89,8 +89,8 @@ namespace Platformer
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
 #if DEBUG
-            InitLevel = "Lvl16";
-            InitWorld = 0;
+            InitLevel = "Lvl71";
+            InitWorld = 2;
             WorldsUnlocked = 2;
             //StartGame();
 
@@ -461,7 +461,7 @@ namespace Platformer
                 Music = Audio.PlayEvent("Soundtrack/MusicAtmo");
             else if(World == BossWorld)
             {
-                if(int.TryParse(InitLevel.Substring(InitLevel.Length - 2), out int last) && (last == 69 || last == 70))
+                if(int.TryParse(InitLevel.Substring(InitLevel.Length - 2), out int last) && (last == 69 || last == 70 || last == 73))
                     Music = Audio.PlayEvent("Soundtrack/Prefight");
                 else
                     Music = Audio.PlayEvent("Soundtrack/Chase");
