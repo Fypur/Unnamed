@@ -508,7 +508,7 @@ namespace Platformer
             Options.SetSize(save.ScreenSize.Value);
             Audio.SetMasterVolume(save.MasterVolume.Value / 10f);
             Audio.SetGroupVolume("Musics", save.MusicVolume.Value / 10f);
-            Audio.SetGroupVolume("GonePause/Sound effects", save.SFXVolume.Value / 10f);
+            Audio.SetGroupVolume("Sound effects", save.SFXVolume.Value / 10f);
             Audio.SetGroupVolume("Ambience", save.SFXVolume.Value / 10f);
 
             Player.JumpControls = new(save.jumpControls);
@@ -530,7 +530,7 @@ namespace Platformer
                 return;
 
             Paused = true;
-            Audio.SetGroupVolume("GonePause", 0);
+            Audio.GetBus("Sound effects").setPaused(true);
             PauseMenu.Show();
             PreviousPauseOldState = Input.OldState;
         }
@@ -540,7 +540,7 @@ namespace Platformer
             if (!Paused)
                 return;
 
-            Audio.SetGroupVolume("GonePause", 1);
+            Audio.GetBus("Sound effects").setPaused(false);
             PauseMenu.Children = new();
             Paused = false;
             Input.OldState = PreviousPauseOldState;

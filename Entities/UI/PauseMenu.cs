@@ -11,9 +11,18 @@ namespace Platformer
 {
     public class PauseMenu : UIElement
     {
+        private static bool showing;
+
         public PauseMenu()
             : base (Vector2.Zero, 1280, 720, Sprite.None)
         { }
+
+        public override void Render()
+        {
+            if(Active)
+                Drawing.Draw(Drawing.PointTexture, Vector2.Zero, new Color(Color.Black, 20));
+            base.Render();
+        }
 
         public void Show()
         {
@@ -50,6 +59,8 @@ namespace Platformer
                         WorldUnlocked = Platformer.WorldsUnlocked,
                         CanJetpack = Platformer.player.CanJetpack
                     });
+
+                    Audio.GetBus("Sound effects").stopAllEvents(FMOD.Studio.STOP_MODE.IMMEDIATE);
 
                     Platformer.LoadWorldSave(Saving.Load());
 

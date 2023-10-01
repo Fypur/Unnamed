@@ -125,6 +125,13 @@ namespace Platformer
 
                     Coroutine.Do(() => {
                         Engine.Cam.Shake(0.3f, 2);
+                        Sprite.Visible = false;
+                        foreach(var b in cannons)
+                        {
+                            b.Item1.Visible = false;
+                            b.Item2.Visible = false;
+                            b.Item3.Visible = false;
+                        }
                         ParticleType explosion = new();
                         explosion.CopyFrom(Particles.Explosion);
                         explosion.Direction = -90;
