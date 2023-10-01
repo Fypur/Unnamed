@@ -45,6 +45,8 @@ namespace Platformer
             AddComponent(h);
             h.InstaDeath = true;
 
+            AddComponent(new Sound3D("SFX/Fire/PushingFire"));
+
             ChangeDirection(direction);
         }
 

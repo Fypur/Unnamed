@@ -28,6 +28,13 @@ namespace Platformer
             DetermineStats(direction);
         }
 
+        public override void Awake()
+        {
+            base.Awake();
+
+            AddComponent(new Sound3D("SFX/Fire/FirePatch"));
+        }
+
         private void DetermineStats(Direction direction)
         {
             Rectangle emitRect;
