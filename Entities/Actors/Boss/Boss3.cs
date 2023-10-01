@@ -517,6 +517,11 @@ namespace Platformer
                 healthTileIndex++;
                 healthTile.Sprite.Texture = DataManager.Objects["scenery/bossScreen" + healthTileIndex.ToString()];
 
+                string path = Health is 0
+                    ? "SFX/Boss/HitFinal"
+                    : "SFX/Boss/Hit";
+                AddComponent(new Sound3D(path, true));
+
                 stateMachine.Switch(States.Hit);
 
                 Sprite.Play("hit");
@@ -748,6 +753,12 @@ namespace Platformer
         {
             Dead = true;
 
+            AddComponent(new Sound3D("SFX/Boss/Jump", autoRemove: true));
+            AddComponent(new Timer(0.2f, true, null, () =>
+            {
+                AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
+            }));
+
             IEnumerator e;
             if (Pos != jumpPos0)
             {
@@ -777,6 +788,9 @@ namespace Platformer
             
             LineRenderer l = (LineRenderer)AddComponent(new LineRenderer(cannonPos, targDir, null, 1, Color.LightCoral, null, null));
 
+            Sound3D sfx = new("SFX/Boss/ChargeBeam", autoRemove: true);
+            AddComponent(sfx);
+
             timer = 0.7f * speedMult;
             while(timer >= 0)
             {   
@@ -790,8 +804,10 @@ namespace Platformer
                 yield return 0;
             }
 
-
             yield return new Coroutine.WaitForSeconds(0.7f);
+            sfx.Stop();
+
+            AddComponent(new Sound3D("SFX/Boss/BeamExplode", autoRemove: true));
 
             Engine.CurrentMap.Data.GetEntity<SolidPlatform>().SelfDestroy();
             PushingFire p = (PushingFire)Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos, 64));
@@ -858,6 +874,7 @@ namespace Platformer
 
             yield return new Coroutine.WaitForSeconds(1);
 
+            AddComponent(new Sound3D("SFX/Boss/Jump", autoRemove: true));
             e = BezierJump(Pos, Engine.CurrentMap.CurrentLevel.Pos + new Vector2(Engine.CurrentMap.CurrentLevel.Size.X, 0), 1.5f, 300, false);
 
             while (e.MoveNext())
