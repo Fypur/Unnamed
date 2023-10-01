@@ -288,6 +288,11 @@ namespace Platformer
             Sprite.Rotation = 0;
             bool forward = Rand.NextDouble() < 0.5f;
 
+            AddComponent(new Timer(jumpTime - 0.3f, true, null, () =>
+            {
+                AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
+            }));
+
             Vector2[] controlPoints = new Vector2[] { initPos, new Vector2((initPos.X + to.X) / 2, initPos.Y - height), to };
             while (time < jumpTime)
             {
