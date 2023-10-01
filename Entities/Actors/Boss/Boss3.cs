@@ -363,6 +363,9 @@ namespace Platformer
 
             LineRenderer l = (LineRenderer)AddComponent(new LineRenderer(cannonPos, targDir, null, 1, Color.LightCoral, null, null));
 
+            Sound3D sfx = new("SFX/Boss/ChargeBeam", autoRemove: true);
+            AddComponent(sfx);
+
             float timer = 0.7f * speedMult;
             for (int i = 0; timer >= 0; i++)
             {
@@ -372,7 +375,7 @@ namespace Platformer
                     targDir = r.EndPoint;
 
                 SetCannonPos();
-                l.Positions[0] = cannonPos;
+                l.Positions[0] = cannonPos; 
                 l.Positions[1] = targDir;
 
                 timer -= Engine.Deltatime;
@@ -381,6 +384,9 @@ namespace Platformer
 
             yield return new Coroutine.WaitForSeconds(0.3f * speedMult);
             yield return new Coroutine.PausedUntil(() => !Close());
+
+            sfx.Stop();
+            AddComponent(new Sound3D("SFX/Boss/BeamExplode", autoRemove: true));
 
             l.Thickness = 5;
             ParticleType fastFire = Particles.Fire.Copy();
