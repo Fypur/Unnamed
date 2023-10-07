@@ -45,6 +45,8 @@ namespace Platformer
             if (!canActivate)
                 return;
 
+            Audio.PlayEvent("SFX/Refill/Get");
+
             player.RefillJetpack();
             canActivate = false;
 
