@@ -15,7 +15,6 @@ namespace Platformer
         Tuple<Sprite, Sprite, Sprite>[] cannons;
         Vector2 cannonPos;
 
-        private float rotation;
         private Guid iid;
 
         public ChaseBoss(Vector2[] positions, int id, Guid iid) : base(positions[0] + new Vector2(-4), 24, 16, 0, new Sprite(Color.White))
@@ -173,19 +172,19 @@ namespace Platformer
         IEnumerator FreezeInput(float t)
         {
             Input.State s = Input.CurrentState;
-            Input.State oldS = Input.OldState;
+            //Input.State oldS = Input.OldState;
 
             float time = 0;
             while (time < t)
             {
                 Input.CurrentState = new Input.State();
-                Input.OldState = new Input.State();
+                //Input.OldState = new Input.State();
                 time += Engine.Deltatime;
                 yield return null;
             }
 
             Input.CurrentState = s;
-            Input.OldState = oldS;
+            //Input.OldState = oldS;
         }
 
         IEnumerator FreezeWithInput(float t, Func<bool> early = null)
@@ -215,12 +214,21 @@ namespace Platformer
 
             Vector2 initPos = Pos + new Vector2(0, -100);
 
+
+            bool once = true;
+
             while (time < 0.7f)
             {
                 Vector2 aim = Vector2.Lerp(initPos, Positions[1], Ease.CubicIn(time / 0.7f));
 
                 MoveX(aim.X - Pos.X, OnCollision);
                 MoveY(aim.Y - Pos.Y, OnCollision);
+
+                if(time > 0.7f - 0.3f && once)
+                {
+                    once = false;
+                    AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
+                }
 
                 time += Engine.Deltatime;
                 yield return 0;
@@ -238,6 +246,7 @@ namespace Platformer
 
             initPos = Pos;
             time = 0;
+            once = true;
 
             Vector2[] controlPoints = new Vector2[] { initPos, new Vector2((initPos.X + Positions[2].X) / 2, initPos.Y - 300), Positions[2] };
             while (time < 0.6f)
@@ -246,6 +255,12 @@ namespace Platformer
 
                 MoveX(aim.X - Pos.X, OnCollision);
                 MoveY(aim.Y - Pos.Y, OnCollision);
+
+                if (time < 0.6f - 0.3f && once)
+                {
+                    once = false;
+                    AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
+                }
 
                 time += Engine.Deltatime;
                 yield return 0;
@@ -441,8 +456,8 @@ namespace Platformer
             float finalRot = (Engine.Player.MiddlePos - MiddlePos).ToAngleRad();
 
             float[] rot1 = new float[] {
-                rotation + 5 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
-                rotation + 7 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
+                5 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
+                7 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
                 //rotation + 4 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
             };
 
@@ -466,7 +481,7 @@ namespace Platformer
 
 
                 //cannons[i].Item1.Offset = rotColl.Rect[0] - Pos + VectorHelper.Rotate(new Vector2(6, 4), rotation);
-                cannons[i].Item1.Offset = VectorHelper.Rotate(new Vector2(6, 4), rotation);
+                cannons[i].Item1.Offset = VectorHelper.Rotate(new Vector2(6, 4), 0);
                 cannons[i].Item2.Offset = cannons[i].Item1.Offset + VectorHelper.Rotate(new Vector2(Boss3.CannonLength, 0), cannons[i].Item1.Rotation);
                 cannons[i].Item3.Offset = cannons[i].Item2.Offset + VectorHelper.Rotate(new Vector2(Boss3.CannonLength, 0), cannons[i].Item2.Rotation);
 

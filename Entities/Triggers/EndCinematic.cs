@@ -93,19 +93,19 @@ namespace Platformer
         private IEnumerator FreezeInput(float t)
         {
             Input.State s = Input.CurrentState;
-            Input.State oldS = Input.OldState;
+            //Input.State oldS = Input.OldState;
 
             float time = 0;
             while (time < t)
             {
                 Input.CurrentState = new Input.State();
-                Input.OldState = new Input.State();
+                //Input.OldState = new Input.State();
                 time += Engine.Deltatime;
                 yield return null;
             }
 
             Input.CurrentState = s;
-            Input.OldState = oldS;
+            //Input.OldState = oldS;
         }
 
         private IEnumerator Credits()

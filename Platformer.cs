@@ -120,7 +120,10 @@ namespace Platformer
 
         protected override void Update(GameTime gameTime)
         {
-            Input.UpdateState();
+            if (IsActive)
+                Input.UpdateState();
+            else
+                Input.CurrentState = new Input.State();
 #if DEBUG
             /*if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
                 Exit();*/
@@ -251,7 +254,9 @@ namespace Platformer
                 player.Pos = ((RespawnTrigger)Engine.CurrentMap.Data.EntitiesByType[typeof(RespawnTrigger)][0]).RespawnPoint;
             }*/
 #endif
+
             Input.UpdateOldState();
+            
 
             Audio.Update();
 
@@ -557,7 +562,8 @@ namespace Platformer
         public static void Freeze(float time)
         {
             freezePaused = true;
-            freezeTimer = new Timer(time, false, null, () => { freezePaused = false; Input.OldState = freezeState; });
+            freezeTimer = new Timer(time, false, null, () => { freezePaused = false;
+                Input.OldState = freezeState; });
             freezeState = Input.CurrentState;
         }
 
