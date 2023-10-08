@@ -57,7 +57,7 @@ namespace Platformer
             if (id == 0)
                 c = (Coroutine)AddComponent(new Coroutine(Room1()));
             else if (id == 1)
-                c = (Coroutine)AddComponent(new Coroutine(Jump(Positions[1], 0.4f, 300),
+                c = (Coroutine)AddComponent(new Coroutine(Jump(Positions[1], 0.4f, 200),
                     Jump(Positions[2], 0.4f, 100),
                     Coroutine.WaitSeconds(0.3f),
                     Jump(Positions[3], 0.4f, 100),
@@ -285,12 +285,25 @@ namespace Platformer
             int numBullets = 10;
             float range = 180;
 
+            AddComponent(new Coroutine(SetCannon(0.1f * numBullets)));
+
             for (int i = 1; i <= numBullets; i++)
             {
-                var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, i * range / numBullets + 180));
+                var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(cannonPos, i * range / numBullets + 180));
                 Engine.CurrentMap.CurrentLevel.DestroyOnUnload(m);
                 Engine.Cam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.1f);
+            }
+
+            IEnumerator SetCannon(float time)
+            {
+                float init = time;
+                while(time > 0)
+                {
+                    SetCannonPos(MathHelper.ToRadians(-time / init * 180));
+                    time -= Engine.Deltatime;
+                    yield return null;
+                }
             }
 
             cannons[1].Item1.Color = Color.White;
@@ -422,9 +435,8 @@ namespace Platformer
 
         public override void Update()
         {
+            SetCannonPos((Engine.Player.MiddlePos - MiddlePos).ToAngleRad());
             base.Update();
-
-            SetCannonPos();
         }
 
         public override void Render()
@@ -456,10 +468,8 @@ namespace Platformer
             Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget);
         }
 
-        private void SetCannonPos()
+        private void SetCannonPos(float finalRot)
         {
-            float finalRot = (Engine.Player.MiddlePos - MiddlePos).ToAngleRad();
-
             float[] rot1 = new float[] {
                 5 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
                 7 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
