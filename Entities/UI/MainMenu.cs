@@ -98,6 +98,7 @@ namespace Platformer
 
         public class MainSubMenu : SubMenu
         {
+            public bool MoveLogo = true;
             public MainSubMenu()
                 : base(Vector2.Zero, 1280, 720, true)
             { }
@@ -129,7 +130,7 @@ namespace Platformer
 
                 returned.Add(new TextSelectable("Options", "LexendDeca", new Vector2(48, 352), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { SwitchTo(new OptionsSubMenu<MainSubMenu>()); }));
 
-                returned.Add(new TextSelectable("Chapter Select", "LexendDeca", new Vector2(48, 432), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { SwitchTo(new WorldsSubMenu()); }));
+                returned.Add(new TextSelectable("Chapter Select", "LexendDeca", new Vector2(48, 432), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { MoveLogo = false; SwitchTo(new WorldsSubMenu()); }));
 
                 returned.Add(new TextSelectable("Quit", "LexendDeca", new Vector2(48, 512), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => { Platformer.instance.Exit(); }));
 
@@ -146,6 +147,11 @@ namespace Platformer
                 offsets[0] += Vector2.UnitX * 900;
                 offsets[3] -= Vector2.UnitX * 100;
 
+                if (!MoveLogo)
+                    offsets[0] = Vector2.Zero;
+
+                MoveLogo = true;
+
                 var s = Slide(1, offsets, Children);
                 s.MoveNext();
                 return s;
@@ -158,6 +164,9 @@ namespace Platformer
 
                 offsets[0] += Vector2.UnitX * 900;
                 offsets[3] -= Vector2.UnitX * 100;
+
+                if (!MoveLogo)
+                    offsets[0] = Vector2.Zero;
 
                 var s = SlideTo(0.5f, offsets, Children);
                 s.MoveNext();
@@ -308,8 +317,9 @@ namespace Platformer
             {
                 List<UIElement> returned = new List<UIElement>();
 
-                var h = new UIImage(new Vector2(208, 32), 400, 96, false, new Sprite(Color.White));
-                h.AddChild(new TextBox("Unnamed.", "Pixel", h.Pos + h.HalfSize, h.Width, h.Height, 5, Color.Black, true));
+                var h = new UIImage(new Vector2(1280 / 2, 576 - 260), 538, 275, false, new Sprite(DataManager.Textures["bg/Logo"]));
+                h.Sprite.Scale = Vector2.One * Options.CurrentScreenSizeMultiplier / Options.DefaultUISizeMultiplier;
+                //h.AddChild(new TextBox("Unnamed.", "Pixel", h.Pos + h.HalfSize, h.Width, h.Height, 5, Color.Black, true));
                 returned.Add(h);
 
                 int i = 0;
@@ -357,7 +367,11 @@ namespace Platformer
                     returned.Add(t);
                 }
 
-                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(48, 272 + i * 80), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => SwitchTo(new MainSubMenu())));
+                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(48, 272 + i * 80), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => {
+                    var m = new MainSubMenu();
+                    m.MoveLogo = false;
+                    SwitchTo(m);
+                }));
 
                 MakeList(returned, true);
 
@@ -369,7 +383,7 @@ namespace Platformer
                 Vector2[] offsets = new Vector2[Children.Count];
                 Array.Fill(offsets, Vector2.UnitX * -200);
 
-                offsets[0] -= Vector2.UnitX * 500;
+                offsets[0] = Vector2.Zero;
 
                 var s = Slide(1, offsets, Children);
                 s.MoveNext();
@@ -381,7 +395,7 @@ namespace Platformer
                 Vector2[] offsets = new Vector2[Children.Count];
                 Array.Fill(offsets, Vector2.UnitX * -200);
 
-                offsets[0] -= Vector2.UnitX * 500;
+                offsets[0] = Vector2.Zero;
 
                 var s = SlideTo(0.5f, offsets, Children);
                 s.MoveNext();
@@ -391,7 +405,9 @@ namespace Platformer
             public override void OnBack()
             {
                 base.OnBack();
-                SwitchTo(new MainSubMenu());
+                var m = new MainSubMenu();
+                m.MoveLogo = false;
+                SwitchTo(m);
             }
         }
     }

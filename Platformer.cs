@@ -131,8 +131,10 @@ namespace Platformer
 
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds * TimeScale;
 
-            if (Input.GetKeyDown(Keys.S) || Input.GetKeyDown(Keys.Escape))
+            if (Input.GetKeyDown(Keys.Escape))
+            {
                 PauseOrUnpause();
+            }
 
             if (Input.GetKeyDown(Keys.F11))
                 Options.FullScreen();
@@ -255,8 +257,11 @@ namespace Platformer
             }*/
 #endif
 
-            Input.UpdateOldState();
-            
+            if (IsActive)
+                Input.UpdateOldState();
+            else
+                Input.OldState = new Input.State();
+
 
             Audio.Update();
 
@@ -467,7 +472,10 @@ namespace Platformer
             else if(World == BossWorld)
             {
                 if(int.TryParse(InitLevel.Substring(InitLevel.Length - 2), out int last) && (last == 69 || last == 70 || last == 73))
-                    Music = Audio.PlayEvent("Soundtrack/Prefight");
+                {
+                    if(last != 73)
+                        Music = Audio.PlayEvent("Soundtrack/Prefight");
+                }
                 else
                     Music = Audio.PlayEvent("Soundtrack/Chase");
 

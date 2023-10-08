@@ -131,6 +131,9 @@ namespace Platformer
                             b.Item2.Visible = false;
                             b.Item3.Visible = false;
                         }
+
+                        AddComponent(new Sound3D("SFX/Boss/HitFinal"));
+                        AddComponent(new Sound3D("SFX/Boss/MissileExplode"));
                         ParticleType explosion = new();
                         explosion.CopyFrom(Particles.Explosion);
                         explosion.Direction = -90;
@@ -200,7 +203,6 @@ namespace Platformer
                 Input.CurrentState = s;
                 Input.OldState = oldS;
                 time += Engine.Deltatime;
-                Debug.LogUpdate(Engine.Player.Pos);
                 yield return null;
             }
 
@@ -303,10 +305,13 @@ namespace Platformer
             Sprite.Rotation = 0;
             bool forward = Rand.NextDouble() < 0.5f;
 
-            AddComponent(new Timer(jumpTime - 0.3f, true, null, () =>
-            {
-                AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
-            }));
+            if(jumpTime - 0.3f > 0)
+                AddComponent(new Timer(jumpTime - 0.3f, true, null, () =>
+                {
+                    AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
+                }));
+            else
+                AddComponent(new Sound3D("SFX/Boss/JumpLandSlamFast", autoRemove: true));
 
             Vector2[] controlPoints = new Vector2[] { initPos, new Vector2((initPos.X + to.X) / 2, initPos.Y - height), to };
             while (time < jumpTime)
@@ -565,7 +570,7 @@ namespace Platformer
             }
 
             FallClosestFallingPlatform();
-            FallClosestFallingPlatform();
+            //FallClosestFallingPlatform();
 
             while (coroutine.Enumerator != null) { coroutine.Update(); yield return null; }
 

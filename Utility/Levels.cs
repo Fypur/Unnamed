@@ -314,21 +314,26 @@ namespace Platformer
                         break;
                     case 6:
                         Trigger trig2 = new Trigger(p.Position, p.Size, new() { typeof(Player) }, null);
-
                         bool trigged = false;
                         trig2.OnTriggerEnterAction = (entity) =>
                         {
-                            if (trigged)
-                                return;
+                            trig2.AddComponent(new Coroutine(FallPlats()));
+                            IEnumerator FallPlats()
+                            {
+                                if (trigged)
+                                    yield break;
 
-                            trigged = true;
-                            Vector2[] fPos = new Vector2[p.Children.Length];
-                            for (int i = 0; i < p.Children.Length; i++)
-                                fPos[i] = level.GetEntityRef<LDtkTypes.FallingPlatform>(p.Children[i]).Position;
+                                yield return new Coroutine.PausedUntil(() => Platformer.player.Velocity != Vector2.Zero);
 
-                            foreach (FallingPlatform f in Engine.CurrentMap.Data.GetEntities<FallingPlatform>())
-                                if (fPos.Contains(f.Pos))
-                                    f.Fall();
+                                trigged = true;
+                                Vector2[] fPos = new Vector2[p.Children.Length];
+                                for (int i = 0; i < p.Children.Length; i++)
+                                    fPos[i] = level.GetEntityRef<LDtkTypes.FallingPlatform>(p.Children[i]).Position;
+
+                                foreach (FallingPlatform f in Engine.CurrentMap.Data.GetEntities<FallingPlatform>())
+                                    if (fPos.Contains(f.Pos))
+                                        f.Fall();
+                            }
                         };
 
                         entities.Add(trig2);
@@ -391,7 +396,7 @@ namespace Platformer
                         {
                             Platformer.Music.getPlaybackState(out FMOD.Studio.PLAYBACK_STATE state);
 
-                            if (state != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+                            /*if (state != FMOD.Studio.PLAYBACK_STATE.PLAYING)
                                 Platformer.Music = Audio.PlayEvent("Soundtrack/Prefight");
                             else
                             {
@@ -402,7 +407,9 @@ namespace Platformer
                                     Audio.StopEvent(Platformer.Music, true);
                                     Platformer.Music = Audio.PlayEvent("Soundtrack/Prefight");
                                 }
-                            }
+                            }*/
+
+                            Audio.StopEvent(Platformer.Music);
 
                             trig5.AddComponent(new Coroutine(FreezeInput(1.4f)));
 

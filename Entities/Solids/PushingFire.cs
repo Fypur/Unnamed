@@ -36,7 +36,7 @@ namespace Platformer
 
             bigFire = fire.Copy();
             bigFire.Size = 20;
-            bigFire.LifeMax = 1f;
+            bigFire.LifeMax = 3f;
 
             AddComponent(new Coroutine(Coroutine.WaitUntil(() => Platformer.player.Velocity != Vector2.Zero), Coroutine.Do(() => 
             this.Speed = speed)));
@@ -45,8 +45,6 @@ namespace Platformer
             AddComponent(h);
             h.InstaDeath = true;
 
-            AddComponent(new Sound3D("SFX/Fire/PushingFire"));
-
             ChangeDirection(direction);
         }
 
@@ -54,6 +52,8 @@ namespace Platformer
         {
             base.Awake();
             ResetPos();
+
+            AddComponent(new Sound3D("SFX/Fire/PushingFire"));
 
             Engine.CurrentMap.CurrentLevel.DontDestroyOnUnload(this);
 
@@ -67,39 +67,45 @@ namespace Platformer
             Move(dirVec * Speed * Engine.Deltatime);
 
             Rectangle rect;
+            Vector2 particlePos;
+            Vector2 particleSize;
             switch (Direction)
             {
                 case Direction.Right:
                     rect = new Rectangle((int)(Pos.X - Engine.Cam.Size.X), (int)Pos.Y, (int)(Engine.Cam.Size.X + 10), Height);
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos, Pos + Size.OnlyY(), (int)(312 * Engine.Deltatime), fire.Direction);
+                    particlePos = Pos;
+                    particleSize = Pos + Size.OnlyY();
                     Pos.Y = Engine.Cam.Pos.Y;
                     if (Engine.Cam.Pos.X > Pos.X + Width && Speed != 0)
                         Pos.X = Engine.Cam.Pos.X - Width;
                     break;
                 case Direction.Left:
                     rect = new Rectangle((int)Pos.X, (int)Pos.Y, (int)(Engine.Cam.Size.X + 10), Height);
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos + Size.OnlyX(), Pos + Size, (int)(312 * Engine.Deltatime), fire.Direction);
+                    particlePos = Pos + Size.OnlyX();
+                    particleSize = Pos + Size;
                     Pos.Y = Engine.Cam.Pos.Y;
                     if (Engine.Cam.Pos.X + Engine.Cam.Width < Pos.X && Speed != 0)
                         Pos.X = Engine.Cam.Pos.X + Engine.Cam.Width;
                     break;
                 case Direction.Up:
                     rect = new Rectangle((int)Pos.X, (int)Pos.Y, Width, (int)(Engine.Cam.Size.Y + 10));
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos + Size.OnlyY(), Pos + Size, (int)(312 * Engine.Deltatime), fire.Direction);
+                    particlePos = Pos + Size.OnlyY();
+                    particleSize = Pos + Size;
                     Pos.X = Engine.Cam.Pos.X;
                     if (Engine.Cam.Pos.Y + Engine.Cam.Height < Pos.Y && Speed != 0)
                         Pos.Y = Engine.Cam.Pos.Y + Engine.Cam.Height;
                     break;
                 default: //Down
                     rect = new Rectangle((int)Pos.X, (int)(Pos.Y - Engine.Cam.Size.Y), Width, (int)(Engine.Cam.Size.Y + 10));
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(fire, Pos, Pos + Size.OnlyX(), (int)(312 * Engine.Deltatime), fire.Direction);
+                    particlePos = Pos;
+                    particleSize = Pos + Size.OnlyX();
                     Pos.X = Engine.Cam.Pos.X;
                     if (Engine.Cam.Pos.Y > Pos.Y + Height && Speed != 0)
                         Pos.Y = Engine.Cam.Pos.Y;
                     break;
             }
-
-            bigFire.LifeMax = 3f;
+            
+            Engine.CurrentMap.MiddlegroundSystem.Emit(fire, particlePos, particleSize, (int)(312 * Engine.Deltatime), fire.Direction);
             Engine.CurrentMap.MiddlegroundSystem.Emit(bigFire, rect, (int)(240 * Engine.Deltatime));
         }
 
@@ -140,6 +146,14 @@ namespace Platformer
             AddComponent(new Timer(0.35f, true, null, () => Speed = speed));*/
         }
 
+        public override bool CollidingConditions(Collider other)
+        {
+            if (Speed == 0)
+                return false;
+
+            return base.CollidingConditions(other);
+        }
+
         public override void OnDestroy()
         {
             base.OnDestroy();
@@ -155,7 +169,7 @@ namespace Platformer
 
             bigFire = fire.Copy();
             bigFire.Size = 20;
-            bigFire.LifeMax = 1f;
+            bigFire.LifeMax = 3f;
         }
 
         public void ChangeDirection(Direction direction)
@@ -184,7 +198,7 @@ namespace Platformer
 
             bigFire = fire.Copy();
             bigFire.Size = 20;
-            bigFire.LifeMax = 1f;
+            bigFire.LifeMax = 3f;
 
             Width = GetStats(direction, out int height);
             Height = height;

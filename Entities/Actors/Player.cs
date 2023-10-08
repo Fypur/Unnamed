@@ -1164,6 +1164,8 @@ namespace Platformer
                 Sprite.Play("idle");
                 onGround = true;
 
+                Levels.ReloadLastLevelFetched();
+
                 Vector2 groundedRespawnPos = RespawnPoint;
                 bool found =false;
                 for (int i = 0; i < 100; i++)
@@ -1205,7 +1207,6 @@ namespace Platformer
                 Engine.Cam.CenteredPos = Engine.Cam.InBoundsPos(Engine.Cam.InBoundsPos(Pos, Engine.Cam.Bounds) + Engine.Cam.InBoundsOffset, Engine.Cam.Bounds);
                 OnDeathTransition?.Invoke();
 
-                Levels.ReloadLastLevelFetched();
                 Active = true;
                 Visible = true;
             }, () => CanMove = true));

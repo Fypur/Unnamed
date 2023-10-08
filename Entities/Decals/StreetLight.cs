@@ -36,7 +36,11 @@ namespace Platformer
                     };
                 };
             }
+        }
 
+        public override void Awake()
+        {
+            base.Awake();
             sound = (Sound3D)AddComponent(new Sound3D("Ambience/StreetLight"));
         }
 

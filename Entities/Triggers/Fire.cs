@@ -12,6 +12,7 @@ namespace Platformer
     {
         private const float coefFire = 0.05f;
         private readonly ParticleType fireParticle = Particles.Fire.Copy();
+        private Direction direction;
 
         public Fire(Rectangle bounds, Direction direction) : base(bounds)
         {
@@ -40,6 +41,7 @@ namespace Platformer
             Rectangle emitRect;
             int amountEmitted;
             int amountMoved = 0;
+            this.direction = direction;
 
             switch (direction)
             {
@@ -70,7 +72,45 @@ namespace Platformer
                     break;
             }
 
+            Vector2 hPos = Vector2.Zero;
+            int hWidth = Width;
+            int hHeight = Height;
+            switch (direction)
+            {
+                case Direction.Left:
+                    hPos -= Vector2.UnitX;
+                    hWidth *= 2;
+                    break;
+                case Direction.Right:
+                    hWidth *= 2;
+                    break;
+                case Direction.Up:
+                    hPos -= Vector2.UnitY;
+                    hHeight *= 2;
+                    break;
+                case Direction.Down:
+                    hHeight *= 2;
+                    break;
+            }
+
+            HurtBox h = new HurtBox(hPos, hWidth, hHeight);
+            h.DeathConditions = Conditions;
+            h.InstaDeath = true;
+            AddComponent(h);
+
             AddComponent(new ParticleEmitter(Engine.CurrentMap.MiddlegroundSystem, fireParticle, emitRect, amountEmitted));
+        }
+
+        private new bool Conditions(Player player)
+        {
+            if (direction == Direction.Up)
+                return player.Velocity.Y >= 0;
+            else if (direction == Direction.Down)
+                return player.Velocity.Y <= 0;
+            else if (direction == Direction.Left)
+                return player.Velocity.X >= 0;
+            else
+                return player.Velocity.X <= 0;
         }
     }
 }

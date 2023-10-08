@@ -61,7 +61,7 @@ namespace Platformer
         {
             base.Update();
 
-            if (inside && !collected && Player.JetpackControls.IsDown())
+            if (inside && !collected && Player.JetpackControls.IsDown() && Platformer.player.Collider.CollideAt(Pos + new Vector2(0, 1)) && !Platformer.player.GetComponent<StateMachine<Player.States>>().Is(Player.States.Jumping))
             {
                 collected = true;
                 AddComponent(new Coroutine(Collect()));
