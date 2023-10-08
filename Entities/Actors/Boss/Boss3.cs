@@ -535,12 +535,28 @@ namespace Platformer
                 Platformer.Freeze(0.2f);
                 Engine.Cam.Shake(0.4f, 2);
 
-                yield return new Coroutine.WaitForSeconds(0.4f);
+                bool stop = false;
+                Action resetTimeScale = () =>
+                {
+                    Platformer.TimeScale = 1f;
+                    stop = true;
+                };
+                Platformer.player.OnDeath += resetTimeScale;
 
+                yield return new Coroutine.WaitForSeconds(0.4f);
+                
+                
                 AddComponent(new Timer(0.3f, true, (t) =>
                 {
+                    if (stop)
+                    {
+                        t.End();
+                        return;
+                    }
+
                     Platformer.TimeScale = 0.2f + t.AmountCompleted() * 0.7f;
-                }, null));
+                }, () => { 
+                    Platformer.TimeScale = 1; Platformer.player.OnDeath -= resetTimeScale;  }));
 
                 AddComponent(new Timer(0.2f, true, (t) =>
                 {
