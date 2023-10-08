@@ -693,7 +693,7 @@ namespace Platformer
                 }
             }
 
-            
+            Audio.PlayEvent("SFX/Boss/Scream/Long");
 
             Engine.Cam.Shake(0.5f * 5, 1);
             AddComponent(new Coroutine(FreezeInput(0.5f * 5 + 2)));
@@ -703,8 +703,6 @@ namespace Platformer
                 AddComponent(new Coroutine(AddCircle()));
                 yield return new Coroutine.WaitForSeconds(0.5f);
             }
-
-            //Scream sfx
 
             yield return new Coroutine.WaitForSeconds(2);
 

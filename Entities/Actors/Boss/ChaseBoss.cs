@@ -394,13 +394,18 @@ namespace Platformer
         {
             Engine.Cam.Shake(screamTime * numScreams, 1);
 
+            Audio.PlayEvent(numScreams switch
+            {
+                <= 1 => "SFX/Boss/Scream/Short",
+                <= 3 => "SFX/Boss/Scream/Med",
+                _ => "SFX/Boss/Scream/Long",
+            });
+
             for (int i = 0; i < numScreams; i++)
             {
                 AddComponent(new Coroutine(AddCircle()));
                 yield return new Coroutine.WaitForSeconds(screamTime);
             }
-
-            //Scream sfx
 
             IEnumerator AddCircle()
             {
