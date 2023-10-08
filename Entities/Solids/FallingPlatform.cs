@@ -98,6 +98,8 @@ namespace Platformer
                     Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 0, Color.White);
                     Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 180, Color.White);
                     HasFallenOnGround = true;
+
+                    AddComponent(new Sound3D("SFX/FallingBlock/Impact", autoRemove: true));
                 };
             }
             else
@@ -111,7 +113,9 @@ namespace Platformer
             MoveCollideSolids(Velocity * Engine.Deltatime, null, onCollision);
 
             if (HasFallenOnGround)
+            {
                 previousOnGround = Collider.CollideAt(Pos + new Vector2(0, 1));
+            }
 
             base.Update();
             //Debug.LogUpdate(Pos - PreviousPos);
