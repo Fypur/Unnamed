@@ -1004,39 +1004,33 @@ namespace Platformer
 
         public static LDtkLevel GetLdtkLevel(int index)
         {
-            try {
-                return Platformer.World.LoadLevel($"Lvl{index}");
-            }
-            catch {
-                try
-                {
-                    return Platformer.World.LoadLevel(index);
-                }
-                catch
-                {
-                    return null; 
-                }
-            }
+            LDtkLevel[] rawLevels = Platformer.World.RawLevels;
+
+            foreach (LDtkLevel lDtkLevel in rawLevels)
+                if (lDtkLevel.Identifier == $"Lvl{index}")
+                    return Platformer.World.LoadLevel(lDtkLevel.Iid);
+
+            foreach (LDtkLevel lDtkLevel in rawLevels)
+                if (lDtkLevel.Identifier == index.ToString())
+                    return Platformer.World.LoadLevel(lDtkLevel.Iid);
+
+            throw new Exception("Couldn't find level using id: " + index.ToString() + "in world " + Platformer.World.Identifier);
         }
 
 
         public static LDtkLevel GetLdtkLevel(string id)
         {
-            try
-            {
-                return Platformer.World.LoadLevel($"Lvl{id}");
-            }
-            catch
-            {
-                try
-                {
-                    return Platformer.World.LoadLevel(id);
-                }
-                catch
-                {
-                    throw new Exception("Couldn't find level using id: " + id);
-                }
-            }
+            LDtkLevel[] rawLevels = Platformer.World.RawLevels;
+
+            foreach (LDtkLevel lDtkLevel in rawLevels)
+                if (lDtkLevel.Identifier == id)
+                    return Platformer.World.LoadLevel(lDtkLevel.Iid);
+
+            foreach (LDtkLevel lDtkLevel in rawLevels)
+                if (lDtkLevel.Identifier == $"Lvl{id}")
+                    return Platformer.World.LoadLevel(lDtkLevel.Iid);
+
+            throw new Exception("Couldn't find level using id: " + id + "in world " + Platformer.World.Identifier);
         }
 
         public static LevelData GetLevelData(int index, Vector2 position, int tileSize)
