@@ -90,5 +90,91 @@
       "ControllerButton": 4194304,
       "Value": 4194304
     }
+  ],
+  "upControls": [
+    {
+      "Key": 38,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 38
+    },
+    {
+      "Key": 90,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 90
+    },
+    {
+      "Key": null,
+      "MouseButton": null,
+      "ControllerButton": 268435456,
+      "Value": 268435456
+    }
+  ],
+  "downControls": [
+    {
+      "Key": 40,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 40
+    },
+    {
+      "Key": 83,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 83
+    },
+    {
+      "Key": null,
+      "MouseButton": null,
+      "ControllerButton": 536870912,
+      "Value": 536870912
+    }
+  ],
+  "leftControls": [
+    {
+      "Key": 37,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 37
+    },
+    {
+      "Key": 65,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 65
+    },
+    {
+      "Key": 81,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 81
+    },
+    {
+      "Key": null,
+      "MouseButton": null,
+      "ControllerButton": 2097152,
+      "Value": 2097152
+    }
+  ],
+  "rightControls": [
+    {
+      "Key": 39,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 39
+    },
+    {
+      "Key": 68,
+      "MouseButton": null,
+      "ControllerButton": null,
+      "Value": 68
+    },
+    {
+      "Key": null,
+      "MouseButton": null,
+      "ControllerButton": 1073741824,
+      "Value": 1073741824
+    }
   ]
 }

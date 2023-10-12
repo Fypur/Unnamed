@@ -527,6 +527,10 @@ namespace Platformer
             Player.JumpControls = new(save.jumpControls);
             Player.JetpackControls = new(save.jetpackControls);
             Player.SwingControls = new(save.swingControls);
+            Player.UpControls = new(save.upControls);
+            Player.DownControls = new(save.downControls);
+            Player.LeftControls = new(save.leftControls);
+            Player.RightControls = new(save.rightControls);
         }
 
         public static void PauseOrUnpause()

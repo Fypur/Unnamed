@@ -22,6 +22,10 @@ namespace Platformer
         public Control[] jumpControls { get; set; }
         public Control[] jetpackControls { get; set; }
         public Control[] swingControls { get; set; }
+        public Control[] upControls { get; set; }
+        public Control[] downControls { get; set; }
+        public Control[] leftControls { get; set; }
+        public Control[] rightControls { get; set; }
 
         public SaveData()
         {
