@@ -11,16 +11,15 @@ namespace Platformer
 {
     public class PauseMenu : UIElement
     {
-        private static bool showing;
-
         public PauseMenu()
             : base (Vector2.Zero, 1280, 720, Sprite.None)
-        { }
+        { Collider.DebugDraw = false; }
 
         public override void Render()
         {
-            if(Active)
-                Drawing.Draw(Drawing.PointTexture, Vector2.Zero, new Color(Color.Black, 20));
+            if (Platformer.Paused)
+                Drawing.Draw(Drawing.PointTexture, new Rectangle((int)Platformer.Cam.Pos.X, (int)Platformer.Cam.Pos.Y, 1280 * Options.CurrentScreenSizeMultiplier / Options.DefaultUISizeMultiplier, 720 * Options.CurrentScreenSizeMultiplier / Options.DefaultUISizeMultiplier), new Color(Color.Black, 100));
+
             base.Render();
         }
 

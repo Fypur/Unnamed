@@ -766,14 +766,16 @@ namespace Platformer
                 switch (p.Type)
                 {
                     case LDtkTypes.TrigDecalType.StreetLight:
-                        trig.OnTriggerEnterAction += (e) => { s.Play("blink"); };
+                        trig.OnTriggerEnterAction += (e) => { s.Play("blink");};
                         break;
                     case LDtkTypes.TrigDecalType.FallingMachine:
-                        trig.OnTriggerEnterAction += (e) => { s.Play("falling"); };
+                        trig.OnTriggerEnterAction += (e) => { s.Play("falling");
+                            trig.AddComponent(new Sound3D("SFX/MetalBox/FallThenImpact", false));
+                        };
                         break;
                 }
 
-                trig.OnTriggerEnterAction += (e) => trig.SelfDestroy();
+                s.OnChange += () => trig.SelfDestroy();
                 
                 entities.Add(tile);
 

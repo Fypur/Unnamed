@@ -19,7 +19,7 @@ namespace Platformer
         public static RenderTarget2D RenderTarget => Engine.RenderTarget;
         public static RenderTarget2D SecondRenderTarget;
 
-        private static bool Paused;
+        public static bool Paused;
         public static PauseMenu PauseMenu;
         private static Input.State PreviousPauseOldState;
 
@@ -387,6 +387,7 @@ namespace Platformer
             Drawing.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
             Engine.CurrentMap.UIRender();
+            PauseMenu?.Render();
 
             Drawing.End();
             
@@ -395,7 +396,6 @@ namespace Platformer
 
             Engine.CurrentMap.UIOverlayRender();
 
-            PauseMenu?.Render();
             PauseMenu?.UIChildRender();
 
             Drawing.End();

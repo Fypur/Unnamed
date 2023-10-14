@@ -148,7 +148,7 @@ namespace Platformer
                 Sprite.OnFrameChange = () =>
                 {
                     if ((!startRun && Sprite.CurrentFrame == 1) || Sprite.CurrentFrame == 3)
-                        Audio.PlayEvent("SFX/Player/FootStep");
+                        AddComponent(new Sound3D("SFX/Player/FootStep", true));
 
                     startRun = false;
                 };
