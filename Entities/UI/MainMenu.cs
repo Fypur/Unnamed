@@ -364,12 +364,19 @@ namespace Platformer
                         {
                             Platformer.InitLevel = initLevel;
                             Platformer.InitWorld = wrld;
+
                             Platformer.RefreshWorld();
 
                             ScreenWipe s = (ScreenWipe)Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)][0];
                             Platformer.StartGame();
                             Engine.CurrentMap.Data.Entities.Add(s);
                             Engine.CurrentMap.Data.UIElements.Add(s);
+
+#if RELEASE
+                            if (Platformer.World == Platformer.SwingWorld || Platformer.World == Platformer.JetpackWorld)
+                                Platformer.player.CanJetpack = false;
+#endif
+
                             if (!Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(ScreenWipe), out var l))
                                 Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)] = new();
                             Engine.CurrentMap.Data.EntitiesByType[typeof(ScreenWipe)].Add(s);
