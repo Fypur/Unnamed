@@ -194,7 +194,7 @@ namespace Platformer
                 /*returned.Add(new TextBox("Switcher n1", "LexendDeca", new Vector2(640, 300), 300, 200, 1, Color.White, true));
                 returned.Add(new TextBox("Switcher n2", "LexendDeca", new Vector2(640, 400), 300, 200, 1, Color.White, true));*/
 
-                var screenSizeSwitcher = new SwitcherText(new Vector2(640, 250), 750, 50, true, "Screen Size", Options.CurrentScreenSizeMultiplier, 3, 7, (size) => Options.SetSize(size));
+                var screenSizeSwitcher = new SwitcherText(new Vector2(640, 250), 750, 50, true, "Screen Size", Options.CurrentScreenSizeMultiplier, 3, 12, (size) => Options.SetSize(size));
 
                 if (Engine.Graphics.IsFullScreen)
                     screenSizeSwitcher.Selectable = false;

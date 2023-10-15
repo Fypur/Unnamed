@@ -57,7 +57,7 @@ namespace Platformer
             if (id == 0)
                 c = (Coroutine)AddComponent(new Coroutine(Room1()));
             else if (id == 1)
-                c = (Coroutine)AddComponent(new Coroutine(Jump(Positions[1], 0.4f, 200),
+                c = (Coroutine)AddComponent(new Coroutine(Jump(Positions[1], 0.4f, 350),
                     Jump(Positions[2], 0.4f, 100),
                     Coroutine.WaitSeconds(0.3f),
                     Jump(Positions[3], 0.4f, 100),

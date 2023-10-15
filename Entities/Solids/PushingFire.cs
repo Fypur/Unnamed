@@ -34,9 +34,7 @@ namespace Platformer
             fire.SpeedMin = speed;
             fire.SpeedMax = speed * 2;
 
-            bigFire = fire.Copy();
-            bigFire.Size = 20;
-            bigFire.LifeMax = 3f;
+            UpdateBigFire();
 
             AddComponent(new Coroutine(Coroutine.WaitUntil(() => Platformer.player.Velocity != Vector2.Zero), Coroutine.Do(() => 
             this.Speed = speed)));
@@ -57,6 +55,8 @@ namespace Platformer
 
             Engine.CurrentMap.CurrentLevel.DontDestroyOnUnload(this);
 
+            AddComponent(new CircleLight(MiddlePos, 200, new Color(Color.Orange, 200), Color.Transparent));
+
             ((Player)Engine.Player).OnDeathTransition += ResetPos;
         }
 
@@ -65,6 +65,9 @@ namespace Platformer
             base.Update();
 
             Move(dirVec * Speed * Engine.Deltatime);
+
+            Debug.LogUpdate(MiddlePos);
+            Debug.LogUpdate(Input.MousePos);
 
             Rectangle rect;
             Vector2 particlePos;
@@ -104,9 +107,16 @@ namespace Platformer
                         Pos.Y = Engine.Cam.Pos.Y;
                     break;
             }
-            
-            Engine.CurrentMap.MiddlegroundSystem.Emit(fire, particlePos, particleSize, (int)(312 * Engine.Deltatime), fire.Direction);
-            Engine.CurrentMap.MiddlegroundSystem.Emit(bigFire, rect, (int)(240 * Engine.Deltatime));
+
+            Engine.CurrentMap.MiddlegroundSystem.Emit(fire, particlePos, particleSize, (int)(200 * Engine.Deltatime), fire.Direction);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(bigFire, rect, (int)(300 * Engine.Deltatime));
+        }
+
+        private void UpdateBigFire()
+        {
+            bigFire = fire.Copy();
+            bigFire.Size = 20;
+            bigFire.LifeMax = 1.5f;
         }
 
         public override void Render()
@@ -167,9 +177,7 @@ namespace Platformer
             fire.SpeedMax = speed * 2;
             fire.Acceleration = dirVec * (speed + 25);
 
-            bigFire = fire.Copy();
-            bigFire.Size = 20;
-            bigFire.LifeMax = 3f;
+            UpdateBigFire();
         }
 
         public void ChangeDirection(Direction direction)
@@ -196,9 +204,7 @@ namespace Platformer
 
             fire.Acceleration = dirVec * (Speed + 25);
 
-            bigFire = fire.Copy();
-            bigFire.Size = 20;
-            bigFire.LifeMax = 3f;
+            UpdateBigFire();
 
             Width = GetStats(direction, out int height);
             Height = height;
