@@ -164,6 +164,7 @@ namespace Platformer
 
         public override void Render()
         {
+            GetComponent<CircleLight>().Visible = true;
             base.Render();
 
             if (Engine.Player != null && !swinged && !new Raycast(Raycast.RayTypes.MapTiles, MiddleExactPos, Engine.Player.Pos + Engine.Player.HalfSize).Hit && Vector2.Distance(MiddleExactPos, Engine.Player.Pos + Engine.Player.HalfSize) < MaxSwingDistance)

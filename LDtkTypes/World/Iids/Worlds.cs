@@ -123,16 +123,18 @@ public static class Worlds
         public static readonly System.Guid Filler34 = System.Guid.Parse("11b16220-3b70-11ee-8882-d9ae8c37c7ee");
         public static readonly System.Guid Filler36 = System.Guid.Parse("31c55bc0-3b70-11ee-8882-932f2ba0c846");
         public static readonly System.Guid Filler37 = System.Guid.Parse("39eee5a0-3b70-11ee-8882-51b9fcfbb6b6");
-        public static readonly System.Guid Filler38 = System.Guid.Parse("4a243830-3b70-11ee-8882-53de301e286e");
         public static readonly System.Guid Filler40 = System.Guid.Parse("735850b7-3b70-11ee-8882-076a4af58df1");
         public static readonly System.Guid Filler39 = System.Guid.Parse("56b67360-3b70-11ee-8882-35928392ab9b");
+        public static readonly System.Guid Filler49 = System.Guid.Parse("2a2b8820-6280-11ee-bead-ef02bb4259e1");
         public static readonly System.Guid Filler41 = System.Guid.Parse("8e240e70-3b70-11ee-8882-f3c70c65a838");
         public static readonly System.Guid Filler42 = System.Guid.Parse("96023778-3b70-11ee-8882-3b35f3c3d02f");
+        public static readonly System.Guid Filler74 = System.Guid.Parse("61447380-6280-11ee-bead-3d25484410fd");
         public static readonly System.Guid Filler47 = System.Guid.Parse("e442b060-3b70-11ee-8882-6bb94a12d14e");
         public static readonly System.Guid Filler48 = System.Guid.Parse("692cb870-3b70-11ee-8882-53a6b7300277");
         public static readonly System.Guid Filler43 = System.Guid.Parse("b260a320-3b70-11ee-8882-676ba1540ea3");
-        public static readonly System.Guid Filler49 = System.Guid.Parse("7ba6a3d0-3b70-11ee-8882-c7e12777e8bb");
+        public static readonly System.Guid Filler72 = System.Guid.Parse("e2988060-6280-11ee-bead-77a11882797f");
         public static readonly System.Guid Filler44 = System.Guid.Parse("bfd66080-3b70-11ee-8882-b748d4103866");
+        public static readonly System.Guid Filler73 = System.Guid.Parse("00628a00-6280-11ee-bead-29b8eb6420f6");
         public static readonly System.Guid Filler50 = System.Guid.Parse("a4f7ba30-3b70-11ee-8882-8714d0010c8d");
         public static readonly System.Guid Filler51 = System.Guid.Parse("b2828630-3b70-11ee-8882-b9418a1b3b56");
         public static readonly System.Guid Filler53 = System.Guid.Parse("c9e32c80-3b70-11ee-8882-9b14162c3332");
@@ -143,6 +145,7 @@ public static class Worlds
         public static readonly System.Guid Filler30 = System.Guid.Parse("d2a84c60-3b70-11ee-8882-339149386484");
         public static readonly System.Guid Filler31 = System.Guid.Parse("f85b2d60-3b70-11ee-8882-4dfa3a0ef3f1");
         public static readonly System.Guid Filler32 = System.Guid.Parse("02fd7f70-3b70-11ee-8882-ef91c299439d");
+        public static readonly System.Guid Lvl79 = System.Guid.Parse("eda05cf0-6280-11ee-bead-fb8e08b7aa3f");
     }
     public static class Boss
     {

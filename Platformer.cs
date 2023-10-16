@@ -89,8 +89,8 @@ namespace Platformer
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
 #if DEBUG
-            InitLevel = "Lvl71";
-            InitWorld = 2;
+            InitLevel = "Lvl62";
+            InitWorld = 1;
             WorldsUnlocked = 2;
             //StartGame();
 

@@ -674,11 +674,6 @@ namespace Platformer
                     if(p.TriggerTopLeft == null)
                         entities.Add(new StreetLight(p.Position, p.Width(), p.Height()));
 
-                foreach (LDtkTypes.GrapplingPoint p in neigh.GetEntities<LDtkTypes.GrapplingPoint>())
-                {
-                    e.AddComponent(new CircleLight(p.Position + p.Size / 2, Math.Min(p.MaxSwingDistance, 100), new Color(Color.LightBlue, 50), new Color(Color.LightBlue, 0)));
-                }
-
                 entities.Add(e);
             }
 

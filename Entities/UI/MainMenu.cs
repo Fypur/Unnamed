@@ -207,7 +207,7 @@ namespace Platformer
 
                 returned.Add(fullscreen);
 
-                returned.Add(new TextSelectable("Controls", "LexendDeca", new Vector2(640, 350), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new ControlsSubMenu<OptionsSubMenu<T>>())));
+                returned.Add(new TextSelectable("Controls", "LexendDeca", new Vector2(640, 350), 750, 50, 1, Color.White, true, TextBox.Alignement.Left, () => SwitchTo(new ControlsSubMenu<OptionsSubMenu<T>>())));
 
                 returned.Add(new SwitcherText(new Vector2(640, 400), 750, 50, true, "Master Volume", (int)(Audio.GetMasterVolume() * 10), 0, 10, (volume) => Audio.SetMasterVolume(volume / (float)10)));
 
@@ -215,7 +215,7 @@ namespace Platformer
 
                 returned.Add(new SwitcherText(new Vector2(640, 500), 750, 50, true, "Sound Effects volume", (int)(Audio.GetGroupVolume("Sound Effects") * 10), 0, 10, (volume) => { Audio.SetGroupVolume("Sound Effects", volume / (float)10); Audio.SetGroupVolume("Ambience", volume / (float)10); }));
 
-                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(640, 550), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, OnBack));
+                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(640, 550), 750, 50, 1, Color.White, true, TextBox.Alignement.Left, OnBack));
 
                 MakeList(returned, true);
 
@@ -276,19 +276,21 @@ namespace Platformer
 
                 ControlsMenu.Add(new TextBox($"Change Controls: {Input.UIAction1.GetAllControlNames(" or ")} \n                     Clear Controls: {Input.ButtonClear.GetAllControlNames(" or ")}", "Recursive", new Vector2(1280 / 2, 100), 1000, 200, 0.3f, Color.White, true, TextBox.Alignement.TopCenter));
 
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -200), 700, 100, true, null, Color.White, "LexendDeca", 1, "Jump", Player.JumpControls, null));
+                int width = 900;
+                int height = 120;
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -height / 2 * 4), width, height, true, null, Color.White, "LexendDeca", 1, "Jump", Player.JumpControls, null));
 
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -150), 700, 100, true, null, Color.White, "LexendDeca", 1, "Jetpack", Player.JetpackControls, null));
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -height / 2 * 3), width, height, true, null, Color.White, "LexendDeca", 1, "Jetpack", Player.JetpackControls, null));
 
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -100), 700, 100, true, null, Color.White, "LexendDeca", 1, "Rope Swing", Player.SwingControls, null));
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -height / 2 * 2), width, height, true, null, Color.White, "LexendDeca", 1, "Rope Swing", Player.SwingControls, null));
 
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -50), 700, 100, true, null, Color.White, "LexendDeca", 1, "Up", Player.UpControls, null));
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, -height / 2), width, height, true, null, Color.White, "LexendDeca", 1, "Up", Player.UpControls, null));
 
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, 0), 700, 100, true, null, Color.White, "LexendDeca", 1, "Down", Player.DownControls, null));
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, 0), width, height, true, null, Color.White, "LexendDeca", 1, "Down", Player.DownControls, null));
 
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, 50), 700, 100, true, null, Color.White, "LexendDeca", 1, "Left", Player.LeftControls, null));
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, height / 2), width, height, true, null, Color.White, "LexendDeca", 1, "Left", Player.LeftControls, null));
 
-                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, 100), 700, 100, true, null, Color.White, "LexendDeca", 1, "Right", Player.RightControls, null));
+                ControlsMenu.Add(new ControlTaker(screenSize / 2 + new Vector2(0, height / 2 * 2), width, height, true, null, Color.White, "LexendDeca", 1, "Right", Player.RightControls, null));
 
                 ControlsMenu.Add(new TextSelectable("Back", "LexendDeca", screenSize / 2 + new Vector2(0, 250), 700, 50, 1, Color.White, true, TextBox.Alignement.Center, () => SwitchTo(new T())));
 
