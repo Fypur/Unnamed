@@ -624,7 +624,6 @@ namespace Platformer
 
             t = 0;
             mT = 3f;
-            float mT2 = 0.2f;
             while (t < mT)
             {
                 /*if (t <= mT2)

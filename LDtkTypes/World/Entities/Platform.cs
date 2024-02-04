@@ -2,8 +2,9 @@
 #pragma warning disable
 namespace LDtkTypes;
 
-using Microsoft.Xna.Framework;
 using LDtk;
+
+using Microsoft.Xna.Framework;
 
 public class Platform : ILDtkEntity
 {
@@ -20,6 +21,6 @@ public class Platform : ILDtkEntity
     public Vector2[]? Positions { get; set; }
     public float[] TimeBetweenPositions { get; set; }
     public bool GoingForwards { get; set; }
-    public EntityRef[] Children { get; set; }
+    public EntityReference[] Children { get; set; }
 }
 #pragma warning restore

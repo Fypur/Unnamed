@@ -2,8 +2,9 @@
 #pragma warning disable
 namespace LDtkTypes;
 
-using Microsoft.Xna.Framework;
 using LDtk;
+
+using Microsoft.Xna.Framework;
 
 public class FallingPlatform : ILDtkEntity
 {
@@ -18,6 +19,6 @@ public class FallingPlatform : ILDtkEntity
     public Color SmartColor { get; set; }
 
     public bool Respawning { get; set; }
-    public EntityRef[] Children { get; set; }
+    public EntityReference[] Children { get; set; }
 }
 #pragma warning restore

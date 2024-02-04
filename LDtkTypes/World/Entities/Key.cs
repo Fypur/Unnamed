@@ -2,8 +2,9 @@
 #pragma warning disable
 namespace LDtkTypes;
 
-using Microsoft.Xna.Framework;
 using LDtk;
+
+using Microsoft.Xna.Framework;
 
 public class Key : ILDtkEntity
 {
@@ -17,6 +18,6 @@ public class Key : ILDtkEntity
 
     public Color SmartColor { get; set; }
 
-    public EntityRef Cage { get; set; }
+    public EntityReference Cage { get; set; }
 }
 #pragma warning restore

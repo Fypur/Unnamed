@@ -43,8 +43,6 @@ namespace Platformer
             DirectionRange = 360,
         };
 
-        private float emittedAmount;
-
         public RAM(Vector2 position, Guid iid) : base(position, 10, 15, iid, new Sprite())
         {
             Sprite.Add(Sprite.AllAnimData["RAM"]);

@@ -59,7 +59,7 @@ namespace Platformer
 
                 if(p.Children.Length > 0)
                     IidsChildren[plat] = new();
-                foreach (EntityRef child in p.Children)
+                foreach (EntityReference child in p.Children)
                     IidsChildren[plat].Add(child.EntityIid);
             }
 
@@ -71,7 +71,7 @@ namespace Platformer
                 if (p.Children.Length != 0)
                     IidsChildren[plat] = new();
 
-                foreach (EntityRef child in p.Children)
+                foreach (EntityReference child in p.Children)
                     IidsChildren[plat].Add(child.EntityIid);
             }
 
@@ -255,9 +255,9 @@ namespace Platformer
                         break;
                     case 3:
                         List<Entity> spawned = new();
-                        foreach (EntityRef entity in p.Children)
+                        foreach (EntityReference entity in p.Children)
                         {
-                            foreach(EntityRef child in p.Children)
+                            foreach(EntityReference child in p.Children)
                             {
                                 LDtkTypes.ChaseMissile c = level.GetEntityRef<LDtkTypes.ChaseMissile>(child);
                                 spawned.Add(new ChaseMissile(c.ControlPoints.AddAtBeggining(c.Position), c.Time));
@@ -1001,7 +1001,7 @@ namespace Platformer
 
         public static LDtkLevel GetLdtkLevel(int index)
         {
-            LDtkLevel[] rawLevels = Platformer.World.RawLevels;
+            LDtkLevel[] rawLevels = Platformer.World.Levels;
 
             foreach (LDtkLevel lDtkLevel in rawLevels)
                 if (lDtkLevel.Identifier == $"Lvl{index}")
@@ -1017,7 +1017,7 @@ namespace Platformer
 
         public static LDtkLevel GetLdtkLevel(string id)
         {
-            LDtkLevel[] rawLevels = Platformer.World.RawLevels;
+            LDtkLevel[] rawLevels = Platformer.World.Levels;
 
             foreach (LDtkLevel lDtkLevel in rawLevels)
                 if (lDtkLevel.Identifier == id)
