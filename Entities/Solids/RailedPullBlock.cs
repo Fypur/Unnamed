@@ -107,7 +107,7 @@ namespace Platformer
                 Move(velocity);
             }
 
-            Debug.LogUpdate(Velocity);
+            //Debug.LogUpdate(Velocity);
 
             /*Velocity -= Velocity * 0.1f;
 

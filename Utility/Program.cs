@@ -15,8 +15,8 @@ namespace Platformer
                     Console.WriteLine(args[0]);
                 }
 
-                if(!(Environment.CurrentDirectory.EndsWith("Debug/net6.0") || Environment.CurrentDirectory.EndsWith("Debug\\net6.0")))
-                    Environment.CurrentDirectory = Environment.CurrentDirectory + "/bin/x64/Debug/net6.0";
+                /*if(!(Environment.CurrentDirectory.EndsWith("Debug/net6.0") || Environment.CurrentDirectory.EndsWith("Debug\\net6.0")))
+                    Environment.CurrentDirectory = Environment.CurrentDirectory + "/bin/x64/Debug/net6.0";*/
 #endif
                 //Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 

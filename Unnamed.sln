@@ -5,12 +5,14 @@ VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unnamed", "Unnamed.csproj", "{15250715-1042-486C-81CA-FA639FC45AFB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiourp", "..\Fiourp\Fiourp.csproj", "{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiourp", "..\Fiourp\Fiourp.csproj", "{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		DebugServer|x64 = DebugServer|x64
+		DebugServer|x86 = DebugServer|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -19,18 +21,26 @@ Global
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Debug|x64.Build.0 = Debug|x64
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Debug|x86.ActiveCfg = Debug|x86
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Debug|x86.Build.0 = Debug|x86
+		{15250715-1042-486C-81CA-FA639FC45AFB}.DebugServer|x64.ActiveCfg = DebugServer|x64
+		{15250715-1042-486C-81CA-FA639FC45AFB}.DebugServer|x64.Build.0 = DebugServer|x64
+		{15250715-1042-486C-81CA-FA639FC45AFB}.DebugServer|x86.ActiveCfg = Debug|x86
+		{15250715-1042-486C-81CA-FA639FC45AFB}.DebugServer|x86.Build.0 = Debug|x86
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|x64.ActiveCfg = Release|x64
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|x64.Build.0 = Release|x64
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|x86.ActiveCfg = Release|x86
 		{15250715-1042-486C-81CA-FA639FC45AFB}.Release|x86.Build.0 = Release|x86
-		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Debug|x64.ActiveCfg = Debug|x64
-		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Debug|x64.Build.0 = Debug|x64
-		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Debug|x86.ActiveCfg = Debug|x86
-		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Debug|x86.Build.0 = Debug|x86
-		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Release|x64.ActiveCfg = Release|x64
-		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Release|x64.Build.0 = Release|x64
-		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Release|x86.ActiveCfg = Release|x86
-		{958768F1-07DE-41DC-8F3D-B9F9C2E9ECC4}.Release|x86.Build.0 = Release|x86
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.Debug|x64.ActiveCfg = Debug|x64
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.Debug|x64.Build.0 = Debug|x64
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.Debug|x86.ActiveCfg = Debug|x64
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.Debug|x86.Build.0 = Debug|x64
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.DebugServer|x64.ActiveCfg = Debug|x64
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.DebugServer|x64.Build.0 = Debug|x64
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.DebugServer|x86.ActiveCfg = Debug|x64
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.DebugServer|x86.Build.0 = Debug|x64
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.Release|x64.ActiveCfg = Release|x64
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.Release|x64.Build.0 = Release|x64
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.Release|x86.ActiveCfg = Release|x64
+		{FCC9FE5C-BA00-499D-99A3-FE598336FB4E}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

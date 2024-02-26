@@ -9,6 +9,7 @@ using Fiourp;
 using LDtk;
 using Platformer.Bloom;
 using System.Text.Json;
+using Multiplayer;
 
 namespace Platformer
 {
@@ -62,7 +63,11 @@ namespace Platformer
         public Platformer()
         {
             instance = this;
-            GraphicsManager = new GraphicsDeviceManager(this);
+            GraphicsManager = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth = 640,
+                PreferredBackBufferHeight = 360,
+            };
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -70,7 +75,8 @@ namespace Platformer
 
         protected override void Initialize()
         {
-            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, (int)GameDefaultSize.X, (int)GameDefaultSize.Y, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 0, RenderTargetUsage.PreserveContents), "Utility/SpriteData.xml");
+            Riptide.Utils.RiptideLogger.Initialize((s) => Debug.Log(s), false);
+            Engine.Initialize(GraphicsManager, Content, GraphicsManager.PreferredBackBufferWidth, GraphicsManager.PreferredBackBufferHeight, new RenderTarget2D(GraphicsDevice, (int)GameDefaultSize.X, (int)GameDefaultSize.Y, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 0, RenderTargetUsage.PreserveContents), "Utility/SpriteData.xml");
 
             Options.CurrentResolution = Engine.ScreenSize;
 
@@ -89,10 +95,11 @@ namespace Platformer
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
 #if DEBUG
-            InitLevel = "Lvl62";
-            InitWorld = 1;
+            InitLevel = "Lvl74";
+            InitWorld = 3;
             WorldsUnlocked = 2;
-            //StartGame();
+            StartGame();
+            Audio.SetMasterVolume(0);
 
             string currentDir = Environment.CurrentDirectory;
             currentDir = currentDir.Replace('\\', '/');
@@ -102,13 +109,19 @@ namespace Platformer
             watcher.Changed += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
             watcher.EnableRaisingEvents = true;
 #endif
+
+#if SERVER
+            ServerManager.Start();
+#endif
+
+            ClientManager.Connect();
         }
 
         protected override void LoadContent()
         {
             Drawing.Init(new SpriteBatch(GraphicsDevice), Content.Load<SpriteFont>("font"));
 
-            Engine.CurrentMap = new Map(Vector2.Zero);
+            Engine.CurrentMap = new Map();
 
             Save = Saving.Load();
             LoadWorldSave(Save);
@@ -128,6 +141,11 @@ namespace Platformer
             /*if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.GetKeyDown(Keys.Escape)))
                 Exit();*/
 #endif
+#if SERVER
+            ServerManager.Update();
+#endif
+            ClientManager.Update();
+
 
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds * TimeScale;
 
@@ -402,6 +420,7 @@ namespace Platformer
             Drawing.Begin();
 
             Drawing.DebugString();
+            Drawing.DebugUpdate.Clear();
 
             Drawing.End();
 
@@ -412,7 +431,7 @@ namespace Platformer
 
         public static void StartGame()
         {
-            var map = new Map(Vector2.Zero);
+            var map = new Map();
             Engine.CurrentMap = map;
             Engine.Cam.Size = GameDefaultSize;
 
@@ -490,7 +509,7 @@ namespace Platformer
 
             Engine.CurrentMap.Data = new MapData(); //Need to clear mapdata so that this update cycle is not finished
 
-            Engine.CurrentMap = new Map(Vector2.Zero);
+            Engine.CurrentMap = new Map();
             Engine.Cam.SetBoundaries(Rectangle.Empty);
             Engine.Cam.Pos = Vector2.Zero;
             Engine.Player = null;
@@ -518,19 +537,11 @@ namespace Platformer
 
         public static void LoadOptionsSave(SaveData save)
         {
-            Options.SetSize(save.ScreenSize.Value);
+            //Options.SetSize(save.ScreenSize.Value);
             Audio.SetMasterVolume(save.MasterVolume.Value / 10f);
             Audio.SetGroupVolume("Musics", save.MusicVolume.Value / 10f);
             Audio.SetGroupVolume("Sound effects", save.SFXVolume.Value / 10f);
             Audio.SetGroupVolume("Ambience", save.SFXVolume.Value / 10f);
-
-            Player.JumpControls = new(save.jumpControls);
-            Player.JetpackControls = new(save.jetpackControls);
-            Player.SwingControls = new(save.swingControls);
-            Player.UpControls = new(save.upControls);
-            Player.DownControls = new(save.downControls);
-            Player.LeftControls = new(save.leftControls);
-            Player.RightControls = new(save.rightControls);
         }
 
         public static void PauseOrUnpause()

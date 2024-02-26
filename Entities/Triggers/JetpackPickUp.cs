@@ -12,6 +12,7 @@ namespace Platformer
     public class JetpackPickUp : Entity
     {
         private PlayerTriggerComponent trig;
+        private Player player;
         private bool inside;
         private bool collected;
         private int id;
@@ -40,7 +41,7 @@ namespace Platformer
 
             trig.Trigger.Width = 8;
             trig.Trigger.Height = 8;
-            trig.Trigger.OnTriggerEnterAction = (e) => inside = true;
+            trig.Trigger.OnTriggerEnterAction = (e) => { inside = true; player = (Player)e; };
             trig.Trigger.OnTriggerExitAction = (e) => inside = false;
         }
 
@@ -61,7 +62,7 @@ namespace Platformer
         {
             base.Update();
 
-            if (inside && !collected && Player.JetpackControls.IsDown() && Platformer.player.Collider.CollideAt(Pos + new Vector2(0, 1)) && !Platformer.player.GetComponent<StateMachine<Player.States>>().Is(Player.States.Jumping))
+            if (inside && !collected && player.GetKeyDown(SentInput.Jetpack) && Platformer.player.Collider.CollideAt(Pos + new Vector2(0, 1)) && !Platformer.player.GetComponent<StateMachine<Player.States>>().Is(Player.States.Jumping))
             {
                 collected = true;
                 AddComponent(new Coroutine(Collect()));
