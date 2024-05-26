@@ -89,9 +89,9 @@ namespace Platformer
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
 #if DEBUG
-            InitLevel = "Lvl62";
-            InitWorld = 1;
-            WorldsUnlocked = 2;
+            InitLevel = "Lvl80";
+            InitWorld = 3;
+            WorldsUnlocked = 3;
             //StartGame();
 
             string currentDir = Environment.CurrentDirectory;
@@ -108,7 +108,7 @@ namespace Platformer
         {
             Drawing.Init(new SpriteBatch(GraphicsDevice), Content.Load<SpriteFont>("font"));
 
-            Engine.CurrentMap = new Map(Vector2.Zero);
+            Engine.CurrentMap = new Map();
 
             Save = Saving.Load();
             LoadWorldSave(Save);
@@ -412,7 +412,7 @@ namespace Platformer
 
         public static void StartGame()
         {
-            var map = new Map(Vector2.Zero);
+            var map = new Map();
             Engine.CurrentMap = map;
             Engine.Cam.Size = GameDefaultSize;
 
@@ -490,7 +490,7 @@ namespace Platformer
 
             Engine.CurrentMap.Data = new MapData(); //Need to clear mapdata so that this update cycle is not finished
 
-            Engine.CurrentMap = new Map(Vector2.Zero);
+            Engine.CurrentMap = new Map();
             Engine.Cam.SetBoundaries(Rectangle.Empty);
             Engine.Cam.Pos = Vector2.Zero;
             Engine.Player = null;
