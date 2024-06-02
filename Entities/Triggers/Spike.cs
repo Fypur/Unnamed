@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Platformer
+namespace Unnamed
 {
     public class Spike : Solid
     {

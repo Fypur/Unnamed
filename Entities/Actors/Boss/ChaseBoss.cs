@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Platformer
+namespace Unnamed
 {
     public class ChaseBoss : Actor
     {

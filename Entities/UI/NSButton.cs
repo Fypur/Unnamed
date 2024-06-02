@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Platformer
+namespace Unnamed
 {
     /// <summary>
     /// Button using the specified NineSliceSettings for its Sprite

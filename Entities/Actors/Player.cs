@@ -6,8 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using FMOD.Studio;
+using Unnamed;
 
-namespace Platformer
+namespace Unnamed
 {
     public class Player : Actor
     {

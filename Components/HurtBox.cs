@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Fiourp;
 using Microsoft.Xna.Framework;
 
-namespace Platformer
+namespace Unnamed
 {
     public class HurtBox : PlayerTriggerComponent
     {

@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using static Platformer.MainMenu;
+using static Unnamed.MainMenu;
 
-namespace Platformer
+namespace Unnamed
 {
     public class ChapterTransition : PlayerTrigger
     {

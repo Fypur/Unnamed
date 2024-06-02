@@ -7,7 +7,7 @@ using Fiourp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Platformer
+namespace Unnamed
 {
     public class JetpackBooster : PlayerTrigger
     {

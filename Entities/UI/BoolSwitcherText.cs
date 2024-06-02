@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Platformer
+namespace Unnamed
 {
     internal class BoolSwitcherText : BoolSwitcher
     {

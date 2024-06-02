@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Runtime.ConstrainedExecution;
 
-namespace Platformer
+namespace Unnamed
 {
     public class Boss3 : Actor
     {

@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Platformer.MainMenu;
+using static Unnamed.MainMenu;
 
-namespace Platformer
+namespace Unnamed
 {
     public class MainMenu : UIElement
     {

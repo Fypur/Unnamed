@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Platformer
+namespace Unnamed
 {
     public static class Levels
     {
@@ -185,6 +185,9 @@ namespace Platformer
 
             foreach (LDtkTypes.CameraBlock p in level.GetEntities<LDtkTypes.CameraBlock>())
                 entities.Add(new CameraBlock(p.Position, p.Size));
+
+            foreach (LDtkTypes.CamZoom p in level.GetEntities<LDtkTypes.CamZoom>())
+                entities.Add(new CameraZoom(p.Position, p.Size, p.TargetCamWidth, p.ZoomTime));
 
             foreach (LDtkTypes.InvisibleWall p in level.GetEntities<LDtkTypes.InvisibleWall>())
                 entities.Add(new InvisibleWall(p.Position + new Vector2(p.OffsetX, p.OffsetY), p.Width(), p.Height()));

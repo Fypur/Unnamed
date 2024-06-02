@@ -1,7 +1,7 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
 
-namespace Platformer
+namespace Unnamed
 {
     public class MachineGunBullet : Actor
     {

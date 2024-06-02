@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.IO;
 using Fiourp;
 using LDtk;
-using Platformer.Bloom;
+using Unnamed.Bloom;
 using System.Text.Json;
 
-namespace Platformer
+namespace Unnamed
 {
     public class Platformer : Game
     {
@@ -92,7 +92,7 @@ namespace Platformer
             InitLevel = "Lvl80";
             InitWorld = 3;
             WorldsUnlocked = 3;
-            //StartGame();
+            StartGame();
 
             string currentDir = Environment.CurrentDirectory;
             currentDir = currentDir.Replace('\\', '/');
@@ -184,6 +184,27 @@ namespace Platformer
             {
                 Engine.CurrentMap.Destroy(Engine.CurrentMap.Data.GetEntity<MainMenu>());
                 Engine.CurrentMap.Instantiate(new MainMenu());
+            }
+
+            if (Input.GetKey(Keys.P))
+            {
+                int camWidth = Engine.Cam.Width - 16;
+                int camHeight = Engine.Cam.Height - 9;
+                Engine.Cam.Size = new Vector2(camWidth, camHeight);
+
+                Engine.RenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                Engine.PrimitivesRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                Platformer.SecondRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            }
+            if (Input.GetKey(Keys.O))
+            {
+                int camWidth = Engine.Cam.Width + 16;
+                int camHeight = Engine.Cam.Height + 9;
+                Engine.Cam.Size = new Vector2(camWidth, camHeight);
+
+                Engine.RenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                Engine.PrimitivesRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                Platformer.SecondRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             }
 
                 if (Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.NumPad5))
