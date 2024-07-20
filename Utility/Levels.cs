@@ -780,7 +780,7 @@ namespace Unnamed
                 entities.Add(trig);
             }
 
-            int camWidth = ((System.Text.Json.JsonElement)level.FieldInstances[0]._Value).GetInt32();
+            /*int camWidth = ((System.Text.Json.JsonElement)level.FieldInstances[0]._Value).GetInt32();
             if(Engine.Cam.Size.X != camWidth)
                 Engine.Cam.Size = new Vector2(camWidth, (int)(9 * (float)camWidth / 16));
 
@@ -788,7 +788,7 @@ namespace Unnamed
             {
                 int camHeight = (int)(9 * (float)camWidth / 16);
 
-                Engine.RenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                /*Engine.RenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
                 Engine.PrimitivesRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
                 Platformer.SecondRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             }
@@ -796,9 +796,7 @@ namespace Unnamed
 
             Engine.Cam.SetBoundaries(oldCamBounds);
             Engine.Cam.CenteredPos = oldCamPos;
-
-
-
+            */
 
 
             return entities;

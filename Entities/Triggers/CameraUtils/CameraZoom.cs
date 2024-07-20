@@ -27,6 +27,8 @@ namespace Unnamed
         {
             base.OnTriggerEnter(player);
 
+            KillAllCameraZoomTimers();
+
             float initWidth = Engine.Cam.Width;
 
             AddComponent(new Timer(ZoomTime, true,
@@ -37,6 +39,8 @@ namespace Unnamed
         public override void OnTriggerExit(Player player)
         {
             base.OnTriggerExit(player);
+
+            KillAllCameraZoomTimers();
 
             int initWidth = Engine.Cam.Width;
             int targWidth = 480;
@@ -50,12 +54,13 @@ namespace Unnamed
         {
             int camHeight = (int)(9 * (float)camWidth / 16);
             Engine.Cam.Pos += new Vector2(Engine.Cam.Width - camWidth, Engine.Cam.Height - camHeight) / 2;
-            //Engine.Cam.Follow(Engine.Player, 3, 3, Rectangle.Empty);
             Engine.Cam.Size = new Vector2(camWidth, camHeight);
+        }
 
-            Engine.RenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            Engine.PrimitivesRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            Platformer.SecondRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        private void KillAllCameraZoomTimers()
+        {
+            foreach(CameraZoom camZoom in Engine.CurrentMap.Data.EntitiesByType[typeof(CameraZoom)])
+                camZoom.RemoveComponents<Timer>();
         }
     }
 }

@@ -70,7 +70,7 @@ namespace Unnamed
 
         protected override void Initialize()
         {
-            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, (int)GameDefaultSize.X, (int)GameDefaultSize.Y, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 0, RenderTargetUsage.PreserveContents), "Utility/SpriteData.xml");
+            Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 1280, 720, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 0, RenderTargetUsage.PreserveContents), "Utility/SpriteData.xml");
 
             Options.CurrentResolution = Engine.ScreenSize;
 
@@ -190,21 +190,15 @@ namespace Unnamed
             {
                 int camWidth = Engine.Cam.Width - 16;
                 int camHeight = Engine.Cam.Height - 9;
+                Engine.Cam.Pos += new Vector2(Engine.Cam.Width - camWidth, Engine.Cam.Height - camHeight) / 2;
                 Engine.Cam.Size = new Vector2(camWidth, camHeight);
-
-                Engine.RenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                Engine.PrimitivesRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                Platformer.SecondRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             }
             if (Input.GetKey(Keys.O))
             {
                 int camWidth = Engine.Cam.Width + 16;
                 int camHeight = Engine.Cam.Height + 9;
+                Engine.Cam.Pos += new Vector2(Engine.Cam.Width - camWidth, Engine.Cam.Height - camHeight) / 2;
                 Engine.Cam.Size = new Vector2(camWidth, camHeight);
-
-                Engine.RenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                Engine.PrimitivesRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                Platformer.SecondRenderTarget = new RenderTarget2D(Platformer.GraphicsManager.GraphicsDevice, camWidth, camHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             }
 
                 if (Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.NumPad5))
@@ -348,9 +342,6 @@ namespace Unnamed
             //Drawing.Draw(Engine.LightsRenderTarget, Vector2.Zero);
 
             Drawing.End();
-            
-
-
 
             Drawing.DebugEvents();
 
@@ -360,6 +351,7 @@ namespace Unnamed
 
             DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.4f);
             DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(25f);
+            DataManager.PixelShaders["Vignette"].Parameters["textureSize"].SetValue((float)Engine.Cam.Width / Engine.RenderTarget.Width);
 
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Vignette"], null);
 
@@ -399,7 +391,8 @@ namespace Unnamed
             GraphicsDevice.SetRenderTarget(null);
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
-            Drawing.Draw(RenderTarget, new Rectangle(new Point(0, 0), Engine.ScreenSize.ToPoint()), Color.White);
+            //Drawing.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0);
+            Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero,  Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
             //Drawing.Draw(Engine.LightsRenderTarget, new Rectangle(new Point(0, 0), new Point(3000, 3000)), Color.White);
 
             Drawing.End();
@@ -539,7 +532,7 @@ namespace Unnamed
 
         public static void LoadOptionsSave(SaveData save)
         {
-            Options.SetSize(save.ScreenSize.Value);
+            //Options.SetSize(save.ScreenSize.Value);
             Audio.SetMasterVolume(save.MasterVolume.Value / 10f);
             Audio.SetGroupVolume("Musics", save.MusicVolume.Value / 10f);
             Audio.SetGroupVolume("Sound effects", save.SFXVolume.Value / 10f);
