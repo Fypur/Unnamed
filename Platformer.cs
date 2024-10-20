@@ -18,6 +18,7 @@ namespace Unnamed
         public static GraphicsDeviceManager GraphicsManager;
         public static RenderTarget2D RenderTarget => Engine.RenderTarget;
         public static RenderTarget2D SecondRenderTarget;
+        public static RenderTarget2D BgRenderTarget;
 
         public static bool Paused;
         public static PauseMenu PauseMenu;
@@ -83,6 +84,7 @@ namespace Unnamed
             Cam = new Camera(Vector2.Zero, 0, 1f);
 
             SecondRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, RenderTarget.Width, RenderTarget.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            BgRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, RenderTarget.Width, RenderTarget.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             
             BloomFilter = new BloomFilter();
             BloomFilter.Load(Engine.Graphics.GraphicsDevice, Content, RenderTarget.Width, RenderTarget.Height);
@@ -96,7 +98,7 @@ namespace Unnamed
 
             string currentDir = Environment.CurrentDirectory;
             currentDir = currentDir.Replace('\\', '/');
-            watcher = new FileSystemWatcher(currentDir.Substring(0, currentDir.LastIndexOf("Platformer/") + 11) + "Content");
+            watcher = new FileSystemWatcher(currentDir.Substring(0, currentDir.LastIndexOf("Unnamed/") + 8) + "Content");
             watcher.NotifyFilter = NotifyFilters.LastWrite;                 
             watcher.Filter = "*.ldtk";
             watcher.Changed += new FileSystemEventHandler((ev, eve) => RefreshLDtk());
@@ -171,6 +173,8 @@ namespace Unnamed
             if(Input.GetKeyDown(Keys.B))
                 Debug.Clear();
 
+
+            Debug.LogUpdate(Input.MousePos);
             if (Input.GetKeyDown(Keys.V) && player != null)
                 player.ExactPos = Input.MousePos;
 
@@ -290,6 +294,8 @@ namespace Unnamed
             GraphicsDevice.SetRenderTarget(Engine.LightsRenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
             GraphicsDevice.SetRenderTarget(RenderTarget);
+            GraphicsDevice.Clear(Color.Transparent);
+            GraphicsDevice.SetRenderTarget(BgRenderTarget);
             GraphicsDevice.Clear(new Color(5, 8, 13));
 
 
@@ -300,6 +306,7 @@ namespace Unnamed
             Drawing.End();
 
 
+            GraphicsDevice.SetRenderTarget(RenderTarget);
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
 
@@ -350,7 +357,8 @@ namespace Unnamed
             GraphicsDevice.Clear(Color.Transparent);
 
             DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.4f);
-            DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(25f);
+            //DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(25f);
+            DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(200f); //TODO: REVERT THIS BACK TO PREVIOUS LINE
             DataManager.PixelShaders["Vignette"].Parameters["textureSize"].SetValue((float)Engine.Cam.Width / Engine.RenderTarget.Width);
 
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Vignette"], null);
@@ -391,8 +399,9 @@ namespace Unnamed
             GraphicsDevice.SetRenderTarget(null);
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
+            Drawing.Draw(BgRenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0);
             //Drawing.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0);
-            Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero,  Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
+            Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
             //Drawing.Draw(Engine.LightsRenderTarget, new Rectangle(new Point(0, 0), new Point(3000, 3000)), Color.White);
 
             Drawing.End();
@@ -621,7 +630,7 @@ namespace Unnamed
                 string currentDir = Environment.CurrentDirectory;
                 currentDir = currentDir.Replace('\\', '/');
 
-                File.Copy(currentDir.Substring(0, currentDir.LastIndexOf("Platformer/") + 11) + "Content/World.ldtk", currentDir + "/Content/World.ldtk", true);
+                File.Copy(currentDir.Substring(0, currentDir.LastIndexOf("Unnamed/") + 8) + "Content/World.ldtk", currentDir + "/Content/World.ldtk", true);
 
                 LDtkFile = LDtkFile.FromFile("Content/World.ldtk");
                 World = RefreshWorld();

@@ -1,12 +1,12 @@
-// This file was automatically generated, any modifications will be lost!
-#pragma warning disable
 namespace LDtkTypes;
 
-using LDtk;
+// This file was automatically generated, any modifications will be lost!
+#pragma warning disable
 
+using LDtk;
 using Microsoft.Xna.Framework;
 
-public class CamZoom : ILDtkEntity
+public partial class CamZoom : ILDtkEntity
 {
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }

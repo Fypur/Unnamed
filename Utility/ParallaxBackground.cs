@@ -13,6 +13,8 @@ namespace Unnamed
         public Tile[] Tiles;
         public float[] XMoveMultipliers;
 
+        private Vector2 OldCamSize;
+
         public ParallaxBackground(Sprite[] sprites, float[] parallaxMoveXMultiplier) : base(Vector2.Zero, Engine.RenderTarget.Width, Engine.RenderTarget.Height, null)
         {
             Tiles = new Tile[sprites.Length];
@@ -24,11 +26,17 @@ namespace Unnamed
             Visible = false; //Render Called at a different time
         }
 
+        public override void Update()
+        {
+            Size = Engine.Cam.Size;
+            base.Update();
+        }
+
         public override void LateUpdate() //Late Update because we need the camera to have moved
         {
             base.LateUpdate();
 
-            Vector2 move = Engine.Cam.PreviousPos - Engine.Cam.WholePos;
+            Vector2 move = Engine.Cam.PreviousPos - Engine.Cam.WholePos;// - Vector2.UnitX * (Engine.Cam.Size - OldCamSize);
 
             for (int i = 0; i < Tiles.Length; i++)
             {
@@ -47,11 +55,11 @@ namespace Unnamed
 
             for (int i = 0; i < Tiles.Length; i++)
             {
+                //Tiles[i].Sprite.Scale = new Vector2((float)Engine.Cam.Width / Tiles[i].Width); //->Engine.Camera.Width
                 Tiles[i].Render();
-
                 Tiles[i].Pos.X -= Width;
                 Tiles[i].Render();
-                Tiles[i].Pos.X += Width;
+                Tiles[i].Pos.X += Width; //Render twice for loop
             }
         }
     }
