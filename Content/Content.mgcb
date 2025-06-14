@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:MonoGame.Aseprite.ContentPipeline.dll
+/reference:MonoGame.Aseprite.Content.Pipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -57,27 +57,15 @@
 /build:Fonts/Recursive/Normal.spritefont
 
 #begin Graphics/bg/bg1.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
-/build:Graphics/bg/bg1.aseprite
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
+/build:Graphics/bg/bg1.aseprite;Graphics/bg/bg1
 
 #begin Graphics/bg/bg2.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/bg/bg2.aseprite
 
 #begin Graphics/bg/bg2/Layer 1.png
@@ -165,279 +153,141 @@
 /build:Graphics/bg/mainMenu.png
 
 #begin Graphics/Boss/arm.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Boss/arm.aseprite
 
 #begin Graphics/Boss/gunArm.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Boss/gunArm.aseprite
 
 #begin Graphics/Boss/hit.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Boss/hit.aseprite
 
 #begin Graphics/Boss/idle.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Boss/idle.aseprite
 
 #begin Graphics/Boss/jump.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Boss/jump.aseprite
 
 #begin Graphics/Boss/wallLeft.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Boss/wallLeft.aseprite
 
 #begin Graphics/Boss/wallRight.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Boss/wallRight.aseprite
 
 #begin Graphics/Objects/AnimatedDecals.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/AnimatedDecals.aseprite
 
 #begin Graphics/Objects/boss/missile.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/boss/missile.aseprite
 
 #begin Graphics/Objects/Button.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/Button.aseprite
 
 #begin Graphics/Objects/closingGate.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/closingGate.aseprite
 
 #begin Graphics/Objects/Decals.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/Decals.aseprite
 
 #begin Graphics/Objects/JetpackBooster.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/JetpackBooster.aseprite
 
 #begin Graphics/Objects/jetpackBooster2.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/jetpackBooster2.aseprite
 
 #begin Graphics/Objects/jumpthrus/industrial.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/jumpthrus/industrial.aseprite
 
 #begin Graphics/Objects/jumpthrus/industrial2.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/jumpthrus/industrial2.aseprite
 
 #begin Graphics/Objects/Lights.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/Lights.aseprite
 
 #begin Graphics/Objects/projectorLight/ceiling.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/projectorLight/ceiling.aseprite
 
 #begin Graphics/Objects/projectorLight/corner.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/projectorLight/corner.aseprite
 
 #begin Graphics/Objects/projectorLight/grounded.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/projectorLight/grounded.aseprite
 
 #begin Graphics/Objects/RAM/rotate.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/RAM/rotate.aseprite
 
 #begin Graphics/Objects/refill/respawn.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/refill/respawn.aseprite
 
 #begin Graphics/Objects/refill/rotate.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/refill/rotate.aseprite
 
 #begin Graphics/Objects/robot.png
@@ -453,243 +303,123 @@
 /build:Graphics/Objects/robot.png
 
 #begin Graphics/Objects/sawblade/sawblade.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/sawblade/sawblade.aseprite
 
 #begin Graphics/Objects/scenery/barriers.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/barriers.aseprite
 
 #begin Graphics/Objects/scenery/bossScreen.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/bossScreen.aseprite
 
 #begin Graphics/Objects/scenery/fallingMachine/fallen.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/fallingMachine/fallen.aseprite
 
 #begin Graphics/Objects/scenery/fallingMachine/falling.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/fallingMachine/falling.aseprite
 
 #begin Graphics/Objects/scenery/fallingMachine/standing.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/fallingMachine/standing.aseprite
 
 #begin Graphics/Objects/scenery/jetpackTutorialScreen.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/jetpackTutorialScreen.aseprite
 
 #begin Graphics/Objects/scenery/playerHealth.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/playerHealth.aseprite
 
 #begin Graphics/Objects/scenery/screen/glitch_appear.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/glitch_appear.aseprite
 
 #begin Graphics/Objects/scenery/screen/glitch_loop.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/glitch_loop.aseprite
 
 #begin Graphics/Objects/scenery/screen/little/begintransfer.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/little/begintransfer.aseprite
 
 #begin Graphics/Objects/scenery/screen/little/completetransfer.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/little/completetransfer.aseprite
 
 #begin Graphics/Objects/scenery/screen/little/ltext.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/little/ltext.aseprite
 
 #begin Graphics/Objects/scenery/screen/little/transfer.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/little/transfer.aseprite
 
 #begin Graphics/Objects/scenery/screen/littledrawing.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/littledrawing.aseprite
 
 #begin Graphics/Objects/scenery/screen/sc1.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/sc1.aseprite
 
 #begin Graphics/Objects/scenery/screen/sc2.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/sc2.aseprite
 
 #begin Graphics/Objects/scenery/screen/sc3.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/sc3.aseprite
 
 #begin Graphics/Objects/scenery/screen/sc4.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/sc4.aseprite
 
 #begin Graphics/Objects/scenery/screen/text.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/scenery/screen/text.aseprite
 
 #begin Graphics/Objects/SpikeTest.png
@@ -705,63 +435,33 @@
 /build:Graphics/Objects/SpikeTest.png
 
 #begin Graphics/Objects/streetLight/blink.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/streetLight/blink.aseprite
 
 #begin Graphics/Objects/streetLight/light.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/streetLight/light.aseprite
 
 #begin Graphics/Objects/streetLight/off.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/streetLight/off.aseprite
 
 #begin Graphics/Objects/swingingPoint.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/swingingPoint.aseprite
 
 #begin Graphics/Objects/swingTriggered.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Objects/swingTriggered.aseprite
 
 #begin Graphics/PixelShaders/AllWhite.fx
@@ -795,218 +495,110 @@
 /build:Graphics/PixelShaders/WhiteBar.fx
 
 #begin Graphics/Player/ascend.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Player/ascend.aseprite
 
 #begin Graphics/Player/fall.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Player/fall.aseprite
 
 #begin Graphics/Player/idle.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Player/idle.aseprite
 
 #begin Graphics/Player/jump.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Player/jump.aseprite
 
 #begin Graphics/Player/pickUp.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Player/pickUp.aseprite
 
 #begin Graphics/Player/projected.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Player/projected.aseprite
 
 #begin Graphics/Player/reversePickingUp.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Player/reversePickingUp.aseprite
 
 #begin Graphics/Player/rope.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Player/rope.aseprite
 
 #begin Graphics/Player/run.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Player/run.aseprite
 
 #begin Graphics/Player/swing.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Player/swing.aseprite
 
 #begin Graphics/Player/wallSlide.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Player/wallSlide.aseprite
 
 #begin Graphics/Tilesets/bgTiles.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Tilesets/bgTiles.aseprite
 
 #begin Graphics/Tilesets/DecalsTileset.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Tilesets/DecalsTileset.aseprite
 
 #begin Graphics/Tilesets/grass.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Tilesets/grass.aseprite
 
 #begin Graphics/Tilesets/grass2.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Tilesets/grass2.aseprite
 
 #begin Graphics/Tilesets/gray.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Tilesets/gray.aseprite
 
 #begin Graphics/Tilesets/industrialAll.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Tilesets/industrialAll.aseprite
 
 #begin Graphics/Tilesets/template.aseprite
-/importer:AsepriteDocumentImporter
-/processor:AsepriteDocumentProcessor
-/processorParam:SheetType=Packed
-/processorParam:MergeDuplicateFrames=True
-/processorParam:IgnoreEmptyFrames=True
-/processorParam:OnlyVisibleLayers=True
-/processorParam:BorderPadding=0
-/processorParam:Spacing=0
-/processorParam:InnerPadding=0
+/importer:AsepriteFileContentImporter
+/processor:AsepriteFileContentProcessor
+/processorParam:PremultiplyAlpha=True
 /build:Graphics/Tilesets/template.aseprite
 

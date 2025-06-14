@@ -9,6 +9,7 @@ using Fiourp;
 using LDtk;
 using Unnamed.Bloom;
 using System.Text.Json;
+using AsepriteDotNet.Aseprite.Types;
 
 namespace Unnamed
 {
