@@ -17,55 +17,55 @@
 #begin font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:TextureFormat=Compressed
 /build:font.spritefont
 
 #begin Fonts/LexendDeca/Normal.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:TextureFormat=Compressed
 /build:Fonts/LexendDeca/Normal.spritefont
 
 #begin Fonts/Pixel/Bold.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Pixel/Bold.spritefont
 
 #begin Fonts/Pixel/Italic.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Pixel/Italic.spritefont
 
 #begin Fonts/Pixel/Normal.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Pixel/Normal.spritefont
 
 #begin Fonts/Recursive/Normal.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Recursive/Normal.spritefont
 
 #begin Graphics/bg/bg1.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/bg/bg1.aseprite;Graphics/bg/bg1
 
 #begin Graphics/bg/bg2.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/bg/bg2.aseprite
 
 #begin Graphics/bg/bg2/Layer 1.png
@@ -74,7 +74,7 @@
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
@@ -86,7 +86,7 @@
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
@@ -98,7 +98,7 @@
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
@@ -110,7 +110,7 @@
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
@@ -122,7 +122,7 @@
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
@@ -134,7 +134,7 @@
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
@@ -146,7 +146,7 @@
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
@@ -155,139 +155,139 @@
 #begin Graphics/Boss/arm.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Boss/arm.aseprite
 
 #begin Graphics/Boss/gunArm.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Boss/gunArm.aseprite
 
 #begin Graphics/Boss/hit.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Boss/hit.aseprite
 
 #begin Graphics/Boss/idle.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Boss/idle.aseprite
 
 #begin Graphics/Boss/jump.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Boss/jump.aseprite
 
 #begin Graphics/Boss/wallLeft.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Boss/wallLeft.aseprite
 
 #begin Graphics/Boss/wallRight.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Boss/wallRight.aseprite
 
 #begin Graphics/Objects/AnimatedDecals.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/AnimatedDecals.aseprite
 
 #begin Graphics/Objects/boss/missile.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/boss/missile.aseprite
 
 #begin Graphics/Objects/Button.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/Button.aseprite
 
 #begin Graphics/Objects/closingGate.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/closingGate.aseprite
 
 #begin Graphics/Objects/Decals.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/Decals.aseprite
 
 #begin Graphics/Objects/JetpackBooster.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/JetpackBooster.aseprite
 
 #begin Graphics/Objects/jetpackBooster2.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/jetpackBooster2.aseprite
 
 #begin Graphics/Objects/jumpthrus/industrial.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/jumpthrus/industrial.aseprite
 
 #begin Graphics/Objects/jumpthrus/industrial2.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/jumpthrus/industrial2.aseprite
 
 #begin Graphics/Objects/Lights.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/Lights.aseprite
 
 #begin Graphics/Objects/projectorLight/ceiling.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/projectorLight/ceiling.aseprite
 
 #begin Graphics/Objects/projectorLight/corner.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/projectorLight/corner.aseprite
 
 #begin Graphics/Objects/projectorLight/grounded.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/projectorLight/grounded.aseprite
 
 #begin Graphics/Objects/RAM/rotate.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/RAM/rotate.aseprite
 
 #begin Graphics/Objects/refill/respawn.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/refill/respawn.aseprite
 
 #begin Graphics/Objects/refill/rotate.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/refill/rotate.aseprite
 
 #begin Graphics/Objects/robot.png
@@ -296,7 +296,7 @@
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
@@ -305,121 +305,121 @@
 #begin Graphics/Objects/sawblade/sawblade.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/sawblade/sawblade.aseprite
 
 #begin Graphics/Objects/scenery/barriers.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/barriers.aseprite
 
 #begin Graphics/Objects/scenery/bossScreen.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/bossScreen.aseprite
 
 #begin Graphics/Objects/scenery/fallingMachine/fallen.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/fallingMachine/fallen.aseprite
 
 #begin Graphics/Objects/scenery/fallingMachine/falling.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/fallingMachine/falling.aseprite
 
 #begin Graphics/Objects/scenery/fallingMachine/standing.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/fallingMachine/standing.aseprite
 
 #begin Graphics/Objects/scenery/jetpackTutorialScreen.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/jetpackTutorialScreen.aseprite
 
 #begin Graphics/Objects/scenery/playerHealth.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/playerHealth.aseprite
 
 #begin Graphics/Objects/scenery/screen/glitch_appear.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/glitch_appear.aseprite
 
 #begin Graphics/Objects/scenery/screen/glitch_loop.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/glitch_loop.aseprite
 
 #begin Graphics/Objects/scenery/screen/little/begintransfer.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/little/begintransfer.aseprite
 
 #begin Graphics/Objects/scenery/screen/little/completetransfer.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/little/completetransfer.aseprite
 
 #begin Graphics/Objects/scenery/screen/little/ltext.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/little/ltext.aseprite
 
 #begin Graphics/Objects/scenery/screen/little/transfer.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/little/transfer.aseprite
 
 #begin Graphics/Objects/scenery/screen/littledrawing.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/littledrawing.aseprite
 
 #begin Graphics/Objects/scenery/screen/sc1.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/sc1.aseprite
 
 #begin Graphics/Objects/scenery/screen/sc2.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/sc2.aseprite
 
 #begin Graphics/Objects/scenery/screen/sc3.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/sc3.aseprite
 
 #begin Graphics/Objects/scenery/screen/sc4.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/sc4.aseprite
 
 #begin Graphics/Objects/scenery/screen/text.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/scenery/screen/text.aseprite
 
 #begin Graphics/Objects/SpikeTest.png
@@ -428,7 +428,7 @@
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
@@ -437,31 +437,31 @@
 #begin Graphics/Objects/streetLight/blink.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/streetLight/blink.aseprite
 
 #begin Graphics/Objects/streetLight/light.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/streetLight/light.aseprite
 
 #begin Graphics/Objects/streetLight/off.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/streetLight/off.aseprite
 
 #begin Graphics/Objects/swingingPoint.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/swingingPoint.aseprite
 
 #begin Graphics/Objects/swingTriggered.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Objects/swingTriggered.aseprite
 
 #begin Graphics/PixelShaders/AllWhite.fx
@@ -497,108 +497,108 @@
 #begin Graphics/Player/ascend.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Player/ascend.aseprite
 
 #begin Graphics/Player/fall.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Player/fall.aseprite
 
 #begin Graphics/Player/idle.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Player/idle.aseprite
 
 #begin Graphics/Player/jump.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Player/jump.aseprite
 
 #begin Graphics/Player/pickUp.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Player/pickUp.aseprite
 
 #begin Graphics/Player/projected.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Player/projected.aseprite
 
 #begin Graphics/Player/reversePickingUp.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Player/reversePickingUp.aseprite
 
 #begin Graphics/Player/rope.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Player/rope.aseprite
 
 #begin Graphics/Player/run.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Player/run.aseprite
 
 #begin Graphics/Player/swing.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Player/swing.aseprite
 
 #begin Graphics/Player/wallSlide.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Player/wallSlide.aseprite
 
 #begin Graphics/Tilesets/bgTiles.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Tilesets/bgTiles.aseprite
 
 #begin Graphics/Tilesets/DecalsTileset.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Tilesets/DecalsTileset.aseprite
 
 #begin Graphics/Tilesets/grass.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Tilesets/grass.aseprite
 
 #begin Graphics/Tilesets/grass2.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Tilesets/grass2.aseprite
 
 #begin Graphics/Tilesets/gray.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Tilesets/gray.aseprite
 
 #begin Graphics/Tilesets/industrialAll.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Tilesets/industrialAll.aseprite
 
 #begin Graphics/Tilesets/template.aseprite
 /importer:AsepriteFileContentImporter
 /processor:AsepriteFileContentProcessor
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultiplyAlpha=False
 /build:Graphics/Tilesets/template.aseprite
 

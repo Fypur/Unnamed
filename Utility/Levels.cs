@@ -869,11 +869,11 @@ namespace Unnamed
 
                         if (range == 360)
                         {
-                            Light l2 = (Light)attachToEntity.AddComponent(new CircleLight(location, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
+                            Light l2 = (Light)attachToEntity.AddComponent(new CircleLight(location, length, slice.Color, new Color(slice.Color, 0)));
                             l2.CollideWithWalls = false;
                         }
                         else
-                            attachToEntity.AddComponent(new QuadPointLight(location, location2, direction, range, length, new Color(slice.Color, 255), new Color(slice.Color, 0)));
+                            attachToEntity.AddComponent(new QuadPointLight(location, location2, direction, range, length, slice.Color, new Color(slice.Color, 0)));
                     }
                 }
             }
