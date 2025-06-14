@@ -8,6 +8,16 @@ using Microsoft.Xna.Framework;
 
 public partial class CamOffset : ILDtkEntity
 {
+    public static CamOffset Default() => new()
+    {
+        Identifier = "CamOffset",
+        Uid = 473,
+        Size = new Vector2(8f, 8f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(144, 180, 0, 255),
+
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

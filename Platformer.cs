@@ -66,6 +66,7 @@ namespace Unnamed
             GraphicsManager = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "Content";
+            string a = Content.RootDirectory;
             IsMouseVisible = true;
         }
 
@@ -310,12 +311,12 @@ namespace Unnamed
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
 
-            Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget);
+            //Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget);
 
             Engine.CurrentMap.Render();
             //Drawing.DrawLight(Input.MousePos, 100, new Color(Color.White, 100), new Color(Color.White, 100));
 
-            Drawing.EndPrimitives();
+            //Drawing.EndPrimitives();
 
 
 

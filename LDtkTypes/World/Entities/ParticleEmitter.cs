@@ -8,6 +8,19 @@ using Microsoft.Xna.Framework;
 
 public partial class ParticleEmitter : ILDtkEntity
 {
+    public static ParticleEmitter Default() => new()
+    {
+        Identifier = "ParticleEmitter",
+        Uid = 582,
+        Size = new Vector2(1f, 1f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(25, 121, 215, 255),
+
+        Amount = 3,
+        Direction = 0f,
+        Color = new Color(255, 255, 255, 1),
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

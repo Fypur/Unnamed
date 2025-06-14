@@ -114,8 +114,6 @@ namespace Unnamed
 
             foreach (LDtkTypes.JumpThru p in level.GetEntities<LDtkTypes.JumpThru>())
                 entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), "industrial2"));
-            foreach (LDtkTypes.JumpThru2 p in level.GetEntities<LDtkTypes.JumpThru2>())
-                entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), "industrial2"));
 
             foreach (LDtkTypes.SwingTriggered p in level.GetEntities<LDtkTypes.SwingTriggered>())
             {
@@ -183,7 +181,7 @@ namespace Unnamed
             foreach (LDtkTypes.CamOffset p in level.GetEntities<LDtkTypes.CamOffset>())
                 entities.Add(new CameraOffset(p.Position, p.Size, p.Offset - p.Position - new Vector2(intGrid.TileSize / 2) + new Vector2(p.OffsetX, p.OffsetY), p.Override));
 
-            foreach (LDtkTypes.CameraBlock p in level.GetEntities<LDtkTypes.CameraBlock>())
+            foreach (LDtkTypes.CamBlock p in level.GetEntities<LDtkTypes.CamBlock>())
                 entities.Add(new CameraBlock(p.Position, p.Size));
 
             foreach (LDtkTypes.CamZoom p in level.GetEntities<LDtkTypes.CamZoom>())

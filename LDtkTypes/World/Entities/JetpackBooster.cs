@@ -8,6 +8,16 @@ using Microsoft.Xna.Framework;
 
 public partial class JetpackBooster : ILDtkEntity
 {
+    public static JetpackBooster Default() => new()
+    {
+        Identifier = "JetpackBooster",
+        Uid = 176,
+        Size = new Vector2(8f, 8f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(255, 224, 0, 255),
+
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

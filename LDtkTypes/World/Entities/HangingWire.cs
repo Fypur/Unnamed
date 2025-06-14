@@ -8,6 +8,16 @@ using Microsoft.Xna.Framework;
 
 public partial class HangingWire : ILDtkEntity
 {
+    public static HangingWire Default() => new()
+    {
+        Identifier = "HangingWire",
+        Uid = 1383,
+        Size = new Vector2(2f, 2f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(91, 87, 84, 255),
+
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

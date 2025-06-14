@@ -8,6 +8,17 @@ using Microsoft.Xna.Framework;
 
 public partial class GlassWall : ILDtkEntity
 {
+    public static GlassWall Default() => new()
+    {
+        Identifier = "GlassWall",
+        Uid = 105,
+        Size = new Vector2(8f, 8f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(68, 201, 217, 255),
+
+        BreakVelocity = 300f,
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

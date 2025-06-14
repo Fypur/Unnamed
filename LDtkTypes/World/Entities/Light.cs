@@ -8,6 +8,21 @@ using Microsoft.Xna.Framework;
 
 public partial class Light : ILDtkEntity
 {
+    public static Light Default() => new()
+    {
+        Identifier = "Light",
+        Uid = 1303,
+        Size = new Vector2(1f, 1f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(255, 255, 255, 255),
+
+        Range = 360f,
+        Length = 70f,
+        Color = new Color(255, 255, 255, 1),
+        Opacity = 110,
+        CollideWithWalls = false,
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

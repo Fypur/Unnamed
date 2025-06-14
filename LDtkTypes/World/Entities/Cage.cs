@@ -8,6 +8,15 @@ using Microsoft.Xna.Framework;
 
 public partial class Cage : ILDtkEntity
 {
+    public static Cage Default() => new()
+    {
+        Identifier = "Cage",
+        Uid = 423,
+        Size = new Vector2(8f, 8f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(81, 81, 81, 255),
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }
@@ -17,6 +26,5 @@ public partial class Cage : ILDtkEntity
     public Rectangle Tile { get; set; }
 
     public Color SmartColor { get; set; }
-
 }
 #pragma warning restore

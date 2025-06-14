@@ -8,6 +8,16 @@ using Microsoft.Xna.Framework;
 
 public partial class RespawnArea : ILDtkEntity
 {
+    public static RespawnArea Default() => new()
+    {
+        Identifier = "RespawnArea",
+        Uid = 14,
+        Size = new Vector2(8f, 8f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(255, 141, 0, 255),
+
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

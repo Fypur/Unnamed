@@ -8,6 +8,17 @@ using Microsoft.Xna.Framework;
 
 public partial class SwingTriggered : ILDtkEntity
 {
+    public static SwingTriggered Default() => new()
+    {
+        Identifier = "SwingTriggered",
+        Uid = 86,
+        Size = new Vector2(8f, 8f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(139, 31, 36, 255),
+
+        MaxSwingDistance = 100f,
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

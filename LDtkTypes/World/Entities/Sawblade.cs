@@ -8,6 +8,17 @@ using Microsoft.Xna.Framework;
 
 public partial class Sawblade : ILDtkEntity
 {
+    public static Sawblade Default() => new()
+    {
+        Identifier = "Sawblade",
+        Uid = 180,
+        Size = new Vector2(16f, 16f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(89, 107, 97, 255),
+
+        GoingForwards = true,
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

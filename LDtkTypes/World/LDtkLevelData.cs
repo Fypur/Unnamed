@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 
 public partial class LDtkLevelData
 {
+
     public int CamWidth { get; set; }
 }
 #pragma warning restore

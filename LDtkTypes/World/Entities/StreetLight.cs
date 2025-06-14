@@ -8,6 +8,23 @@ using Microsoft.Xna.Framework;
 
 public partial class StreetLight : ILDtkEntity
 {
+    public static StreetLight Default() => new()
+    {
+        Identifier = "StreetLight",
+        Uid = 416,
+        Size = new Vector2(16f, 40f),
+        Pivot = new Vector2(0f, 0f),
+        Tile = new TilesetRectangle()
+        {
+            X = 0,
+            Y = 0,
+            W = 16,
+            H = 40
+        },
+        SmartColor = new Color(148, 217, 179, 255),
+
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

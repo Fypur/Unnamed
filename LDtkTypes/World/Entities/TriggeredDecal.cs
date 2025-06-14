@@ -8,6 +8,16 @@ using Microsoft.Xna.Framework;
 
 public partial class TriggeredDecal : ILDtkEntity
 {
+    public static TriggeredDecal Default() => new()
+    {
+        Identifier = "TriggeredDecal",
+        Uid = 1428,
+        Size = new Vector2(8f, 8f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(66, 62, 56, 255),
+
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

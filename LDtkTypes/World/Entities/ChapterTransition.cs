@@ -8,6 +8,16 @@ using Microsoft.Xna.Framework;
 
 public partial class ChapterTransition : ILDtkEntity
 {
+    public static ChapterTransition Default() => new()
+    {
+        Identifier = "ChapterTransition",
+        Uid = 1441,
+        Size = new Vector2(8f, 8f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(252, 212, 136, 255),
+
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

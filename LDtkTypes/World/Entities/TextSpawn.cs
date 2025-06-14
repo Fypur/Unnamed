@@ -8,6 +8,17 @@ using Microsoft.Xna.Framework;
 
 public partial class TextSpawn : ILDtkEntity
 {
+    public static TextSpawn Default() => new()
+    {
+        Identifier = "TextSpawn",
+        Uid = 70,
+        Size = new Vector2(8f, 8f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(94, 227, 45, 255),
+
+        Color = new Color(255, 255, 255, 1),
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }

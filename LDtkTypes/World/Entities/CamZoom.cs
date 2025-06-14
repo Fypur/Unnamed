@@ -8,6 +8,18 @@ using Microsoft.Xna.Framework;
 
 public partial class CamZoom : ILDtkEntity
 {
+    public static CamZoom Default() => new()
+    {
+        Identifier = "CamZoom",
+        Uid = 1518,
+        Size = new Vector2(8f, 8f),
+        Pivot = new Vector2(0f, 0f),
+        SmartColor = new Color(78, 194, 93, 255),
+
+        TargetCamWidth = 320,
+        ZoomTime = 1f,
+    };
+
     public string Identifier { get; set; }
     public System.Guid Iid { get; set; }
     public int Uid { get; set; }
