@@ -168,10 +168,10 @@ namespace Unnamed
             base.Render();
 
             if (Engine.Player != null && !swinged && !new Raycast(Raycast.RayTypes.MapTiles, MiddleExactPos, Engine.Player.Pos + Engine.Player.HalfSize).Hit && Vector2.Distance(MiddleExactPos, Engine.Player.Pos + Engine.Player.HalfSize) < MaxSwingDistance)
-                Drawing.DrawDottedLine(MiddlePos, Engine.Player.Pos + Engine.Player.HalfSize, new Color(Color.LightBlue, 120), 1, 4, 4);
+                Drawing.DrawDottedLine(MiddlePos, Engine.Player.Pos + Engine.Player.HalfSize, new Color(Color.DeepSkyBlue * (40f / 255), 255), 1, 4, 4);
 
             //Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.LightBlue, 120));
-            Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.DeepSkyBlue, 120));
+            Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.DeepSkyBlue * (40f/255), 255));
 
             if (Debug.DebugMode)
                 Drawing.DrawCircleEdge(MiddleExactPos, MaxSwingDistance, 0.1f, new Color(Color.LightBlue, 120), 1);

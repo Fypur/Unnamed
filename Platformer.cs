@@ -290,29 +290,35 @@ namespace Unnamed
 
         protected override void Draw(GameTime gameTime)
         {
+            Particles.WaterFall.Color = new Color(Color.LightSkyBlue * (40f / 255), 255);
             GraphicsDevice.SetRenderTarget(Engine.PrimitivesRenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
             GraphicsDevice.SetRenderTarget(Engine.LightsRenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
-            GraphicsDevice.Clear(new Color(255, 255, 255, 0));
+            GraphicsDevice.Clear(new Color(0, 0, 0, 0));
+            //GraphicsDevice.Clear(new Color(255, 255, 255, 0));
             GraphicsDevice.SetRenderTarget(SecondRenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
             GraphicsDevice.SetRenderTarget(FinalRenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
             GraphicsDevice.SetRenderTarget(BgRenderTarget);
-            GraphicsDevice.Clear(new Color(5, 8, 13));
+            GraphicsDevice.Clear(Color.Transparent);
 
 
-            var non = new BlendState
+            /*var non = new BlendState
             {
-                ColorSourceBlend = Blend.SourceAlpha,
-                ColorDestinationBlend = Blend.InverseSourceAlpha,
-                AlphaSourceBlend = Blend.One,
-                AlphaDestinationBlend = Blend.One,
-            };
+                ColorSourceBlend = Blend.One,
+                ColorDestinationBlend = Blend.Zero,
+                AlphaSourceBlend = Blend.SourceAlpha,
+                AlphaDestinationBlend = Blend.Zero,
+                BlendFactor = Color.White,
+                AlphaBlendFunction = BlendFunction.Add,
+                ColorBlendFunction = BlendFunction.Add
+            };*/
 
+            GraphicsDevice.SetRenderTarget(BgRenderTarget);
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
             BackgroundTile?.Render();
@@ -322,7 +328,7 @@ namespace Unnamed
 
 
             GraphicsDevice.SetRenderTarget(RenderTarget);
-            Drawing.Begin(SpriteSortMode.Deferred, non, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
 
             Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget);
@@ -348,24 +354,26 @@ namespace Unnamed
             Drawing.End();
 
 
-            /*GraphicsDevice.SetRenderTarget(FinalRenderTarget);
+            GraphicsDevice.SetRenderTarget(FinalRenderTarget);
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
             Drawing.Draw(BgRenderTarget, Vector2.Zero, new Rectangle(0, 0, 480, 270), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
             Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
 
-            Drawing.End();*/
+            Drawing.End();
 
 
-            Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix * Matrix.CreateScale(Engine.ScreenSize.X / Engine.Cam.Size.X));
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix * Matrix.CreateScale(Engine.ScreenSize.X / Engine.Cam.Size.X));
             Lighting.DrawAllLights();
             Drawing.End();
 
 
             //VIGNETTE
-            /*GraphicsDevice.SetRenderTarget(SecondRenderTarget);
+            GraphicsDevice.SetRenderTarget(SecondRenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
 
+            /*DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.4f);
+            DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(25f);*/
             DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.4f);
             DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(25f);
 
@@ -401,14 +409,14 @@ namespace Unnamed
 
 
 
-            */
+            
 
             GraphicsDevice.SetRenderTarget(null);
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
-            //Drawing.Draw(FinalRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0);
+            Drawing.Draw(FinalRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0);
             //Drawing.Draw(BgRenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
-            Drawing.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
+            //Drawing.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
             //Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
             //Drawing.Draw(Engine.LightsRenderTarget, new Rectangle(new Point(0, 0), new Point(3000, 3000)), Color.White);
 

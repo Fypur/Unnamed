@@ -1,7 +1,6 @@
 ﻿sampler inputTexture;
 float strength;
 float extent;
-float textureSize;
 
 struct VertexShaderOutput
 {
@@ -20,10 +19,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         
     }*/
     
-    if(input.TextureCoordinates.x > textureSize || input.TextureCoordinates.y > textureSize)
-        return color;
-    
-    float2 uv = input.TextureCoordinates.xy / textureSize;
+    float2 uv = input.TextureCoordinates.xy;
    
     uv *= 1 - uv.yx; //vec2(1.0)- uv.yx; -> 1.-u.yx; Thanks FabriceNeyret !
     
