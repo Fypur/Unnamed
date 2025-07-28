@@ -8,8 +8,6 @@ using System.IO;
 using Fiourp;
 using LDtk;
 using Unnamed.Bloom;
-using System.Text.Json;
-using AsepriteDotNet.Aseprite.Types;
 
 namespace Unnamed
 {
@@ -62,6 +60,9 @@ namespace Unnamed
         public static int WorldsUnlocked = 0;
         public static SaveData Save;
 
+        private Tile t;
+        private BoxColliderRotated b;
+
         public Platformer()
         {
             instance = this;
@@ -94,8 +95,8 @@ namespace Unnamed
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
 #if DEBUG
-            InitLevel = "Lvl25";
-            InitWorld = 1;
+            InitLevel = "Lvl80";
+            InitWorld = 3;
             WorldsUnlocked = 3;
             StartGame();
 
@@ -137,9 +138,7 @@ namespace Unnamed
             Engine.Deltatime = (float)gameTime.ElapsedGameTime.TotalSeconds * TimeScale;
 
             if (Input.GetKeyDown(Keys.Escape))
-            {
                 PauseOrUnpause();
-            }
 
             if (Input.GetKeyDown(Keys.F11))
                 Options.FullScreen();
@@ -215,7 +214,32 @@ namespace Unnamed
                 Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos + Engine.CurrentMap.CurrentLevel.Size.OnlyY(), 32, Direction.Up));
             }
 
+            /*t.ExactPos = Input.MousePos;
+            if (Input.GetKeyDown(Keys.U))
+            {
+                t = new Tile(Input.MousePos, 8, 8, new Sprite(Color.White));
+                t.RemoveComponent(t.Collider);
+                b = new BoxColliderRotated(Vector2.Zero, 8, 8, 0, t.HalfSize);
+                t.AddComponent(b);
+                Engine.CurrentMap.Instantiate(t);
+                t.Sprite.Origin = Vector2.One * 0.5f;
+                t.Sprite.Offset = t.HalfSize;
+            }
+            if (Input.GetKey(Keys.K))
+            {
+                b.Rotate(0.01f, 0.01f, null, null);
+                t.Sprite.Rotation = b.Rotation;
+            }
 
+            if (Input.GetKey(Keys.L))
+            {
+                b.Rotate(-0.01f, 0.01f, null, null);
+                t.Sprite.Rotation = b.Rotation;
+            }
+
+            Debug.PointUpdate(b.Rect);
+            Debug.LogUpdate(VectorHelper.RotateAround(Vector2.One, Vector2.UnitY, (float)(Math.PI / 2)));
+            */
 
             /*if (Input.GetKey(Keys.W))
             {
@@ -357,7 +381,8 @@ namespace Unnamed
             GraphicsDevice.SetRenderTarget(FinalRenderTarget);
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
-            Drawing.Draw(BgRenderTarget, Vector2.Zero, new Rectangle(0, 0, 480, 270), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
+            Debug.LogUpdate(BackgroundTile.Width);
+            Drawing.Draw(BgRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One * Engine.ScreenSize.X / BackgroundTile.Width, SpriteEffects.None, 0);
             Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
 
             Drawing.End();
@@ -438,7 +463,7 @@ namespace Unnamed
             PauseMenu?.UIChildRender();
 
             Drawing.End();
-            Drawing.Begin();
+            Drawing.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
 
             Drawing.DebugString();
 
@@ -488,7 +513,7 @@ namespace Unnamed
 #endif
 
 
-                Engine.CurrentMap.Data.Actors.Add(Cam);
+            Engine.CurrentMap.Data.Actors.Add(Cam);
             Vector2 lvlSize = Engine.CurrentMap.CurrentLevel.Size;
             if (lvlSize.Y == 184)
                 lvlSize.Y = 180;

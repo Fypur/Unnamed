@@ -41,7 +41,6 @@ namespace Unnamed
             Random levelRandom = new Random(level.Position.X + level.Position.Y);
             Rectangle oldCamBounds = Engine.Cam.Bounds;
             Vector2 oldCamPos = Engine.Cam.CenteredPos;
-            Engine.Cam.SetBoundaries(new Rectangle(level.Position, level.Size));
 
             List<Entity> entities = new List<Entity>();
             LDtkIntGrid intGrid = level.GetIntGrid("IntGrid");
