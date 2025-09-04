@@ -60,9 +60,6 @@ namespace Unnamed
         public static int WorldsUnlocked = 0;
         public static SaveData Save;
 
-        private Tile t;
-        private BoxColliderRotated b;
-
         public Platformer()
         {
             instance = this;
@@ -76,8 +73,6 @@ namespace Unnamed
         {
             Engine.Initialize(GraphicsManager, Content, 1280, 720, new RenderTarget2D(GraphicsDevice, 1280, 720, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24, 0, RenderTargetUsage.PreserveContents), "Utility/SpriteData.xml");
 
-            Options.CurrentResolution = Engine.ScreenSize;
-
             LDtkFile = LDtkFile.FromFile("Content/World.ldtk");
 
             World = RefreshWorld();
@@ -86,8 +81,8 @@ namespace Unnamed
 
             Cam = new Camera(Vector2.Zero, 0, 1f);
 
-            SecondRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, RenderTarget.Width, RenderTarget.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             BgRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, RenderTarget.Width, RenderTarget.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            SecondRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, 1280, 720, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             FinalRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, 1280, 720, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             
             BloomFilter = new BloomFilter();
@@ -121,7 +116,6 @@ namespace Unnamed
             LoadOptionsSave(Save);
 
             menu = (MainMenu)Engine.CurrentMap.Instantiate(new MainMenu());
-
         }
 
         protected override void Update(GameTime gameTime)
@@ -214,8 +208,7 @@ namespace Unnamed
                 Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos + Engine.CurrentMap.CurrentLevel.Size.OnlyY(), 32, Direction.Up));
             }
 
-            /*t.ExactPos = Input.MousePos;
-            if (Input.GetKeyDown(Keys.U))
+            /*if (Input.GetKeyDown(Keys.U))
             {
                 t = new Tile(Input.MousePos, 8, 8, new Sprite(Color.White));
                 t.RemoveComponent(t.Collider);
@@ -381,14 +374,13 @@ namespace Unnamed
             GraphicsDevice.SetRenderTarget(FinalRenderTarget);
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
-            Debug.LogUpdate(BackgroundTile.Width);
-            Drawing.Draw(BgRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One * Engine.ScreenSize.X / BackgroundTile.Width, SpriteEffects.None, 0);
-            Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
-
+            Drawing.Draw(BgRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One * FinalRenderTarget.Width / BackgroundTile.Width, SpriteEffects.None, 0);
+            Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, new Vector2(FinalRenderTarget.Width, FinalRenderTarget.Height) / Engine.Cam.Size, SpriteEffects.None, 0);
+            
             Drawing.End();
 
 
-            Drawing.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix * Matrix.CreateScale(Engine.ScreenSize.X / Engine.Cam.Size.X));
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix * Matrix.CreateScale(FinalRenderTarget.Width / Engine.Cam.Size.X));
             Lighting.DrawAllLights();
             Drawing.End();
 
@@ -397,12 +389,11 @@ namespace Unnamed
             GraphicsDevice.SetRenderTarget(SecondRenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
 
-            /*DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.4f);
-            DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(25f);*/
             DataManager.PixelShaders["Vignette"].Parameters["extent"].SetValue(0.4f);
             DataManager.PixelShaders["Vignette"].Parameters["strength"].SetValue(25f);
 
-            Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Vignette"], null);
+            //Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, DataManager.PixelShaders["Vignette"], null);
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
             Drawing.Draw(FinalRenderTarget, Vector2.Zero, Color.White);
 
@@ -439,7 +430,7 @@ namespace Unnamed
             GraphicsDevice.SetRenderTarget(null);
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
-            Drawing.Draw(FinalRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0);
+            Drawing.Draw(FinalRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Engine.ScreenSize / new Vector2(FinalRenderTarget.Width, FinalRenderTarget.Height), SpriteEffects.None, 0);
             //Drawing.Draw(BgRenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
             //Drawing.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);
             //Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Engine.Cam.Size, SpriteEffects.None, 0);

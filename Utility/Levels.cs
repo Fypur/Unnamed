@@ -924,7 +924,7 @@ namespace Unnamed
 
         public static Sprite[,] GetWorldTileSprites(LDtkWorld world, int worldDepth, Vector2 gridPos, int[,] worldOrganisation)
         {
-            Sprite[,] sprites = new Sprite[worldOrganisation.GetLength(0) + 1, worldOrganisation.GetLength(1)];
+            Sprite[,] sprites = new Sprite[worldOrganisation.GetLength(0), worldOrganisation.GetLength(1)];
             foreach(LDtkLevel level in world.Levels)
             {
                 if (level.WorldDepth != worldDepth)

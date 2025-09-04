@@ -16,7 +16,7 @@ namespace Unnamed
 
         public enum States { Idle, Running, Jumping, Ascending, Falling, Dashing, Swinging, WallSliding, Pulling, Jetpack, Dead, Damaged }
 
-        private const float maxSpeed = 100;
+        private const float maxSpeed = 90;
         private const float maxFallingSpeed = 260;
         private const float maxFallSlidingSpeed = 150; //Max Falling Speed while Wall Sliding
         private const float dashSpeed = 200;
@@ -50,6 +50,7 @@ namespace Unnamed
         private const float swingGraceTime = 0.1f;
         //Can wall jump if wall is this far away from the wall in pixels
         private const float wallJumpPixelGap = 4;
+        private const int maxBonkOffset = 3;
         
         public static readonly ParticleType Dust = Particles.Dust.Copy();
 
@@ -337,7 +338,7 @@ namespace Unnamed
 
             float VelocityApproach(float acceleration, float friction)
             {
-                if (xMoving != 0 && (xMoving > 0 ? Velocity.X < maxSpeed : Velocity.X > -maxSpeed))
+                if (xMoving != 0 && (xMoving >= 0 ? Velocity.X <= maxSpeed : Velocity.X >= -maxSpeed))
                 {
                     //Debug.LogUpdate("accel");
                     return Approach(Velocity.X, (xMoving > 0.3f ? 1 : xMoving < -0.3f ? -1 : xMoving) * maxSpeed, acceleration * Engine.Deltatime);
@@ -389,7 +390,7 @@ namespace Unnamed
 
                 if (JumpControls.IsDown() && !stateMachine.Is(States.Jumping))
                 {
-                    bool TestJump()
+                    bool TryJump()
                     {
                         if(!CanMove)
                             return false;
@@ -412,15 +413,15 @@ namespace Unnamed
                     }
 
                     //Take the jump if on the ground, else wait for jump grace period
-                    if(!TestJump())
+                    if(!TryJump())
                     {
                         AddComponent(new Timer(jumpGraceTime, true, (timer) =>
                         {
-                            if (TestJump())
+                            if (TryJump())
                                 RemoveComponent(timer);
                         }, () =>
                         {
-                            TestJump();
+                            TryJump();
                         }));
                     }
                 }
@@ -1263,14 +1264,12 @@ namespace Unnamed
 
             if(collided is Grid grid && Velocity.Y < -40)
             {
-                const int maxOffset = 3;
-
                 int offset = (int)(Pos.X + Width - grid.Pos.X) % grid.TileWidth;
-                if (offset > maxOffset)
+                if (offset > maxBonkOffset)
                 {
                     offset = (int)(Pos.X - grid.Pos.X) % grid.TileWidth;
 
-                    if (offset < grid.TileWidth - maxOffset)
+                    if (offset < grid.TileWidth - maxBonkOffset)
                         offset = 0;
                     else
                         offset = grid.TileWidth - offset;
