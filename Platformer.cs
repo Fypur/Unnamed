@@ -90,7 +90,7 @@ namespace Unnamed
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
 #if DEBUG
-            InitLevel = "Lvl80";
+            InitLevel = "Lvl82";
             InitWorld = 3;
             WorldsUnlocked = 3;
             StartGame();
@@ -403,18 +403,18 @@ namespace Unnamed
 
             //BLOOM
             //BloomFilter.BloomThreshold = 0.8f;
-            BloomFilter.BloomThreshold = 0.3f;
-            //BloomFilter.BloomStreakLength = 0.4f;
+            BloomFilter.BloomThreshold = 0.4f;
             BloomFilter.BloomStreakLength = 0.4f;
-            //BloomFilter.BloomStrengthMultiplier = 0.55f;
-            BloomFilter.BloomStrengthMultiplier = 0.4f;
+            //BloomFilter.BloomStreakLength = 0.4f;
+            BloomFilter.BloomStrengthMultiplier = 0.55f;
+            //BloomFilter.BloomStrengthMultiplier = 0.4f;
 
             GraphicsDevice.SetRenderTarget(FinalRenderTarget);
             GraphicsDevice.Clear(Color.Transparent);
 
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, null);
 
-            Texture2D bloomTexture = BloomFilter.Draw(SecondRenderTarget, RenderTarget.Width, RenderTarget.Height);
+            Texture2D bloomTexture = BloomFilter.Draw(SecondRenderTarget, SecondRenderTarget.Width, SecondRenderTarget.Height);
             GraphicsDevice.SetRenderTarget(FinalRenderTarget); //For some damn reason man don't change back the render target
             Drawing.Draw(bloomTexture, Vector2.Zero);
             Drawing.Draw(SecondRenderTarget, Vector2.Zero, Color.White);
