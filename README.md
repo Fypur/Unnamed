@@ -1,5 +1,17 @@
 # Unnamed.
-### <u>[The Game's Page](https://fypur.itch.io/unnamed)</u>
+<p align="center">
+<img src="https://github.com/Fypur/Unnamed/blob/main/Content/Graphics/bg/Logo.png?raw=true" height="192px" data-no-zoom/>
+</p>
+
+<p align="center">
+    <a href="https://fypur.itch.io/unnamed"><img src="https://img.shields.io/badge/Itch.io-Unnamed-red" alt="Game Page Link"></a>
+</p>
+
+<p align="center">
+    <a href="https://github.com/fypur/fiourp"><img src="https://img.shields.io/badge/The Engine-Fiourp-blue" alt="Game Page Link"></a>
+    
+</p>
+
 Unnamed is a game about a robot platforming and exploring his way out of an abandonned factory. This is a hostile place, and he might find threats along the way... Use your jetpack and your swinging rope in order to navigate through levels and reach safety!
 
 This game is a passion project and has been made in about 2 years !
