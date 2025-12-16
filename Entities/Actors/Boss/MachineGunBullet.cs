@@ -7,7 +7,7 @@ namespace Unnamed
     {
         private float rotation;
         private float speed = 170f;
-        public MachineGunBullet(Vector2 position, float rotation) : base(position, 10, 1, 0, new Sprite(Color.Yellow))
+        public MachineGunBullet(Vector2 position, float rotation) : base(position, 10, 1, new Sprite(Color.Yellow))
         {
             this.rotation = rotation;
             Sprite.Rotation = MathHelper.ToRadians(rotation);

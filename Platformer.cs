@@ -376,6 +376,7 @@ namespace Unnamed
 
             Drawing.Draw(BgRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One * FinalRenderTarget.Width / BackgroundTile.Width, SpriteEffects.None, 0);
             Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, new Vector2(FinalRenderTarget.Width, FinalRenderTarget.Height) / Engine.Cam.Size, SpriteEffects.None, 0);
+            Drawing.Draw(Engine.PrimitivesRenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, new Vector2(FinalRenderTarget.Width, FinalRenderTarget.Height) / Engine.Cam.Size, SpriteEffects.None, 0);
             
             Drawing.End();
 

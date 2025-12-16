@@ -13,8 +13,9 @@ namespace Unnamed
         public float MaxSwingDistance { get => 110; set { } }
 
         private bool swinged;
+        private float gravityScale;
 
-        public Boss2(Vector2 position) : base(position, 32, 16, 0, new Sprite(Color.Red))
+        public Boss2(Vector2 position) : base(position, 32, 16, new Sprite(Color.Red))
         {
             SwingingPoint.SwingingPoints.Add(this);
         }
@@ -45,7 +46,7 @@ namespace Unnamed
             else
                 gravityScale = 0f;
 
-            Gravity();
+            Velocity.Y += 9.81f * gravityScale;
 
 
             Move(Velocity * Engine.Deltatime, null, null);

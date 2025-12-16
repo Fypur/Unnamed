@@ -63,7 +63,7 @@ namespace Unnamed
             }
         }
 
-        public Boss3(Vector2 position) : base(position, 24, 16, 0, new Sprite(Color.White))
+        public Boss3(Vector2 position) : base(position, 24, 16, new Sprite(Color.White))
         {
             player = Engine.Player as Player;
 

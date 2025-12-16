@@ -28,13 +28,14 @@ namespace Unnamed
         private Player player;
         private bool onGround;
         private int counter;
+        private float gravityScale = constGravityScale;
 
         private IdentifierTrigger[] zones;
         private bool DownZone => zones[0].PlayerIn;
         private bool LeftZone => zones[1].PlayerIn;
         private bool RightZone => zones[2].PlayerIn;
 
-        public Boss(Vector2 position) : base(position, 32, 32, constGravityScale, new Sprite(Color.Red))
+        public Boss(Vector2 position) : base(position, 32, 32, new Sprite(Color.Red))
         {
             player = (Player)Engine.Player;
 
@@ -70,7 +71,7 @@ namespace Unnamed
             onGround = Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), Pos + new Vector2(0, 1));
 
             if (!onGround)
-                Gravity();
+                Velocity.Y += 9.81f * gravityScale;
             else if (Velocity.Y > 0)
                 Velocity.Y = 0;
 

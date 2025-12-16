@@ -14,6 +14,7 @@ namespace Unnamed
         public Vector2[] RailPositions;
         private Entity grappledEntity;
         private Func<bool> isAtSwingEnd;
+        private float gravityScale;
 
         //Indicates the index of positions[] where the platform is inbetween
         private int currentPosIndex;
@@ -26,7 +27,7 @@ namespace Unnamed
             currentPosIndex = initialIndexPosition;
             SwingingPoint.SwingingPoints.Add(this);
             MaxSwingDistance = maxSwingDistance;
-            GravityScale = 1;
+            gravityScale = 1;
 
             AddComponent(new LineRenderer(RailPositions.ToList(), Drawing.PointTexture, 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
@@ -37,7 +38,7 @@ namespace Unnamed
             currentPosIndex = initialIndex;
             SwingingPoint.SwingingPoints.Add(this);
             MaxSwingDistance = maxSwingDistance;
-            GravityScale = 1;
+            gravityScale = 1;
 
             AddComponent(new LineRenderer(RailPositions.ToList(), Drawing.PointTexture, 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
@@ -52,7 +53,7 @@ namespace Unnamed
             if (MiddleExactPos == RailPositions[0] || MiddleExactPos == RailPositions[RailPositions.Length - 1])
                 Velocity = Vector2.Zero;
 
-            Gravity();
+            Velocity.Y += 9.81f * gravityScale;
 
             if (grappledEntity == null || grappledEntity.Collider.CollideAt(this, grappledEntity.ExactPos + new Vector2(0, 1)))
             { }

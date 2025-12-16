@@ -20,7 +20,7 @@ namespace Unnamed
 
         private bool canHitBoss;
 
-        public HomingMissile(Vector2 position, float rotation) : base(position, 10, 5, 0, new Sprite(DataManager.Objects["boss/missile"]))
+        public HomingMissile(Vector2 position, float rotation) : base(position, 10, 5, new Sprite(DataManager.Objects["boss/missile"]))
         {
             Rotation = rotation;
 

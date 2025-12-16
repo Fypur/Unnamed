@@ -11,7 +11,7 @@ namespace Unnamed
         private Player player;
         private TrailRenderer trail;
 
-        public ChaseMissile(Vector2[] controlPoints, float time) : base(controlPoints[0], 10, 5, 0, new Sprite(DataManager.Objects["boss/missile"]))
+        public ChaseMissile(Vector2[] controlPoints, float time) : base(controlPoints[0], 10, 5, new Sprite(DataManager.Objects["boss/missile"]))
         {
             player = (Player)Engine.Player;
 

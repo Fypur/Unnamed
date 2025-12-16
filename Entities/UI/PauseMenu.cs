@@ -13,7 +13,7 @@ namespace Unnamed
     {
         public PauseMenu()
             : base (Vector2.Zero, 1280, 720, Sprite.None)
-        { Collider.DebugDraw = false; }
+        { }
 
         public override void Render()
         {

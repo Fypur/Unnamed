@@ -17,7 +17,7 @@ namespace Unnamed
 
         private Guid iid;
 
-        public ChaseBoss(Vector2[] positions, int id, Guid iid) : base(positions[0] + new Vector2(-4), 24, 16, 0, new Sprite(Color.White))
+        public ChaseBoss(Vector2[] positions, int id, Guid iid) : base(positions[0] + new Vector2(-4), 24, 16, new Sprite(Color.White))
         {
             Positions = positions.Addition(new Vector2(-4));
 

@@ -23,7 +23,7 @@ namespace Unnamed
         private static ParticleType greenJetpack = Particles.Jetpack.Copy();
         private static ParticleType greenDust = Particles.Dust.Copy();
 
-        public Ghost(string filePath) : base(Vector2.Zero, 8, 13, 0, new Sprite(Color.Green))
+        public Ghost(string filePath) : base(Vector2.Zero, 8, 13, new Sprite(Color.Green))
         {
             int lineCount = File.ReadLines(filePath).Count();
 

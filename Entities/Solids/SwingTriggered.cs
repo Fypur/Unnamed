@@ -18,7 +18,8 @@ namespace Unnamed
 
         public Vector2[] Positions;
         public bool Attached = true;
-        
+
+        public float GravityScale;
         private int currentPosIndex;
         private bool movingForwards = true;
         private Vector2 normalizedDir;
@@ -118,7 +119,7 @@ namespace Unnamed
                 }
             }
 
-            Velocity += gravityVector * GravityScale;
+            Velocity.Y += 9.81f * GravityScale;
 
             Move(Velocity * Engine.Deltatime);
         }

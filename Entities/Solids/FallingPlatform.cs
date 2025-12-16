@@ -17,7 +17,7 @@ namespace Unnamed
         private const float respawnTime = 3f;
         private static readonly ParticleType Dust = Particles.Dust.Copy();
 
-
+        private float gravityScale = 0;
         public bool Respawning;
         private Wipe wipe;
         public bool HasFallen;
@@ -49,14 +49,19 @@ namespace Unnamed
             AddComponent(new Shaker(shakeTime, 1.2f, null, true));
             AddComponent(new Timer(shakeTime, true, null, () =>
             {
-                GravityScale = constGravityScale;
+                gravityScale = constGravityScale;
 
                 if (Respawning)
                 {
                     AddComponent(new Timer(respawnTime, true, null, () => {
                         wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
                         {
-                            Pos = initPos; Velocity = Vector2.Zero; GravityScale = 0; previousOnGround = false; HasFallenOnGround = false; HasFallen = false;
+                            Pos = initPos;
+                            Velocity = Vector2.Zero;
+                            gravityScale = 0;
+                            previousOnGround = false;
+                            HasFallenOnGround = false;
+                            HasFallen = false;
                             trig.Trigger.Active = true;
                         });
                         Engine.CurrentMap.Instantiate(wipe);
@@ -88,7 +93,7 @@ namespace Unnamed
         public override void Update()
         {
             if(!Collider.CollideAt(Pos + new Vector2(0, 1)))
-                Gravity();
+                Velocity.Y += 9.81f * gravityScale;
 
             Action onCollision;
             if (!HasFallenOnGround)

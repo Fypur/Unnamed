@@ -19,6 +19,9 @@ namespace Unnamed
             Vector2 size = new Vector2(8, 8);
             Layer = 2;
 
+            Collider = new BoxCollider(Vector2.Zero, width, height);
+            AddComponent(Collider);
+
             if (!CroppedTextures.ContainsKey(textureId))
             {
                 CroppedTextures[textureId] = new Dictionary<string, Texture2D>

@@ -99,6 +99,7 @@ namespace Unnamed
         private bool canUnstick;
         private bool inCoyoteTime;
         private float potentialFallingSpeed;
+        private float gravityScale = constGravityScale;
         //private bool inSwingGraceTime;
         private bool heldSwing;
 
@@ -126,7 +127,7 @@ namespace Unnamed
 
         #endregion
 
-        public Player(Vector2 position) : base(position, 8, 13, constGravityScale, new Sprite(Color.White))
+        public Player(Vector2 position) : base(position, 8, 13, new Sprite(Color.White))
         {
             Engine.Player = this;
 
@@ -432,7 +433,7 @@ namespace Unnamed
                         Velocity.Y = 0;
                 }
                 else
-                    Gravity();
+                    Velocity.Y += 9.81f * gravityScale;
 
                 if(stateMachine.Is(States.WallSliding))
                     Velocity.Y = Math.Min(Velocity.Y, maxFallSlidingSpeed);
@@ -467,7 +468,7 @@ namespace Unnamed
 
                 if (Velocity.Y >= maxFallingSpeed)
                 {
-                    potentialFallingSpeed += gravityVector.Y * gravityScale;
+                    potentialFallingSpeed += 9.81f * gravityScale;
                     potentialFallingSpeed = Math.Min(potentialFallingSpeed, maxPotentialFallingSpeed);
                 }
                 else
@@ -862,7 +863,7 @@ namespace Unnamed
 
                 if (lift < 0)
                 {
-                    lift += gravityVector.Y * gravityScale;
+                    lift += 9.81f * gravityScale;
                     if (lift > 0)
                         lift = 0;
                 }
