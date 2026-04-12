@@ -32,10 +32,10 @@ namespace Unnamed
 
         public JetpackPickUp(Vector2 position, Guid iid, int id) : base(position, 1, 1, new Sprite(Color.White))
         {
-            Collider = new BoxCollider(Vector2.Zero, Width, Height);
+            Collider = new AABBCollider(Vector2.Zero, Width, Height);
             AddComponent(Collider);
             AddComponent(new CircleLight(Vector2.Zero, 4, new Color(Color.White, 100), new Color(Color.White, 0)));
-            trig = (PlayerTriggerComponent)AddComponent(new PlayerTriggerComponent(-Vector2.One * 3, Collider));
+            trig = (PlayerTriggerComponent)AddComponent(new PlayerTriggerComponent(-Vector2.One * 3, (AABBCollider)Collider));
 
             this.iid = iid;
             this.id = id;

@@ -880,7 +880,7 @@ namespace Unnamed
             //Texture2D RandomTile(string id) => DataManager.GetRandomTilesetTexture(DataManager.Tilesets[1], id, levelRandom);
         }
 
-        public static int[,] GetWorldGrid(LDtkWorld world, int worldDepth, out Vector2 position)
+        public static bool[,] GetWorldGrid(LDtkWorld world, int worldDepth, out Vector2 position)
         {
             int minx = int.MaxValue;
             int maxx = int.MinValue;
@@ -903,7 +903,7 @@ namespace Unnamed
                     maxy = level.WorldY + level.PxHei;
             }
 
-            int[,] grid = new int[(maxy - miny) / gridSize, (maxx - minx) / gridSize];
+            bool[,] grid = new bool[(maxy - miny) / gridSize, (maxx - minx) / gridSize];
             foreach(LDtkLevel level in world.Levels)
             {
                 if (level.WorldDepth != worldDepth)
@@ -914,7 +914,7 @@ namespace Unnamed
                     for(int y = 0; y < level.PxHei / gridSize; y++)
                     {
                         if(intg[y, x] != 0)
-                            grid[(level.WorldY - miny) / gridSize + y, (level.WorldX - minx) / gridSize + x] = 1;
+                            grid[(level.WorldY - miny) / gridSize + y, (level.WorldX - minx) / gridSize + x] = true;
                     }
             }
 
@@ -922,7 +922,7 @@ namespace Unnamed
             return grid;
         }
 
-        public static Sprite[,] GetWorldTileSprites(LDtkWorld world, int worldDepth, Vector2 gridPos, int[,] worldOrganisation)
+        public static Sprite[,] GetWorldTileSprites(LDtkWorld world, int worldDepth, Vector2 gridPos, bool[,] worldOrganisation)
         {
             Sprite[,] sprites = new Sprite[worldOrganisation.GetLength(0), worldOrganisation.GetLength(1)];
             foreach(LDtkLevel level in world.Levels)
@@ -1042,7 +1042,7 @@ namespace Unnamed
 
         public static void LoadWorldGrid(LDtkWorld world, int worldDepth)
         {
-            int[,] grid = GetWorldGrid(world, worldDepth, out Vector2 gridPos);
+            bool[,] grid = GetWorldGrid(world, worldDepth, out Vector2 gridPos);
             Sprite[,] sp = GetWorldTileSprites(world, worldDepth, gridPos, grid);
             int gridSize = world.Levels.First().GetIntGrid("IntGrid").TileSize;
             Engine.CurrentMap.Instantiate(new Grid(gridPos, gridSize, gridSize, grid, sp));

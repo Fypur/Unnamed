@@ -366,7 +366,6 @@ namespace Unnamed
             /*if (normalMouvement && !stateMachine.Is(States.Swinging) && !Jetpacking)
                 Velocity.X = Math.Clamp(Velocity.X, -maxSpeed, maxSpeed);*/
 
-            //System.IO.File.AppendAllText("C:\\Users\\zddng\\Documents\\Monogame\\Platformer\\recorded.csv", $"{Pos.X},{Pos.Y},{Sprite.Rotation},{Sprite.CurrentAnimationFrame.Name},{Jetpacking}\n");
 
             if (Velocity.X <= 1 && Velocity.X >= -1)
                 Velocity.X = 0;
@@ -503,13 +502,18 @@ namespace Unnamed
 
             if (!onGround)
             {
-                foreach(JumpThru jumpThru in Engine.CurrentMap.Data.GetEntities<JumpThru>())
+                AABBCollider collider = (AABBCollider)Collider;
+                float top = collider.WorldPos.Y;
+                float bottom = collider.WorldPos.Y + collider.Height;
+
+                foreach (JumpThru jumpThru in Engine.CurrentMap.Data.GetEntities<JumpThru>())
                 {
-                    if (jumpThru.Collider.Collide((BoxCollider)Collider) && Collider.AbsoluteBottom - jumpThru.Collider.AbsoluteTop < 3 && jumpThru.Collider.AbsoluteTop != Collider.AbsoluteBottom - 1 && Collider.AbsoluteBottom - jumpThru.Collider.AbsoluteTop >= 0 && PrevVelocity.Y < 0 && Velocity.Y >= 0)
+                    float jumpThruTop = jumpThru.Collider.WorldPos.Y;
+                    if (jumpThru.Collider.Collide(collider) && bottom - jumpThruTop < 3 && jumpThruTop != bottom - 1 && bottom - jumpThruTop >= 0 && PrevVelocity.Y < 0 && Velocity.Y >= 0)
                     {
                         //Pos.Y = jumpThru.Collider.AbsoluteTop - 1 - Height;
 
-                        MoveY(jumpThru.Collider.AbsoluteTop - 1 - Collider.AbsoluteBottom);
+                        MoveY(jumpThruTop - 1 - bottom);
                         Velocity.Y = 0;
                         break;
                     }
@@ -1251,8 +1255,8 @@ namespace Unnamed
 
         private void CollisionY(Entity collided)
         {
-            if (collided is JumpThru)
-                Pos.Y = collided.Collider.AbsoluteTop - Height;
+            if (collided is JumpThru jumpThru)
+                Pos.Y = jumpThru.Collider.WorldPos.Y - Height;
 
             if (collided is GlassWall gl && gl.Break(this, Velocity, false))
             {
@@ -1278,7 +1282,7 @@ namespace Unnamed
                 else
                     offset = -offset;
 
-                if(offset != 0 && !grid.Collider.Collide(Pos - Vector2.UnitY + new Vector2(offset, 0)))
+                if(offset != 0 && !grid.Collider.Contains(Pos - Vector2.UnitY + new Vector2(offset, 0)))
                 {
                     Pos.X += offset;
                     MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - PreviousExactPos.Y), new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);

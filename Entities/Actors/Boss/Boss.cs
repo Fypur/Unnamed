@@ -178,7 +178,7 @@ namespace Unnamed
 
             AddComponent(new Timer(2f, true, null, () =>
             {
-                if (zones[1].Collider.Collide((BoxCollider)Collider) || zones[2].Collider.Collide((BoxCollider)Collider))
+                if (zones[1].Collider.Collide((AABBCollider)Collider) || zones[2].Collider.Collide((AABBCollider)Collider))
                     StateMachine.Switch(States.JumpDown);
                 else
                     StateMachine.Switch(States.Walking);
@@ -192,7 +192,7 @@ namespace Unnamed
         {
             Vector2 aimed;
             Rectangle rect;
-            if (zones[1].Collider.Collide((BoxCollider)Collider)) //left
+            if (zones[1].Collider.Collide((AABBCollider)Collider)) //left
             {
                 rect = new Rectangle((int)Pos.X, (int)Pos.Y, 3, Height);
                 aimed = new Vector2(zones[3].Pos.X - Rand.NextDouble() * 64, zones[0].Pos.Y + zones[0].Height - Height);

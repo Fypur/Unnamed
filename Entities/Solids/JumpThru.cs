@@ -19,7 +19,7 @@ namespace Unnamed
             Vector2 size = new Vector2(8, 8);
             Layer = 2;
 
-            Collider = new BoxCollider(Vector2.Zero, width, height);
+            Collider = new AABBCollider(Vector2.Zero, width, height);
             AddComponent(Collider);
 
             if (!CroppedTextures.ContainsKey(textureId))
@@ -45,8 +45,8 @@ namespace Unnamed
             if(Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Grid), out List<Entity> grids))
                 foreach(Grid grid in grids)
                 {
-                    if (grid.Collider.Collide(Pos - Vector2.UnitX)) onWallLeft = true;
-                    if (grid.Collider.Collide(Pos + new Vector2(Width, 0) + Vector2.UnitX)) onWallRight = true;
+                    if (grid.Collider.Contains(Pos - Vector2.UnitX)) onWallLeft = true;
+                    if (grid.Collider.Contains(Pos + new Vector2(Width, 0) + Vector2.UnitX)) onWallRight = true;
                 }
 
             Sprite.NineSliceSettings = new NineSliceRandom((int)(Pos.X + Pos.Y))
@@ -62,7 +62,7 @@ namespace Unnamed
 
         public override bool CollidingConditions(Collider other)
         {
-            if (other.ParentEntity is JumpThru && other.AbsoluteTop != Collider.AbsoluteBottom - 1)
+            if (other.ParentEntity is JumpThru && other.Bounds.Y != Collider.WorldPos.Y + ((AABBCollider)Collider).Height - 1)
                 return false;
 
             /*Debug.PointUpdate(new Vector2(Collider.AbsolutePosition.X, Collider.AbsoluteTop), new Vector2(other.AbsolutePosition.X, other.AbsoluteBottom));
@@ -78,7 +78,7 @@ namespace Unnamed
             if (other.ParentEntity is MovingSolid solid && solid.Velocity.Y < 0)
                 return false;
 
-            if (Collider.AbsoluteTop != other.AbsoluteBottom - 1)
+            if (Collider.WorldPos.Y != other.Bounds.Bottom - 1)
                 return false;
 
             

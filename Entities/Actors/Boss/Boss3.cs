@@ -29,7 +29,7 @@ namespace Unnamed
         private Player player;
         private bool clockWise;
 
-        private BoxColliderRotated rotColl;
+        private BoxCollider rotColl;
         private Vector2 jumpPos0;
         private Vector2 jumpPos1;
         private Vector2 jumpPos2;
@@ -68,7 +68,7 @@ namespace Unnamed
             player = Engine.Player as Player;
 
             RemoveComponent(Collider);
-            rotColl = new BoxColliderRotated(Vector2.Zero, Width, Height, 0, HalfSize);
+            rotColl = new BoxCollider(Vector2.Zero, Width, Height, 0, HalfSize);
             Collider = rotColl;
             AddComponent(Collider);
 
@@ -248,8 +248,8 @@ namespace Unnamed
 
         private void EmitLandingParticules()
         {
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, rotColl.Rect[2], rotColl.Rect[3], 30, rotation);
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, rotColl.Rect[2], rotColl.Rect[3], 30, rotation + 180);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, rotColl.Coords[2], rotColl.Coords[3], 30, rotation);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, rotColl.Coords[2], rotColl.Coords[3], 30, rotation + 180);
         }
 
         private void SwitchRot(int rotId, float time)
@@ -414,7 +414,7 @@ namespace Unnamed
                 Engine.CurrentMap.MiddlegroundSystem.Emit(fastFire, l.Positions[0], l.Positions[1], 1, n2);
 
 
-                if (Collision.LineBoxCollision((BoxCollider)player.Collider, l.Positions[0], l.Positions[1]))
+                if (Collision.LineBoxCollision((AABBCollider)player.Collider, l.Positions[0], l.Positions[1]))
                     player.Damage();
 
                 Engine.Cam.LightShake();
@@ -674,7 +674,7 @@ namespace Unnamed
             cannon.Rotation = finalRot;
 
 
-            cannonPart1.Offset = rotColl.Rect[0] - Pos + VectorHelper.Rotate(new Vector2(6, 4), rotation);
+            cannonPart1.Offset = rotColl.Coords[0] - Pos + VectorHelper.Rotate(new Vector2(6, 4), rotation);
             cannonPart2.Offset = cannonPart1.Offset + VectorHelper.Rotate(new Vector2(CannonLength, 0), cannonPart1.Rotation);
             cannon.Offset = cannonPart2.Offset + VectorHelper.Rotate(new Vector2(CannonLength, 0), cannonPart2.Rotation);
 
@@ -864,7 +864,7 @@ namespace Unnamed
                 Engine.CurrentMap.MiddlegroundSystem.Emit(fastFire, l.Positions[0], l.Positions[1], 1, n2);
 
 
-                if (Collision.LineBoxCollision((BoxCollider)player.Collider, l.Positions[0], l.Positions[1]))
+                if (Collision.LineBoxCollision((AABBCollider)player.Collider, l.Positions[0], l.Positions[1]))
                     player.Damage();
 
                 Engine.Cam.LightShake();

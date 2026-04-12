@@ -169,8 +169,10 @@ namespace Unnamed
             if(Input.GetKeyDown(Keys.B))
                 Debug.Clear();
 
-            if (Input.GetKeyDown(Keys.V) && player != null)
+            if (Input.GetKeyDown(Keys.V))
                 player.ExactPos = Input.MousePos;
+
+            //player.ExactPos = fixedpos;
 
             if (Input.GetKeyDown(Keys.R))
                 Levels.ReloadLastLevelFetched();

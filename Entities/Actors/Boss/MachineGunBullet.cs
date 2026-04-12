@@ -14,7 +14,7 @@ namespace Unnamed
             Sprite.Origin = Vector2.One / 2;
 
             RemoveComponent(Collider);
-            Collider = new BoxColliderRotated(-HalfSize, Width, Height, rotation, Vector2.Zero);
+            Collider = new BoxCollider(-HalfSize, Width, Height, rotation, Vector2.Zero);
             AddComponent(Collider);
 
             Velocity = VectorHelper.AngleToVector(rotation) * speed;

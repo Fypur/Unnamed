@@ -20,7 +20,7 @@ namespace Unnamed
             : base(localPosition, radius, new List<Type> { typeof(Player) })
         { }
 
-        public PlayerTriggerComponent(Vector2 localPosition, Collider collider)
+        public PlayerTriggerComponent(Vector2 localPosition, AABBCollider collider)
             : base(localPosition, collider, new List<Type> { typeof(Player) })
         { }
 

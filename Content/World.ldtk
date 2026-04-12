@@ -36021,7 +36021,7 @@
 								"fieldInstances": [
 									{ "__identifier": "Text", "__type": "String", "__value": "You Just a got a jetpack!\nHold X or Square and the 4 \narrow keys to use it", "__tile": null, "defUid": 72, "realEditorValues": [{
 										"id": "V_String",
-										"params": ["You Just a got a jetpack!\\nHold X or Square and the 4 \\narrow keys to use it"]
+										"params": ["You Just a got a jetpack!\nHold X or Square and the 4 \narrow keys to use it"]
 									}] },
 									{ "__identifier": "TextPos", "__type": "Point", "__value": { "cx": 25, "cy": 5 }, "__tile": null, "defUid": 73, "realEditorValues": [{
 										"id": "V_String",
@@ -223597,8 +223597,8 @@
 				"identifier": "Lvl80",
 				"iid": "0f029a30-fec0-11ee-b6d1-2b89cc227425",
 				"uid": 1517,
-				"worldX": 0,
-				"worldY": 0,
+				"worldX": 112,
+				"worldY": 328,
 				"worldDepth": 0,
 				"pxWid": 832,
 				"pxHei": 872,
@@ -223651,8 +223651,8 @@
 								"defUid": 69,
 								"px": [384,112],
 								"fieldInstances": [],
-								"__worldX": 384,
-								"__worldY": 112
+								"__worldX": 496,
+								"__worldY": 440
 							},
 							{
 								"__identifier": "GrapplingPoint",
@@ -223672,8 +223672,8 @@
 									{ "__identifier": "TimeBetweenPositions", "__type": "Array<Float>", "__value": [], "__tile": null, "defUid": 10, "realEditorValues": [] },
 									{ "__identifier": "GoingForwards", "__type": "Bool", "__value": true, "__tile": null, "defUid": 192, "realEditorValues": [] }
 								],
-								"__worldX": 480,
-								"__worldY": 280
+								"__worldX": 592,
+								"__worldY": 608
 							},
 							{
 								"__identifier": "GrapplingPoint",
@@ -223693,8 +223693,8 @@
 									{ "__identifier": "TimeBetweenPositions", "__type": "Array<Float>", "__value": [], "__tile": null, "defUid": 10, "realEditorValues": [] },
 									{ "__identifier": "GoingForwards", "__type": "Bool", "__value": true, "__tile": null, "defUid": 192, "realEditorValues": [] }
 								],
-								"__worldX": 216,
-								"__worldY": 352
+								"__worldX": 328,
+								"__worldY": 680
 							},
 							{
 								"__identifier": "GrapplingPoint",
@@ -223714,8 +223714,8 @@
 									{ "__identifier": "TimeBetweenPositions", "__type": "Array<Float>", "__value": [], "__tile": null, "defUid": 10, "realEditorValues": [] },
 									{ "__identifier": "GoingForwards", "__type": "Bool", "__value": true, "__tile": null, "defUid": 192, "realEditorValues": [] }
 								],
-								"__worldX": 264,
-								"__worldY": 24
+								"__worldX": 376,
+								"__worldY": 352
 							},
 							{
 								"__identifier": "GrapplingPoint",
@@ -223735,8 +223735,8 @@
 									{ "__identifier": "TimeBetweenPositions", "__type": "Array<Float>", "__value": [], "__tile": null, "defUid": 10, "realEditorValues": [] },
 									{ "__identifier": "GoingForwards", "__type": "Bool", "__value": true, "__tile": null, "defUid": 192, "realEditorValues": [] }
 								],
-								"__worldX": 288,
-								"__worldY": 536
+								"__worldX": 400,
+								"__worldY": 864
 							},
 							{
 								"__identifier": "CamZoom",
@@ -223754,8 +223754,8 @@
 									{ "__identifier": "TargetCamWidth", "__type": "Int", "__value": 80, "__tile": null, "defUid": 1519, "realEditorValues": [{ "id": "V_Int", "params": [80] }] },
 									{ "__identifier": "ZoomTime", "__type": "Float", "__value": 0.7, "__tile": null, "defUid": 1520, "realEditorValues": [{ "id": "V_Float", "params": [0.7] }] }
 								],
-								"__worldX": 56,
-								"__worldY": 96
+								"__worldX": 168,
+								"__worldY": 424
 							},
 							{
 								"__identifier": "CamZoom",
@@ -223773,8 +223773,8 @@
 									{ "__identifier": "TargetCamWidth", "__type": "Int", "__value": 80, "__tile": null, "defUid": 1519, "realEditorValues": [{ "id": "V_Int", "params": [80] }] },
 									{ "__identifier": "ZoomTime", "__type": "Float", "__value": 0.7, "__tile": null, "defUid": 1520, "realEditorValues": [{ "id": "V_Float", "params": [0.7] }] }
 								],
-								"__worldX": 480,
-								"__worldY": 72
+								"__worldX": 592,
+								"__worldY": 400
 							},
 							{
 								"__identifier": "CamZoom",
@@ -223792,8 +223792,8 @@
 									{ "__identifier": "TargetCamWidth", "__type": "Int", "__value": 80, "__tile": null, "defUid": 1519, "realEditorValues": [{ "id": "V_Int", "params": [80] }] },
 									{ "__identifier": "ZoomTime", "__type": "Float", "__value": 0.7, "__tile": null, "defUid": 1520, "realEditorValues": [{ "id": "V_Float", "params": [0.7] }] }
 								],
-								"__worldX": 496,
-								"__worldY": 224
+								"__worldX": 608,
+								"__worldY": 552
 							}
 						]
 					},
@@ -223842,8 +223842,8 @@
 									{ "__identifier": "CollideWithWalls", "__type": "Bool", "__value": false, "__tile": null, "defUid": 1380, "realEditorValues": [] },
 									{ "__identifier": "BlinkTime", "__type": "Float", "__value": null, "__tile": null, "defUid": 1381, "realEditorValues": [] }
 								],
-								"__worldX": 360,
-								"__worldY": 240
+								"__worldX": 472,
+								"__worldY": 568
 							}
 						]
 					},
@@ -228306,8 +228306,8 @@
 				"identifier": "Lvl82",
 				"iid": "711b7be0-8560-11f0-a38d-a3a6034dade5",
 				"uid": 1522,
-				"worldX": 1784,
-				"worldY": 200,
+				"worldX": 0,
+				"worldY": 0,
 				"worldDepth": 0,
 				"pxWid": 1064,
 				"pxHei": 184,
@@ -228373,8 +228373,8 @@
 									}] },
 									{ "__identifier": "Positions", "__type": "Array<Point>", "__value": [], "__tile": null, "defUid": 1416, "realEditorValues": [] }
 								],
-								"__worldX": 2208,
-								"__worldY": 240
+								"__worldX": 424,
+								"__worldY": 40
 							},
 							{
 								"__identifier": "ChaseMissile",
@@ -228401,8 +228401,8 @@
 									} ] },
 									{ "__identifier": "Time", "__type": "Float", "__value": 0.75, "__tile": null, "defUid": 1405, "realEditorValues": [{ "id": "V_Float", "params": [0.75] }] }
 								],
-								"__worldX": 2400,
-								"__worldY": 208
+								"__worldX": 616,
+								"__worldY": 8
 							},
 							{
 								"__identifier": "SpecialTrigger",
@@ -228430,8 +228430,8 @@
 									}] },
 									{ "__identifier": "Positions", "__type": "Array<Point>", "__value": [], "__tile": null, "defUid": 1416, "realEditorValues": [] }
 								],
-								"__worldX": 2288,
-								"__worldY": 272
+								"__worldX": 504,
+								"__worldY": 72
 							},
 							{
 								"__identifier": "ChaseMissile",
@@ -228458,8 +228458,8 @@
 									} ] },
 									{ "__identifier": "Time", "__type": "Float", "__value": 0.75, "__tile": null, "defUid": 1405, "realEditorValues": [{ "id": "V_Float", "params": [0.75] }] }
 								],
-								"__worldX": 2472,
-								"__worldY": 288
+								"__worldX": 688,
+								"__worldY": 88
 							},
 							{
 								"__identifier": "GrapplingPoint",
@@ -228479,8 +228479,8 @@
 									{ "__identifier": "TimeBetweenPositions", "__type": "Array<Float>", "__value": [], "__tile": null, "defUid": 10, "realEditorValues": [] },
 									{ "__identifier": "GoingForwards", "__type": "Bool", "__value": true, "__tile": null, "defUid": 192, "realEditorValues": [] }
 								],
-								"__worldX": 2520,
-								"__worldY": 224
+								"__worldX": 736,
+								"__worldY": 24
 							},
 							{
 								"__identifier": "RespawnArea",
@@ -228498,8 +228498,8 @@
 									"id": "V_String",
 									"params": ["6,13"]
 								}] }],
-								"__worldX": 1800,
-								"__worldY": 288
+								"__worldX": 16,
+								"__worldY": 88
 							},
 							{
 								"__identifier": "JumpThru",
@@ -228514,8 +228514,8 @@
 								"defUid": 90,
 								"px": [592,104],
 								"fieldInstances": [],
-								"__worldX": 2376,
-								"__worldY": 304
+								"__worldX": 592,
+								"__worldY": 104
 							},
 							{
 								"__identifier": "GrapplingPoint",
@@ -228535,8 +228535,8 @@
 									{ "__identifier": "TimeBetweenPositions", "__type": "Array<Float>", "__value": [], "__tile": null, "defUid": 10, "realEditorValues": [] },
 									{ "__identifier": "GoingForwards", "__type": "Bool", "__value": true, "__tile": null, "defUid": 192, "realEditorValues": [] }
 								],
-								"__worldX": 2720,
-								"__worldY": 240
+								"__worldX": 936,
+								"__worldY": 40
 							}
 						]
 					},
@@ -228583,8 +228583,8 @@
 									"id": "V_String",
 									"params": ["120,3"]
 								} ] }],
-								"__worldX": 2632,
-								"__worldY": 224
+								"__worldX": 848,
+								"__worldY": 24
 							},
 							{
 								"__identifier": "HangingWire",
@@ -228605,8 +228605,8 @@
 									"id": "V_String",
 									"params": ["123,4"]
 								} ] }],
-								"__worldX": 2808,
-								"__worldY": 216
+								"__worldX": 1024,
+								"__worldY": 16
 							}
 						]
 					},

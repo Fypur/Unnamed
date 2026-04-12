@@ -25,7 +25,7 @@ namespace Unnamed
             Rotation = rotation;
 
             RemoveComponent(Collider);
-            Collider = new BoxColliderRotated(-HalfSize, Width, Height, rotation, Vector2.Zero);
+            Collider = new BoxCollider(-HalfSize, Width, Height, rotation, Vector2.Zero);
             AddComponent(Collider);
 
             Sprite.Origin = HalfSize; //To change when texture gets bigger
@@ -58,7 +58,7 @@ namespace Unnamed
                 Rotation = VectorHelper.ToAngleRad(rotVec);
             }
 
-            BoxColliderRotated colliderRotated = (BoxColliderRotated)Collider;
+            BoxCollider colliderRotated = (BoxCollider)Collider;
             colliderRotated.Rotation = Rotation;
             Sprite.Rotation = Rotation;
 
@@ -73,7 +73,7 @@ namespace Unnamed
 
             Move(Velocity * Engine.Deltatime, SelfDestroy, SelfDestroy);
 
-            trail.LocalPosition = (colliderRotated.Rect[3] + colliderRotated.Rect[0]) / 2;
+            trail.LocalPosition = (colliderRotated.Coords[3] + colliderRotated.Coords[0]) / 2;
             trail.LocalPosition += (MiddlePos - trail.LocalPosition) / 3 - Pos;
 
             if (Collider.Collide(player.Collider))
