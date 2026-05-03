@@ -184,7 +184,7 @@ namespace Unnamed
                         if (initRot > (float)Math.PI / 2)
                         {
                             float val = 0.5f;
-                            AddComponent(new Timer(val + 0.2f, true, (timer) =>
+                            AddComponent(new Timer(val + 0.2f, (timer) =>
                             {
                                 Sprite.PixelShader = DataManager.PixelShaders["WhiteBar"];
                                 if (timer.Value <= val)
@@ -197,7 +197,7 @@ namespace Unnamed
                             }));
                         }
 
-                        AddComponent(new Timer(0.25f, true, (timer) =>
+                        AddComponent(new Timer(0.25f, (timer) =>
                         {
                             if (onGround)
                                 timer.TimeScale = 4;
@@ -375,7 +375,7 @@ namespace Unnamed
                 if (previousOnGround && !onGround)
                 {
                     inCoyoteTime = true;
-                    AddComponent(new Timer(coyoteTime, true, null, () => inCoyoteTime = false));
+                    AddComponent(new Timer(coyoteTime, null, () => inCoyoteTime = false));
                 }
 
 
@@ -414,7 +414,7 @@ namespace Unnamed
                     //Take the jump if on the ground, else wait for jump grace period
                     if (!TryJump())
                     {
-                        AddComponent(new Timer(jumpGraceTime, true, (timer) =>
+                        AddComponent(new Timer(jumpGraceTime, (timer) =>
                         {
                             if (TryJump())
                                 RemoveComponent(timer);
@@ -554,7 +554,7 @@ namespace Unnamed
             //If you want to use grace time with KeyDown instead of just Key
             /*if (!CheckForSwingingPoint(out Solid determinedGrappledSolid, out float distance) && !inSwingGraceTime)
             {
-                AddComponent(new Timer(swingGraceTime, true, (timer) =>
+                AddComponent(new Timer(swingGraceTime, (timer) =>
                 {
                     if (!SwingControls.Is())
                         timer.End();
@@ -642,7 +642,7 @@ namespace Unnamed
                     //Vector2 grapplingPos = determinedGrappledSolid.MiddleExactPos;
                     SwingPositions.Add(grapplingPos);
 
-                    Timer t = (Timer)AddComponent(new Timer(0.15f, true));
+                    Timer t = (Timer)AddComponent(new Timer(0.15f));
 
                     LineRenderer l = new LineRenderer(new List<Vector2> { MiddlePos, MiddlePos }, DataManager.Textures["Player/rope"], 2, Color.White,
                             (line) => { if (!stateMachine.Is(States.Swinging)) RemoveComponent(line); },
@@ -687,7 +687,7 @@ namespace Unnamed
                     trigger.Active = false;
                     bool deactivateLine = false;
 
-                    AddComponent(new Timer(0.1f, true,
+                    AddComponent(new Timer(0.1f,
                         (timer) =>
                         {
                             Velocity.Y *= 0.5f;
@@ -845,7 +845,7 @@ namespace Unnamed
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
-            AddComponent(new Timer(maxJumpTime, true, (timer) =>
+            AddComponent(new Timer(maxJumpTime, (timer) =>
             {
                 if (collisionY || hasDashed || cancelJump)
                 {
@@ -908,7 +908,7 @@ namespace Unnamed
             else
                 Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X, (int)Pos.Y, 1, Height), 7);
 
-            AddComponent(new Timer(maxJumpTime + (coef == 1 ? 0 : 0.1f), true, (timer) =>
+            AddComponent(new Timer(maxJumpTime + (coef == 1 ? 0 : 0.1f), (timer) =>
             {
                 if (collisionY || hasDashed || cancelJump)
                 {
@@ -970,7 +970,7 @@ namespace Unnamed
             else if (!isUnsticking && (xMovingRaw == 0 || (xMovingRaw < 0) == onRightWall))
             {
                 isUnsticking = true;
-                AddComponent(new Timer(unstickTime, true, (timer) =>
+                AddComponent(new Timer(unstickTime, (timer) =>
                 {
                     if (!(xMovingRaw == 0 || (xMovingRaw < 0) == onRightWall) || !onWall)
                     {
@@ -1002,7 +1002,7 @@ namespace Unnamed
             int dir = Facing;
             Velocity.X += dashSpeed * dir;
 
-            AddComponent(new Timer(dashTime, true, (timer) =>
+            AddComponent(new Timer(dashTime, (timer) =>
             {
                 if (collisionX)
                     timer.End();
@@ -1111,7 +1111,7 @@ namespace Unnamed
                 HitStop(0.05f, () =>
                 {
                     CanMove = false;
-                    AddComponent(new Timer(0.2f, true, (timer) =>
+                    AddComponent(new Timer(0.2f, (timer) =>
                     {
                         Pos = Vector2.Lerp(startPos, endPos, Ease.QuintOut(Ease.Reverse(timer.Value / timer.MaxValue)));
                         Sprite.Color.A = (byte)((float)Math.Sin(timer.Value * 14) * 255); //Blinking
@@ -1345,7 +1345,7 @@ namespace Unnamed
                 stateMachine.Switch(States.Ascending);
             });
 
-            AddComponent(new Timer(invicibilityTime, true, null, () => invincible = false));
+            AddComponent(new Timer(invicibilityTime, null, () => invincible = false));
         }
 
         public override void Render()
@@ -1377,7 +1377,7 @@ namespace Unnamed
 
         public void LimitJetpackY(float coef, float time, Func<bool> stopLimitting)
         {
-            AddComponent(new Timer(time, true, (timer) =>
+            AddComponent(new Timer(time, (timer) =>
             {
                 if (stopLimitting())
                 { timer.End(); return; }
@@ -1394,7 +1394,7 @@ namespace Unnamed
         public void HitStop(float time, Action OnEnd = null)
         {
             CanMove = false;
-            AddComponent(new Timer(time, true, null, () =>
+            AddComponent(new Timer(time, null, () =>
             {
                 CanMove = true; OnEnd?.Invoke();
             }));

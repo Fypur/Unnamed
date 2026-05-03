@@ -632,11 +632,11 @@ namespace Unnamed
         public static void Freeze(float time)
         {
             freezePaused = true;
-            freezeTimer = new Timer(time, false, null, () =>
+            freezeTimer = new Timer(time, null, () =>
             {
                 freezePaused = false;
                 Input.OldState = freezeState;
-            });
+            }, false);
             freezeState = Input.CurrentState;
         }
 
@@ -661,7 +661,7 @@ namespace Unnamed
             waitRefresh = true;
 
             Tile t = (Tile)Engine.CurrentMap.Instantiate(new Tile(Vector2.Zero, 0, 0, Sprite.None));
-            t.AddComponent(new Timer(2, true, null, () =>
+            t.AddComponent(new Timer(2, null, () =>
             {
                 waitRefresh = false;
 

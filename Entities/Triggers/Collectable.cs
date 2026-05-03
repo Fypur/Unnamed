@@ -49,7 +49,7 @@ namespace Unnamed
             {
                 Engine.CurrentMap.CurrentLevel.DestroyOnUnload(this);
                 Vector2 oldPos = Pos;
-                AddComponent(new Timer(0.5f, true, (timer) =>
+                AddComponent(new Timer(0.5f, (timer) =>
                 {
                     Pos = Vector2.Lerp(oldPos, initPos, Ease.CubeInAndOut(Ease.Reverse(timer.Value / timer.MaxValue)));
                 }, () => Pos = initPos));

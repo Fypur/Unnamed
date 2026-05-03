@@ -10,7 +10,7 @@ namespace Unnamed
         {
             Overlay = true;
 
-            AddComponent(new Timer(fadeOutTime, true, (timer) =>
+            AddComponent(new Timer(fadeOutTime, (timer) =>
             {
                 Sprite.Color *= (byte)(Ease.Reverse(ease(Ease.Reverse(timer.Value / timer.MaxValue))) * 25);
             },

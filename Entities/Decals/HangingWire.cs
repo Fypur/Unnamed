@@ -48,7 +48,7 @@ namespace Unnamed
 
         private void RestartTimer(bool going)
         {
-            timer = (Timer)AddComponent(new Timer(cycleTime / 2, true, (timer) =>
+            timer = (Timer)AddComponent(new Timer(cycleTime / 2, (timer) =>
             {
                 for (int i = 1; i < bezier.ControlPoints.Count - 1; i++)
                 {

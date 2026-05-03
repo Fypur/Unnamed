@@ -28,7 +28,7 @@ namespace Unnamed
 
             float initWidth = Engine.Cam.Width;
 
-            AddComponent(new Timer(ZoomTime, true,
+            AddComponent(new Timer(ZoomTime,
                 (timer) => Zoom((int)MathHelper.Lerp(initWidth, TargetCamWidth, Ease.CubeInAndOut(Ease.Reverse(timer.Value / timer.MaxValue)))),
                 () => Zoom(TargetCamWidth)));
         }
@@ -42,7 +42,7 @@ namespace Unnamed
             int initWidth = Engine.Cam.Width;
             int targWidth = 480;
 
-            AddComponent(new Timer(ZoomTime, true,
+            AddComponent(new Timer(ZoomTime,
                 (timer) => Zoom((int)MathHelper.Lerp(initWidth, targWidth, Ease.CubeInAndOut(Ease.Reverse(timer.Value / timer.MaxValue)))),
                 () => Zoom(targWidth)));
         }

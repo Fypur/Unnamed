@@ -210,7 +210,7 @@ namespace Unnamed
             IEnumerator enumerator;
             float t = 0.4f;
             SwitchRot(0, t);
-            AddComponent(new Timer(t - 0.3f, true, null, () =>
+            AddComponent(new Timer(t - 0.3f, null, () =>
             {
                 AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
             }));
@@ -225,7 +225,7 @@ namespace Unnamed
 
             t += 0.1f;
             SwitchRot(id, t);
-            AddComponent(new Timer(t - 0.3f, true, null, () =>
+            AddComponent(new Timer(t - 0.3f, null, () =>
             {
                 AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
             }));
@@ -279,7 +279,7 @@ namespace Unnamed
 
             toRot = MathHelper.ToRadians(toRot);
 
-            AddComponent(new Timer(time, true, (timer) =>
+            AddComponent(new Timer(time, (timer) =>
             {
                 if (initRot > (float)Math.PI / 2 && initRot < (float)Math.PI)
                     rotation = MathHelper.Lerp(initRot, toRot + (float)Math.PI * 2, timer.AmountCompleted());
@@ -495,14 +495,14 @@ namespace Unnamed
 
             invulnerable = true;
             invicibleTimer = true;
-            AddComponent(new Timer(2, true, null, () => { invulnerable = false; invicibleTimer = false; }));
+            AddComponent(new Timer(2, null, () => { invulnerable = false; invicibleTimer = false; }));
 
             if (!stateMachine.Is(States.Jumping))
             {
                 if (stateMachine.Is(States.EnergyBeam) && HasComponent<LineRenderer>(out LineRenderer l))
                 {
                     int orig = l.Thickness;
-                    AddComponent(new Timer(0.5f, true, (timer) => l.Thickness = (int)(orig * timer.Value / timer.MaxValue), () => RemoveComponent(l)));
+                    AddComponent(new Timer(0.5f, (timer) => l.Thickness = (int)(orig * timer.Value / timer.MaxValue), () => RemoveComponent(l)));
                 }
 
                 RemoveComponents<Coroutine>();
@@ -544,7 +544,7 @@ namespace Unnamed
                 yield return new Coroutine.WaitForSeconds(0.4f);
 
 
-                AddComponent(new Timer(0.3f, true, (t) =>
+                AddComponent(new Timer(0.3f, (t) =>
                 {
                     if (stop)
                     {
@@ -558,14 +558,14 @@ namespace Unnamed
                     Platformer.TimeScale = 1; Platformer.player.OnDeath -= resetTimeScale;
                 }));
 
-                AddComponent(new Timer(0.2f, true, (t) =>
+                AddComponent(new Timer(0.2f, (t) =>
                 {
                     Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Spark, Bounds, 3);
                 }, null));
 
                 //yield return new Coroutine.WaitForSeconds(0.7f);
 
-                AddComponent(new Timer(1, true, (t) =>
+                AddComponent(new Timer(1, (t) =>
                 {
                     Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Fire, Bounds, 1);
                 }, null));
@@ -768,7 +768,7 @@ namespace Unnamed
             Dead = true;
 
             AddComponent(new Sound3D("SFX/Boss/Jump", autoRemove: true));
-            AddComponent(new Timer(0.2f, true, null, () =>
+            AddComponent(new Timer(0.2f, null, () =>
             {
                 AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
             }));

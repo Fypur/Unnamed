@@ -347,7 +347,7 @@ namespace Unnamed
 
                             s.AddComponent(new Shaker(0.4f, 4, null, true));
 
-                            trig3.AddComponent(new Timer(0.4f, true, null, () =>
+                            trig3.AddComponent(new Timer(0.4f, null, () =>
                             {
 
                                 s.GravityScale = 0.7f;

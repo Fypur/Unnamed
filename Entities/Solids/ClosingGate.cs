@@ -34,7 +34,7 @@ namespace Unnamed
             ClosedGates[id] = true;
             Collider.Collidable = true;
 
-            AddComponent(new Timer(1, true, (timer) =>
+            AddComponent(new Timer(1, (timer) =>
             {
                 Height = (int)MathHelper.Lerp(1, finalHeight, Ease.QuintIn(timer.AmountCompleted()));
             },

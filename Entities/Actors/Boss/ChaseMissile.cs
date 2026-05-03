@@ -25,7 +25,7 @@ namespace Unnamed
             trail = (TrailRenderer)AddComponent(new TrailRenderer(Particles.FireTrail, Vector2.Zero, 0.01f));
 
             Vector2 initPos = Pos;
-            AddComponent(new Timer(time, true, (timer) =>
+            AddComponent(new Timer(time, (timer) =>
             {
                 Vector2 next = Bezier.Generic(controlPoints, timer.AmountCompleted());
                 Rotation = VectorHelper.ToAngleRad(next - Pos);
@@ -37,7 +37,7 @@ namespace Unnamed
 
         public override void Awake()
         {
-            AddComponent(new Timer(Rand.NextFloat(0, 0.2f), true, null, () => AddComponent(new Sound3D("SFX/Boss/Missile"))));
+            AddComponent(new Timer(Rand.NextFloat(0, 0.2f), null, () => AddComponent(new Sound3D("SFX/Boss/Missile"))));
         }
 
         public override void Update()
@@ -58,7 +58,7 @@ namespace Unnamed
                 player.Damage();
                 Explode();
             }
-            else if(Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), Pos))
+            else if (Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), Pos))
                 Explode();
         }
 

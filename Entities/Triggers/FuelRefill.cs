@@ -51,7 +51,7 @@ namespace Unnamed
 
             Visible = false;
 
-            AddComponent(new Timer(RespawnTime, true, null,
+            AddComponent(new Timer(RespawnTime, null,
                 () =>
                 {
                     Visible = true;

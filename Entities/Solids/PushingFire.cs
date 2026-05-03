@@ -149,7 +149,7 @@ namespace Unnamed
 
             /*Speed = 0.3f * Speed;
 
-            AddComponent(new Timer(0.35f, true, null, () => Speed = speed));*/
+            AddComponent(new Timer(0.35f, null, () => Speed = speed));*/
         }
 
         public override bool CollidingConditions(Collider other)

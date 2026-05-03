@@ -31,7 +31,7 @@ namespace Unnamed
 
             Active = false;
             if (TimeToReactive != 0)
-                AddComponent(new Timer(TimeToReactive, true, null, () => Active = true));
+                AddComponent(new Timer(TimeToReactive, null, () => Active = true));
         }
 
         public override void Render()

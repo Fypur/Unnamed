@@ -43,13 +43,13 @@ namespace Unnamed
             TriggerComponent trig = GetComponent<TriggerComponent>();
             trig.Trigger.Active = false;
             AddComponent(new Shaker(shakeTime, 1.2f, null, true));
-            AddComponent(new Timer(shakeTime, true, null, () =>
+            AddComponent(new Timer(shakeTime, null, () =>
             {
                 gravityScale = constGravityScale;
 
                 if (Respawning)
                 {
-                    AddComponent(new Timer(respawnTime, true, null, () =>
+                    AddComponent(new Timer(respawnTime, null, () =>
                     {
                         wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
                         {
@@ -76,7 +76,7 @@ namespace Unnamed
 
             if (Respawning)
             {
-                AddComponent(new Timer(respawnTime, true, null, () => {
+                AddComponent(new Timer(respawnTime, null, () => {
                     wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
                     {
                         Pos = initPos; Velocity = Vector2.Zero; gravityScale = 0; previousOnGround = false; Collided = false;

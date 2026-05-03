@@ -89,7 +89,7 @@ namespace Unnamed
             //p.UpdateChildrenPos();
             p.CancelJump();
 
-            AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () =>
+            AddComponent(new Timer(transitionTime - Engine.Deltatime, null, () =>
             {
                 p.CanMove = true;
                 p.RefillJetpack();

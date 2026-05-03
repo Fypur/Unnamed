@@ -30,7 +30,7 @@ namespace Unnamed
         {
             Vector2 initPos = Pos;
             Vector2 newPos = PulledPos;
-            AddComponent(new Timer(1f, true, (timer) =>
+            AddComponent(new Timer(1f, (timer) =>
             {
                 MoveTo(Vector2.Lerp(initPos, newPos,
                      (EasingFunction ?? Ease.CubeInAndOut).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
@@ -38,7 +38,7 @@ namespace Unnamed
             () =>
             {
                 MoveTo(newPos);
-                AddComponent(new Timer(PulledOutTime, false, null, () => Unpull(Ease.CubeInAndOut)));
+                AddComponent(new Timer(PulledOutTime, null, () => Unpull(Ease.CubeInAndOut), false));
             }));
         }
 
@@ -46,7 +46,7 @@ namespace Unnamed
         {
             Vector2 initPos = Pos;
             Vector2 newPos = originalPos;
-            AddComponent(new Timer(1f, true, (timer) =>
+            AddComponent(new Timer(1f, (timer) =>
             {
                 MoveTo(Vector2.Lerp(initPos, newPos,
                          (easingFunction ?? DefaultEasing).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));

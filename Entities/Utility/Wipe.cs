@@ -38,7 +38,7 @@ namespace Unnamed
             Vector2 usedPos = initPos;
             Width = 0;
 
-            AddComponent(new Timer(wipeTime / 2, true, (timer) =>
+            AddComponent(new Timer(wipeTime / 2, (timer) =>
             {
                 float reversed = Ease.Reverse(timer.Value / wipeTime, 0.5f);
                 Progress = Ease.CubeInAndOut(reversed);
@@ -53,7 +53,7 @@ namespace Unnamed
 
                 bool hasOnTranstionned = false;
                 bool doOnce = false;
-                AddComponent(new Timer(wipeTime / 2, true, (timer) =>
+                AddComponent(new Timer(wipeTime / 2, (timer) =>
                 {
                     if (pausedUntil != null)
                     {

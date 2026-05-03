@@ -93,7 +93,7 @@ namespace Unnamed
             else
                 walkingRight = d.Value;
 
-            AddComponent(new Timer(walkingTimeCycle, true, (timer) =>
+            AddComponent(new Timer(walkingTimeCycle, (timer) =>
             {
                 if (!StateMachine.Is(States.Walking))
                 {
@@ -140,7 +140,7 @@ namespace Unnamed
                 aimed.Y = zones[2].Pos.Y + 24;
 
 
-            AddComponent(new Timer(jumpChargeTime, true, (timer) =>
+            AddComponent(new Timer(jumpChargeTime, (timer) =>
             {
                 Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), 3);
             }, () =>
@@ -153,7 +153,7 @@ namespace Unnamed
                 Engine.Cam.LightShake();
                 //Velocity.Y = (aimed.Y - Pos.Y) / jumpTime - gravityVector.Y * gravityScale * jumpTime;
 
-                AddComponent(new Timer(jumpTime, true, (timer) =>
+                AddComponent(new Timer(jumpTime, (timer) =>
                 {
                     Pos.Y = Vector2.Lerp(init, aimed, Ease.CubicOut(timer.AmountCompleted())).Y;
                 }, () =>
@@ -174,7 +174,7 @@ namespace Unnamed
         {
             Engine.CurrentMap.Instantiate(new HomingMissile(MiddlePos, -45));
 
-            AddComponent(new Timer(2f, true, null, () =>
+            AddComponent(new Timer(2f, null, () =>
             {
                 if (zones[1].Collider.Collide((AABBCollider)Collider) || zones[2].Collider.Collide((AABBCollider)Collider))
                     StateMachine.Switch(States.JumpDown);
@@ -202,7 +202,7 @@ namespace Unnamed
             }
 
 
-            AddComponent(new Timer(jumpChargeTime, true, (timer) =>
+            AddComponent(new Timer(jumpChargeTime, (timer) =>
             {
                 Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, rect, 3);
             }, () =>
@@ -215,7 +215,7 @@ namespace Unnamed
                 Engine.Cam.LightShake();
                 //Velocity.Y = (aimed.Y - Pos.Y) / jumpTime - gravityVector.Y * gravityScale * jumpTime;
 
-                AddComponent(new Timer(jumpTime, true, (timer) =>
+                AddComponent(new Timer(jumpTime, (timer) =>
                 {
                     Pos.Y = Vector2.Lerp(init, aimed, Ease.CubicIn(timer.AmountCompleted())).Y;
                 }, () =>

@@ -322,7 +322,7 @@ namespace Unnamed
             bool forward = Rand.NextDouble() < 0.5f;
 
             if (jumpTime - 0.3f > 0)
-                AddComponent(new Timer(jumpTime - 0.3f, true, null, () =>
+                AddComponent(new Timer(jumpTime - 0.3f, null, () =>
                 {
                     AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
                 }));

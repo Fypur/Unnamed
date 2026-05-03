@@ -1,10 +1,5 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -31,8 +26,8 @@ namespace Unnamed
             Sprite.Origin = HalfSize; //To change when texture gets bigger
             Sprite.Rotation = MathHelper.ToRadians(Rotation);
 
-            AddComponent(new Timer(1, true, null, () => canHitBoss = true));
-            AddComponent(new Timer(5, true, null, SelfDestroy));
+            AddComponent(new Timer(1, null, () => canHitBoss = true));
+            AddComponent(new Timer(5, null, SelfDestroy));
 
             trail = (TrailRenderer)AddComponent(new TrailRenderer(Particles.FireTrail, Vector2.Zero, 0.01f));
 
@@ -52,7 +47,7 @@ namespace Unnamed
             maxSpeed = 200f;
 
             Vector2 rotVec = (Engine.Player.MiddlePos - MiddlePos);
-            if(rotVec != Vector2.Zero)
+            if (rotVec != Vector2.Zero)
             {
                 rotVec.Normalize();
                 Rotation = VectorHelper.ToAngleRad(rotVec);
@@ -65,7 +60,7 @@ namespace Unnamed
             Velocity += rotVec * acceleration;
 
             float vLen = Velocity.Length();
-            if(vLen > maxSpeed)
+            if (vLen > maxSpeed)
                 Velocity = Velocity / vLen * maxSpeed;
 
             base.Update();

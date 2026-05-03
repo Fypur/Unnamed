@@ -54,7 +54,7 @@ namespace Unnamed
 
         public override void OnCollected(Player player)
         {
-            AddComponent(new Timer(0.2f, true, (timer) =>
+            AddComponent(new Timer(0.2f, (timer) =>
             {
                 Sprite.Scale.Y = timer.Value / timer.MaxValue;
             }, () =>

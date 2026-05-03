@@ -81,7 +81,7 @@ namespace Unnamed
             Platformer.player.CanJetpack = true;
             Platformer.player.Sprite.OnLastFrame = null;
 
-            AddComponent(new Timer(0.5f, true, (t) =>
+            AddComponent(new Timer(0.5f, (t) =>
             {
                 Platformer.player.Sprite.PixelShader = DataManager.PixelShaders["WhiteBar"];
                 DataManager.PixelShaders["WhiteBar"].Parameters["barLocation"].SetValue(Ease.CubeInAndOut(t.AmountCompleted()));
