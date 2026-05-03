@@ -6,8 +6,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -19,8 +17,10 @@ namespace Unnamed
         public static List<Guid> LevelNonRespawn = new();
         public static int LevelIndex;
         public static LDtkLevel LastLDtkLevel;
-        public static LevelData LastLevelData { 
-            get  {
+        public static LevelData LastLevelData
+        {
+            get
+            {
                 if (LastLDtkLevel != null)
                     return GetLevelData(LastLDtkLevel);
                 else
@@ -53,10 +53,10 @@ namespace Unnamed
                     plat = new SolidPlatform(p.Position, p.Width(), p.Height(), FallingPlatformNineSlice1);
                 else
                     plat = new CyclingPlatform(p.Position, p.Width(), p.Height(), new Sprite(FallingPlatformNineSlice1), p.GoingForwards, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, Ease.CubeInAndOut);
-                    
+
                 entities.Add(plat);
 
-                if(p.Children.Length > 0)
+                if (p.Children.Length > 0)
                     IidsChildren[plat] = new();
                 foreach (EntityReference child in p.Children)
                     IidsChildren[plat].Add(child.EntityIid);
@@ -81,7 +81,7 @@ namespace Unnamed
                 else
                     AddIfChild(new SwingingPoint(p.Position, p.MaxSwingDistance, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, p.GoingForwards, Ease.CubeInAndOut), p.Iid);
             }
-                
+
 
             foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
                 entities.Add(new RailedPullBlock(p.RailPositions, p.MaxSwingDistance, p.Position, p.Width(), p.Height()));
@@ -92,7 +92,7 @@ namespace Unnamed
 
             foreach (LDtkTypes.RespawnArea p in level.GetEntities<LDtkTypes.RespawnArea>())
             {
-                if(Engine.Player == null)
+                if (Engine.Player == null)
                     Engine.CurrentMap.Instantiate(new Player(p.RespawnPoint));
 
                 entities.Add(new RespawnTrigger(p.Position, p.Size, p.RespawnPoint));
@@ -135,7 +135,7 @@ namespace Unnamed
 
                 entities.Add(new SwingTriggered(p.Positions, p.MaxSwingDistance, p.Position, p.Width(), p.Height(), speed));
             }
-                
+
             foreach (LDtkTypes.TextSpawn p in level.GetEntities<LDtkTypes.TextSpawn>())
                 entities.Add(new TextSpawn(p.Position, p.Size, p.TextPos + new Vector2(p.XOffset, p.YOffset), p.Color, p.Text));
 
@@ -146,18 +146,18 @@ namespace Unnamed
                 entities.Add(new FuelRefill(p.Position, p.RespawnTime));
 
             foreach (LDtkTypes.Collectable p in level.GetEntities<LDtkTypes.Collectable>())
-                if((!LevelNonRespawn.Contains(p.Iid))
+                if ((!LevelNonRespawn.Contains(p.Iid))
                     && (!Engine.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(RAM)) ||
                     Engine.CurrentMap.Data.EntitiesByType[typeof(RAM)].TrueForAll((collected) => ((RAM)collected).iid != p.Iid)))
                     entities.Add(new RAM(p.Position, p.Iid));
 
             foreach (LDtkTypes.Key p in level.GetEntities<LDtkTypes.Key>())
                 if ((!LevelNonRespawn.Contains(p.Iid))
-                    && (!Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Key), out var keys) ||keys.TrueForAll((collected) => ((RAM)collected).iid != p.Iid)))
+                    && (!Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Key), out var keys) || keys.TrueForAll((collected) => ((RAM)collected).iid != p.Iid)))
                 {
                     foreach (LDtkTypes.Cage c in level.GetEntities<LDtkTypes.Cage>())
                     {
-                        if(c.Iid == p.Cage.EntityIid)
+                        if (c.Iid == p.Cage.EntityIid)
                         {
                             Cage cage = new Cage(c.Position, c.Width(), c.Height());
                             entities.Add(cage);
@@ -212,7 +212,7 @@ namespace Unnamed
 
                 ParticleSoundEmitter e = new ParticleSoundEmitter(p.Position, pT, p.Amount, p.Direction, pT.Color, p.Iid);
                 entities.Add(e);
-                
+
                 //entities.Add(new ParticleEntity(p.Position, Engine.CurrentMap.BackgroundSystem, pT, p.Amount, p.Direction, pT.Color));
             }
 
@@ -227,7 +227,7 @@ namespace Unnamed
                 Light l = light.GetComponent<Light>();
                 l.CollideWithWalls = p.CollideWithWalls;
 
-                if(p.BlinkTime is float b)
+                if (p.BlinkTime is float b)
                     l.StartBlink(b);
 
                 entities.Add(light);
@@ -235,7 +235,7 @@ namespace Unnamed
 
             foreach (LDtkTypes.Boss p in level.GetEntities<LDtkTypes.Boss>())
             {
-                if(p.Id == 0)
+                if (p.Id == 0)
                     entities.Add(new Boss(p.Position));
                 else if (p.Id == 1)
                     entities.Add(new Boss2(p.Position));
@@ -257,7 +257,7 @@ namespace Unnamed
                         List<Entity> spawned = new();
                         foreach (EntityReference entity in p.Children)
                         {
-                            foreach(EntityReference child in p.Children)
+                            foreach (EntityReference child in p.Children)
                             {
                                 LDtkTypes.ChaseMissile c = level.GetEntityRef<LDtkTypes.ChaseMissile>(child);
                                 spawned.Add(new ChaseMissile(c.ControlPoints.AddAtBeggining(c.Position), c.Time));
@@ -267,13 +267,13 @@ namespace Unnamed
                         entities.Add(new SpawnTrigger(p.Position, p.Size, spawned));
                         break;
                     case 4:
-                        if(!LevelNonRespawn.Contains(p.Iid))
+                        if (!LevelNonRespawn.Contains(p.Iid))
                             entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new ChaseBoss(p.Positions, p.Id, p.Iid) }));
                         break;
                     case 5:
                         if (p.Id == 0)
                         {
-                            if(Engine.CurrentMap.Data.GetEntities<PushingFire>().Count == 0)
+                            if (Engine.CurrentMap.Data.GetEntities<PushingFire>().Count == 0)
                                 entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new PushingFire(level.Position.ToVector2()) }));
                             else
                             {
@@ -349,7 +349,7 @@ namespace Unnamed
 
                             trig3.AddComponent(new Timer(0.4f, true, null, () =>
                             {
-                                
+
                                 s.GravityScale = 0.7f;
                                 s.Attached = false;
                             }));
@@ -361,11 +361,14 @@ namespace Unnamed
                         ClosingGate closing = new ClosingGate(p.Position, p.Width(), p.Height(), p.Iid);
                         LDtkTypes.SpecialTrigger closingPoint = level.GetEntityRef<LDtkTypes.SpecialTrigger>(p.Children[0]);
 
-                         
+
                         Trigger trig4 = new Trigger(closingPoint.Position, closingPoint.Size, new() { typeof(Player) }, null);
                         bool activated = false;
-                        trig4.OnTriggerEnterAction = (e) => { if(!activated)
-                                closing.Close(); };
+                        trig4.OnTriggerEnterAction = (e) =>
+                        {
+                            if (!activated)
+                                closing.Close();
+                        };
                         if (closingPoint.Id == 100)
                         {
                             if (ClosingGate.ClosedGates.TryGetValue(p.Iid, out bool closed) && closed)
@@ -380,7 +383,7 @@ namespace Unnamed
                         entities.Add(trig4);
                         break;
                     case 9:
-                        if(!LevelNonRespawn.Contains(p.Iid))
+                        if (!LevelNonRespawn.Contains(p.Iid))
                             entities.Add(new JetpackPickUp(p.Position, p.Iid, p.Id));
                         break;
                     case 10:
@@ -499,7 +502,7 @@ namespace Unnamed
                         size = new Vector2(level.WorldX + level.Size.X - pos.X, 2);
                     else
                         size = new Vector2(neigh.WorldX + neigh.Size.X - pos.X, 2);
-                    
+
                     downNeighboursRect.Add(new Rectangle(neigh.Position, neigh.Size));
                     entities.Add(new LevelTransition(pos, size, neigh, Direction.Down));
                 }
@@ -509,7 +512,7 @@ namespace Unnamed
             {
                 if (l._Type == LayerType.Tiles)
                 {
-                    if(l._TilesetRelPath.Contains("AnimatedDecals"))
+                    if (l._TilesetRelPath.Contains("AnimatedDecals"))
                     {
                         string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
                         List<Sprite.Animation.Slice> slices = (List<Sprite.Animation.Slice>)((object[])DataManager.Textures[tileSet.Substring("Graphics/".Length)].Tag)[1];
@@ -524,7 +527,7 @@ namespace Unnamed
                                     break;
                                 }
 
-                            foreach(TileCustomMetadata data in tilesetData)
+                            foreach (TileCustomMetadata data in tilesetData)
                                 TileData[data.TileId] = data.Data;
                         }
 
@@ -630,7 +633,7 @@ namespace Unnamed
                 }
             }
 
-            foreach(NeighbourLevel neighbor in level._Neighbours)
+            foreach (NeighbourLevel neighbor in level._Neighbours)
             {
                 LDtkLevel neigh = Platformer.World.LoadLevel(neighbor.LevelIid);
                 Entity e = new Entity(Vector2.Zero);
@@ -638,16 +641,16 @@ namespace Unnamed
                 if (neigh.Identifier.Contains("Filler"))
                     continue;
 
-                foreach(LayerInstance l in neigh.LayerInstances)
+                foreach (LayerInstance l in neigh.LayerInstances)
                 {
-                    if(l._Identifier == "AnimatedTiles")
+                    if (l._Identifier == "AnimatedTiles")
                     {
                         List<Sprite.Animation.Slice> slices = (List<Sprite.Animation.Slice>)((object[])DataManager.Textures[System.IO.Path.ChangeExtension(l._TilesetRelPath, null).Substring("Graphics/".Length)].Tag)[1];
 
                         foreach (TileInstance t in l.GridTiles)
                             AttachSliceLights(l, t, slices, null, neigh);
                     }
-                    else if(l._Identifier == "Lights")
+                    else if (l._Identifier == "Lights")
                     {
                         List<Sprite.Animation.Slice> slices = (List<Sprite.Animation.Slice>)((object[])DataManager.Textures[System.IO.Path.ChangeExtension(l._TilesetRelPath, null)].Tag)[1];
 
@@ -671,7 +674,7 @@ namespace Unnamed
                 }
 
                 foreach (LDtkTypes.StreetLight p in neigh.GetEntities<LDtkTypes.StreetLight>())
-                    if(p.TriggerTopLeft == null)
+                    if (p.TriggerTopLeft == null)
                         entities.Add(new StreetLight(p.Position, p.Width(), p.Height()));
 
                 entities.Add(e);
@@ -709,18 +712,18 @@ namespace Unnamed
 
                         if (minX == int.MaxValue)
                             minX = level.Position.X + level.PxWid;
-                        
+
                         entities.Add(new DeathTrigger(new Vector2(x, level.Position.Y + level.Size.Y + 10), new Vector2(minX - x, intGrid.TileSize), true));
                         x = minX + r.Width;
                     }
-                    
+
                     inside = false;
                 }
             }
 
             foreach (LDtkTypes.StreetLight p in level.GetEntities<LDtkTypes.StreetLight>())
             {
-                if(p.TriggerTopLeft is Vector2 v)
+                if (p.TriggerTopLeft is Vector2 v)
                     entities.Add(new StreetLight(p.Position, p.Width(), p.Height(), new Rectangle(p.TriggerTopLeft.Value.ToPoint(), p.TriggerBottomRight.Value.ToPoint() - p.TriggerTopLeft.Value.ToPoint())));
                 else
                     entities.Add(new StreetLight(p.Position, p.Width(), p.Height()));
@@ -732,9 +735,9 @@ namespace Unnamed
 
                 int tileID = 0;
                 EnumDefinition e = Platformer.LDtkFile.Defs.Enums[3];
-                foreach(var a in e.Values)
+                foreach (var a in e.Values)
                 {
-                    if(p.Type.ToString() == a.Id)
+                    if (p.Type.ToString() == a.Id)
                     {
                         tileID = a.TileRect.X / 8 + a.TileRect.Y / 8 * 160 / 8;
                         break;
@@ -747,7 +750,7 @@ namespace Unnamed
                     {
                         tileset = definition;
                         break;
-                   }
+                    }
 
 
                 var data = TileData[tileID];
@@ -761,17 +764,19 @@ namespace Unnamed
                 switch (p.Type)
                 {
                     case LDtkTypes.TrigDecalType.StreetLight:
-                        trig.OnTriggerEnterAction += (e) => { s.Play("blink");};
+                        trig.OnTriggerEnterAction += (e) => { s.Play("blink"); };
                         break;
                     case LDtkTypes.TrigDecalType.FallingMachine:
-                        trig.OnTriggerEnterAction += (e) => { s.Play("falling");
+                        trig.OnTriggerEnterAction += (e) =>
+                        {
+                            s.Play("falling");
                             trig.AddComponent(new Sound3D("SFX/MetalBox/FallThenImpact", false));
                         };
                         break;
                 }
 
                 s.OnChange += () => trig.SelfDestroy();
-                
+
                 entities.Add(tile);
 
                 entities.Add(trig);
@@ -816,7 +821,7 @@ namespace Unnamed
             {
                 bool isChild = false;
                 foreach (KeyValuePair<Entity, List<Guid>> parents in IidsChildren)
-                    for(int i = parents.Value.Count - 1; i >= 0; i--)
+                    for (int i = parents.Value.Count - 1; i >= 0; i--)
                         if (iid == parents.Value[i])
                         {
                             parents.Key.AddChild(entity);
@@ -895,25 +900,25 @@ namespace Unnamed
 
                 if (level.WorldX < minx)
                     minx = level.WorldX;
-                if(level.WorldY < miny)
+                if (level.WorldY < miny)
                     miny = level.WorldY;
-                if(level.WorldX + level.PxWid > maxx)
+                if (level.WorldX + level.PxWid > maxx)
                     maxx = level.WorldX + level.PxWid;
-                if(level.WorldY + level.PxHei > maxy)
+                if (level.WorldY + level.PxHei > maxy)
                     maxy = level.WorldY + level.PxHei;
             }
 
             bool[,] grid = new bool[(maxy - miny) / gridSize, (maxx - minx) / gridSize];
-            foreach(LDtkLevel level in world.Levels)
+            foreach (LDtkLevel level in world.Levels)
             {
                 if (level.WorldDepth != worldDepth)
                     continue;
 
                 var intg = SwitchXAndY(level.GetIntGrid("IntGrid"));
                 for (int x = 0; x < level.PxWid / gridSize; x++)
-                    for(int y = 0; y < level.PxHei / gridSize; y++)
+                    for (int y = 0; y < level.PxHei / gridSize; y++)
                     {
-                        if(intg[y, x] != 0)
+                        if (intg[y, x] != 0)
                             grid[(level.WorldY - miny) / gridSize + y, (level.WorldX - minx) / gridSize + x] = true;
                     }
             }
@@ -925,14 +930,14 @@ namespace Unnamed
         public static Sprite[,] GetWorldTileSprites(LDtkWorld world, int worldDepth, Vector2 gridPos, bool[,] worldOrganisation)
         {
             Sprite[,] sprites = new Sprite[worldOrganisation.GetLength(0), worldOrganisation.GetLength(1)];
-            foreach(LDtkLevel level in world.Levels)
+            foreach (LDtkLevel level in world.Levels)
             {
                 if (level.WorldDepth != worldDepth)
                     continue;
 
                 foreach (LayerInstance l in level.LayerInstances)
                 {
-                    if(l._Type == LayerType.IntGrid && !l._Identifier.Contains("Decal") && !l._Identifier.Contains("Bg") && !l._Identifier.Contains("Tiles"))
+                    if (l._Type == LayerType.IntGrid && !l._Identifier.Contains("Decal") && !l._Identifier.Contains("Bg") && !l._Identifier.Contains("Tiles"))
                     {
                         string tileSet = System.IO.Path.ChangeExtension(l._TilesetRelPath, null);
                         if (!DataManager.Textures.ContainsKey(tileSet))
@@ -988,7 +993,7 @@ namespace Unnamed
 
             LastLDtkLevel = ldtk;
             return GetLevelData(ldtk);
-            
+
         }
 
         public static LevelData GetLevelData(LDtkLevel ldtk)
@@ -1267,7 +1272,8 @@ namespace Unnamed
         {
             switch (spike.GetDirection())
             {
-                case Direction.Up: case Direction.Down:
+                case Direction.Up:
+                case Direction.Down:
                     return spike.Height();
                 default:
                     return spike.Width();

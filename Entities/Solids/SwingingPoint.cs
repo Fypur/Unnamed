@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Unnamed
 {
@@ -17,7 +16,7 @@ namespace Unnamed
         private PolygonPoint[] polygon;
 
         public float MaxSwingDistance { get; set; }
-        public SwingingPoint(Vector2 position, float maxSwingDistance) : base(position, width, height, new Sprite(DataManager.Objects["swingingPoint"])) 
+        public SwingingPoint(Vector2 position, float maxSwingDistance) : base(position, width, height, new Sprite(DataManager.Objects["swingingPoint"]))
         {
             SwingingPoints.Add(this);
             Collider.Collidable = false;
@@ -47,9 +46,9 @@ namespace Unnamed
         public override void OnDestroy()
         {
             base.OnDestroy();
-            SwingingPoints.Remove(this); 
+            SwingingPoints.Remove(this);
         }
-        
+
         void ISwinged.OnSwing(Entity grappledEntity, Func<bool> isAtSwingEnd)
         {
             swinged = true;
@@ -141,7 +140,7 @@ namespace Unnamed
 
 
                     //Debug.LogUpdate(p.SwingPositions.Count, p.SwingPositionsSign.Count);
-                    
+
                     for (int i = 1; i < p.SwingPositions.Count; i++)
                     {
                         Vector2 prevPos = (i == p.SwingPositions.Count - 1) ? p.MiddleExactPos : p.SwingPositions[i + 1];
@@ -171,13 +170,13 @@ namespace Unnamed
                 Drawing.DrawDottedLine(MiddlePos, Engine.Player.Pos + Engine.Player.HalfSize, new Color(Color.DeepSkyBlue * (40f / 255), 255), 1, 4, 4);
 
             //Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.LightBlue, 120));
-            Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.DeepSkyBlue * (40f/255), 255));
+            Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.DeepSkyBlue * (40f / 255), 255));
 
             if (Debug.DebugMode)
                 Drawing.DrawCircleEdge(MiddleExactPos, MaxSwingDistance, 0.1f, new Color(Color.LightBlue, 120), 1);
 
 
-            
+
             /*Drawing.DrawLine(MiddlePos + Vector2.UnitX * 300, Input.MousePos, Color.Yellow);
             foreach (Vector2 p in Collision.LineCircleIntersection(MiddlePos + Vector2.UnitX * 300, Input.MousePos, MiddlePos, MaxSwingDistance))
                 Debug.PointUpdate(p);*/

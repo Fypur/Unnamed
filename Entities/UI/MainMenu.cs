@@ -4,9 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Unnamed.MainMenu;
 
 namespace Unnamed
 {
@@ -54,8 +51,8 @@ namespace Unnamed
 
             Sprite.Scale = Size / new Vector2(1280, 720);
 
-            Engine.CurrentMap.ForegroundSystem.Emit(BigFire, new Rectangle((Pos + new Vector2(0, Size.Y)).ToPoint(), (Pos + Size).ToPoint()), 2); 
-            Engine.CurrentMap.ForegroundSystem.Emit(Wind, Bounds, 2); 
+            Engine.CurrentMap.ForegroundSystem.Emit(BigFire, new Rectangle((Pos + new Vector2(0, Size.Y)).ToPoint(), (Pos + Size).ToPoint()), 2);
+            Engine.CurrentMap.ForegroundSystem.Emit(Wind, Bounds, 2);
             //Engine.CurrentMap.ForegroundSystem.Emit(Wind, new Rectangle((Pos - new Vector2(400, 0)).ToPoint(), (Pos + Size - new Vector2(400, 0)).ToPoint()), 2);
         }
 
@@ -68,7 +65,7 @@ namespace Unnamed
 
         public void SwitchToSubMenu(List<UIElement> subMenu)
         {
-            foreach(UIElement element in Children)
+            foreach (UIElement element in Children)
             {
                 if (element.Selected)
                     element.OnLeaveSelected();
@@ -78,7 +75,7 @@ namespace Unnamed
 
             //TODO: Maybe instead of using active and visible re Instantiate the objects on menu to save on RAM
             bool doOnce = true;
-            foreach(UIElement element in subMenu)
+            foreach (UIElement element in subMenu)
             {
                 if (Children.Contains(element))
                 {
@@ -230,7 +227,7 @@ namespace Unnamed
                 Saving.Save(new SaveData()
                 {
                     ScreenSize = Options.CurrentScreenSizeMultiplier,
-                    
+
                     MasterVolume = (int)(Audio.GetMasterVolume() * 10),
                     MusicVolume = (int)(Audio.GetGroupVolume("Musics") * 10),
                     SFXVolume = (int)(Audio.GetGroupVolume("Sound Effects") * 10),
@@ -250,9 +247,9 @@ namespace Unnamed
                 Vector2[] offsets = new Vector2[Children.Count];
                 offsets[0] = -Vector2.UnitY * 200;
 
-                for(int i = 1; i < offsets.Length; i++)
+                for (int i = 1; i < offsets.Length; i++)
                 {
-                    if(i % 2 == 1)
+                    if (i % 2 == 1)
                         offsets[i] = -Vector2.UnitX * 1200;
                     else
                         offsets[i] = Vector2.UnitX * 1200;
@@ -304,9 +301,9 @@ namespace Unnamed
                 Vector2[] offsets = new Vector2[Children.Count];
                 offsets[0] = -Vector2.UnitY * 200;
 
-                for(int i = 1; i < offsets.Length; i++)
+                for (int i = 1; i < offsets.Length; i++)
                 {
-                    if(i % 2 == 1)
+                    if (i % 2 == 1)
                         offsets[i] = -Vector2.UnitX * 1200;
                     else
                         offsets[i] = Vector2.UnitX * 1200;
@@ -340,7 +337,7 @@ namespace Unnamed
                 returned.Add(h);
 
                 int i = 0;
-                for(i = 0; i < Platformer.MaxWorlds; i++)
+                for (i = 0; i < Platformer.MaxWorlds; i++)
                 {
                     string initLevel = i switch
                     {
@@ -353,7 +350,7 @@ namespace Unnamed
                     string name = i switch
                     {
                         0 => "Jetpack",
-                        1 => Platformer.WorldsUnlocked >= 1  ? "Swing" : "___",
+                        1 => Platformer.WorldsUnlocked >= 1 ? "Swing" : "___",
                         2 => Platformer.WorldsUnlocked >= 2 ? "Boss" : "___",
                         _ => throw new Exception("World Name not defined")
                     };
@@ -391,7 +388,8 @@ namespace Unnamed
                     returned.Add(t);
                 }
 
-                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(48, 272 + i * 80), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () => {
+                returned.Add(new TextSelectable("Back", "LexendDeca", new Vector2(48, 272 + i * 80), 384, 64, 1, Color.White, false, TextBox.Alignement.Left, () =>
+                {
                     var m = new MainSubMenu();
                     m.MoveLogo = false;
                     SwitchTo(m);

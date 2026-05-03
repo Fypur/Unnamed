@@ -1,11 +1,7 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -42,8 +38,8 @@ namespace Unnamed
             }
 
             bool onWallRight = false, onWallLeft = false;
-            if(Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Grid), out List<Entity> grids))
-                foreach(Grid grid in grids)
+            if (Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Grid), out List<Entity> grids))
+                foreach (Grid grid in grids)
                 {
                     if (grid.Collider.Contains(Pos - Vector2.UnitX)) onWallLeft = true;
                     if (grid.Collider.Contains(Pos + new Vector2(Width, 0) + Vector2.UnitX)) onWallRight = true;
@@ -81,7 +77,7 @@ namespace Unnamed
             if (Collider.WorldPos.Y != other.Bounds.Bottom - 1)
                 return false;
 
-            
+
 
             return true;
         }

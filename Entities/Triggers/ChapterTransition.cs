@@ -1,9 +1,7 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using static Unnamed.MainMenu;
 
 namespace Unnamed
 {
@@ -34,7 +32,7 @@ namespace Unnamed
                 Platformer.InitLevel = InitLevel;
                 Platformer.InitWorld++;
 
-                if(Platformer.WorldsUnlocked < Platformer.InitWorld)
+                if (Platformer.WorldsUnlocked < Platformer.InitWorld)
                     Platformer.WorldsUnlocked = Platformer.InitWorld;
 
                 Saving.SaveAndLoad(new()
@@ -78,8 +76,8 @@ namespace Unnamed
 
                     l.Add(new TextBox("Chapter Finished!", "LexendDeca", new Vector2(640, 100), 1000, 230, 2, Color.White, true));
 
-                    l.Add(new TextSelectable("Next Chapter", "LexendDeca", new Vector2(640, 360), 500, 50, 1, Color.White, true, TextBox.Alignement.Center, 
-                        () => 
+                    l.Add(new TextSelectable("Next Chapter", "LexendDeca", new Vector2(640, 360), 500, 50, 1, Color.White, true, TextBox.Alignement.Center,
+                        () =>
                         {
                             Engine.CurrentMap.Instantiate(new ScreenWipe(1.5f, Color.White, () =>
                             {

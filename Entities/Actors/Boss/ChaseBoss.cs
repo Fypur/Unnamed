@@ -86,7 +86,7 @@ namespace Unnamed
             else if (id == 4)
             {
                 var b = Engine.CurrentMap.Data.GetEntity<ChaseBoss>();
-                if (b != null && b!= this)
+                if (b != null && b != this)
                     b.SelfDestroy();
 
                 c = (Coroutine)AddComponent(new Coroutine(
@@ -102,12 +102,13 @@ namespace Unnamed
                 if (b != null && b != this)
                     b.SelfDestroy();
 
-                AddComponent(new Coroutine(FreezeWithInput(7f, () => 
+                AddComponent(new Coroutine(FreezeWithInput(7f, () =>
                 Engine.Player.Pos.Y < -1305)));
 
                 float t = 0.3f;
                 c = (Coroutine)AddComponent(new Coroutine(
-                    Coroutine.Do(() => {
+                    Coroutine.Do(() =>
+                    {
                         GetComponent<HurtBox>().Active = false;
                     }),
                     Jump(Positions[1], t, 200),
@@ -122,10 +123,11 @@ namespace Unnamed
                     Coroutine.WaitSeconds(1),
                     Jump(Positions[6], 1.5f, 310),
 
-                    Coroutine.Do(() => {
+                    Coroutine.Do(() =>
+                    {
                         Engine.Cam.Shake(0.3f, 2);
                         Sprite.Visible = false;
-                        foreach(var b in cannons)
+                        foreach (var b in cannons)
                         {
                             b.Item1.Visible = false;
                             b.Item2.Visible = false;
@@ -140,7 +142,8 @@ namespace Unnamed
                         explosion.DirectionRange = 180;
                         explosion.SpeedMin = 10f;
                         explosion.SpeedMax = 200f;
-                        Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, Bounds, 100); })
+                        Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, Bounds, 100);
+                    })
                     ));
             }
             else if (id == 6)
@@ -226,7 +229,7 @@ namespace Unnamed
                 MoveX(aim.X - Pos.X, OnCollision);
                 MoveY(aim.Y - Pos.Y, OnCollision);
 
-                if(time > 0.7f - 0.3f && once)
+                if (time > 0.7f - 0.3f && once)
                 {
                     once = false;
                     AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
@@ -298,7 +301,7 @@ namespace Unnamed
             IEnumerator SetCannon(float time)
             {
                 float init = time;
-                while(time > 0)
+                while (time > 0)
                 {
                     SetCannonPos(MathHelper.ToRadians(-time / init * 180));
                     time -= Engine.Deltatime;
@@ -318,7 +321,7 @@ namespace Unnamed
             Sprite.Rotation = 0;
             bool forward = Rand.NextDouble() < 0.5f;
 
-            if(jumpTime - 0.3f > 0)
+            if (jumpTime - 0.3f > 0)
                 AddComponent(new Timer(jumpTime - 0.3f, true, null, () =>
                 {
                     AddComponent(new Sound3D("SFX/Boss/JumpLandSlam", autoRemove: true));
@@ -334,7 +337,7 @@ namespace Unnamed
                 MoveX(aim.X - Pos.X, OnCollision);
                 MoveY(aim.Y - Pos.Y, OnCollision);
 
-                if(forward)
+                if (forward)
                     Sprite.Rotation = MathHelper.Lerp(0, (float)Math.PI * 2, time / jumpTime);
                 else
                     Sprite.Rotation = MathHelper.Lerp(0, (float)-Math.PI * 2, time / jumpTime);
@@ -481,7 +484,7 @@ namespace Unnamed
                 //rotation + 4 * (float)Math.PI / 4 + Rand.NextFloat(-1, 1) * (float)Math.PI / 4,
             };
 
-            for(int i = 0; i < 2; i++)
+            for (int i = 0; i < 2; i++)
             {
                 if (rot1[i] < 0)
                     rot1[i] += (float)Math.PI * 2;
@@ -492,7 +495,7 @@ namespace Unnamed
             for (int i = 0; i < 2; i++)
                 rot2[i] = (float)(Rand.NextDouble() * Math.PI * 2);
 
-            for(int i = 0; i < 2; i++)
+            for (int i = 0; i < 2; i++)
             {
                 cannons[i].Item2.Rotation += 0.01f;
                 cannons[i].Item1.Rotation = Rot(cannons[i].Item1.Rotation, rot1[i], 0.05f);
@@ -529,8 +532,8 @@ namespace Unnamed
             var platforms = Engine.CurrentMap.Data.GetEntities<FallingPlatform>();
             float distance = float.MaxValue;
             FallingPlatform falling = null;
-            foreach(FallingPlatform p in platforms)
-                if(!p.HasFallen && Vector2.DistanceSquared(MiddlePos, p.MiddlePos) < distance)
+            foreach (FallingPlatform p in platforms)
+                if (!p.HasFallen && Vector2.DistanceSquared(MiddlePos, p.MiddlePos) < distance)
                 {
                     falling = p;
                     distance = Vector2.DistanceSquared(MiddlePos, falling.MiddlePos);
@@ -545,7 +548,7 @@ namespace Unnamed
 
             Vector2 initPos = c.Pos;
             float timer = 0;
-            while(timer < time)
+            while (timer < time)
             {
                 c.Pos = Vector2.Lerp(initPos, initPos + amount, Ease.CubeInAndOut(timer / time));
                 timer += Engine.Deltatime;
@@ -559,7 +562,7 @@ namespace Unnamed
         {
             PushingFire p = Engine.CurrentMap.Data.GetEntity<PushingFire>();
             float origSpeed = 0;
-            if(p != null)
+            if (p != null)
             {
                 origSpeed = p.Speed;
                 p.ChangeSpeed(p.Speed / 2);
@@ -611,7 +614,7 @@ namespace Unnamed
 
             player.Sprite.Play("projected");
             player.CanMove = false;
-            while(t < mT)
+            while (t < mT)
             {
                 player.Pos = Bezier.Quadratic(new Vector2[] { player.Pos, (player.Pos + new Vector2(6330, -2172)) / 2 + new Vector2(0, -20), new Vector2(6330, -2168) }, t / mT);
                 player.Sprite.Rotation = MathHelper.Lerp(0, -(float)Math.PI * 2 - (float)Math.PI / 4, t / mT);
@@ -637,7 +640,7 @@ namespace Unnamed
                     player.Pos = new Vector2(6323, -2170);
                 }*/
 
-                light.Pos = Bezier.Quadratic(new Vector2[] { light.Pos, (light.Pos + new Vector2(6306, -2086)) / 2 + new Vector2(0, -60), new Vector2(6306, -2086) }, t / mT); 
+                light.Pos = Bezier.Quadratic(new Vector2[] { light.Pos, (light.Pos + new Vector2(6306, -2086)) / 2 + new Vector2(0, -60), new Vector2(6306, -2086) }, t / mT);
 
                 t += Engine.Deltatime;
                 yield return null;
@@ -650,7 +653,7 @@ namespace Unnamed
 
             float initRot = player.Sprite.Rotation;
             Vector2 initPos = Vector2.Round(player.Pos);
-            while(t < mT)
+            while (t < mT)
             {
                 player.Pos = initPos + new Vector2(0, -3) * t / mT;
                 player.Sprite.Rotation = MathHelper.Lerp(initRot, 0, t / mT);

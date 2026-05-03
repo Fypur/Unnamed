@@ -1,11 +1,7 @@
 ﻿using Fiourp;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -53,7 +49,7 @@ namespace Unnamed
                     {
                         object selfValue = SaveType.GetProperty(property.Name).GetValue(l, null);
 
-                        if(selfValue != null)
+                        if (selfValue != null)
                         {
                             //var val = Convert.ChangeType(selfValue, property.PropertyType);
                             property.SetValue(save, selfValue, null);
@@ -73,10 +69,10 @@ namespace Unnamed
         {
             if (File.Exists("Saves/save.json"))
                 return JsonSerializer.Deserialize<SaveData>(File.ReadAllText("Saves/save.json"));
-            
+
             return null;
         }
-        
+
         public static void SaveAndLoad(SaveData s)
         {
             Save(s);

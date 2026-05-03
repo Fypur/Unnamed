@@ -1,12 +1,12 @@
-﻿using FMOD.Studio;
+﻿using Fiourp;
+using FMOD.Studio;
+using LDtk;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Fiourp;
-using LDtk;
 using Unnamed.Bloom;
 
 namespace Unnamed
@@ -84,7 +84,7 @@ namespace Unnamed
             BgRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, RenderTarget.Width, RenderTarget.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             SecondRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, 1280, 720, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             FinalRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, 1280, 720, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            
+
             BloomFilter = new BloomFilter();
             BloomFilter.Load(Engine.Graphics.GraphicsDevice, Content, RenderTarget.Width, RenderTarget.Height);
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
@@ -140,7 +140,7 @@ namespace Unnamed
             if (!Paused)
             {
                 freezeTimer?.Update();
-                
+
                 if (!freezePaused)
                     Engine.CurrentMap.Update();
 
@@ -165,8 +165,8 @@ namespace Unnamed
                 Debug.LogUpdate(1 / Engine.Deltatime);*/
             if (Input.GetKeyDown(Keys.F3))
                 Debug.DebugMode = !Debug.DebugMode;
-            
-            if(Input.GetKeyDown(Keys.B))
+
+            if (Input.GetKeyDown(Keys.B))
                 Debug.Clear();
 
             if (Input.GetKeyDown(Keys.V))
@@ -201,10 +201,10 @@ namespace Unnamed
                 Engine.Cam.Size = new Vector2(camWidth, camHeight);
             }
 
-                if (Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.NumPad5))
+            if (Input.GetKeyDown(Microsoft.Xna.Framework.Input.Keys.NumPad5))
             {
                 var p = Engine.CurrentMap.Data.GetEntity<PushingFire>();
-                if(p != null)
+                if (p != null)
                     Engine.CurrentMap.Destroy(p);
 
                 Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos + Engine.CurrentMap.CurrentLevel.Size.OnlyY(), 32, Direction.Up));
@@ -379,7 +379,7 @@ namespace Unnamed
             Drawing.Draw(BgRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One * FinalRenderTarget.Width / BackgroundTile.Width, SpriteEffects.None, 0);
             Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, new Vector2(FinalRenderTarget.Width, FinalRenderTarget.Height) / Engine.Cam.Size, SpriteEffects.None, 0);
             Drawing.Draw(Engine.PrimitivesRenderTarget, Vector2.Zero, new Rectangle(0, 0, Engine.Cam.Width, Engine.Cam.Height), Color.White, 0, Vector2.Zero, new Vector2(FinalRenderTarget.Width, FinalRenderTarget.Height) / Engine.Cam.Size, SpriteEffects.None, 0);
-            
+
             Drawing.End();
 
 
@@ -421,14 +421,14 @@ namespace Unnamed
             GraphicsDevice.SetRenderTarget(FinalRenderTarget); //For some damn reason man don't change back the render target
             Drawing.Draw(bloomTexture, Vector2.Zero);
             Drawing.Draw(SecondRenderTarget, Vector2.Zero, Color.White);
-            
+
 
 
             Drawing.End();
 
 
 
-            
+
 
             GraphicsDevice.SetRenderTarget(null);
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
@@ -448,7 +448,7 @@ namespace Unnamed
             PauseMenu?.Render();
 
             Drawing.End();
-            
+
 
             Drawing.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
@@ -480,7 +480,7 @@ namespace Unnamed
             var level = Levels.GetLdtkLevel(InitLevel);
             worldDepth = level.WorldDepth;
             Engine.CurrentMap.CurrentLevel = new Level(Levels.GetLevelData(level));
-            
+
             Levels.LoadWorldGrid(World, worldDepth);
             Engine.CurrentMap.CurrentLevel.LoadNoAutoTile();
 
@@ -523,15 +523,15 @@ namespace Unnamed
 
             WindAmbience = Audio.PlayEvent("Ambience/WindAmbience");
 
-            if(World == JetpackWorld)
+            if (World == JetpackWorld)
                 Music = Audio.PlayEvent("Soundtrack/Music");
-            else if(World == SwingWorld)
+            else if (World == SwingWorld)
                 Music = Audio.PlayEvent("Soundtrack/MusicAtmo");
-            else if(World == BossWorld)
+            else if (World == BossWorld)
             {
-                if(int.TryParse(InitLevel.Substring(InitLevel.Length - 2), out int last) && (last == 69 || last == 70 || last == 73))
+                if (int.TryParse(InitLevel.Substring(InitLevel.Length - 2), out int last) && (last == 69 || last == 70 || last == 73))
                 {
-                    if(last != 73)
+                    if (last != 73)
                         Music = Audio.PlayEvent("Soundtrack/Prefight");
                 }
                 else
@@ -632,8 +632,11 @@ namespace Unnamed
         public static void Freeze(float time)
         {
             freezePaused = true;
-            freezeTimer = new Timer(time, false, null, () => { freezePaused = false;
-                Input.OldState = freezeState; });
+            freezeTimer = new Timer(time, false, null, () =>
+            {
+                freezePaused = false;
+                Input.OldState = freezeState;
+            });
             freezeState = Input.CurrentState;
         }
 
@@ -645,8 +648,8 @@ namespace Unnamed
             else if (InitWorld == 3) return SwingAndJetpack = LDtkFile.LoadWorld(LDtkTypes.Worlds.SwingJetpack.Iid);
             else throw new Exception("World Index does not refer to any World");
         }
-        
-        #if DEBUG
+
+#if DEBUG
         private void RefreshLDtk()
         {
             if (Engine.CurrentMap.Data.GetEntities<Player>() == null)
@@ -654,7 +657,7 @@ namespace Unnamed
 
             if (waitRefresh)
                 return;
-            
+
             waitRefresh = true;
 
             Tile t = (Tile)Engine.CurrentMap.Instantiate(new Tile(Vector2.Zero, 0, 0, Sprite.None));
@@ -676,7 +679,7 @@ namespace Unnamed
                 Engine.CurrentMap.CurrentLevel.Unload();
                 LDtkLevel lvl = World.LoadLevel(Levels.LastLDtkLevel.Iid);
                 new Level(Levels.GetLevelData(lvl)).LoadNoAutoTile();
-            
+
                 Engine.CurrentMap.Data.EntitiesByType[typeof(Grid)][0].SelfDestroy();
                 Levels.LoadWorldGrid(World, lvl.WorldDepth);
 
@@ -685,12 +688,12 @@ namespace Unnamed
                     lvlSize.Y = 180;
                 Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, lvlSize);
 
-                if(Engine.Player != null)
+                if (Engine.Player != null)
                     player.InstaDeath();
                 t.SelfDestroy();
             }));
-            
+
         }
-        #endif
+#endif
     }
 }

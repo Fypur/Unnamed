@@ -1,10 +1,6 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -36,7 +32,7 @@ namespace Unnamed
 
             UpdateBigFire();
 
-            AddComponent(new Coroutine(Coroutine.WaitUntil(() => Platformer.player.Velocity != Vector2.Zero), Coroutine.Do(() => 
+            AddComponent(new Coroutine(Coroutine.WaitUntil(() => Platformer.player.Velocity != Vector2.Zero), Coroutine.Do(() =>
             this.Speed = speed)));
 
             HurtBox h = new HurtBox(-dirVec * 10, Width, Height);

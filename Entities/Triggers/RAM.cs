@@ -1,11 +1,6 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -54,7 +49,7 @@ namespace Unnamed
 
         public override void WhileWait(Player player)
         {
-            
+
         }
 
         public override void OnCollected(Player player)
@@ -62,7 +57,8 @@ namespace Unnamed
             AddComponent(new Timer(0.2f, true, (timer) =>
             {
                 Sprite.Scale.Y = timer.Value / timer.MaxValue;
-            }, () => {
+            }, () =>
+            {
 
                 Engine.Cam.LightShake();
                 Engine.CurrentMap.MiddlegroundSystem.Emit(CollectedParticle, Pos + HalfSize.OnlyX(), 30);

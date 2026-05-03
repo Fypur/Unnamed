@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Fiourp;
+﻿using Fiourp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Unnamed
 {
@@ -40,7 +35,7 @@ namespace Unnamed
             DestroyOnX = Width >= Height ? false : true;
             SolidDir = fullSolid;
 
-            if(fullSolid != null)
+            if (fullSolid != null)
             {
                 Point spritePos;
                 Point spriteSize;
@@ -161,6 +156,6 @@ namespace Unnamed
             }
 
             return true;
-        } 
+        }
     }
 }

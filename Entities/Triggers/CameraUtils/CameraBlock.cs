@@ -1,10 +1,5 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -20,7 +15,7 @@ namespace Unnamed
 
         public override bool CollidingConditions(Collider other)
         {
-            if(other.ParentEntity != Engine.Cam)
+            if (other.ParentEntity != Engine.Cam)
                 return false;
 
             return base.CollidingConditions(other);

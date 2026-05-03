@@ -1,12 +1,9 @@
 ﻿using Fiourp;
-using LDtkTypes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Runtime.ConstrainedExecution;
 
 namespace Unnamed
 {
@@ -179,7 +176,7 @@ namespace Unnamed
         {
             base.Update();
 
-            if(!stateMachine.Is(States.EnergyBeam) && !stateMachine.Is(States.Dead))
+            if (!stateMachine.Is(States.EnergyBeam) && !stateMachine.Is(States.Dead))
                 SetCannonPos();
 
             if (!stateMachine.Is(States.Dead) && Collider.Collide(Engine.Player))
@@ -241,15 +238,15 @@ namespace Unnamed
                 yield return null;
             EmitLandingParticules();
 
-            if(!invicibleTimer)
+            if (!invicibleTimer)
                 invulnerable = false;
             NextState();
         }
 
         private void EmitLandingParticules()
         {
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, rotColl.Coords[2], rotColl.Coords[3], 30, rotation);
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, rotColl.Coords[2], rotColl.Coords[3], 30, rotation + 180);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, rotColl.WorldVertices[2], rotColl.WorldVertices[3], 30, rotation);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, rotColl.WorldVertices[2], rotColl.WorldVertices[3], 30, rotation + 180);
         }
 
         private void SwitchRot(int rotId, float time)
@@ -259,7 +256,8 @@ namespace Unnamed
 
             switch (rotId)
             {
-                case 0: case 1:
+                case 0:
+                case 1:
                     toRot = 0;
                     break;
                 case 2:
@@ -306,7 +304,7 @@ namespace Unnamed
 
             if (approxRot == 90)
                 Sprite.Play("wallRight");
-            else if(approxRot == 270)
+            else if (approxRot == 270)
                 Sprite.Play("wallRight");
             else
                 Sprite.Play("idle");
@@ -375,7 +373,7 @@ namespace Unnamed
                     targDir = r.EndPoint;
 
                 SetCannonPos();
-                l.Positions[0] = cannonPos; 
+                l.Positions[0] = cannonPos;
                 l.Positions[1] = targDir;
 
                 timer -= Engine.Deltatime;
@@ -395,7 +393,7 @@ namespace Unnamed
             fastFire.Acceleration = Vector2.Zero;
 
             timer = 0.5f;
-            for(int i = 0; timer >= 0; i++)
+            for (int i = 0; timer >= 0; i++)
             {
                 if (i % 2 == 0)
                     l.Thickness += 1;
@@ -462,7 +460,7 @@ namespace Unnamed
             Vector2 farthest = Vector2.Zero;
             float d = 0;
             float d2;
-            foreach(Vector2 v in EscapePoints)
+            foreach (Vector2 v in EscapePoints)
             {
                 d2 = Vector2.DistanceSquared(v, player.MiddlePos);
                 if (d2 >= d)
@@ -480,7 +478,7 @@ namespace Unnamed
         {
             stateIndex++;
 
-            if(stateIndex >= attackSequences[chosenSequence].Length)
+            if (stateIndex >= attackSequences[chosenSequence].Length)
             {
                 stateMachine.Switch(States.Jumping);
                 stateIndex = -1;
@@ -497,7 +495,7 @@ namespace Unnamed
 
             invulnerable = true;
             invicibleTimer = true;
-            AddComponent(new Timer(2, true, null, () => { invulnerable = false; invicibleTimer = false;  }));
+            AddComponent(new Timer(2, true, null, () => { invulnerable = false; invicibleTimer = false; }));
 
             if (!stateMachine.Is(States.Jumping))
             {
@@ -544,8 +542,8 @@ namespace Unnamed
                 Platformer.player.OnDeath += resetTimeScale;
 
                 yield return new Coroutine.WaitForSeconds(0.4f);
-                
-                
+
+
                 AddComponent(new Timer(0.3f, true, (t) =>
                 {
                     if (stop)
@@ -555,8 +553,10 @@ namespace Unnamed
                     }
 
                     Platformer.TimeScale = 0.2f + t.AmountCompleted() * 0.7f;
-                }, () => { 
-                    Platformer.TimeScale = 1; Platformer.player.OnDeath -= resetTimeScale;  }));
+                }, () =>
+                {
+                    Platformer.TimeScale = 1; Platformer.player.OnDeath -= resetTimeScale;
+                }));
 
                 AddComponent(new Timer(0.2f, true, (t) =>
                 {
@@ -643,13 +643,13 @@ namespace Unnamed
             Drawing.EndPrimitives();
             Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget, null, BlendState.Opaque);
 
-            foreach(float c in circleLengths)
+            foreach (float c in circleLengths)
             {
                 if (c > 0)
                     Drawing.DrawCircle(MiddlePos, c, 0.1f, Color.White);
 
                 float t = 1.02f * c - 12;
-                if(t > 0)
+                if (t > 0)
                     Drawing.DrawCircle(MiddlePos, t, 0.1f, Color.Transparent);
             }
 
@@ -674,7 +674,7 @@ namespace Unnamed
             cannon.Rotation = finalRot;
 
 
-            cannonPart1.Offset = rotColl.Coords[0] - Pos + VectorHelper.Rotate(new Vector2(6, 4), rotation);
+            cannonPart1.Offset = rotColl.WorldVertices[0] - Pos + VectorHelper.Rotate(new Vector2(6, 4), rotation);
             cannonPart2.Offset = cannonPart1.Offset + VectorHelper.Rotate(new Vector2(CannonLength, 0), cannonPart1.Rotation);
             cannon.Offset = cannonPart2.Offset + VectorHelper.Rotate(new Vector2(CannonLength, 0), cannonPart2.Rotation);
 
@@ -696,7 +696,7 @@ namespace Unnamed
 
             Platformer.Music.getPlaybackState(out FMOD.Studio.PLAYBACK_STATE state);
 
-            if(state != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+            if (state != FMOD.Studio.PLAYBACK_STATE.PLAYING)
                 Platformer.Music = Audio.PlayEvent("Soundtrack/Chase");
             else
             {
@@ -731,7 +731,7 @@ namespace Unnamed
             {
                 int index = circleLengths.Count;
                 circleLengths.Add(1);
-                for(int i = 1; i < 500; i++)
+                for (int i = 1; i < 500; i++)
                 {
                     if (index >= circleLengths.Count)
                         break;
@@ -750,7 +750,7 @@ namespace Unnamed
                 //Input.State oldS = Input.OldState;
 
                 float time = 0;
-                while(time < t)
+                while (time < t)
                 {
                     Input.CurrentState = new Input.State();
                     //Input.OldState = new Input.State();
@@ -799,15 +799,15 @@ namespace Unnamed
             cannonPart1.Color = Color.Green;
             cannonPart2.Color = Color.Green;
             cannon.Color = Color.Green;
-            
+
             LineRenderer l = (LineRenderer)AddComponent(new LineRenderer(cannonPos, targDir, null, 1, Color.LightCoral, null, null));
 
             Sound3D sfx = new("SFX/Boss/ChargeBeam", autoRemove: true);
             AddComponent(sfx);
 
             timer = 0.7f * speedMult;
-            while(timer >= 0)
-            {   
+            while (timer >= 0)
+            {
                 SetCannonPos();
                 cannon.Rotation = (targDir - MiddlePos).ToAngleRad();
                 cannonPos = Pos + cannon.Offset + VectorHelper.Rotate(new Vector2(21, 3), cannon.Rotation);

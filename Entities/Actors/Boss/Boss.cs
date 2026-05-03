@@ -4,8 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -107,7 +105,7 @@ namespace Unnamed
 
                 if (Vector2.DistanceSquared(zones[3].Pos, Pos + Velocity) > 64 * 64)
                 {
-                    if(!(walkingRight == Pos.X < zones[3].Pos.X))
+                    if (!(walkingRight == Pos.X < zones[3].Pos.X))
                     {
                         Walking(!walkingRight);
                         RemoveComponent(timer);
@@ -133,16 +131,16 @@ namespace Unnamed
             Vector2 p = player.Pos;
 
             Vector2 aimed;
-            if(LeftZone)
+            if (LeftZone)
                 aimed = new Vector2(zones[1].Pos.X, p.Y);
             else
                 aimed = new Vector2(zones[2].Pos.X + zones[2].Width, p.Y);
 
             if (aimed.Y - zones[2].Pos.Y < 24)
                 aimed.Y = zones[2].Pos.Y + 24;
-            
 
-            AddComponent(new Timer(jumpChargeTime, true, (timer) => 
+
+            AddComponent(new Timer(jumpChargeTime, true, (timer) =>
             {
                 Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), 3);
             }, () =>
@@ -253,12 +251,12 @@ namespace Unnamed
             int range = (int)Math.Max(r, 30);*/
 
             float range = 35;
-            if(right)
+            if (right)
                 range = -VectorHelper.ToAngleDegrees(zones[2].Pos + new Vector2(zones[2].Width, 0) - MiddlePos);
             else
                 range = VectorHelper.ToAngleDegrees(zones[1].Pos - MiddlePos) + 180;
 
-            for(int i = 1; i <= numBullets; i++)
+            for (int i = 1; i <= numBullets; i++)
             {
                 var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(MiddlePos, right ? -i * range / numBullets : i * range / numBullets + 180));
                 Engine.CurrentMap.CurrentLevel.EntityData.Add(m);

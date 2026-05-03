@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Fiourp;
+using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-using Fiourp;
 
 namespace Unnamed
 {
@@ -33,7 +30,7 @@ namespace Unnamed
             OnPulled();
 
             Active = false;
-            if(TimeToReactive != 0)
+            if (TimeToReactive != 0)
                 AddComponent(new Timer(TimeToReactive, true, null, () => Active = true));
         }
 

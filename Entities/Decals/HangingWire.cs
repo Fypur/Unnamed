@@ -1,10 +1,6 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -31,9 +27,9 @@ namespace Unnamed
         {
             Vector2 topLeft = controlPoints[0];
             Vector2 bottomRight = controlPoints[0];
-            foreach(Vector2 controlPoint in controlPoints)
+            foreach (Vector2 controlPoint in controlPoints)
             {
-                if(controlPoint.X < topLeft.X)
+                if (controlPoint.X < topLeft.X)
                     topLeft.X = controlPoint.X;
                 if (controlPoint.Y < topLeft.Y)
                     topLeft.Y = controlPoint.Y;
@@ -56,7 +52,7 @@ namespace Unnamed
             {
                 for (int i = 1; i < bezier.ControlPoints.Count - 1; i++)
                 {
-                    if(going)
+                    if (going)
                         bezier.ControlPoints[i] = ControlPoints[i] + Vector2.UnitY * moveAmount * Ease.Reverse(timer.Value / timer.MaxValue);
                     else
                         bezier.ControlPoints[i] = ControlPoints[i] + Vector2.UnitY * moveAmount * timer.Value / timer.MaxValue;

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fiourp;
+﻿using Fiourp;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace Unnamed
 {
@@ -12,7 +9,7 @@ namespace Unnamed
     {
         protected virtual bool Conditions(Player player) => true;
 
-        public PlayerTriggerComponent(Vector2 localPosition, float width, float height) 
+        public PlayerTriggerComponent(Vector2 localPosition, float width, float height)
             : base(localPosition, width, height, new List<Type> { typeof(Player) })
         { }
 

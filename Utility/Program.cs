@@ -10,7 +10,8 @@ namespace Unnamed
             using (var game = new Platformer())
             {
 #if DEBUG
-                if (args.Length >= 1 && args[0] != "run"){
+                if (args.Length >= 1 && args[0] != "run")
+                {
                     Platformer.InitLevel = args[0];
                     Console.WriteLine(args[0]);
                 }

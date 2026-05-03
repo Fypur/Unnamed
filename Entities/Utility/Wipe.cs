@@ -1,10 +1,6 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -22,7 +18,7 @@ namespace Unnamed
 
         public bool Paused { get; private set; }
 
-        public Wipe(Rectangle wiped, float wipeTime, Color color, Func<bool> pausedUntil = null, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : 
+        public Wipe(Rectangle wiped, float wipeTime, Color color, Func<bool> pausedUntil = null, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) :
             base(wiped.Location.ToVector2() - new Vector2(wiped.Width, 0), wiped.Width, wiped.Height, new Sprite(color))
         {
             Layer = 3;
@@ -30,7 +26,7 @@ namespace Unnamed
 
             this.wiped = wiped;
             this.wipeTime = wipeTime;
-            if(pausedUntil != null)
+            if (pausedUntil != null)
                 this.Paused = pausedUntil();
             this.onTransition = onTransition;
             this.onEnd = onEnd;
@@ -59,7 +55,7 @@ namespace Unnamed
                 bool doOnce = false;
                 AddComponent(new Timer(wipeTime / 2, true, (timer) =>
                 {
-                    if(pausedUntil != null)
+                    if (pausedUntil != null)
                     {
                         timer.PauseUntil(pausedUntil);
                         if (!pausedUntil())
@@ -92,9 +88,9 @@ namespace Unnamed
             }));
         }
 
-        public void Resume() 
-        { 
-            if(Paused == false)
+        public void Resume()
+        {
+            if (Paused == false)
                 return;
             Paused = false;
         }

@@ -1,13 +1,9 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
-{   
+{
     public class ScreenFlash : UIElement
     {
         public ScreenFlash(float fadeOutTime, Func<float, float> ease) : base(Vector2.Zero, (int)(Engine.ScreenSize.X * Options.CurrentScreenSizeMultiplier), (int)(Engine.ScreenSize.Y * Options.CurrentScreenSizeMultiplier), new Sprite(new Color(Color.Gray, 25)))

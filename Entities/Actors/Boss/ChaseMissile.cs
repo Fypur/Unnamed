@@ -49,7 +49,7 @@ namespace Unnamed
             base.Update();
 
 
-            trail.LocalPosition = (colliderRotated.Coords[3] + colliderRotated.Coords[0]) / 2;
+            trail.LocalPosition = (colliderRotated.WorldVertices[3] + colliderRotated.WorldVertices[0]) / 2;
             trail.LocalPosition += (MiddlePos - trail.LocalPosition) / 3 - Pos;
 
 

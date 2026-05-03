@@ -1,14 +1,10 @@
 ﻿using Fiourp;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -42,14 +38,14 @@ namespace Unnamed
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(".");
 
-                for(int i = 0; !parser.EndOfData; i++)
+                for (int i = 0; !parser.EndOfData; i++)
                 {
                     string[] fields = parser.ReadFields();
 
                     positions[i] = new Vector2((int)float.Parse(fields[0]), (int)float.Parse(fields[1]));
                     rotations[i] = float.Parse(fields[2]);
                     textureIds[i] = fields[3].Substring(0, fields[3].Length - 1);
-                    textureFrames[i] =  int.Parse(fields[3].Substring(fields[3].Length - 1));
+                    textureFrames[i] = int.Parse(fields[3].Substring(fields[3].Length - 1));
                     jetpacking[i] = fields[4] == "True";
                 }
             }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fiourp;
+﻿using Fiourp;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Unnamed
 {
@@ -19,7 +15,7 @@ namespace Unnamed
         public HurtBox(Vector2 localPosition, float radius) : base(localPosition, radius)
         { }
 
-        public HurtBox(Vector2 localPosition, AABBCollider collider) : base(localPosition, collider) {  }
+        public HurtBox(Vector2 localPosition, AABBCollider collider) : base(localPosition, collider) { }
 
         public override void Added()
         {

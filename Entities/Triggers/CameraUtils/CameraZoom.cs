@@ -1,8 +1,5 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using Unnamed;
 
 namespace Unnamed
 {
@@ -59,7 +56,7 @@ namespace Unnamed
 
         private void KillAllCameraZoomTimers()
         {
-            foreach(CameraZoom camZoom in Engine.CurrentMap.Data.EntitiesByType[typeof(CameraZoom)])
+            foreach (CameraZoom camZoom in Engine.CurrentMap.Data.EntitiesByType[typeof(CameraZoom)])
                 camZoom.RemoveComponents<Timer>();
         }
     }

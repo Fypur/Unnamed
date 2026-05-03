@@ -1,11 +1,6 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -25,7 +20,7 @@ namespace Unnamed
             if (activated)
                 return;
 
-            activated = true;   
+            activated = true;
 
             base.OnTriggerEnter(entity);
 

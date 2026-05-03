@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fiourp;
+﻿using Fiourp;
+using Microsoft.Xna.Framework;
 
 namespace Unnamed
 {
@@ -29,12 +24,12 @@ namespace Unnamed
 
         private bool canActivate = true;
 
-        public FuelRefill(Vector2 position, float respawnTime) : base(position, new Vector2(size), new Sprite()) 
+        public FuelRefill(Vector2 position, float respawnTime) : base(position, new Vector2(size), new Sprite())
         {
             Sprite.Add(Sprite.AllAnimData["Refill"]);
             Sprite.Play("rotate");
             Sprite.Offset.Y += 1;
-            
+
 
             //Sprite.Scale = Vector2.One * 10;
             RespawnTime = respawnTime;

@@ -2,10 +2,6 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -95,8 +91,8 @@ namespace Unnamed
 
             //Show Jetpack Picked Up UI
             TextBox s = (TextBox)AddChild(new TextBox("Jetpack has been acquired", "LexendDeca", Engine.CurrentMap.CurrentLevel.Pos + Engine.Cam.Size / 2 - new Vector2(0, 0), 800, 20, 1, Color.Transparent, true, TextBox.Alignement.Center));
-            
-            for(float t = 0; t < 0.5f; t += Engine.Deltatime)
+
+            for (float t = 0; t < 0.5f; t += Engine.Deltatime)
             {
                 s.Color = new Color(Color.White, t / 0.5f);
                 yield return null;
@@ -123,7 +119,7 @@ namespace Unnamed
             Sprite.Active = false;
             Sprite.Visible = false;
 
-            if(id == 1)
+            if (id == 1)
             {
                 Engine.CurrentMap.Data.GetEntity<TextSpawn>().Text = "You Just a got a jetpack!\nHold X or Square and the 4\narrow keys to use it";
                 Engine.CurrentMap.Data.GetEntity<TextSpawn>().TextBox.ProgressiveRemove(0.01f);

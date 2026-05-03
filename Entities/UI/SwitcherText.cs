@@ -2,9 +2,6 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -49,7 +46,7 @@ namespace Unnamed
 
         public override void NotPossible()
         {
-            
+
         }
 
         public override void OnAddSelectable()

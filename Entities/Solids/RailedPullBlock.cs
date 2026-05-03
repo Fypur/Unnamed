@@ -3,8 +3,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -96,7 +94,7 @@ namespace Unnamed
 
                     Velocity += grappledEntity.MiddleExactPos - MiddleExactPos;
 
-                    
+
 
                     //TODO: Rework this to make it more smooth
                 }
@@ -132,9 +130,9 @@ namespace Unnamed
                 {
                     splittedVelocity = other;
                     currentPosIndex--;
-                } 
+                }
             }
-            else if(currentPosIndex != RailPositions.Length - 2 && from == RailPositions[currentPosIndex + 1])
+            else if (currentPosIndex != RailPositions.Length - 2 && from == RailPositions[currentPosIndex + 1])
             {
                 Vector2 other = VectorHelper.ClosestOnSegment(from + old, RailPositions[currentPosIndex + 1], RailPositions[currentPosIndex + 2]) - from;
 
@@ -163,7 +161,7 @@ namespace Unnamed
             currentIndex = -1;
             float minDistance = float.PositiveInfinity;
             Vector2 EndPos = position;
-            for(int i = 0; i < railPositions.Length - 1; i++)
+            for (int i = 0; i < railPositions.Length - 1; i++)
             {
                 Vector2 possiblePos = VectorHelper.ClosestOnSegment(position, railPositions[i], railPositions[i + 1]);
                 float distance = Vector2.Distance(possiblePos, position);
@@ -200,7 +198,7 @@ namespace Unnamed
 
         void ISwinged.OnStopSwing(Entity unGrappledEntity)
         {
-            if(grappledEntity == unGrappledEntity)
+            if (grappledEntity == unGrappledEntity)
                 grappledEntity = null;
         }
     }

@@ -1,10 +1,6 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
@@ -56,7 +52,7 @@ namespace Unnamed
         {
             base.Render();
 
-             Polygon.DrawCirclePolygon(Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance), MiddlePos, MaxSwingDistance, new Color(Color.DeepSkyBlue, 120));
+            Polygon.DrawCirclePolygon(Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance), MiddlePos, MaxSwingDistance, new Color(Color.DeepSkyBlue, 120));
         }
 
         public override void OnDestroy()

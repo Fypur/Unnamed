@@ -1,18 +1,13 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Unnamed
 {
     public class PauseMenu : UIElement
     {
         public PauseMenu()
-            : base (Vector2.Zero, 1280, 720, Sprite.None)
+            : base(Vector2.Zero, 1280, 720, Sprite.None)
         { }
 
         public override void Render()
@@ -50,7 +45,8 @@ namespace Unnamed
                     SwitchTo(new MainMenu.OptionsSubMenu<MainSubMenu>());
                 }));
 
-                elements.Add(new TextSelectable("Save & Exit to Menu", "LexendDeca", HalfSize + new Vector2(0, 150), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () => {
+                elements.Add(new TextSelectable("Save & Exit to Menu", "LexendDeca", HalfSize + new Vector2(0, 150), 500, 100, 1, Color.White, true, TextBox.Alignement.Center, () =>
+                {
                     Saving.Save(new()
                     {
                         CurrentLevel = Levels.LastLDtkLevel.Identifier,

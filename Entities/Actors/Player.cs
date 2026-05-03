@@ -1,12 +1,10 @@
 ﻿using Fiourp;
+using FMOD.Studio;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using FMOD.Studio;
-using Unnamed;
 
 namespace Unnamed
 {
@@ -29,7 +27,7 @@ namespace Unnamed
         private const float maxPotentialFallingSpeed = 400;
         private const int initHealth = 1;
         private const float invicibilityTime = 2;
-        
+
         private const float acceleration = 1500f;
         private const float airAcceleration = 900f;
         private const float swingAcceleration = 3f; //Swing accel is very low since friction isn't applied
@@ -39,7 +37,7 @@ namespace Unnamed
         private const float wallJumpSideForce = 160f;
         private const float jumpForce = 200f;
         private const float constGravityScale = 1.2f;
-        
+
         private const float maxJumpTime = 0.4f;
         private const float dashTime = 0.2f;
         private const float unstickTime = 0.1f;
@@ -51,7 +49,7 @@ namespace Unnamed
         //Can wall jump if wall is this far away from the wall in pixels
         private const float wallJumpPixelGap = 4;
         private const int maxBonkOffset = 3;
-        
+
         public static readonly ParticleType Dust = Particles.Dust.Copy();
 
         #endregion
@@ -145,7 +143,7 @@ namespace Unnamed
             bool startRun = false;
             stateMachine.SetStateFunctions(States.Running, () => { Sprite.Play("run"); Audio.PlayEvent("SFX/Player/FootStep"); startRun = true; }, () =>
             {
-                if(Rand.NextDouble() < 0.1f)
+                if (Rand.NextDouble() < 0.1f)
                     Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.LightBigDust, new Rectangle(Bounds.X + (Facing == 1 ? 2 : 3), Bounds.Bottom - 2, 3, 3), 1);
 
                 Sprite.OnFrameChange = () =>
@@ -173,12 +171,13 @@ namespace Unnamed
                     AddComponent(trail);
 
                     if (grappledSolid is ISwinged swinged)
-                        swinged.OnSwing(this, () => isAtSwingEnd); }, null,
+                        swinged.OnSwing(this, () => isAtSwingEnd);
+                }, null,
                         () =>
                 {
                     if (grappledSolid is ISwinged swinged)
                         swinged.OnStopSwing(this);
-                    if(Sprite.Rotation != 0)
+                    if (Sprite.Rotation != 0)
                     {
                         float initRot = Sprite.Rotation;
                         //Debug.Log(Sprite.Rotation);
@@ -195,7 +194,7 @@ namespace Unnamed
                             {
                                 Sprite.PixelShader = null;
                                 DataManager.PixelShaders["WhiteBar"].Parameters["barLocation"].SetValue(-1);
-                            } ));
+                            }));
                         }
 
                         AddComponent(new Timer(0.25f, true, (timer) =>
@@ -203,8 +202,8 @@ namespace Unnamed
                             if (onGround)
                                 timer.TimeScale = 4;
 
-                            if(initRot > (float)Math.PI / 2 && initRot < (float)Math.PI)
-                                Sprite.Rotation = initRot + Ease.Reverse(timer.Value / timer.MaxValue) * (2 * (float)Math.PI - initRot );
+                            if (initRot > (float)Math.PI / 2 && initRot < (float)Math.PI)
+                                Sprite.Rotation = initRot + Ease.Reverse(timer.Value / timer.MaxValue) * (2 * (float)Math.PI - initRot);
                             else
                                 Sprite.Rotation = initRot * (timer.Value / timer.MaxValue);
                         }, () => Sprite.Rotation = 0));
@@ -246,10 +245,10 @@ namespace Unnamed
                 Jetpacking = false;
                 heldSwing = false;
 
-                if(jetpackAudio.Sound.isValid())
+                if (jetpackAudio.Sound.isValid())
                     Audio.StopEvent(jetpackAudio.Sound);
 
-                
+
             }
 
             Sprite.Active = CanAnimateSprite || CanMove;
@@ -281,7 +280,7 @@ namespace Unnamed
 
             base.Update();
 
-            if (!CanMove)                
+            if (!CanMove)
                 return;
             else if (!couldMove)
             {
@@ -304,10 +303,10 @@ namespace Unnamed
                 {
                     if (xMoving == 0)
                         xMoving = Input.GetLeftThumbstick().X;
-                    if(yMoving == 0)
+                    if (yMoving == 0)
                         yMoving = -Input.GetLeftThumbstick().Y;
-                    xMovingRaw = xMoving > 0.3f ? 1 : xMoving <  -0.3f ? -1 : 0;
-                    yMovingRaw = yMoving > 0.4f ? 1 : yMoving <  -0.2f ? -1 : 0;
+                    xMovingRaw = xMoving > 0.3f ? 1 : xMoving < -0.3f ? -1 : 0;
+                    yMovingRaw = yMoving > 0.4f ? 1 : yMoving < -0.2f ? -1 : 0;
                 }
                 else
                 {
@@ -319,7 +318,7 @@ namespace Unnamed
             if (onGround && stateMachine.Is(States.Swinging))
             {
                 //if (Sprite.Rotation == (swingPositions[swingPositions.Count - 1] - MiddlePos).ToAngle() + (float)Math.PI / 2)
-                    //Sprite.Rotation = 0;
+                //Sprite.Rotation = 0;
                 stateMachine.Switch(States.Idle);
             }
 
@@ -344,7 +343,7 @@ namespace Unnamed
                     //Debug.LogUpdate("accel");
                     return Approach(Velocity.X, (xMoving > 0.3f ? 1 : xMoving < -0.3f ? -1 : xMoving) * maxSpeed, acceleration * Engine.Deltatime);
                 }
-                    //Debug.LogUpdate("fric");
+                //Debug.LogUpdate("fric");
                 return Approach(Velocity.X, 0, friction * Engine.Deltatime);
             }
 
@@ -392,7 +391,7 @@ namespace Unnamed
                 {
                     bool TryJump()
                     {
-                        if(!CanMove)
+                        if (!CanMove)
                             return false;
 
                         if (onGround || inCoyoteTime)
@@ -408,12 +407,12 @@ namespace Unnamed
                             WallJump();
                             return true;
                         }
-                        
+
                         return false;
                     }
 
                     //Take the jump if on the ground, else wait for jump grace period
-                    if(!TryJump())
+                    if (!TryJump())
                     {
                         AddComponent(new Timer(jumpGraceTime, true, (timer) =>
                         {
@@ -434,7 +433,7 @@ namespace Unnamed
                 else
                     Velocity.Y += 9.81f * gravityScale;
 
-                if(stateMachine.Is(States.WallSliding))
+                if (stateMachine.Is(States.WallSliding))
                     Velocity.Y = Math.Min(Velocity.Y, maxFallSlidingSpeed);
                 else if (!stateMachine.Is(States.Swinging))
                 {
@@ -462,7 +461,7 @@ namespace Unnamed
 
                 boostBar.Value = jetpackTime / maxJetpackTime;
 
-                if(onGround || onWall)
+                if (onGround || onWall)
                     cancelJump = false;
 
                 if (Velocity.Y >= maxFallingSpeed)
@@ -477,7 +476,7 @@ namespace Unnamed
                     ThrowRope();
                 if (SwingControls.Is() && stateMachine.Is(States.Swinging))
                     Swing();
-                else if(SwingControls.IsUp())
+                else if (SwingControls.IsUp())
                 {
                     heldSwing = false;
 
@@ -550,8 +549,8 @@ namespace Unnamed
 
                 ActOnSwing(determinedGrappledSolid);
             }
-            
-            
+
+
             //If you want to use grace time with KeyDown instead of just Key
             /*if (!CheckForSwingingPoint(out Solid determinedGrappledSolid, out float distance) && !inSwingGraceTime)
             {
@@ -655,7 +654,7 @@ namespace Unnamed
                             linePositions.AddRange(reversedPositions);
                             line.Positions = linePositions;*/
 
-                            if(t.Value > 0)
+                            if (t.Value > 0)
                             {
                                 //Vector2 m = Pos + new Vector2(5, 0) * (float)Math.Cos(Sprite.Rotation);
                                 Vector2 m = MiddlePos + (determinedGrappledSolid.MiddlePos - MiddlePos).Normalized() * 5;
@@ -689,10 +688,12 @@ namespace Unnamed
                     bool deactivateLine = false;
 
                     AddComponent(new Timer(0.1f, true,
-                        (timer) => {
+                        (timer) =>
+                        {
                             Velocity.Y *= 0.5f;
                         },
-                        () => {
+                        () =>
+                        {
                             trigger.Pulled();
                             deactivateLine = true;
                             stateMachine.Switch(States.Ascending);
@@ -701,7 +702,8 @@ namespace Unnamed
 
                     AddComponent(new LineRenderer(Pos, determinedGrappledSolid.Pos, DataManager.Textures["Player/rope"], 2, Color.White,
                         (line) => { if (deactivateLine) RemoveComponent(line); },
-                        (line) => {
+                        (line) =>
+                        {
                             line.Positions[0] = Pos + new Vector2(Width / 2, Height / 2);
                             line.Positions[1] = determinedGrappledSolid.Pos;
                         }));
@@ -734,7 +736,7 @@ namespace Unnamed
             if (!swingAudio.isPlaying())
                 swingAudio.Play();
 
-            if(isAtSwingEnd)
+            if (isAtSwingEnd)
                 swingAudio.SetVolume(Math.Clamp(Velocity.LengthSquared() / (150 * 150), 0, 1));
             else
                 swingAudio.SetVolume(0);
@@ -821,8 +823,8 @@ namespace Unnamed
                     else
                         break;
 
-                    
-                    
+
+
                 }
             }
 
@@ -874,11 +876,12 @@ namespace Unnamed
 
                 Velocity.Y = -jumpForce * (timer.Value / maxJumpTime) + lift;
 
-            }, () => {
+            }, () =>
+            {
                 cancelJump = false;
                 LiftSpeed = new Vector2(LiftSpeed.X, 0);
                 if (stateMachine.Is(States.Jumping))
-                    stateMachine.Switch(States.Ascending); 
+                    stateMachine.Switch(States.Ascending);
             }));
         }
 
@@ -927,7 +930,7 @@ namespace Unnamed
                 if (!collisionY)
                     Velocity.Y = -jumpForce * coef * timer.Value / timer.MaxValue;
 
-            }, () => { cancelJump = false;  if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Ascending); } ));
+            }, () => { cancelJump = false; if (stateMachine.Is(States.Jumping)) stateMachine.Switch(States.Ascending); }));
         }
 
         public void CancelJump()
@@ -936,16 +939,17 @@ namespace Unnamed
         private void WallSlide()
         {
             stateMachine.Switch(States.WallSliding);
-            if(Velocity.Y > 0)
+            if (Velocity.Y > 0)
                 gravityScale = 0.5f * constGravityScale;
 
-            if(onRightWall)
+            if (onRightWall)
                 Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X + Width - 1, (int)Pos.Y, 1, Height), 2);
             else
                 Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X, (int)Pos.Y, 1, Height), 2);
-            
 
-            Action OnUnstick = () => {
+
+            Action OnUnstick = () =>
+            {
 
                 if (xMovingRaw == 0)
                 {
@@ -998,7 +1002,8 @@ namespace Unnamed
             int dir = Facing;
             Velocity.X += dashSpeed * dir;
 
-            AddComponent(new Timer(dashTime, true, (timer) => {
+            AddComponent(new Timer(dashTime, true, (timer) =>
+            {
                 if (collisionX)
                     timer.End();
                 else
@@ -1051,7 +1056,7 @@ namespace Unnamed
             //Velocity.Y = Math.Clamp(Velocity.Y, -140, 140);
 
             Vector2 d = dir * coef * coef2 * new Vector2(jetpackPowerX, jetpackPowerY);
-            d = Vector2.Clamp(d + Velocity, new Vector2(-maxJetpackSpeedX,  -maxJetpackSpeedY) * VectorHelper.Abs(coef2), new Vector2(maxJetpackSpeedX, maxFallingSpeed + maxJetpackSpeedY) * VectorHelper.Abs(coef2)) - Velocity;
+            d = Vector2.Clamp(d + Velocity, new Vector2(-maxJetpackSpeedX, -maxJetpackSpeedY) * VectorHelper.Abs(coef2), new Vector2(maxJetpackSpeedX, maxFallingSpeed + maxJetpackSpeedY) * VectorHelper.Abs(coef2)) - Velocity;
 
             if (Math.Sign(d.X) != Math.Sign(xMoving))
                 d.X = 0;
@@ -1129,7 +1134,7 @@ namespace Unnamed
 
             //Engine.CurrentMap.MiddlegroundSystem.Emit(ExplosionParticle, Bounds, 10);
 
-            
+
         }
 
         public void InstaDeath()
@@ -1174,7 +1179,7 @@ namespace Unnamed
                 Levels.ReloadLastLevelFetched();
 
                 Vector2 groundedRespawnPos = RespawnPoint;
-                bool found =false;
+                bool found = false;
                 for (int i = 0; i < 100; i++)
                     if (!CollisionCheck(groundedRespawnPos + new Vector2(0, 1), true))
                         groundedRespawnPos += new Vector2(0, 1);
@@ -1205,7 +1210,7 @@ namespace Unnamed
                     if (camOffset.Collider.Collide(Collider))
                     {
                         camOffset.OnTriggerEnter(this);
-                        
+
                         //Engine.Cam.InBoundsOffset += camOffset.Offset;
 
                     }
@@ -1267,7 +1272,7 @@ namespace Unnamed
             if (Velocity.Y > 0)
                 Land();
 
-            if(collided is Grid grid && Velocity.Y < -40)
+            if (collided is Grid grid && Velocity.Y < -40)
             {
                 int offset = (int)(Pos.X + Width - grid.Pos.X) % grid.TileWidth;
                 if (offset > maxBonkOffset)
@@ -1282,7 +1287,7 @@ namespace Unnamed
                 else
                     offset = -offset;
 
-                if(offset != 0 && !grid.Collider.Contains(Pos - Vector2.UnitY + new Vector2(offset, 0)))
+                if (offset != 0 && !grid.Collider.Contains(Pos - Vector2.UnitY + new Vector2(offset, 0)))
                 {
                     Pos.X += offset;
                     MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - PreviousExactPos.Y), new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
@@ -1297,7 +1302,7 @@ namespace Unnamed
 
         private bool CollisionCheck(Vector2 position, bool platforms, out Entity groundedEntity)
         {
-            if(platforms)
+            if (platforms)
                 return Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position, out groundedEntity) && groundedEntity is not InvisibleWall;
             else
                 return Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Solids), position, out groundedEntity) && groundedEntity is not InvisibleWall;
@@ -1311,7 +1316,7 @@ namespace Unnamed
         {
             ParticleType oldDust = Dust.Copy();
             Dust.LifeMax = 0.4f;
-            Dust.SpeedMax = 10; 
+            Dust.SpeedMax = 10;
             Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 4, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
             Dust.CopyFrom(oldDust);
@@ -1378,8 +1383,8 @@ namespace Unnamed
                 { timer.End(); return; }
 
                 JetpackPowerCoef.Y = coef;
-            }, 
-            () => 
+            },
+            () =>
             JetpackPowerCoef.Y = 1));
         }
 
@@ -1389,8 +1394,10 @@ namespace Unnamed
         public void HitStop(float time, Action OnEnd = null)
         {
             CanMove = false;
-            AddComponent(new Timer(time, true, null, () => { 
-                CanMove = true; OnEnd?.Invoke(); }));
+            AddComponent(new Timer(time, true, null, () =>
+            {
+                CanMove = true; OnEnd?.Invoke();
+            }));
         }
     }
 }

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Unnamed
 {
@@ -90,7 +89,8 @@ namespace Unnamed
             //p.UpdateChildrenPos();
             p.CancelJump();
 
-            AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () => {
+            AddComponent(new Timer(transitionTime - Engine.Deltatime, true, null, () =>
+            {
                 p.CanMove = true;
                 p.RefillJetpack();
                 p.ResetSwing();
@@ -169,9 +169,9 @@ namespace Unnamed
             toLevel.LoadNoAutoTile();
 
             var respawns = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>();
-            if(respawns.Count > 0)
+            if (respawns.Count > 0)
                 Engine.Player.Pos = respawns[respawns.Count - 1].RespawnPoint;
-            
+
 
             Vector2 size = toLevel.Size;
             if (size.Y == 184)

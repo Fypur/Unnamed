@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fiourp;
+﻿using Fiourp;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace Unnamed
 {
@@ -31,7 +27,7 @@ namespace Unnamed
             TriggerComponent trig = (TriggerComponent)AddComponent(new TriggerComponent(-Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }));
             trig.Trigger.OnTriggerEnterAction = (entity) => { Fall(); trig.Trigger.Active = false; };
             //trig.trigger.OnTriggerEnterAction = (entity) => { AddComponent(new Coroutine(FallEnumerator())); trig.trigger.Active = false; };
-            
+
             Sprite.NineSliceSettings = nineSlice;
             Dust.Acceleration = -Vector2.UnitY * 100;
             initPos = Pos;
@@ -53,7 +49,8 @@ namespace Unnamed
 
                 if (Respawning)
                 {
-                    AddComponent(new Timer(respawnTime, true, null, () => {
+                    AddComponent(new Timer(respawnTime, true, null, () =>
+                    {
                         wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
                         {
                             Pos = initPos;
@@ -92,7 +89,7 @@ namespace Unnamed
 
         public override void Update()
         {
-            if(!Collider.CollideAt(Pos + new Vector2(0, 1)))
+            if (!Collider.CollideAt(Pos + new Vector2(0, 1)))
                 Velocity.Y += 9.81f * gravityScale;
 
             Action onCollision;
@@ -124,7 +121,7 @@ namespace Unnamed
 
             base.Update();
             //Debug.LogUpdate(Pos - PreviousPos);
-            if(Pos - PreviousExactPos != Vector2.Zero)
+            if (Pos - PreviousExactPos != Vector2.Zero)
             { }
         }
 
@@ -132,7 +129,7 @@ namespace Unnamed
         {
             base.OnDestroy();
 
-            if(wipe != null)
+            if (wipe != null)
                 Engine.CurrentMap.Destroy(wipe);
         }
     }

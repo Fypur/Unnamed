@@ -36,7 +36,7 @@ namespace Unnamed.Bloom
 
             //_vBuffer.SetData(_vertexBuffer);
             //_iBuffer.SetData(_indexBuffer);
-            
+
         }
 
         public void RenderQuad(GraphicsDevice graphicsDevice, Vector2 v1, Vector2 v2)
@@ -58,7 +58,7 @@ namespace Unnamed.Bloom
 
             //graphicsDevice.SetVertexBuffer(_vBuffer);
             //graphicsDevice.Indices = (_iBuffer);
-            
+
             //graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0,
             //    0, 2);
         }
