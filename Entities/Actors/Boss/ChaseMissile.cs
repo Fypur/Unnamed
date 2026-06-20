@@ -1,4 +1,5 @@
 ﻿using Fiourp;
+using LDtkTypes;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
@@ -6,14 +7,12 @@ namespace Unnamed
 {
     public class ChaseMissile : Actor
     {
-        public float Rotation;
-
         private TrailRenderer trail;
 
-        public ChaseMissile(Vector2[] controlPoints, float time) : base(controlPoints[0], 10, 5, new Sprite(DataManager.Objects["boss/missile"]))
+        public ChaseMissile(Vector2[] controlPoints, float time) : base(controlPoints[0], new BoxCollider(-new Vector2(5f, 2.5f), 10, 5, 0, Vector2.Zero), new Sprite(DataManager.Objects["boss/missile"]))
         {
             RemoveComponent(Collider);
-            Collider = new BoxCollider(-HalfSize, Width, Height, 0, Vector2.Zero);
+            Collider = ;
             AddComponent(Collider);
 
             Sprite.Origin = HalfSize; //To change when texture gets bigger

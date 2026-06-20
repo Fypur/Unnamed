@@ -15,13 +15,9 @@ namespace Unnamed
 
         private bool canHitBoss;
 
-        public HomingMissile(Vector2 position, float rotation) : base(position, 10, 5, new Sprite(DataManager.Objects["boss/missile"]))
+        public HomingMissile(Vector2 position, float rotation) : base(position, new BoxCollider(-new Vector2(5, 2.5f), 10, 5, rotation, Vector2.Zero), new Sprite(DataManager.Objects["boss/missile"]))
         {
             Rotation = rotation;
-
-            RemoveComponent(Collider);
-            Collider = new BoxCollider(-HalfSize, Width, Height, rotation, Vector2.Zero);
-            AddComponent(Collider);
 
             Sprite.Origin = HalfSize; //To change when texture gets bigger
             Sprite.Rotation = MathHelper.ToRadians(Rotation);

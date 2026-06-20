@@ -5,16 +5,14 @@ namespace Unnamed
 {
     public class MachineGunBullet : Actor
     {
-        private float rotation;
-        private float speed = 170f;
-        public MachineGunBullet(Vector2 position, float rotation) : base(position, 10, 1, new Sprite(Color.Yellow))
+        private const int length = 10;
+        private const float speed = 170f;
+        public MachineGunBullet(Vector2 position, float rotation) : base(position, new BoxCollider(-new Vector2(length / 2f, 0.5f), length, 1, rotation, Vector2.Zero), new Sprite(Color.Yellow))
         {
-            this.rotation = rotation;
             Sprite.Rotation = MathHelper.ToRadians(rotation);
             Sprite.Origin = Vector2.One / 2;
 
             RemoveComponent(Collider);
-            Collider = new BoxCollider(-HalfSize, Width, Height, rotation, Vector2.Zero);
             AddComponent(Collider);
 
             Velocity = VectorHelper.AngleToVector(rotation) * speed;
@@ -44,7 +42,7 @@ namespace Unnamed
 
         private void Collision()
         {
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, Pos + Width * VectorHelper.AngleToVector(rotation));
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, Pos + length * VectorHelper.AngleToVector(((BoxCollider)Collider).Rotation));
             SelfDestroy();
         }
     }
