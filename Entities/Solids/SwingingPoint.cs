@@ -39,7 +39,7 @@ namespace Unnamed
         {
             base.Awake();
 
-            AddComponent(new CircleLight(HalfSize, Math.Min(MaxSwingDistance, 100), new Color(Color.LightBlue, 50), new Color(Color.LightBlue, 0)));
+            AddComponent(new CircleLight(AABBCollider.HalfSize, Math.Min(MaxSwingDistance, 100), new Color(Color.LightBlue, 50), new Color(Color.LightBlue, 0)));
             polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);
         }
 
@@ -49,7 +49,7 @@ namespace Unnamed
             SwingingPoints.Remove(this);
         }
 
-        void ISwinged.OnSwing(Entity grappledEntity, Func<bool> isAtSwingEnd)
+        void ISwinged.OnSwing(Kinematic grappledEntity, Func<bool> isAtSwingEnd)
         {
             swinged = true;
 
@@ -57,7 +57,7 @@ namespace Unnamed
                 falling.Fall();
         }
 
-        void ISwinged.OnStopSwing(Entity unGrappledEntity)
+        void ISwinged.OnStopSwing(Kinematic unGrappledEntity)
         {
             swinged = false;
         }
@@ -88,12 +88,12 @@ namespace Unnamed
 
                 void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
                 {
-                    float angle = VectorHelper.GetAngle(checkingFrom - PreviousExactPos - Collider.HalfSize, checkingFrom - ExactPos - Collider.HalfSize);
+                    float angle = VectorHelper.GetAngle(checkingFrom - PreviousExactPos - AABBCollider.HalfSize, checkingFrom - ExactPos - AABBCollider.HalfSize);
 
                     if (angle == 0)
                         return;
 
-                    float distanceFromPoint = Vector2.DistanceSquared(ExactPos + Collider.HalfSize, checkingFrom);
+                    float distanceFromPoint = Vector2.DistanceSquared(ExactPos + AABBCollider.HalfSize, checkingFrom);
 
                     float closestAngle = angle;
                     Vector2? closestPoint = null;
@@ -108,7 +108,7 @@ namespace Unnamed
                             continue;
                         }
 
-                        float pointAngle = VectorHelper.GetAngle(checkingFrom - PreviousExactPos - Collider.HalfSize, checkingFrom - corner);
+                        float pointAngle = VectorHelper.GetAngle(checkingFrom - PreviousExactPos - AABBCollider.HalfSize, checkingFrom - corner);
 
                         if (pointAngle * Math.Sign(angle) >= 0 && pointAngle * Math.Sign(angle) <= angle * Math.Sign(angle))
                         {
@@ -166,8 +166,8 @@ namespace Unnamed
             GetComponent<CircleLight>().Visible = true;
             base.Render();
 
-            if (Platformer.Player != null && !swinged && !Raycast.FastRay(MiddleExactPos, Platformer.Player.Pos + Platformer.Player.Collider.HalfSize).Hit && Vector2.Distance(MiddleExactPos, Platformer.Player.Pos + Platformer.Player.Collider.HalfSize) < MaxSwingDistance)
-                Drawing.DrawDottedLine(MiddlePos, Platformer.Player.Pos + Platformer.Player.Collider.HalfSize, new Color(Color.DeepSkyBlue * (40f / 255), 255), 1, 4, 4);
+            if (Platformer.Player != null && !swinged && !Raycast.FastRay(MiddleExactPos, Platformer.Player.Pos + Platformer.Player.AABBCollider.HalfSize).Hit && Vector2.Distance(MiddleExactPos, Platformer.Player.Pos + Platformer.Player.AABBCollider.HalfSize) < MaxSwingDistance)
+                Drawing.DrawDottedLine(MiddlePos, Platformer.Player.Pos + Platformer.Player.AABBCollider.HalfSize, new Color(Color.DeepSkyBlue * (40f / 255), 255), 1, 4, 4);
 
             Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.DeepSkyBlue * (40f / 255), 255));
 

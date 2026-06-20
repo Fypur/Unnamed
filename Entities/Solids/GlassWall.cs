@@ -29,10 +29,10 @@ namespace Unnamed
             Acceleration = new Vector2(0, 9.81f * 20)
         };
 
-        public GlassWall(Vector2 position, Direction? fullSolid, int width, int height, float breakVelocity) : base(position, width, height, new Sprite(Color.LightBlue))
+        public GlassWall(Vector2 position, Direction? fullSolid, int width, int height, float breakVelocity) : base(position, new AABBCollider(Vector2.Zero, width, height), new Sprite(Color.LightBlue))
         {
             BreakVelocity = breakVelocity;
-            DestroyOnX = Width >= Height ? false : true;
+            DestroyOnX = AABBCollider.Width >= AABBCollider.Height ? false : true;
             SolidDir = fullSolid;
 
             if (fullSolid != null)
@@ -64,7 +64,7 @@ namespace Unnamed
                 AddComponent(Sprite);
             }
 
-            text = new TextBox(BreakVelocity.ToString(), "Pixel", Pos + HalfSize, width, height, 1, DestroyableColor, true, TextBox.Alignement.Center);
+            text = new TextBox(BreakVelocity.ToString(), "Pixel", Pos + AABBCollider.HalfSize, width, height, 1, DestroyableColor, true, TextBox.Alignement.Center);
         }
 
         public override void Awake()
@@ -79,12 +79,12 @@ namespace Unnamed
             if (!Conditions(player, collisionDirectionIsX))
                 return false;
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(glass, 200, Bounds, null, particleDirection.ToAngleDegrees(), glass.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(glass, 200, AABBCollider.Bounds, null, particleDirection.ToAngleDegrees(), glass.Color);
             Engine.Cam.Shake(0.2f, 1.7f);
             player.HitStop(0.05f);
 
             FMOD.Studio.EventInstance g = Audio.PlayEvent("SFX/GlassBlock/Shatter");
-            g.setVolume((float)32 / (DestroyOnX ? Height : Width));
+            g.setVolume((float)32 / (DestroyOnX ? AABBCollider.Height : AABBCollider.Width));
 
             SelfDestroy();
             return true;
@@ -115,13 +115,13 @@ namespace Unnamed
             int length; //Draw part Square
             if (DestroyOnX)
             {
-                length = (int)(Height * (float)Math.Clamp(Platformer.Player.Velocity.Length() / BreakVelocity, 0, 1));
-                Drawing.Draw(Drawing.PointTexture, new Vector2(Pos.X, Pos.Y + Height - length), new Vector2(Width, length), new Color(DestroyableColor, 10), 0, Vector2.Zero, SpriteEffects.None, 0.1f);
+                length = (int)(AABBCollider.Height * (float)Math.Clamp(Platformer.Player.Velocity.Length() / BreakVelocity, 0, 1));
+                Drawing.Draw(Drawing.PointTexture, new Vector2(Pos.X, Pos.Y + AABBCollider.Height - length), new Vector2(AABBCollider.Width, length), new Color(DestroyableColor, 10), 0, Vector2.Zero, SpriteEffects.None, 0.1f);
             }
             else
             {
-                length = Width * (int)Math.Clamp(Platformer.Player.Velocity.Length() / BreakVelocity, 0, 1);
-                Drawing.Draw(Drawing.PointTexture, new Vector2(Pos.X + Width - length, Pos.Y), new Vector2(length, Height), DestroyableColor, 0, Vector2.Zero, SpriteEffects.None, 0.1f);
+                length = AABBCollider.Width * (int)Math.Clamp(Platformer.Player.Velocity.Length() / BreakVelocity, 0, 1);
+                Drawing.Draw(Drawing.PointTexture, new Vector2(Pos.X + AABBCollider.Width - length, Pos.Y), new Vector2(length, AABBCollider.Height), DestroyableColor, 0, Vector2.Zero, SpriteEffects.None, 0.1f);
             }
         }
 

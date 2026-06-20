@@ -64,10 +64,7 @@ namespace Unnamed
         {
             player = Platformer.Player;
 
-            RemoveComponent(Collider);
-            Collider = rotColl;
-            AddComponent(Collider);
-
+            rotColl = (BoxCollider)Collider;
 
             cannonPart1 = new Sprite(DataManager.Textures["Boss/arm"]);
             cannon = new Sprite(DataManager.Textures["Boss/gunArm"]);
@@ -80,8 +77,8 @@ namespace Unnamed
             AddComponent(cannon);
 
             Sprite.Add(Sprite.AllAnimData["Boss"]);
-            Sprite.Origin = Collider.HalfSize;
-            Sprite.Offset = Collider.HalfSize;
+            Sprite.Origin = rotColl.HalfSize;
+            Sprite.Offset = rotColl.HalfSize;
 
             dust = Particles.Dust.Copy();
         }

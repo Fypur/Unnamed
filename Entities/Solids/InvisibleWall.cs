@@ -5,7 +5,7 @@ namespace Unnamed
 {
     public class InvisibleWall : Solid
     {
-        public InvisibleWall(Vector2 position, int width, int height) : base(position, width, height, null)
+        public InvisibleWall(Vector2 position, int width, int height) : base(position, new AABBCollider(Vector2.Zero, width, height), null)
         {
         }
 

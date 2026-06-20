@@ -22,7 +22,7 @@ namespace Unnamed
         private Vector2 initPos;
 
         public FallingPlatform(Vector2 position, int width, int height, bool respawning, NineSlice nineSlice)
-            : base(position, width, height, new Sprite())
+            : base(position, new AABBCollider(Vector2.Zero, width, height), new Sprite())
         {
             TriggerComponent trig = (TriggerComponent)AddComponent(new TriggerComponent(-Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }));
             trig.Trigger.OnTriggerEnterAction = (entity) => { Fall(); trig.Trigger.Active = false; };
@@ -97,8 +97,8 @@ namespace Unnamed
             {
                 onCollision = () =>
                 {
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 0, Color.White);
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + Size.Y), Width, 2), null, 180, Color.White);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + AABBCollider.Size.Y), AABBCollider.Width, 2), null, 0, Color.White);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 100, new Rectangle((int)Pos.X, (int)(Pos.Y + AABBCollider.Size.Y), AABBCollider.Width, 2), null, 180, Color.White);
                     HasFallenOnGround = true;
 
                     AddComponent(new Sound3D("SFX/FallingBlock/Impact", autoRemove: true));

@@ -11,7 +11,7 @@ namespace Unnamed
         private Guid id;
         public static Dictionary<Guid, bool> ClosedGates = new();
         bool closed = false;
-        public ClosingGate(Vector2 position, int width, int height, Guid id) : base(position, width, 1, new Sprite(DataManager.Objects["closingGate1"]))
+        public ClosingGate(Vector2 position, int width, int height, Guid id) : base(position, new AABBCollider(Vector2.Zero, width, 1), new Sprite(DataManager.Objects["closingGate1"]))
         {
             Collider.Collidable = false;
             finalHeight = height;
@@ -36,9 +36,9 @@ namespace Unnamed
 
             AddComponent(new Timer(1, (timer) =>
             {
-                Height = (int)MathHelper.Lerp(1, finalHeight, Ease.QuintIn(timer.AmountCompleted()));
+                AABBCollider.Height = (int)MathHelper.Lerp(1, finalHeight, Ease.QuintIn(timer.AmountCompleted()));
             },
-            () => Height = finalHeight));
+            () => AABBCollider.Height = finalHeight));
         }
     }
 }

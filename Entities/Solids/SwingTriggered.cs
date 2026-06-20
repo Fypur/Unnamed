@@ -58,7 +58,7 @@ namespace Unnamed
             }
         }
 
-        void ISwinged.OnSwing(Entity grappledEntity, Func<bool> isAtSwingEnd)
+        void ISwinged.OnSwing(Kinematic grappledEntity, Func<bool> isAtSwingEnd)
         {
             if (grappledEntity is Player player)
             {
@@ -67,7 +67,7 @@ namespace Unnamed
             }
         }
 
-        void ISwinged.OnStopSwing(Entity unGrappledEntity)
+        void ISwinged.OnStopSwing(Kinematic unGrappledEntity)
             => isMoving = false;
 
         public void Trigger()
@@ -152,7 +152,7 @@ namespace Unnamed
 
             for (int i = 0; i < Positions.Length - 1; i++)
             {
-                Drawing.DrawDottedLine(Positions[i] + HalfSize, Positions[i + 1] + HalfSize, new Color(Color.GreenYellow, 100), 1, 4, 4);
+                Drawing.DrawDottedLine(Positions[i] + AABBCollider.HalfSize, Positions[i + 1] + AABBCollider.HalfSize, new Color(Color.GreenYellow, 100), 1, 4, 4);
             }
         }
     }

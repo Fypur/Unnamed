@@ -4,7 +4,7 @@ using System;
 
 namespace Unnamed
 {
-    public class PulledPlatform : MovingSolid
+    public class PulledPlatform : Solid
     {
         public Vector2 originalPos;
         public Vector2 PulledPos;
@@ -17,7 +17,7 @@ namespace Unnamed
         private float distanceBetweenPos;
 
         public PulledPlatform(Vector2 position, int width, int height, Vector2 pulledPos, float pulledOutTime, Color color,
-            Func<float, float> easingFunction = null) : base(position, width, height, color)
+            Func<float, float> easingFunction = null) : base(position, new AABBCollider(Vector2.Zero, width, height), color)
         {
             originalPos = position;
             PulledPos = pulledPos;
@@ -55,7 +55,7 @@ namespace Unnamed
 
         public override void Render()
         {
-            Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, Width, Height), Color.Yellow);
+            Drawing.Draw(new Rectangle((int)Pos.X, (int)Pos.Y, ((AABBCollider)Collider).Width, ((AABBCollider)Collider).Height), Color.Yellow);
         }
 
         private float DefaultEasing(float x)

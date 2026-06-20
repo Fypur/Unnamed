@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Unnamed
 {
-    public class CameraBlock : MovingSolid
+    public class CameraBlock : Solid
     {
         public CameraBlock(Vector2 position, int width, int height) : base(position, width, height, null)
         {

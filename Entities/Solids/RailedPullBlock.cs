@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace Unnamed
 {
-    public class RailedPullBlock : MovingSolid, ISwinged
+    public class RailedPullBlock : Solid, ISwinged
     {
         private const float amountMoved = 300;
         public Vector2[] RailPositions;
-        private Entity grappledEntity;
+        private Kinematic grappledEntity;
         private Func<bool> isAtSwingEnd;
         private float gravityScale;
 
@@ -19,7 +19,7 @@ namespace Unnamed
 
         public float MaxSwingDistance { get; set; }
 
-        public RailedPullBlock(Vector2[] positions, float maxSwingDistance, int initialIndexPosition, int width, int height) : base(positions[initialIndexPosition], width, height, new Sprite(Color.Beige))
+        public RailedPullBlock(Vector2[] positions, float maxSwingDistance, int initialIndexPosition, int width, int height) : base(positions[initialIndexPosition], new AABBCollider(Vector2.Zero, width, height), new Sprite(Color.Beige))
         {
             RailPositions = positions;
             currentPosIndex = initialIndexPosition;
@@ -30,7 +30,7 @@ namespace Unnamed
             AddComponent(new LineRenderer(RailPositions.ToList(), Drawing.PointTexture, 1, Color.BlueViolet, null, (line) => { line.Positions = RailPositions.ToList(); }));
         }
 
-        public RailedPullBlock(Vector2[] positions, float maxSwingDistance, Vector2 initPos, int width, int height) : base(DetermineInitPos(initPos, positions, width, height, out int initialIndex), width, height, new Sprite(Color.Beige))
+        public RailedPullBlock(Vector2[] positions, float maxSwingDistance, Vector2 initPos, int width, int height) : base(DetermineInitPos(initPos, positions, width, height, out int initialIndex), new AABBCollider(Vector2.Zero, width, height), new Sprite(Color.Beige))
         {
             RailPositions = positions;
             currentPosIndex = initialIndex;
@@ -53,7 +53,7 @@ namespace Unnamed
 
             Velocity.Y += 9.81f * gravityScale;
 
-            if (grappledEntity == null || grappledEntity.Collider.CollideAt(this, grappledEntity.ExactPos + new Vector2(0, 1)))
+            if (grappledEntity == null || grappledEntity.CollideAt(this, grappledEntity.ExactPos + new Vector2(0, 1)))
             { }
             else
             {
@@ -190,13 +190,13 @@ namespace Unnamed
             SwingingPoint.SwingingPoints.Remove(this);
         }
 
-        void ISwinged.OnSwing(Entity grappledEntity, Func<bool> atSwingEnd)
+        void ISwinged.OnSwing(Kinematic grappledEntity, Func<bool> atSwingEnd)
         {
             this.grappledEntity = grappledEntity;
             isAtSwingEnd = atSwingEnd;
         }
 
-        void ISwinged.OnStopSwing(Entity unGrappledEntity)
+        void ISwinged.OnStopSwing(Kinematic unGrappledEntity)
         {
             if (grappledEntity == unGrappledEntity)
                 grappledEntity = null;

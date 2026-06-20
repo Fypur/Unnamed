@@ -5,12 +5,18 @@ namespace Unnamed
 {
     public class SpikeRow : Entity
     {
+        public int Width;
+        public int Height;
+
         public const int defaultSize = 8;
         public Direction Direction;
 
         public SpikeRow(Vector2 position, Direction direction, int length, Direction pointingTowards)
-            : base(GetBaseParameter(direction, length, position, out int width, out int height), width, height, null)
+            : base(GetBaseParameter(direction, length, position, out int width, out int height))
         {
+            Width = width;
+            Height = height;
+
             int spikeNb = length / Spike.DefaultSize;
             Vector2 move = Vector2.Zero;
             Direction = pointingTowards;

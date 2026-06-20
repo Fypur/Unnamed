@@ -14,7 +14,7 @@ namespace Unnamed
 
         public float MaxSwingDistance { get; set; }
 
-        public GrapplingTrigger(Vector2 position, bool active, float timeToReactive, params Action[] triggeredActions) : base(position, 1, 1, null)
+        public GrapplingTrigger(Vector2 position, bool active, float timeToReactive, params Action[] triggeredActions) : base(position, new AABBCollider(Vector2.Zero, 1, 1), null)
         {
             Active = active;
             TimeToReactive = timeToReactive;
