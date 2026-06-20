@@ -33,7 +33,7 @@ namespace Unnamed
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, Pos, 4);
 
-            player = (Player)Engine.Player;
+            player = Platformer.Player;
             boss = Engine.CurrentMap.Data.GetEntity<Boss3>();
         }
 
@@ -46,7 +46,7 @@ namespace Unnamed
         {
             maxSpeed = 200f;
 
-            Vector2 rotVec = (Engine.Player.MiddlePos - MiddlePos);
+            Vector2 rotVec = (Platformer.Player.MiddlePos - MiddlePos);
             if (rotVec != Vector2.Zero)
             {
                 rotVec.Normalize();

@@ -32,7 +32,7 @@ namespace Unnamed
         public static LDtkWorld BossWorld;
         public static LDtkWorld SwingAndJetpack;
 
-        public static Player player => (Player)Engine.Player;
+        public static Player Player;
 
         public static Camera Cam { get => Engine.Cam; set => Engine.Cam = value; }
 
@@ -170,7 +170,7 @@ namespace Unnamed
                 Debug.Clear();
 
             if (Input.GetKeyDown(Keys.V))
-                player.ExactPos = Input.MousePos;
+                Player.ExactPos = Input.MousePos;
 
             //player.ExactPos = fixedpos;
 
@@ -484,10 +484,10 @@ namespace Unnamed
             Levels.LoadWorldGrid(World, worldDepth);
             Engine.CurrentMap.CurrentLevel.LoadNoAutoTile();
 
-            Vector2 groundedRespawnPos = player.RespawnPoint;
+            Vector2 groundedRespawnPos = Player.RespawnPoint;
             bool found = false;
             for (int i = 0; i < 100; i++)
-                if (!player.Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), groundedRespawnPos + new Vector2(0, 1)))
+                if (!Player.Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), groundedRespawnPos + new Vector2(0, 1)))
                     groundedRespawnPos += new Vector2(0, 1);
                 else
                 {
@@ -496,9 +496,9 @@ namespace Unnamed
                 }
 
             if (!found)
-                groundedRespawnPos = player.RespawnPoint;
+                groundedRespawnPos = Player.RespawnPoint;
 
-            player.ExactPos = groundedRespawnPos;
+            Player.ExactPos = groundedRespawnPos;
 
             BackgroundTile = (ParallaxBackground)Engine.CurrentMap.Instantiate(new ParallaxBackground(new Sprite[] { new Sprite(DataManager.Textures["bg/bg2/Layer 1"]), new Sprite(DataManager.Textures["bg/bg2/Layer 2"]), new Sprite(DataManager.Textures["bg/bg2/Layer 3"]), new Sprite(DataManager.Textures["bg/bg2/Layer 4"]), new Sprite(DataManager.Textures["bg/bg2/Layer 5"]) }, new float[] { 0, 0.05f, 0.1f, 0.15f, 0.2f }));
 
@@ -514,7 +514,7 @@ namespace Unnamed
             Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, lvlSize);
             Cam.FollowsPlayer = true;
 
-            Cam.CenteredPos = Engine.Cam.InBoundsPos(player.Pos, Engine.Cam.Bounds);
+            Cam.CenteredPos = Engine.Cam.InBoundsPos(Player.Pos, Engine.Cam.Bounds);
 
             PauseMenu = new PauseMenu();
             PauseMenu.Active = false;
@@ -551,7 +551,7 @@ namespace Unnamed
             Engine.CurrentMap = new Map();
             Engine.Cam.SetBoundaries(Rectangle.Empty);
             Engine.Cam.Pos = Vector2.Zero;
-            Engine.Player = null;
+            Platformer.Player = null;
 
             Levels.LevelNonRespawn.Clear();
             Boss3.Dead = false;
@@ -688,8 +688,8 @@ namespace Unnamed
                     lvlSize.Y = 180;
                 Cam.SetBoundaries(Engine.CurrentMap.CurrentLevel.Pos, lvlSize);
 
-                if (Engine.Player != null)
-                    player.InstaDeath();
+                if (Platformer.Player != null)
+                    Player.InstaDeath();
                 t.SelfDestroy();
             }));
 

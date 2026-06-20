@@ -19,7 +19,7 @@ namespace Unnamed
         private static ParticleType greenJetpack = Particles.Jetpack.Copy();
         private static ParticleType greenDust = Particles.Dust.Copy();
 
-        public Ghost(string filePath) : base(Vector2.Zero, 8, 13, new Sprite(Color.Green))
+        public Ghost(string filePath) : base(Vector2.Zero, new AABBCollider(Vector2.Zero, Player.PlayerWidth, Player.PlayerHeight), new Sprite(Color.Green))
         {
             int lineCount = File.ReadLines(filePath).Count();
 
@@ -78,7 +78,7 @@ namespace Unnamed
             while (true)
             {
                 Pos = positions[0];
-                Engine.CurrentMap.BackgroundSystem.Emit(greenDust, Bounds, 15);
+                Engine.CurrentMap.BackgroundSystem.Emit(greenDust, Collider.Bounds, 15);
 
                 for (int i = 0; i < positions.Length; i++)
                 {
@@ -96,7 +96,7 @@ namespace Unnamed
                     yield return null;
                 }
 
-                Engine.CurrentMap.BackgroundSystem.Emit(greenDust, Bounds, 15);
+                Engine.CurrentMap.BackgroundSystem.Emit(greenDust, Collider.Bounds, 15);
             }
         }
     }

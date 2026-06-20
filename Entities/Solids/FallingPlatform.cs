@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Unnamed
 {
-    public class FallingPlatform : MovingSolid
+    public class FallingPlatform : Solid
     {
         private const float constGravityScale = 0.7f;
         private const float maxFallingSpeed = 160;
@@ -51,7 +51,7 @@ namespace Unnamed
                 {
                     AddComponent(new Timer(respawnTime, null, () =>
                     {
-                        wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
+                        wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Platformer.Player, initPos), () =>
                         {
                             Pos = initPos;
                             Velocity = Vector2.Zero;
@@ -77,7 +77,7 @@ namespace Unnamed
             if (Respawning)
             {
                 AddComponent(new Timer(respawnTime, null, () => {
-                    wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Engine.Player, initPos), () =>
+                    wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Platformer.Player, initPos), () =>
                     {
                         Pos = initPos; Velocity = Vector2.Zero; gravityScale = 0; previousOnGround = false; Collided = false;
                         GetComponent<TriggerComponent>().trigger.Active = true;

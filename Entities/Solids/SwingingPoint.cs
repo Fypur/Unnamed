@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Unnamed
 {
-    public class SwingingPoint : MovingSolid, ISwinged
+    public class SwingingPoint : Solid, ISwinged
     {
         public static List<ISwinged> SwingingPoints = new List<ISwinged>();
 
@@ -16,7 +16,7 @@ namespace Unnamed
         private PolygonPoint[] polygon;
 
         public float MaxSwingDistance { get; set; }
-        public SwingingPoint(Vector2 position, float maxSwingDistance) : base(position, width, height, new Sprite(DataManager.Objects["swingingPoint"]))
+        public SwingingPoint(Vector2 position, float maxSwingDistance) : base(position, new AABBCollider(Vector2.Zero, width, height), new Sprite(DataManager.Objects["swingingPoint"]))
         {
             SwingingPoints.Add(this);
             Collider.Collidable = false;
@@ -24,7 +24,7 @@ namespace Unnamed
         }
 
         public SwingingPoint(Vector2 position, float maxSwingDistance, Vector2[] positions, float[] timesBetweenPositions, bool goingForwards, Func<float, float> easeFunction = null)
-            : base(position, width, height, new Sprite(DataManager.Objects["swingingPoint"]))
+            : base(position, new AABBCollider(Vector2.Zero, width, height), new Sprite(DataManager.Objects["swingingPoint"]))
         {
             SwingingPoints.Add(this);
 
@@ -77,23 +77,23 @@ namespace Unnamed
 
                 RemoveGrapplingPoints();
 
-                Player p = (Player)Engine.Player;
+                Player player = Platformer.Player;
 
-                if (p.SwingPositions.Count > 1)
-                    cornersToCheck.Remove(p.SwingPositions[1]);
+                if (player.SwingPositions.Count > 1)
+                    cornersToCheck.Remove(player.SwingPositions[1]);
 
-                AddGrapplingPoints(cornersToCheck, p.SwingPositions.Count > 1 ? p.SwingPositions[1] : p.MiddleExactPos);
+                AddGrapplingPoints(cornersToCheck, player.SwingPositions.Count > 1 ? player.SwingPositions[1] : player.MiddleExactPos);
 
 
 
                 void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
                 {
-                    float angle = VectorHelper.GetAngle(checkingFrom - PreviousExactPos - HalfSize, checkingFrom - ExactPos - HalfSize);
+                    float angle = VectorHelper.GetAngle(checkingFrom - PreviousExactPos - Collider.HalfSize, checkingFrom - ExactPos - Collider.HalfSize);
 
                     if (angle == 0)
                         return;
 
-                    float distanceFromPoint = Vector2.DistanceSquared(ExactPos + HalfSize, checkingFrom);
+                    float distanceFromPoint = Vector2.DistanceSquared(ExactPos + Collider.HalfSize, checkingFrom);
 
                     float closestAngle = angle;
                     Vector2? closestPoint = null;
@@ -108,7 +108,7 @@ namespace Unnamed
                             continue;
                         }
 
-                        float pointAngle = VectorHelper.GetAngle(checkingFrom - PreviousExactPos - HalfSize, checkingFrom - corner);
+                        float pointAngle = VectorHelper.GetAngle(checkingFrom - PreviousExactPos - Collider.HalfSize, checkingFrom - corner);
 
                         if (pointAngle * Math.Sign(angle) >= 0 && pointAngle * Math.Sign(angle) <= angle * Math.Sign(angle))
                         {
@@ -124,8 +124,8 @@ namespace Unnamed
 
                     if (closestPoint is Vector2 foundCorner)
                     {
-                        p.SwingPositions.Insert(1, foundCorner);
-                        p.SwingPositionsSign.Insert(1, -Math.Sign(angle));
+                        player.SwingPositions.Insert(1, foundCorner);
+                        player.SwingPositionsSign.Insert(1, -Math.Sign(angle));
 
                         nextCorners.Remove(foundCorner);
 
@@ -136,22 +136,22 @@ namespace Unnamed
 
                 void RemoveGrapplingPoints()
                 {
-                    Player p = (Player)Engine.Player;
+                    Player player = Platformer.Player;
 
 
                     //Debug.LogUpdate(p.SwingPositions.Count, p.SwingPositionsSign.Count);
 
-                    for (int i = 1; i < p.SwingPositions.Count; i++)
+                    for (int i = 1; i < player.SwingPositions.Count; i++)
                     {
-                        Vector2 prevPos = (i == p.SwingPositions.Count - 1) ? p.MiddleExactPos : p.SwingPositions[i + 1];
-                        float grappleAngle = VectorHelper.GetAngle(prevPos - MiddleExactPos, prevPos - p.SwingPositions[i]);
+                        Vector2 prevPos = (i == player.SwingPositions.Count - 1) ? player.MiddleExactPos : player.SwingPositions[i + 1];
+                        float grappleAngle = VectorHelper.GetAngle(prevPos - MiddleExactPos, prevPos - player.SwingPositions[i]);
 
                         //Debug.LogUpdate(p.SwingPositionsSign[i]);
-                        if (Math.Sign(grappleAngle) == -p.SwingPositionsSign[i])
+                        if (Math.Sign(grappleAngle) == -player.SwingPositionsSign[i])
                         {
-                            cornersToCheck.Remove(p.SwingPositions[i]);
-                            p.SwingPositions.RemoveAt(i);
-                            p.SwingPositionsSign.RemoveAt(i);
+                            cornersToCheck.Remove(player.SwingPositions[i]);
+                            player.SwingPositions.RemoveAt(i);
+                            player.SwingPositionsSign.RemoveAt(i);
                         }
                         else
                             break;
@@ -166,16 +166,13 @@ namespace Unnamed
             GetComponent<CircleLight>().Visible = true;
             base.Render();
 
-            if (Engine.Player != null && !swinged && !new Raycast(Raycast.RayTypes.MapTiles, MiddleExactPos, Engine.Player.Pos + Engine.Player.HalfSize).Hit && Vector2.Distance(MiddleExactPos, Engine.Player.Pos + Engine.Player.HalfSize) < MaxSwingDistance)
-                Drawing.DrawDottedLine(MiddlePos, Engine.Player.Pos + Engine.Player.HalfSize, new Color(Color.DeepSkyBlue * (40f / 255), 255), 1, 4, 4);
+            if (Platformer.Player != null && !swinged && !Raycast.FastRay(MiddleExactPos, Platformer.Player.Pos + Platformer.Player.Collider.HalfSize).Hit && Vector2.Distance(MiddleExactPos, Platformer.Player.Pos + Platformer.Player.Collider.HalfSize) < MaxSwingDistance)
+                Drawing.DrawDottedLine(MiddlePos, Platformer.Player.Pos + Platformer.Player.Collider.HalfSize, new Color(Color.DeepSkyBlue * (40f / 255), 255), 1, 4, 4);
 
-            //Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.LightBlue, 120));
             Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.DeepSkyBlue * (40f / 255), 255));
 
             if (Debug.DebugMode)
                 Drawing.DrawCircleEdge(MiddleExactPos, MaxSwingDistance, 0.1f, new Color(Color.LightBlue, 120), 1);
-
-
 
             /*Drawing.DrawLine(MiddlePos + Vector2.UnitX * 300, Input.MousePos, Color.Yellow);
             foreach (Vector2 p in Collision.LineCircleIntersection(MiddlePos + Vector2.UnitX * 300, Input.MousePos, MiddlePos, MaxSwingDistance))

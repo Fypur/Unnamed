@@ -60,12 +60,11 @@ namespace Unnamed
             }
         }
 
-        public Boss3(Vector2 position) : base(position, 24, 16, new Sprite(Color.White))
+        public Boss3(Vector2 position) : base(position, new BoxCollider(Vector2.Zero, 24, 16, 0, new Vector2(12, 8)), new Sprite(Color.White))
         {
-            player = Engine.Player as Player;
+            player = Platformer.Player;
 
             RemoveComponent(Collider);
-            rotColl = new BoxCollider(Vector2.Zero, Width, Height, 0, HalfSize);
             Collider = rotColl;
             AddComponent(Collider);
 
@@ -81,8 +80,8 @@ namespace Unnamed
             AddComponent(cannon);
 
             Sprite.Add(Sprite.AllAnimData["Boss"]);
-            Sprite.Origin = HalfSize;
-            Sprite.Offset = HalfSize;
+            Sprite.Origin = Collider.HalfSize;
+            Sprite.Offset = Collider.HalfSize;
 
             dust = Particles.Dust.Copy();
         }
@@ -179,7 +178,7 @@ namespace Unnamed
             if (!stateMachine.Is(States.EnergyBeam) && !stateMachine.Is(States.Dead))
                 SetCannonPos();
 
-            if (!stateMachine.Is(States.Dead) && Collider.Collide(Engine.Player))
+            if (!stateMachine.Is(States.Dead) && Collider.Collide(Platformer.Player))
                 Hit();
         }
 
@@ -539,7 +538,7 @@ namespace Unnamed
                     Platformer.TimeScale = 1f;
                     stop = true;
                 };
-                Platformer.player.OnDeath += resetTimeScale;
+                Platformer.Player.OnDeath += resetTimeScale;
 
                 yield return new Coroutine.WaitForSeconds(0.4f);
 
@@ -555,7 +554,7 @@ namespace Unnamed
                     Platformer.TimeScale = 0.2f + t.AmountCompleted() * 0.7f;
                 }, () =>
                 {
-                    Platformer.TimeScale = 1; Platformer.player.OnDeath -= resetTimeScale;
+                    Platformer.TimeScale = 1; Platformer.Player.OnDeath -= resetTimeScale;
                 }));
 
                 AddComponent(new Timer(0.2f, (t) =>

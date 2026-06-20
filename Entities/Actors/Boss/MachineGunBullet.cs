@@ -33,8 +33,8 @@ namespace Unnamed
 
             base.Update();
 
-            if (Collider.Collide(Engine.Player.Collider))
-                ((Player)Engine.Player).Damage();
+            if (Collider.Collide(Platformer.Player.Collider))
+                Platformer.Player.Damage();
         }
 
         public override void Render()

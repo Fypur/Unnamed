@@ -8,13 +8,10 @@ namespace Unnamed
     {
         public float Rotation;
 
-        private Player player;
         private TrailRenderer trail;
 
         public ChaseMissile(Vector2[] controlPoints, float time) : base(controlPoints[0], 10, 5, new Sprite(DataManager.Objects["boss/missile"]))
         {
-            player = (Player)Engine.Player;
-
             RemoveComponent(Collider);
             Collider = new BoxCollider(-HalfSize, Width, Height, 0, Vector2.Zero);
             AddComponent(Collider);
@@ -53,9 +50,9 @@ namespace Unnamed
             trail.LocalPosition += (MiddlePos - trail.LocalPosition) / 3 - Pos;
 
 
-            if (Collider.Collide(player.Collider))
+            if (Collider.Collide(Platformer.Player.Collider))
             {
-                player.Damage();
+                Platformer.Player.Damage();
                 Explode();
             }
             else if (Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), Pos))

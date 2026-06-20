@@ -94,7 +94,7 @@ namespace Unnamed
         {
             base.Update();
 
-            float percentage = Math.Clamp(((Player)Engine.Player).Velocity.Length() / BreakVelocity, 0, 1);
+            float percentage = Math.Clamp(Platformer.Player.Velocity.Length() / BreakVelocity, 0, 1);
             text.SetText((int)(percentage * 100) + "%");
             text.TextScale = 3;
 
@@ -112,17 +112,15 @@ namespace Unnamed
         {
             base.Render();
 
-            Player p = (Player)Engine.Player;
-
             int length; //Draw part Square
             if (DestroyOnX)
             {
-                length = (int)(Height * (float)Math.Clamp(p.Velocity.Length() / BreakVelocity, 0, 1));
+                length = (int)(Height * (float)Math.Clamp(Platformer.Player.Velocity.Length() / BreakVelocity, 0, 1));
                 Drawing.Draw(Drawing.PointTexture, new Vector2(Pos.X, Pos.Y + Height - length), new Vector2(Width, length), new Color(DestroyableColor, 10), 0, Vector2.Zero, SpriteEffects.None, 0.1f);
             }
             else
             {
-                length = Width * (int)Math.Clamp(p.Velocity.Length() / BreakVelocity, 0, 1);
+                length = Width * (int)Math.Clamp(Platformer.Player.Velocity.Length() / BreakVelocity, 0, 1);
                 Drawing.Draw(Drawing.PointTexture, new Vector2(Pos.X + Width - length, Pos.Y), new Vector2(length, Height), DestroyableColor, 0, Vector2.Zero, SpriteEffects.None, 0.1f);
             }
         }

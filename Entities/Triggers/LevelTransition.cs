@@ -134,19 +134,17 @@ namespace Unnamed
 
             toLevel.LoadNoAutoTile();
 
-            Engine.Player.Pos = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>()[0].RespawnPoint;
+            Platformer.Player.Pos = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>()[0].RespawnPoint;
 
             Vector2 size = toLevel.Size;
             if (size.Y == 184)
                 size.Y = 180;
 
-            Player p = (Player)Engine.Player;
+            //Platformer.Player.UpdateChildrenPos();
+            Platformer.Player.CancelJump();
 
-            //p.UpdateChildrenPos();
-            p.CancelJump();
-
-            p.RefillJetpack();
-            p.ResetSwing();
+            Platformer.Player.RefillJetpack();
+            Platformer.Player.ResetSwing();
 
             Engine.CurrentMap.CurrentLevel = toLevel;
 
@@ -170,16 +168,16 @@ namespace Unnamed
 
             var respawns = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>();
             if (respawns.Count > 0)
-                Engine.Player.Pos = respawns[respawns.Count - 1].RespawnPoint;
+                Platformer.Player.Pos = respawns[respawns.Count - 1].RespawnPoint;
 
 
             Vector2 size = toLevel.Size;
             if (size.Y == 184)
                 size.Y = 180;
 
-            Player p = (Player)Engine.Player;
+            Player p = Platformer.Player;
 
-            p.RespawnPoint = Engine.Player.Pos;
+            p.RespawnPoint = p.Pos;
             //p.UpdateChildrenPos();
             p.CancelJump();
 

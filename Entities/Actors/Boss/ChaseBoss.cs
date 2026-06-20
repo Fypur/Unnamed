@@ -103,7 +103,7 @@ namespace Unnamed
                     b.SelfDestroy();
 
                 AddComponent(new Coroutine(FreezeWithInput(7f, () =>
-                Engine.Player.Pos.Y < -1305)));
+                Platformer.Player.Pos.Y < -1305)));
 
                 float t = 0.3f;
                 c = (Coroutine)AddComponent(new Coroutine(
@@ -443,13 +443,13 @@ namespace Unnamed
 
         public override void Update()
         {
-            SetCannonPos((Engine.Player.MiddlePos - MiddlePos).ToAngleRad());
+            SetCannonPos((Platformer.Player.MiddlePos - MiddlePos).ToAngleRad());
             base.Update();
         }
 
         public override void Render()
         {
-            if (Engine.Player.MiddlePos.X < MiddlePos.X)
+            if (Platformer.Player.MiddlePos.X < MiddlePos.X)
                 Sprite.SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipHorizontally;
             else
                 Sprite.SpriteEffect = Microsoft.Xna.Framework.Graphics.SpriteEffects.None;
@@ -569,7 +569,7 @@ namespace Unnamed
             }
 
             Action fireSpeed = () => p.ChangeSpeed(origSpeed);
-            (Engine.Player as Player).OnDeath += fireSpeed;
+            Platformer.Player.OnDeath += fireSpeed;
 
             cannons[1].Item1.Color = Color.Yellow;
             cannons[1].Item2.Color = Color.Yellow;
@@ -602,12 +602,12 @@ namespace Unnamed
             if (p != null)
                 p.ChangeSpeed(origSpeed);
 
-            (Engine.Player as Player).OnDeath -= fireSpeed;
+            Platformer.Player.OnDeath -= fireSpeed;
         }
 
         private IEnumerator ProjectPlayer()
         {
-            Player player = Platformer.player;
+            Player player = Platformer.Player;
 
             float t = 0;
             float mT = 0.4f;

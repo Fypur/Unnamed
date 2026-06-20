@@ -86,13 +86,13 @@ namespace Unnamed
             foreach (LDtkTypes.RailedPulledBlock p in level.GetEntities<LDtkTypes.RailedPulledBlock>())
                 entities.Add(new RailedPullBlock(p.RailPositions, p.MaxSwingDistance, p.Position, p.Width(), p.Height()));
 
-            if (Engine.Player == null)
+            if (Platformer.Player == null)
                 foreach (LDtkTypes.InitPlayerSpawn p in level.GetEntities<LDtkTypes.InitPlayerSpawn>())
                     Engine.CurrentMap.Instantiate(new Player(p.Position));
 
             foreach (LDtkTypes.RespawnArea p in level.GetEntities<LDtkTypes.RespawnArea>())
             {
-                if (Engine.Player == null)
+                if (Platformer.Player == null)
                     Engine.CurrentMap.Instantiate(new Player(p.RespawnPoint));
 
                 entities.Add(new RespawnTrigger(p.Position, p.Size, p.RespawnPoint));
@@ -323,7 +323,7 @@ namespace Unnamed
                                 if (trigged)
                                     yield break;
 
-                                yield return new Coroutine.PausedUntil(() => Platformer.player.Velocity != Vector2.Zero);
+                                yield return new Coroutine.PausedUntil(() => Platformer.Player.Velocity != Vector2.Zero);
 
                                 trigged = true;
                                 Vector2[] fPos = new Vector2[p.Children.Length];
@@ -1192,7 +1192,7 @@ namespace Unnamed
         }
 
         private static DeathTrigger FallDeathTrigger(Vector2 levelPos, Vector2 levelSize)
-            => new DeathTrigger(levelPos + new Vector2(0, levelSize.Y + Platformer.player.Height / 2), new Vector2(levelSize.X, 2));
+            => new DeathTrigger(levelPos + new Vector2(0, levelSize.Y + Platformer.Player.Height / 2), new Vector2(levelSize.X, 2));
 
         private static int[,] SwitchXAndY(int[,] levelOrganisation)
         {

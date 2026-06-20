@@ -7,8 +7,8 @@ namespace Unnamed
     {
         public abstract float MaxSwingDistance { get; set; }
 
-        public virtual void OnSwing(Entity grappledEntity, Func<bool> isAtSwingEnd) { }
+        public virtual void OnSwing(Kinematic grappledEntity, Func<bool> isAtSwingEnd) { }
 
-        public virtual void OnStopSwing(Entity unGrappledEntity) { }
+        public virtual void OnStopSwing(Kinematic unGrappledEntity) { }
     }
 }

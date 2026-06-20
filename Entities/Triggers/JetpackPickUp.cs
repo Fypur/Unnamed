@@ -59,7 +59,7 @@ namespace Unnamed
         {
             base.Update();
 
-            if (inside && !collected && Player.JetpackControls.IsDown() && Platformer.player.Collider.CollideAt(Pos + new Vector2(0, 1)) && !Platformer.player.GetComponent<StateMachine<Player.States>>().Is(Player.States.Jumping))
+            if (inside && !collected && Player.JetpackControls.IsDown() && Platformer.Player.Collider.CollideAt(Pos + new Vector2(0, 1)) && !Platformer.Player.GetComponent<StateMachine<Player.States>>().Is(Player.States.Jumping))
             {
                 collected = true;
                 AddComponent(new Coroutine(Collect()));
@@ -68,24 +68,24 @@ namespace Unnamed
 
         public IEnumerator Collect()
         {
-            Platformer.player.CanMove = false;
-            Platformer.player.CanAnimateSprite = true;
+            Platformer.Player.CanMove = false;
+            Platformer.Player.CanAnimateSprite = true;
 
-            Platformer.player.Sprite.Play("pickUp");
+            Platformer.Player.Sprite.Play("pickUp");
 
             yield return new Coroutine.WaitForSeconds(1f);
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(lightStuff, Pos, 25);
             RemoveComponent(GetComponent<Light>());
 
-            Platformer.player.CanJetpack = true;
-            Platformer.player.Sprite.OnLastFrame = null;
+            Platformer.Player.CanJetpack = true;
+            Platformer.Player.Sprite.OnLastFrame = null;
 
             AddComponent(new Timer(0.5f, (t) =>
             {
-                Platformer.player.Sprite.PixelShader = DataManager.PixelShaders["WhiteBar"];
+                Platformer.Player.Sprite.PixelShader = DataManager.PixelShaders["WhiteBar"];
                 DataManager.PixelShaders["WhiteBar"].Parameters["barLocation"].SetValue(Ease.CubeInAndOut(t.AmountCompleted()));
-            }, () => Platformer.player.Sprite.PixelShader = null));
+            }, () => Platformer.Player.Sprite.PixelShader = null));
 
             yield return new Coroutine.WaitForSeconds(1f);
 
@@ -105,9 +105,9 @@ namespace Unnamed
 
             Levels.LevelNonRespawn.Add(iid);
 
-            Platformer.player.CanMove = true;
-            Platformer.player.CanAnimateSprite = false;
-            Platformer.player.Sprite.Play("pickUpReverse");
+            Platformer.Player.CanMove = true;
+            Platformer.Player.CanAnimateSprite = false;
+            Platformer.Player.Sprite.Play("pickUpReverse");
 
             for (float t = 0.5f; t > 0; t -= Engine.Deltatime)
             {

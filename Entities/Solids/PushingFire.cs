@@ -32,7 +32,7 @@ namespace Unnamed
 
             UpdateBigFire();
 
-            AddComponent(new Coroutine(Coroutine.WaitUntil(() => Platformer.player.Velocity != Vector2.Zero), Coroutine.Do(() =>
+            AddComponent(new Coroutine(Coroutine.WaitUntil(() => Platformer.Player.Velocity != Vector2.Zero), Coroutine.Do(() =>
             this.Speed = speed)));
 
             HurtBox h = new HurtBox(-dirVec * 10, Width, Height);
@@ -53,7 +53,7 @@ namespace Unnamed
 
             AddComponent(new CircleLight(MiddlePos, 200, new Color(Color.Orange, 200), Color.Transparent));
 
-            ((Player)Engine.Player).OnDeathTransition += ResetPos;
+            Platformer.Player.OnDeathTransition += ResetPos;
         }
 
         public override void Update()
@@ -145,7 +145,7 @@ namespace Unnamed
             float speed = this.Speed;
             this.Speed = 0;
 
-            AddComponent(new Coroutine(Coroutine.WaitUntil(() => Platformer.player.Velocity != Vector2.Zero), Coroutine.Do(() => this.Speed = speed)));
+            AddComponent(new Coroutine(Coroutine.WaitUntil(() => Platformer.Player.Velocity != Vector2.Zero), Coroutine.Do(() => this.Speed = speed)));
 
             /*Speed = 0.3f * Speed;
 
@@ -163,7 +163,7 @@ namespace Unnamed
         public override void OnDestroy()
         {
             base.OnDestroy();
-            ((Player)Engine.Player).OnDeathTransition -= ResetPos;
+            Platformer.Player.OnDeathTransition -= ResetPos;
         }
 
         public void ChangeSpeed(float speed)

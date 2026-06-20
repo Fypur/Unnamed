@@ -14,6 +14,9 @@ namespace Unnamed
 
         public enum States { Idle, Running, Jumping, Ascending, Falling, Dashing, Swinging, WallSliding, Pulling, Jetpack, Dead, Damaged }
 
+        public const int PlayerWidth = 8;
+        public const int PlayerHeight = 13;
+
         private const float maxSpeed = 90;
         private const float maxFallingSpeed = 260;
         private const float maxFallSlidingSpeed = 150; //Max Falling Speed while Wall Sliding
@@ -57,6 +60,7 @@ namespace Unnamed
         #region variables
 
         private readonly StateMachine<States> stateMachine;
+        private AABBCollider aabbCollider => (AABBCollider)Collider;
 
         public bool CanMove = true;
         public bool Safe = true;
@@ -105,7 +109,7 @@ namespace Unnamed
         private BoostBar boostBar;
 
         private float totalRopeLength;
-        private Entity grappledSolid;
+        private Kinematic grappledSolid;
         public List<Vector2> SwingPositions = new List<Vector2>();
         public List<int> SwingPositionsSign = new List<int>() { 0 };
         private bool isAtSwingEnd;
@@ -125,9 +129,9 @@ namespace Unnamed
 
         #endregion
 
-        public Player(Vector2 position) : base(position, 8, 13, new Sprite(Color.White))
+        public Player(Vector2 position) : base(position, new AABBCollider(Vector2.Zero, PlayerWidth, PlayerHeight), new Sprite(Color.White))
         {
-            Engine.Player = this;
+            Platformer.Player = this;
 
             Sprite.Add(Sprite.AllAnimData["Player"]);
 
@@ -144,7 +148,7 @@ namespace Unnamed
             stateMachine.SetStateFunctions(States.Running, () => { Sprite.Play("run"); Audio.PlayEvent("SFX/Player/FootStep"); startRun = true; }, () =>
             {
                 if (Rand.NextDouble() < 0.1f)
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.LightBigDust, new Rectangle(Bounds.X + (Facing == 1 ? 2 : 3), Bounds.Bottom - 2, 3, 3), 1);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.LightBigDust, new Rectangle(aabbCollider.Bounds.X + (Facing == 1 ? 2 : 3), aabbCollider.Bounds.Bottom - 2, 3, 3), 1);
 
                 Sprite.OnFrameChange = () =>
                 {
@@ -162,7 +166,7 @@ namespace Unnamed
             stateMachine.SetStateFunctions(States.WallSliding, () => Sprite.Play("wallSlide"), () => { if (!onWall) stateMachine.Switch(States.Ascending); }, null);
             stateMachine.SetStateFunctions(States.Jetpack, () => Sprite.Play("ascend"), () => { if (Velocity.Y >= 0) stateMachine.Switch(States.Falling); }, null);
 
-            TrailRenderer trail = new TrailRenderer(Particles.Trail, HalfSize, 0.03f);
+            TrailRenderer trail = new TrailRenderer(Particles.Trail, aabbCollider.HalfSize, 0.03f);
             trail.Condition = () => Velocity.Length() > 210;
 
             stateMachine.SetStateFunctions(States.Swinging, () =>
@@ -218,14 +222,14 @@ namespace Unnamed
             Layer = 2;
 
             jetpackTime = maxJetpackTime;
-            boostBar = (BoostBar)AddChild(new BoostBar(Pos + new Vector2(1, -5), Width - 1, 1, 0.5f));
+            boostBar = (BoostBar)AddChild(new BoostBar(Pos + new Vector2(1, -5), aabbCollider.Width - 1, 1, 0.5f));
 
             swingAudio = (Sound3D)AddComponent(new Sound3D("SFX/Player/Swing"));
             swingAudio.Sound.stop(STOP_MODE.IMMEDIATE);
             jetpackAudio = (Sound3D)AddComponent(new Sound3D("SFX/Player/Jetpack"));
             jetpackAudio.Sound.stop(STOP_MODE.IMMEDIATE);
 
-            AddComponent(new CircleLight(HalfSize, 40, new Color(Color.White, 5), new Color(Color.White, 0)));
+            AddComponent(new CircleLight(aabbCollider.HalfSize, 40, new Color(Color.White, 5), new Color(Color.White, 0)));
 
             PreviousExactPos = ExactPos;
         }
@@ -501,7 +505,7 @@ namespace Unnamed
 
             if (!onGround)
             {
-                AABBCollider collider = (AABBCollider)Collider;
+                AABBCollider collider = (AABBCollider)aabbCollider;
                 float top = collider.WorldPos.Y;
                 float bottom = collider.WorldPos.Y + collider.Height;
 
@@ -541,7 +545,7 @@ namespace Unnamed
         private void ThrowRope()
         {
 
-            if (CheckForSwingingPoint(out Entity determinedGrappledSolid, out float distance))
+            if (CheckForSwingingPoint(out Kinematic determinedGrappledSolid, out float distance))
             {
                 grappledSolid = determinedGrappledSolid;
                 Velocity.Y = potentialFallingSpeed;
@@ -570,14 +574,14 @@ namespace Unnamed
                 return;
             }*/
 
-            bool CheckForSwingingPoint(out Entity swingingPoint, out float distance)
+            bool CheckForSwingingPoint(out Kinematic swingingPoint, out float distance)
             {
-                Entity determinedGrappledSolid = null;
-                Entity reserveGrappledSolid = null;
+                Kinematic determinedGrappledSolid = null;
+                Kinematic reserveGrappledSolid = null;
                 distance = float.PositiveInfinity;
                 float reserveDistance = float.PositiveInfinity;
 
-                foreach (Entity g in SwingingPoint.SwingingPoints)
+                foreach (Kinematic g in SwingingPoint.SwingingPoints)
                 {
                     float d = Vector2.DistanceSquared(MiddleExactPos, g.MiddleExactPos);
 
@@ -597,8 +601,7 @@ namespace Unnamed
                         if (g is GrapplingTrigger trigger && !trigger.Active)
                             continue;
 
-                        Raycast ray = new Raycast(Raycast.RayTypes.MapTiles, MiddleExactPos, g.MiddleExactPos);
-                        if (!ray.Hit)
+                        if (!Raycast.FastRay(MiddleExactPos, g.MiddleExactPos).Hit)
                         {
                             if (onRightDir)
                             {
@@ -631,7 +634,7 @@ namespace Unnamed
                 return true;
             }
 
-            void ActOnSwing(Entity grappledSolid)
+            void ActOnSwing(Kinematic grappledSolid)
             {
                 if (determinedGrappledSolid is ISwinged swinged)
                 {
@@ -704,7 +707,7 @@ namespace Unnamed
                         (line) => { if (deactivateLine) RemoveComponent(line); },
                         (line) =>
                         {
-                            line.Positions[0] = Pos + new Vector2(Width / 2, Height / 2);
+                            line.Positions[0] = Pos + new Vector2(aabbCollider.Width / 2, aabbCollider.Height / 2);
                             line.Positions[1] = determinedGrappledSolid.Pos;
                         }));
                 }
@@ -722,12 +725,12 @@ namespace Unnamed
             for (int i = 0; i < SwingPositions.Count - 1; i++)
                 ropeLength -= Vector2.Distance(SwingPositions[i], SwingPositions[i + 1]);
 
-            Vector2 testPos = ExactPos + HalfSize + Velocity * Engine.Deltatime;
+            Vector2 testPos = ExactPos + aabbCollider.HalfSize + Velocity * Engine.Deltatime;
 
             if ((grapplePos - testPos).Length() > ropeLength)
             {
                 testPos = grapplePos + Vector2.Normalize(testPos - grapplePos) * ropeLength;
-                Velocity = (testPos - ExactPos - HalfSize) / Engine.Deltatime;
+                Velocity = (testPos - ExactPos - aabbCollider.HalfSize) / Engine.Deltatime;
                 isAtSwingEnd = true;
             }
             else
@@ -761,12 +764,12 @@ namespace Unnamed
 
             void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
             {
-                float angle = VectorHelper.GetAngle(checkingFrom - ExactPos - HalfSize, checkingFrom - ExactPos - HalfSize - Velocity * Engine.Deltatime);
+                float angle = VectorHelper.GetAngle(checkingFrom - ExactPos - aabbCollider.HalfSize, checkingFrom - ExactPos - aabbCollider.HalfSize - Velocity * Engine.Deltatime);
 
                 if (angle == 0)
                     return;
 
-                float distanceFromPoint = Vector2.DistanceSquared(ExactPos + HalfSize + Velocity * Engine.Deltatime, checkingFrom);
+                float distanceFromPoint = Vector2.DistanceSquared(ExactPos + aabbCollider.HalfSize + Velocity * Engine.Deltatime, checkingFrom);
 
                 float closestAngle = angle;
                 Vector2? closestPoint = null;
@@ -781,7 +784,7 @@ namespace Unnamed
                         continue;
                     }
 
-                    float pointAngle = VectorHelper.GetAngle(checkingFrom - ExactPos - HalfSize, checkingFrom - corner);
+                    float pointAngle = VectorHelper.GetAngle(checkingFrom - ExactPos - aabbCollider.HalfSize, checkingFrom - corner);
 
                     if (pointAngle * Math.Sign(angle) >= 0 && pointAngle * Math.Sign(angle) <= angle * Math.Sign(angle))
                     {
@@ -811,7 +814,7 @@ namespace Unnamed
             {
                 for (int i = SwingPositions.Count - 1; i >= 1; i--)
                 {
-                    float grappleAngle = VectorHelper.GetAngle(SwingPositions[i - 1] - ExactPos - HalfSize, SwingPositions[i - 1] - SwingPositions[i]);
+                    float grappleAngle = VectorHelper.GetAngle(SwingPositions[i - 1] - ExactPos - aabbCollider.HalfSize, SwingPositions[i - 1] - SwingPositions[i]);
 
                     if (Math.Sign(grappleAngle) == SwingPositionsSign[i])
                     {
@@ -843,7 +846,7 @@ namespace Unnamed
             var j = Audio.PlayEvent("SFX/Player/Jump");
             PlayerStats.JumpCount++;
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 7, new Rectangle((Pos + new Vector2(0, aabbCollider.Height - 3)).ToPoint(), new Point(aabbCollider.Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
             AddComponent(new Timer(maxJumpTime, (timer) =>
             {
@@ -904,9 +907,9 @@ namespace Unnamed
             Velocity.Y -= jumpForce * 0.5f;
 
             if (onRightWall)
-                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X + Width - 1, (int)Pos.Y, 1, Height), 7);
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X + aabbCollider.Width - 1, (int)Pos.Y, 1, aabbCollider.Height), 7);
             else
-                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X, (int)Pos.Y, 1, Height), 7);
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X, (int)Pos.Y, 1, aabbCollider.Height), 7);
 
             AddComponent(new Timer(maxJumpTime + (coef == 1 ? 0 : 0.1f), (timer) =>
             {
@@ -943,9 +946,9 @@ namespace Unnamed
                 gravityScale = 0.5f * constGravityScale;
 
             if (onRightWall)
-                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X + Width - 1, (int)Pos.Y, 1, Height), 2);
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X + aabbCollider.Width - 1, (int)Pos.Y, 1, aabbCollider.Height), 2);
             else
-                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X, (int)Pos.Y, 1, Height), 2);
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, new Rectangle((int)Pos.X, (int)Pos.Y, 1, aabbCollider.Height), 2);
 
 
             Action OnUnstick = () =>
@@ -1163,7 +1166,7 @@ namespace Unnamed
             OnDeath?.Invoke();
             OnDeath = delegate { };
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Bounds, 100);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, aabbCollider.Bounds, 100);
             Engine.Cam.Shake(0.4f, 1);
 
             Audio.PlayEvent("SFX/Player/DeathExplosion");
@@ -1207,7 +1210,7 @@ namespace Unnamed
 
                 foreach (CameraOffset camOffset in Engine.CurrentMap.Data.GetEntities<CameraOffset>())
                 {
-                    if (camOffset.Collider.Collide(Collider))
+                    if (camOffset.Collider.Collide(aabbCollider))
                     {
                         camOffset.OnTriggerEnter(this);
 
@@ -1261,7 +1264,7 @@ namespace Unnamed
         private void CollisionY(Entity collided)
         {
             if (collided is JumpThru jumpThru)
-                Pos.Y = jumpThru.Collider.WorldPos.Y - Height;
+                Pos.Y = jumpThru.Collider.WorldPos.Y - aabbCollider.Height;
 
             if (collided is GlassWall gl && gl.Break(this, Velocity, false))
             {
@@ -1274,7 +1277,7 @@ namespace Unnamed
 
             if (collided is Grid grid && Velocity.Y < -40)
             {
-                int offset = (int)(Pos.X + Width - grid.Pos.X) % grid.TileWidth;
+                int offset = (int)(Pos.X + aabbCollider.Width - grid.Pos.X) % grid.TileWidth;
                 if (offset > maxBonkOffset)
                 {
                     offset = (int)(Pos.X - grid.Pos.X) % grid.TileWidth;
@@ -1303,9 +1306,9 @@ namespace Unnamed
         private bool CollisionCheck(Vector2 position, bool platforms, out Entity groundedEntity)
         {
             if (platforms)
-                return Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position, out groundedEntity) && groundedEntity is not InvisibleWall;
+                return CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position, out groundedEntity) && groundedEntity is not InvisibleWall;
             else
-                return Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Solids), position, out groundedEntity) && groundedEntity is not InvisibleWall;
+                return CollideAt(new List<Entity>(Engine.CurrentMap.Data.Solids), position, out groundedEntity) && groundedEntity is not InvisibleWall;
         }
         private bool CollisionCheck(Vector2 position, bool platforms)
             => CollisionCheck(position, platforms, out _);
@@ -1317,7 +1320,7 @@ namespace Unnamed
             ParticleType oldDust = Dust.Copy();
             Dust.LifeMax = 0.4f;
             Dust.SpeedMax = 10;
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 4, new Rectangle((Pos + new Vector2(0, Height - 3)).ToPoint(), new Point(Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Dust, 4, new Rectangle((Pos + new Vector2(0, aabbCollider.Height - 3)).ToPoint(), new Point(aabbCollider.Width, 3)), null, xMoving == 1 ? 0 : xMoving == 0 ? -90 : 180, Dust.Color);
 
             Dust.CopyFrom(oldDust);
         }

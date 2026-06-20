@@ -52,7 +52,7 @@ namespace Unnamed
                         CurrentLevel = Levels.LastLDtkLevel.Identifier,
                         CurrentWorld = Platformer.InitWorld,
                         WorldUnlocked = Platformer.WorldsUnlocked,
-                        CanJetpack = Platformer.player.CanJetpack
+                        CanJetpack = Platformer.Player.CanJetpack
                     });
 
                     Audio.GetBus("Sound effects").stopAllEvents(FMOD.Studio.STOP_MODE.IMMEDIATE);

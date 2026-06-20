@@ -167,7 +167,7 @@ namespace Unnamed
                 CurrentLevel = Levels.LastLDtkLevel.Identifier,
                 CurrentWorld = Platformer.InitWorld,
                 WorldUnlocked = Platformer.WorldsUnlocked,
-                CanJetpack = Platformer.player.CanJetpack
+                CanJetpack = Platformer.Player.CanJetpack
             });
 
             Platformer.LoadWorldSave(Saving.Load());

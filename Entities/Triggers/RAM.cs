@@ -67,6 +67,6 @@ namespace Unnamed
             }));
         }
 
-        protected override bool CollectingConditions() => ((Player)Engine.Player).Safe;
+        protected override bool CollectingConditions() => Platformer.Player.Safe;
     }
 }

@@ -1,12 +1,11 @@
-﻿using Fiourp;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Unnamed
 {
     public class IdentifierTrigger : PlayerTrigger
     {
         public int Id;
-        public bool PlayerIn => Contains(Engine.Player);
+        public bool PlayerIn => Contains(Platformer.Player);
         public IdentifierTrigger(Vector2 position, Vector2 size, int id) : base(position, size, null)
         {
             Id = id;
