@@ -4,18 +4,12 @@ using System;
 
 namespace Unnamed
 {
-    public class HurtBox : PlayerTriggerComponent
+    public class HurtBox : Component
     {
         public Func<Player, bool> DeathConditions = (player) => true;
         public Action OnDeath = null;
         public bool InstaDeath;
-        public HurtBox(Vector2 localPosition, float width, float height) : base(localPosition, width, height)
-        { }
-
-        public HurtBox(Vector2 localPosition, float radius) : base(localPosition, radius)
-        { }
-
-        public HurtBox(Vector2 localPosition, AABBCollider collider) : base(localPosition, collider) { }
+        public HurtBox(Collider collider) { }
 
         public override void Added()
         {
