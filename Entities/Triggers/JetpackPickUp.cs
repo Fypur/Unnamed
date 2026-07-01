@@ -103,7 +103,7 @@ namespace Unnamed
             //yield return new Coroutine.PausedUntil(Player.JumpControls.Is);
             yield return new Coroutine.WaitForSeconds(2.5f);
 
-            Levels.LevelNonRespawn.Add(iid);
+            LevelManager.NonRespawnEntityIIds.Add(iid);
 
             Platformer.Player.CanMove = true;
             Platformer.Player.CanAnimateSprite = false;

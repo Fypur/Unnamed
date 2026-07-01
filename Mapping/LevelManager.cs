@@ -9,44 +9,30 @@ using System.Linq;
 
 namespace Unnamed
 {
-    public static class Levels
+    public static class LevelManager
     {
         /// <summary>
         /// IIds of entities that won't be respawned again
         /// </summary>
-        public static List<Guid> LevelNonRespawn = new();
-        public static int LevelIndex;
+        public static List<Guid> NonRespawnEntityIIds = new();
+
+        public static Level CurrentLevel;
+        public static Grid CurrentGrid;
         public static LDtkLevel LastLDtkLevel;
-        public static LevelData LastLevelData
-        {
-            get
-            {
-                if (LastLDtkLevel != null)
-                    return GetLevelData(LastLDtkLevel);
-                else
-                    return GetLevelData(LevelIndex);
-            }
-        }
+
 
         public static Dictionary<int, string> TileData = new();
 
-        public static NineSliceSimple FallingPlatformNineSlice1
-            = new NineSliceSimple(T1Cropped(120, 0), T1Cropped(136, 0), T1Cropped(120, 16), T1Cropped(136, 16), T1Cropped(128, 0), T1Cropped(120, 8), T1Cropped(136, 8), T1Cropped(128, 16), T1Cropped(128, 8), true);
-
-        public static Texture2D T1Cropped(int posX, int posY)
-            => DataManager.Textures["Tilesets/industrialAll"].CropTo(new Vector2(posX, posY), new Vector2(8));
 
         private static List<Entity> GetLevelEntities(this LDtkLevel level)
         {
             Random levelRandom = new Random(level.Position.X + level.Position.Y);
-            Rectangle oldCamBounds = Engine.Cam.Bounds;
-            Vector2 oldCamPos = Engine.Cam.CenteredPos;
 
             List<Entity> entities = new List<Entity>();
             LDtkIntGrid intGrid = level.GetIntGrid("IntGrid");
             Dictionary<Entity, List<Guid>> IidsChildren = new();
 
-            foreach (LDtkTypes.Platform p in level.GetEntities<LDtkTypes.Platform>())
+            /*foreach (LDtkTypes.Platform p in level.GetEntities<LDtkTypes.Platform>())
             {
                 Entity plat;
                 if (p.Positions.Length == 0)
@@ -60,11 +46,14 @@ namespace Unnamed
                     IidsChildren[plat] = new();
                 foreach (EntityReference child in p.Children)
                     IidsChildren[plat].Add(child.EntityIid);
-            }
+            }*/
 
             foreach (LDtkTypes.FallingPlatform p in level.GetEntities<LDtkTypes.FallingPlatform>())
             {
-                FallingPlatform plat = new FallingPlatform(p.Position, p.Width(), p.Height(), p.Respawning, FallingPlatformNineSlice1);
+                Texture2D T1Cropped(int posX, int posY)
+                    => DataManager.Textures["Tilesets/industrialAll"].CropTo(new Vector2(posX, posY), new Vector2(8));
+
+                FallingPlatform plat = new FallingPlatform(p.Position, p.Width(), p.Height(), p.Respawning, new NineSliceSimple(T1Cropped(120, 0), T1Cropped(136, 0), T1Cropped(120, 16), T1Cropped(136, 16), T1Cropped(128, 0), T1Cropped(120, 8), T1Cropped(136, 8), T1Cropped(128, 16), T1Cropped(128, 8), true));
                 entities.Add(plat);
 
                 if (p.Children.Length != 0)
@@ -77,9 +66,9 @@ namespace Unnamed
             foreach (LDtkTypes.GrapplingPoint p in level.GetEntities<LDtkTypes.GrapplingPoint>())
             {
                 if (p.Positions.Length == 0)
-                    AddIfChild(new SwingingPoint(p.Position, p.MaxSwingDistance), p.Iid);
+                    AddIfNotChild(new SwingingPoint(p.Position, p.MaxSwingDistance), p.Iid);
                 else
-                    AddIfChild(new SwingingPoint(p.Position, p.MaxSwingDistance, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, p.GoingForwards, Ease.CubeInAndOut), p.Iid);
+                    AddIfNotChild(new SwingingPoint(p.Position, p.MaxSwingDistance, ArrayCenteredToTile(p.Positions), p.TimeBetweenPositions, p.GoingForwards, Ease.CubeInAndOut), p.Iid);
             }
 
 
@@ -102,14 +91,14 @@ namespace Unnamed
             {
                 SpikeRow spike = new SpikeRow(p.Position, p.GetDirection(), p.Length(), p.Direction.ToDirection());
 
-                AddIfChild(spike, p.Iid);
+                AddIfNotChild(spike, p.Iid);
             }
 
             foreach (LDtkTypes.DeathTrigger p in level.GetEntities<LDtkTypes.DeathTrigger>())
                 entities.Add(new DeathTrigger(p.Position, p.Size));
 
             foreach (LDtkTypes.Fire p in level.GetEntities<LDtkTypes.Fire>())
-                AddIfChild(new Fire(p.Position, p.Size, p.Direction.ToDirection()), p.Iid);
+                AddIfNotChild(new Fire(p.Position, p.Size, p.Direction.ToDirection()), p.Iid);
 
             foreach (LDtkTypes.JumpThru p in level.GetEntities<LDtkTypes.JumpThru>())
                 entities.Add(new JumpThru(p.Position, p.Width(), p.Height(), "industrial2"));
@@ -146,27 +135,10 @@ namespace Unnamed
                 entities.Add(new FuelRefill(p.Position, p.RespawnTime));
 
             foreach (LDtkTypes.Collectable p in level.GetEntities<LDtkTypes.Collectable>())
-                if ((!LevelNonRespawn.Contains(p.Iid))
+                if ((!NonRespawnEntityIIds.Contains(p.Iid))
                     && (!Engine.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(RAM)) ||
                     Engine.CurrentMap.Data.EntitiesByType[typeof(RAM)].TrueForAll((collected) => ((RAM)collected).iid != p.Iid)))
                     entities.Add(new RAM(p.Position, p.Iid));
-
-            foreach (LDtkTypes.Key p in level.GetEntities<LDtkTypes.Key>())
-                if ((!LevelNonRespawn.Contains(p.Iid))
-                    && (!Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Key), out var keys) || keys.TrueForAll((collected) => ((RAM)collected).iid != p.Iid)))
-                {
-                    foreach (LDtkTypes.Cage c in level.GetEntities<LDtkTypes.Cage>())
-                    {
-                        if (c.Iid == p.Cage.EntityIid)
-                        {
-                            Cage cage = new Cage(c.Position, c.Width(), c.Height());
-                            entities.Add(cage);
-                            entities.Add(new Key(p.Position, cage, p.Iid));
-                            break;
-                        }
-                    }
-                }
-
 
             foreach (LDtkTypes.HangingWire p in level.GetEntities<LDtkTypes.HangingWire>())
                 entities.Add(new HangingWire(p.ControlPoints.AddAtBeggining(p.Position)));
@@ -199,7 +171,7 @@ namespace Unnamed
 
             foreach (LDtkTypes.ParticleEmitter p in level.GetEntities<LDtkTypes.ParticleEmitter>())
             {
-                if (Levels.LevelNonRespawn.Contains(p.Iid))
+                if (LevelManager.NonRespawnEntityIIds.Contains(p.Iid))
                     continue;
 
                 ParticleType pT;
@@ -235,11 +207,7 @@ namespace Unnamed
 
             foreach (LDtkTypes.Boss p in level.GetEntities<LDtkTypes.Boss>())
             {
-                if (p.Id == 0)
-                    entities.Add(new Boss(p.Position));
-                else if (p.Id == 1)
-                    entities.Add(new Boss2(p.Position));
-                else if (p.Id == 2)
+                if (p.Id == 2)
                     entities.Add(new Boss3(p.Position));
             }
 
@@ -267,11 +235,12 @@ namespace Unnamed
                         entities.Add(new SpawnTrigger(p.Position, p.Size, spawned));
                         break;
                     case 4:
-                        if (!LevelNonRespawn.Contains(p.Iid))
+                        if (!NonRespawnEntityIIds.Contains(p.Iid))
                             entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new ChaseBoss(p.Positions, p.Id, p.Iid) }));
                         break;
                     case 5:
-                        if (p.Id == 0)
+                        //All of this needs a rework
+                        /*if (p.Id == 0)
                         {
                             if (Engine.CurrentMap.Data.GetEntities<PushingFire>().Count == 0)
                                 entities.Add(new SpawnTrigger(p.Position, p.Size, new Entity[] { new PushingFire(level.Position.ToVector2()) }));
@@ -283,14 +252,12 @@ namespace Unnamed
                         }
                         else if (p.Id == 1)
                         {
-                            Trigger trig = new Trigger(p.Position, p.Size, new() { typeof(Player) }, null);
-
-                            trig.OnTriggerEnterAction = (entity) =>
+                            SpecialTrigger trig = new SpecialTrigger(p.Position, p.Size, (player) =>
                             {
                                 var e = Engine.CurrentMap.Data.GetEntities<PushingFire>();
                                 for (int i = 0; i < e.Count; i++)
                                     e[i].SelfDestroy();
-                            };
+                            });
 
                             entities.Add(trig);
                         }
@@ -310,14 +277,13 @@ namespace Unnamed
                                 PushingFire pushingFire = Engine.CurrentMap.Data.GetEntity<PushingFire>();
                                 pushingFire.Width = level.PxWid;
                             }
-                        }
+                        }*/
                         break;
                     case 6:
-                        Trigger trig2 = new Trigger(p.Position, p.Size, new() { typeof(Player) }, null);
                         bool trigged = false;
-                        trig2.OnTriggerEnterAction = (entity) =>
+                        SpecialTrigger trig2 = new SpecialTrigger(p.Position, p.Size, null);
+                        trig2.OnTriggerEnterAction = (player) =>
                         {
-                            trig2.AddComponent(new Coroutine(FallPlats()));
                             IEnumerator FallPlats()
                             {
                                 if (trigged)
@@ -334,25 +300,22 @@ namespace Unnamed
                                     if (fPos.Contains(f.Pos))
                                         f.Fall();
                             }
+
+                            trig2.AddComponent(new Coroutine(FallPlats()));
                         };
 
                         entities.Add(trig2);
                         break;
                     case 7:
-                        Trigger trig3 = new Trigger(p.Position, p.Size, new() { typeof(Player) }, null);
+                        SpecialTrigger trig3 = new SpecialTrigger(p.Position, p.Size, null);
 
-                        trig3.OnTriggerEnterAction = (entity) =>
+                        trig3.OnTriggerEnterAction = (player) =>
                         {
                             var s = Engine.CurrentMap.Data.GetEntity<SwingTriggered>();
 
-                            s.AddComponent(new Shaker(0.4f, 4, null, true));
-
-                            trig3.AddComponent(new Timer(0.4f, null, () =>
-                            {
-
-                                s.GravityScale = 0.7f;
-                                s.Attached = false;
-                            }));
+                            s.AddComponent(new Shaker(0.4f, 4, null, s.Sprite));
+                            s.GravityScale = 0.7f;
+                            s.Attached = false;
                         };
 
                         entities.Add(trig3);
@@ -362,7 +325,7 @@ namespace Unnamed
                         LDtkTypes.SpecialTrigger closingPoint = level.GetEntityRef<LDtkTypes.SpecialTrigger>(p.Children[0]);
 
 
-                        Trigger trig4 = new Trigger(closingPoint.Position, closingPoint.Size, new() { typeof(Player) }, null);
+                        SpecialTrigger trig4 = new SpecialTrigger(closingPoint.Position, closingPoint.Size, null);
                         bool activated = false;
                         trig4.OnTriggerEnterAction = (e) =>
                         {
@@ -383,7 +346,7 @@ namespace Unnamed
                         entities.Add(trig4);
                         break;
                     case 9:
-                        if (!LevelNonRespawn.Contains(p.Iid))
+                        if (!NonRespawnEntityIIds.Contains(p.Iid))
                             entities.Add(new JetpackPickUp(p.Position, p.Iid, p.Id));
                         break;
                     case 10:
@@ -393,7 +356,7 @@ namespace Unnamed
                         entities.Add(new EndCinematic(p.Position, p.Size, p.Positions));
                         break;
                     case 12:
-                        Trigger trig5 = new Trigger(p.Position, p.Size, new() { typeof(Player) }, null);
+                        SpecialTrigger trig5 = new SpecialTrigger(p.Position, p.Size, null);
 
                         trig5.OnTriggerEnterAction = (entity) =>
                         {
@@ -675,7 +638,7 @@ namespace Unnamed
 
                 foreach (LDtkTypes.StreetLight p in neigh.GetEntities<LDtkTypes.StreetLight>())
                     if (p.TriggerTopLeft == null)
-                        entities.Add(new StreetLight(p.Position, p.Width(), p.Height()));
+                        entities.Add(new StreetLight(p.Position));
 
                 entities.Add(e);
             }
@@ -724,14 +687,14 @@ namespace Unnamed
             foreach (LDtkTypes.StreetLight p in level.GetEntities<LDtkTypes.StreetLight>())
             {
                 if (p.TriggerTopLeft is Vector2 v)
-                    entities.Add(new StreetLight(p.Position, p.Width(), p.Height(), new Rectangle(p.TriggerTopLeft.Value.ToPoint(), p.TriggerBottomRight.Value.ToPoint() - p.TriggerTopLeft.Value.ToPoint())));
+                    entities.Add(new StreetLight(p.Position, new Rectangle(p.TriggerTopLeft.Value.ToPoint(), p.TriggerBottomRight.Value.ToPoint() - p.TriggerTopLeft.Value.ToPoint())));
                 else
-                    entities.Add(new StreetLight(p.Position, p.Width(), p.Height()));
+                    entities.Add(new StreetLight(p.Position));
             }
 
             foreach (LDtkTypes.TriggeredDecal p in level.GetEntities<LDtkTypes.TriggeredDecal>())
             {
-                Trigger trig = new Trigger(new Rectangle(p.Pos1.Value.ToPoint(), p.Pos2.Value.ToPoint() - p.Pos1.Value.ToPoint()), new() { typeof(Player) }, null);
+                SpecialTrigger trig = new SpecialTrigger(p.Pos1.Value, p.Pos2.Value - p.Pos1.Value, null);
 
                 int tileID = 0;
                 EnumDefinition e = Platformer.LDtkFile.Defs.Enums[3];
@@ -817,7 +780,7 @@ namespace Unnamed
                 return v;
             }
 
-            void AddIfChild(Entity entity, Guid iid)
+            void AddIfNotChild(Entity entity, Guid iid)
             {
                 bool isChild = false;
                 foreach (KeyValuePair<Entity, List<Guid>> parents in IidsChildren)
@@ -883,6 +846,19 @@ namespace Unnamed
             }
 
             //Texture2D RandomTile(string id) => DataManager.GetRandomTilesetTexture(DataManager.Tilesets[1], id, levelRandom);
+        }
+
+        private static int[,] SwitchXAndY(LDtkIntGrid levelOrganisation)
+        {
+            int[,] switched = new int[levelOrganisation.GridSize.Y, levelOrganisation.GridSize.X];
+            for (int i = 0; i < levelOrganisation.GridSize.Y; i++)
+            {
+                for (int j = 0; j < levelOrganisation.GridSize.X; j++)
+                {
+                    switched[i, j] = levelOrganisation.GetValueAt(j, i);
+                }
+            }
+            return switched;
         }
 
         public static bool[,] GetWorldGrid(LDtkWorld world, int worldDepth, out Vector2 position)
@@ -961,62 +937,11 @@ namespace Unnamed
             return sprites;
         }
 
-        /// <summary>
-        /// Get LDTK level data
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public static LevelData GetLevelData(int index, Vector2? position = null)
-        {
-            LevelIndex = index;
-            LDtkLevel ldtk = GetLdtkLevel(index);
-            if (ldtk != null)
-            {
-                LastLDtkLevel = ldtk;
-                return GetLevelData(ldtk);
-            }
-
-            if (position == null)
-                throw new Exception("Must Specify a Position for a Hard Coded Level");
-
-            Vector2 p = (Vector2)position;
-            var org = GetLevelOrganisation(index);
-            return new LevelData(GetLevelEntities(index, p, GetLevelSize(org)), p, GetLevelSize(org), org, Engine.CurrentMap, GetLevelEnterAction(index));
-        }
-
-        public static LevelData GetLevelData(string ldtkIdentifier)
-        {
-            LDtkLevel ldtk = GetLdtkLevel(ldtkIdentifier);
-
-            if (ldtk == null)
-                throw new Exception("Ldtk level with specified identifier not found");
-
-            LastLDtkLevel = ldtk;
-            return GetLevelData(ldtk);
-
-        }
-
-        public static LevelData GetLevelData(LDtkLevel ldtk)
+        public static Level GetLevel(LDtkLevel ldtk)
         {
             LastLDtkLevel = ldtk;
-            return new LevelData(ldtk.GetLevelEntities(), ldtk.Position.ToVector2(), ldtk.Size.ToVector2(), SwitchXAndY(ldtk.GetIntGrid("IntGrid")), Engine.CurrentMap, null);
+            return new Level(ldtk.GetLevelEntities(), null);
         }
-
-        public static LDtkLevel GetLdtkLevel(int index)
-        {
-            LDtkLevel[] rawLevels = Platformer.World.Levels;
-
-            foreach (LDtkLevel lDtkLevel in rawLevels)
-                if (lDtkLevel.Identifier == $"Lvl{index}")
-                    return Platformer.World.LoadLevel(lDtkLevel.Iid);
-
-            foreach (LDtkLevel lDtkLevel in rawLevels)
-                if (lDtkLevel.Identifier == index.ToString())
-                    return Platformer.World.LoadLevel(lDtkLevel.Iid);
-
-            throw new Exception("Couldn't find level using id: " + index.ToString() + "in world " + Platformer.World.Identifier);
-        }
-
 
         public static LDtkLevel GetLdtkLevel(string id)
         {
@@ -1033,139 +958,14 @@ namespace Unnamed
             throw new Exception("Couldn't find level using id: " + id + "in world " + Platformer.World.Identifier);
         }
 
-        public static LevelData GetLevelData(int index, Vector2 position, int tileSize)
-        {
-            var org = GetLevelOrganisation(index);
-            return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileSize)), position, GetLevelSize(org, tileSize, tileSize), org, Engine.CurrentMap, GetLevelEnterAction(index));
-        }
-
-        public static LevelData GetLevelData(int index, Vector2 position, int tileWidth, int tileHeight)
-        {
-            var org = GetLevelOrganisation(index);
-            return new LevelData(GetLevelEntities(index, position, GetLevelSize(org, tileWidth, tileHeight)), position, GetLevelSize(org, tileWidth, tileHeight), org, Engine.CurrentMap, GetLevelEnterAction(index));
-        }
-
         public static void LoadWorldGrid(LDtkWorld world, int worldDepth)
         {
             bool[,] grid = GetWorldGrid(world, worldDepth, out Vector2 gridPos);
             Sprite[,] sp = GetWorldTileSprites(world, worldDepth, gridPos, grid);
             int gridSize = world.Levels.First().GetIntGrid("IntGrid").TileSize;
-            Engine.CurrentMap.Instantiate(new Grid(gridPos, gridSize, gridSize, grid, sp));
+            CurrentGrid = new Grid(gridPos, new GridCollider(Vector2.Zero, gridSize, gridSize, grid), sp);
+            Engine.CurrentMap.Instantiate(CurrentGrid);
         }
-
-        private static List<Entity> GetLevelEntities(int index, Vector2 position, Vector2 size)
-        {
-            Vector2 p = position;
-
-            switch (index)
-            {
-                case 1:
-                    var l = new List<Entity> {
-                        new SwingingPoint(new Vector2(Engine.ScreenSize.X / 2, 50), 1000, new Vector2[] { new Vector2(Engine.ScreenSize.X / 2, 50), new Vector2(Engine.ScreenSize.X / 2 - 200, 50) }, new float[]{ 1.5f }, true, Ease.CubeInAndOut),
-                        FallDeathTrigger(p, size)
-                    };
-                    l.AddRange(DefaultLevelTransitions(p, new Level(GetLevelData(2, p + Engine.ScreenSize.OnlyX())), null, null, null));
-                    return l;
-
-                case 2:
-                    var pulled = new PulledPlatform(new Vector2(60, 200) + p, 200, 40, new Vector2(60, 200) + p + new Vector2(200, 40), 2, Color.Yellow, Ease.CubeInAndOut);
-                    var trig = new GrapplingTrigger(new Vector2(60, 200) + p + new Vector2(200, 40), true, pulled.movingTime, pulled.Pull);
-                    return new List<Entity> { pulled, trig,
-                    new CyclingPlatform(40, 200, new Sprite(Color.YellowGreen), new Vector2[]{ Engine.ScreenSize / 2, Engine.ScreenSize / 2 + new Vector2(-200 ,0) }, new float[] { 1.5f }, Ease.CubeInAndOut),
-                    new CyclingPlatform(200, 20, new Sprite(Color.YellowGreen), new Vector2[]{ Engine.ScreenSize / 2 + Engine.ScreenSize.OnlyX() * 0.1f, Engine.ScreenSize / 2 + new Vector2(0 ,-200) }, new float[] { 1.5f }, Ease.CubeInAndOut),
-                    new RespawnTrigger(new Vector2(600, 200), new Vector2(200, 300), Vector2.Zero)
-                    };
-
-                case 3:
-                    return new List<Entity>() { FallDeathTrigger(position, size),
-                    new SwingingPoint(new Vector2(200, 20), 1000),
-                    new RailedPullBlock(new Vector2[] { new Vector2(50, 10), new Vector2(50, 50), new Vector2(100, 50) }, 1000, 1, 20, 20)
-                    };
-                default:
-                    throw new Exception("Couldn't find Level");
-            }
-        }
-
-        private static int[,] GetLevelOrganisation(int index)
-        {
-            switch (index)
-            {
-                case 1:
-                    return new int[,] {
-                        {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1}
-                    };
-                case 2:
-                    return new int[,] {
-                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-                    };
-                case 3:
-                    return new int[,] {
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-                    };
-
-                default:
-                    throw new Exception($"Couldn't find Level of index {index}");
-            }
-        }
-
-        private static Action GetLevelEnterAction(int index)
-        {
-            switch (index)
-            {
-                default:
-                    return null;
-            }
-        }
-
-        public static Vector2 GetLevelSize(int[,] organisation)
-            => new Vector2(8 * organisation.GetLength(1),
-                    8 * organisation.GetLength(0));
-
-        public static Vector2 GetLevelSize(int[,] organisation, int tileSize)
-            => new Vector2(tileSize * organisation.GetLength(1),
-                    tileSize * organisation.GetLength(0));
-
-        public static Vector2 GetLevelSize(int[,] organisation, int tileWidth, int tileHeight)
-            => new Vector2(tileWidth * organisation.GetLength(1),
-                    tileHeight * organisation.GetLength(0));
 
         private static List<LevelTransition> DefaultLevelTransitions(Vector2 fromLevelPosition, Level rightLevel, Level leftLevel, Level upLevel, Level downLevel)
         {
@@ -1192,38 +992,13 @@ namespace Unnamed
         }
 
         private static DeathTrigger FallDeathTrigger(Vector2 levelPos, Vector2 levelSize)
-            => new DeathTrigger(levelPos + new Vector2(0, levelSize.Y + Platformer.Player.Height / 2), new Vector2(levelSize.X, 2));
+            => new DeathTrigger(levelPos + new Vector2(0, levelSize.Y + Platformer.Player.AABBCollider.Height / 2), new Vector2(levelSize.X, 2));
 
-        private static int[,] SwitchXAndY(int[,] levelOrganisation)
-        {
-            int[,] switched = new int[levelOrganisation.GetLength(1), levelOrganisation.GetLength(0)];
-            for (int i = 0; i < levelOrganisation.GetLength(0); i++)
-            {
-                for (int j = 0; j < levelOrganisation.GetLength(1); j++)
-                {
-                    switched[j, i] = levelOrganisation[i, j];
-                }
-            }
-            return switched;
-        }
-
-        private static int[,] SwitchXAndY(LDtkIntGrid levelOrganisation)
-        {
-            int[,] switched = new int[levelOrganisation.GridSize.Y, levelOrganisation.GridSize.X];
-            for (int i = 0; i < levelOrganisation.GridSize.Y; i++)
-            {
-                for (int j = 0; j < levelOrganisation.GridSize.X; j++)
-                {
-                    switched[i, j] = levelOrganisation.GetValueAt(j, i);
-                }
-            }
-            return switched;
-        }
 
         public static void ReloadLastLevelFetched()
         {
-            Engine.CurrentMap.CurrentLevel.Unload();
-            new Level(LastLevelData).LoadNoAutoTile();
+            CurrentLevel.Unload();
+            GetLevel(LastLDtkLevel).LoadNoAutoTile();
         }
 
         private static int Width(this ILDtkEntity entity)

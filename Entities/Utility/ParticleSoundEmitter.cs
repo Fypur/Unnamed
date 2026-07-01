@@ -13,7 +13,7 @@ namespace Unnamed
             AddComponent(new Sound3D("Ambience/WaterLeak"));
 
             Iid = iid;
-            Levels.LevelNonRespawn.Add(Iid);
+            LevelManager.NonRespawnEntityIIds.Add(Iid);
         }
 
         public override void Awake()
@@ -26,7 +26,7 @@ namespace Unnamed
         public override void OnDestroy()
         {
             base.OnDestroy();
-            Levels.LevelNonRespawn.Remove(Iid);
+            LevelManager.NonRespawnEntityIIds.Remove(Iid);
         }
     }
 }

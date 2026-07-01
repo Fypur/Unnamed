@@ -58,7 +58,7 @@ namespace Unnamed
                 yield return null;
             }
 
-            Levels.LevelNonRespawn.Add(iid);
+            LevelManager.NonRespawnEntityIIds.Add(iid);
             OnCollected(player);
         }
 

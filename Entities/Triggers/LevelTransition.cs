@@ -37,7 +37,7 @@ namespace Unnamed
             Direction = dir;
         }
 
-        public override void OnTriggerEnter(Entity entity)
+        public override void OnTriggerEnter(Kinematic entity)
         {
             base.OnTriggerEnter(entity);
 
@@ -53,7 +53,7 @@ namespace Unnamed
 
             if (ToLevel == null)
             {
-                ToLevel = new Level(Levels.GetLevelData(LDtkToLevel));
+                ToLevel = new Level(LevelManager.GetLevel(LDtkToLevel));
                 ToLevel.LoadNoAutoTile();
             }
             else
@@ -163,7 +163,7 @@ namespace Unnamed
             Engine.CurrentMap.CurrentLevel.Unload();
             SwingingPoint.SwingingPoints.Clear();
 
-            Level toLevel = new Level(Levels.GetLevelData(toLevelLDtk));
+            Level toLevel = new Level(LevelManager.GetLevel(toLevelLDtk));
             toLevel.LoadNoAutoTile();
 
             var respawns = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>();

@@ -175,7 +175,7 @@ namespace Unnamed
             //player.ExactPos = fixedpos;
 
             if (Input.GetKeyDown(Keys.R))
-                Levels.ReloadLastLevelFetched();
+                LevelManager.ReloadLastLevelFetched();
 
             if (Input.GetKeyDown(Keys.D2))
                 RefreshLDtk();
@@ -477,11 +477,11 @@ namespace Unnamed
             World = RefreshWorld();
             int worldDepth = 0;
 
-            var level = Levels.GetLdtkLevel(InitLevel);
+            var level = LevelManager.GetLdtkLevel(InitLevel);
             worldDepth = level.WorldDepth;
-            Engine.CurrentMap.CurrentLevel = new Level(Levels.GetLevelData(level));
+            Engine.CurrentMap.CurrentLevel = new Level(LevelManager.GetLevel(level));
 
-            Levels.LoadWorldGrid(World, worldDepth);
+            LevelManager.LoadWorldGrid(World, worldDepth);
             Engine.CurrentMap.CurrentLevel.LoadNoAutoTile();
 
             Vector2 groundedRespawnPos = Player.RespawnPoint;
@@ -553,7 +553,7 @@ namespace Unnamed
             Engine.Cam.Pos = Vector2.Zero;
             Platformer.Player = null;
 
-            Levels.LevelNonRespawn.Clear();
+            LevelManager.NonRespawnEntityIIds.Clear();
             Boss3.Dead = false;
             ClosingGate.ClosedGates.Clear();
 
@@ -677,11 +677,11 @@ namespace Unnamed
                     return;
 
                 Engine.CurrentMap.CurrentLevel.Unload();
-                LDtkLevel lvl = World.LoadLevel(Levels.LastLDtkLevel.Iid);
-                new Level(Levels.GetLevelData(lvl)).LoadNoAutoTile();
+                LDtkLevel lvl = World.LoadLevel(LevelManager.LastLDtkLevel.Iid);
+                new Level(LevelManager.GetLevel(lvl)).LoadNoAutoTile();
 
                 Engine.CurrentMap.Data.EntitiesByType[typeof(Grid)][0].SelfDestroy();
-                Levels.LoadWorldGrid(World, lvl.WorldDepth);
+                LevelManager.LoadWorldGrid(World, lvl.WorldDepth);
 
                 Vector2 lvlSize = Engine.CurrentMap.CurrentLevel.Size;
                 if (lvlSize.Y == 184)

@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace Unnamed
 {
-    public class JumpThru : Platform
+    public class JumpThru : Solid
     {
         private static Dictionary<string, Dictionary<string, Texture2D>> CroppedTextures = new();
         private static Dictionary<string, List<Texture2D>> CroppedMiddleTextures = new();
-        public JumpThru(Vector2 position, int width, int height, string textureId) : base(position, width, height, new Sprite())
+        public JumpThru(Vector2 position, int width, int height, string textureId) : base(position, new AABBCollider(Vector2.Zero, width, height), new Sprite())
         {
             Texture2D texture = DataManager.Objects["jumpthrus/" + textureId];
             Vector2 size = new Vector2(8, 8);
@@ -42,7 +42,7 @@ namespace Unnamed
                 foreach (Grid grid in grids)
                 {
                     if (grid.Collider.Contains(Pos - Vector2.UnitX)) onWallLeft = true;
-                    if (grid.Collider.Contains(Pos + new Vector2(Width, 0) + Vector2.UnitX)) onWallRight = true;
+                    if (grid.Collider.Contains(Pos + new Vector2(AABBCollider.Width, 0) + Vector2.UnitX)) onWallRight = true;
                 }
 
             Sprite.NineSliceSettings = new NineSliceRandom((int)(Pos.X + Pos.Y))
@@ -71,7 +71,7 @@ namespace Unnamed
                     return false;
             }
 
-            if (other.ParentEntity is MovingSolid solid && solid.Velocity.Y < 0)
+            if (other.ParentEntity is Solid solid && solid.Velocity.Y < 0)
                 return false;
 
             if (Collider.WorldPos.Y != other.Bounds.Bottom - 1)

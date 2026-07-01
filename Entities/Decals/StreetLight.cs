@@ -1,30 +1,42 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 
 namespace Unnamed
 {
-    public class StreetLight : Decoration
+    public class StreetLight : Entity
     {
+        private Sprite Sprite;
         private CircleLight light;
         private Sound3D sound;
 
-        public StreetLight(Vector2 position, int width, int height, Rectangle? turnOffRect = null) : base(position, width, height, new Sprite(Color.White))
+        private Rectangle? turnOffRect;
+
+        public StreetLight(Vector2 position, Rectangle? turnOffRect = null) : base(position)
         {
+            Sprite = new Sprite(Color.White);
+            AddComponent(Sprite);
+
             Sprite.Add(Sprite.AllAnimData["StreetLight"]);
             Sprite.Play("light");
 
             light = (CircleLight)AddComponent(new CircleLight(Sprite.CurrentAnimation.Slices[0].Rect.Location.ToVector2(), 60, new Color(Color.White, 50), new Color(Color.White, 0)));
 
+            this.turnOffRect = turnOffRect;
+        }
+
+        public override void Awake()
+        {
+            base.Awake();
+
             if (turnOffRect is Rectangle r)
             {
                 //TriggerComponent trig = (TriggerComponent)AddComponent(new TriggerComponent(r.Location.ToVector2() - Pos, r.Width, r.Height, new List<Type>() { typeof(Player) }));
-                Trigger v = (Trigger)AddChild(new Trigger(r, new List<Type>() { typeof(Player) }, null));
+                SpecialTrigger v = new SpecialTrigger(r.Location.ToVector2(), r.Size.ToVector2(), null);
                 v.OnTriggerEnterAction = (entity) =>
                 {
                     Sprite.Play("blink");
-                    RemoveChild(v);
+                    v.SelfDestroy();
+
                     Sprite.OnChange =
                     () =>
                     {
@@ -32,12 +44,10 @@ namespace Unnamed
                         Sprite.OnChange = null;
                     };
                 };
-            }
-        }
 
-        public override void Awake()
-        {
-            base.Awake();
+                LevelManager.InstantiateAndAddToLevel(v);
+            }
+
             sound = (Sound3D)AddComponent(new Sound3D("Ambience/StreetLight"));
         }
 

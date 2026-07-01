@@ -7,45 +7,28 @@ namespace Unnamed
     public class HurtBox : Component
     {
         public Func<Player, bool> DeathConditions = (player) => true;
+        public Collider Collider;
         public Action OnDeath = null;
         public bool InstaDeath;
-        public HurtBox(Collider collider) { }
-
-        public override void Added()
+        public HurtBox(Collider collider)
         {
-            base.Added();
-
-            Trigger.Collider.DebugColor = Color.Red;
+            Collider = collider;
+            collider.DebugColor = Color.Red;
         }
 
-        public override void OnTriggerEnter(Player player)
+        public override void Update()
         {
-            base.OnTriggerEnter(player);
+            base.Update();
 
-            if (!player.Is(Player.States.Dead) && Conditions(player))
+            if (Collider.Collide(Platformer.Player.Collider) && !Platformer.Player.Is(Player.States.Dead) && !DeathConditions(Platformer.Player))
             {
                 if (InstaDeath)
-                    player.InstaDeath();
+                    Platformer.Player.InstaDeath();
                 else
-                    player.Death();
+                    Platformer.Player.Death();
 
                 OnDeath?.Invoke();
             }
         }
-
-        public override void OnTriggerStay(Player player)
-        {
-            if (!player.Is(Player.States.Dead) && Conditions(player))
-            {
-                if (InstaDeath)
-                    player.InstaDeath();
-                else
-                    player.Death();
-                OnDeath?.Invoke();
-            }
-        }
-
-        protected override bool Conditions(Player player)
-            => DeathConditions(player);
     }
 }

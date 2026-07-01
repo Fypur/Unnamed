@@ -151,7 +151,7 @@ namespace Unnamed
             }
             else if (id == 6)
             {
-                if (Levels.LevelNonRespawn.Contains(iid))
+                if (LevelManager.NonRespawnEntityIIds.Contains(iid))
                 {
                     SelfDestroy();
                     return;
@@ -676,7 +676,7 @@ namespace Unnamed
 
             TextBox s = (TextBox)AddChild(new TextBox("Jetpack has been lost", "LexendDeca", Engine.Cam.Pos + Engine.Cam.Size / 2, 800, 20, 1, Color.Transparent, true, TextBox.Alignement.Center));
 
-            Levels.LevelNonRespawn.Add(iid);
+            LevelManager.NonRespawnEntityIIds.Add(iid);
 
             for (t = 0; t < 0.5f; t += Engine.Deltatime)
             {

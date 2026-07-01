@@ -164,7 +164,7 @@ namespace Unnamed
             yield return null;
             Saving.Save(new()
             {
-                CurrentLevel = Levels.LastLDtkLevel.Identifier,
+                CurrentLevel = LevelManager.LastLDtkLevel.Identifier,
                 CurrentWorld = Platformer.InitWorld,
                 WorldUnlocked = Platformer.WorldsUnlocked,
                 CanJetpack = Platformer.Player.CanJetpack

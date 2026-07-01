@@ -1179,7 +1179,7 @@ namespace Unnamed
                 Sprite.Play("idle");
                 onGround = true;
 
-                Levels.ReloadLastLevelFetched();
+                LevelManager.ReloadLastLevelFetched();
 
                 Vector2 groundedRespawnPos = RespawnPoint;
                 bool found = false;

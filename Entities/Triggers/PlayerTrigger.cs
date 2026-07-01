@@ -9,24 +9,28 @@ namespace Unnamed
     {
         public Func<Player, bool> Conditions = (player) => true;
 
-        public PlayerTrigger(Vector2 position, Vector2 size, Sprite sprite)
-            : base(position, (int)size.X, (int)size.Y, new List<Type> { typeof(Player) }, sprite) { }
-
         public PlayerTrigger(Vector2 position, int width, int height, Sprite sprite)
-            : base(position, new Vector2(width, height), new List<Type> { typeof(Player) }, sprite) { }
+            : base(position, new AABBCollider(Vector2.Zero, width, height), new List<Type> { typeof(Player) })
+        {
+            if (sprite != null)
+                AddComponent(sprite);
+        }
+
+        public PlayerTrigger(Vector2 position, Vector2 size, Sprite sprite)
+            : this(position, (int)size.X, (int)size.Y, sprite) { }
 
         public PlayerTrigger(Rectangle bounds, Sprite sprite)
-            : base(bounds.Location.ToVector2(), bounds.Size.ToVector2(), new List<Type> { typeof(Player) }, sprite) { }
+            : this(bounds.Location.ToVector2(), bounds.Width, bounds.Height, sprite) { }
 
-        public sealed override void OnTriggerEnter(Entity entity)
+        public sealed override void OnTriggerEnter(Kinematic entity)
             => OnTriggerEnter(entity as Player);
         public virtual void OnTriggerEnter(Player player) { base.OnTriggerEnter(player); }
 
-        public sealed override void OnTriggerStay(Entity entity)
+        public sealed override void OnTriggerStay(Kinematic entity)
             => OnTriggerStay(entity as Player);
         public virtual void OnTriggerStay(Player player) { }
 
-        public sealed override void OnTriggerExit(Entity entity)
+        public sealed override void OnTriggerExit(Kinematic entity)
             => OnTriggerExit(entity as Player);
         public virtual void OnTriggerExit(Player player) { base.OnTriggerExit(player); }
     }
