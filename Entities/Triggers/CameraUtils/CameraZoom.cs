@@ -26,7 +26,7 @@ namespace Unnamed
 
             KillAllCameraZoomTimers();
 
-            float initWidth = Engine.Cam.Width;
+            float initWidth = Platformer.GameCam.Camera.Width;
 
             AddComponent(new Timer(ZoomTime,
                 (timer) => Zoom((int)MathHelper.Lerp(initWidth, TargetCamWidth, Ease.CubeInAndOut(Ease.Reverse(timer.Value / timer.MaxValue)))),
@@ -39,7 +39,7 @@ namespace Unnamed
 
             KillAllCameraZoomTimers();
 
-            int initWidth = Engine.Cam.Width;
+            int initWidth = Platformer.GameCam.Camera.Width;
             int targWidth = 480;
 
             AddComponent(new Timer(ZoomTime,
@@ -50,7 +50,7 @@ namespace Unnamed
         private void Zoom(int camWidth)
         {
             int camHeight = (int)(9 * (float)camWidth / 16);
-            Engine.Cam.Pos += new Vector2(Engine.Cam.Width - camWidth, Engine.Cam.Height - camHeight) / 2;
+            Engine.Cam.Pos += new Vector2(Platformer.GameCam.Camera.Width - camWidth, Platformer.GameCam.Camera.Height - camHeight) / 2;
             Engine.Cam.Size = new Vector2(camWidth, camHeight);
         }
 

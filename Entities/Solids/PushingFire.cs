@@ -71,36 +71,36 @@ namespace Unnamed
             switch (Direction)
             {
                 case Direction.Right:
-                    rect = new Rectangle((int)(Pos.X - Engine.Cam.Size.X), (int)Pos.Y, (int)(Engine.Cam.Size.X + 10), Height);
+                    rect = new Rectangle((int)(Pos.X - Platformer.GameCam.Camera.Width), (int)Pos.Y, (int)(Platformer.GameCam.Camera.Width + 10), Height);
                     particlePos = Pos;
                     particleSize = Pos + Size.OnlyY();
-                    Pos.Y = Engine.Cam.Pos.Y;
-                    if (Engine.Cam.Pos.X > Pos.X + Width && Speed != 0)
-                        Pos.X = Engine.Cam.Pos.X - Width;
+                    Pos.Y = Platformer.GameCam.Camera.Pos.Y;
+                    if (Platformer.GameCam.Camera.Pos.X > Pos.X + Width && Speed != 0)
+                        Pos.X = Platformer.GameCam.Camera.Pos.X - Width;
                     break;
                 case Direction.Left:
-                    rect = new Rectangle((int)Pos.X, (int)Pos.Y, (int)(Engine.Cam.Size.X + 10), Height);
+                    rect = new Rectangle((int)Pos.X, (int)Pos.Y, (int)(Platformer.GameCam.Camera.Width + 10), Height);
                     particlePos = Pos + Size.OnlyX();
                     particleSize = Pos + Size;
-                    Pos.Y = Engine.Cam.Pos.Y;
-                    if (Engine.Cam.Pos.X + Engine.Cam.Width < Pos.X && Speed != 0)
-                        Pos.X = Engine.Cam.Pos.X + Engine.Cam.Width;
+                    Pos.Y = Platformer.GameCam.Camera.Pos.Y;
+                    if (Platformer.GameCam.Camera.Pos.X + Platformer.GameCam.Camera.Width < Pos.X && Speed != 0)
+                        Pos.X = Platformer.GameCam.Camera.Pos.X + Platformer.GameCam.Camera.Width;
                     break;
                 case Direction.Up:
-                    rect = new Rectangle((int)Pos.X, (int)Pos.Y, Width, (int)(Engine.Cam.Size.Y + 10));
+                    rect = new Rectangle((int)Pos.X, (int)Pos.Y, Width, (int)(Platformer.GameCam.Camera.Height + 10));
                     particlePos = Pos + Size.OnlyY();
                     particleSize = Pos + Size;
-                    Pos.X = Engine.Cam.Pos.X;
-                    if (Engine.Cam.Pos.Y + Engine.Cam.Height < Pos.Y && Speed != 0)
-                        Pos.Y = Engine.Cam.Pos.Y + Engine.Cam.Height;
+                    Pos.X = Platformer.GameCam.Camera.Pos.X;
+                    if (Platformer.GameCam.Camera.Pos.Y + Platformer.GameCam.Camera.Height < Pos.Y && Speed != 0)
+                        Pos.Y = Platformer.GameCam.Camera.Pos.Y + Platformer.GameCam.Camera.Height;
                     break;
                 default: //Down
-                    rect = new Rectangle((int)Pos.X, (int)(Pos.Y - Engine.Cam.Size.Y), Width, (int)(Engine.Cam.Size.Y + 10));
+                    rect = new Rectangle((int)Pos.X, (int)(Pos.Y - Platformer.GameCam.Camera.Height), Width, (int)(Platformer.GameCam.Camera.Height + 10));
                     particlePos = Pos;
                     particleSize = Pos + Size.OnlyX();
-                    Pos.X = Engine.Cam.Pos.X;
-                    if (Engine.Cam.Pos.Y > Pos.Y + Height && Speed != 0)
-                        Pos.Y = Engine.Cam.Pos.Y;
+                    Pos.X = Platformer.GameCam.Camera.Pos.X;
+                    if (Platformer.GameCam.Camera.Pos.Y > Pos.Y + Height && Speed != 0)
+                        Pos.Y = Platformer.GameCam.Camera.Pos.Y;
                     break;
             }
 
@@ -119,7 +119,7 @@ namespace Unnamed
         {
             base.Render();
 
-            //Drawing.DrawQuad(Pos - new Vector2(Engine.Cam.Size.X, 0), new Color(Color.Red, 200), Pos - new Vector2(Engine.Cam.Size.X, 0) + Size.OnlyY(), new Color(Color.Red, 200), Pos + Size.OnlyY() + dirVec * 4, new Color(Color.Orange, 200), Pos + dirVec * 4, new Color(Color.Orange, 200));
+            //Drawing.DrawQuad(Pos - new Vector2(Platformer.GameCam.Camera.Width, 0), new Color(Color.Red, 200), Pos - new Vector2(Platformer.GameCam.Camera.Width, 0) + Size.OnlyY(), new Color(Color.Red, 200), Pos + Size.OnlyY() + dirVec * 4, new Color(Color.Orange, 200), Pos + dirVec * 4, new Color(Color.Orange, 200));
         }
 
         public void ResetPos()

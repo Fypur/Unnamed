@@ -27,12 +27,12 @@ namespace Unnamed
 
             Vector2 startPos = (Engine.Cam.Pos - Pos) / GridCollider.GridSize;
 
-            if (startPos.X > this.GridCollider.Width || startPos.Y > this.GridCollider.Height || startPos.X + Engine.Cam.Width < 0 || startPos.Y + Engine.Cam.Height < 0)
+            if (startPos.X > this.GridCollider.Width || startPos.Y > this.GridCollider.Height || startPos.X + Platformer.GameCam.Camera.Width < 0 || startPos.Y + Platformer.GameCam.Camera.Height < 0)
                 return;
 
 
 
-            Vector2 size = new Vector2((float)Engine.Cam.Width / GridCollider.TileWidth, (float)Engine.Cam.Height / GridCollider.TileHeight);
+            Vector2 size = new Vector2((float)Platformer.GameCam.Camera.Width / GridCollider.TileWidth, (float)Platformer.GameCam.Camera.Height / GridCollider.TileHeight);
 
             for (int x = Math.Max((int)startPos.X, 0); x < Math.Min(startPos.X + size.X, Tiles.GetLength(1)); x++)
             {

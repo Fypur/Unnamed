@@ -6,13 +6,19 @@ namespace Unnamed
 {
     public class ParallaxBackground : Entity
     {
+        public int Width;
+        public int Height;
         public Tile[] Tiles;
         public float[] XMoveMultipliers;
 
         private Vector2 OldCamSize;
 
-        public ParallaxBackground(Sprite[] sprites, float[] parallaxMoveXMultiplier) : base(Vector2.Zero, sprites.MaxBy((s) => s.Width).Width, sprites.MaxBy((s) => s.Height).Height, null)
+
+        public ParallaxBackground(Sprite[] sprites, float[] parallaxMoveXMultiplier) : base(Vector2.Zero)
         {
+            Width = sprites.MaxBy((s) => s.Width).Width;
+            Height = sprites.MaxBy((s) => s.Height).Height;
+
             Tiles = new Tile[sprites.Length];
             for (int i = 0; i < Tiles.Length; i++)
                 Tiles[i] = new Tile(Vector2.Zero, sprites[i].Width, sprites[i].Height, sprites[i]);
@@ -26,7 +32,7 @@ namespace Unnamed
         {
             base.LateUpdate();
 
-            Vector2 move = Engine.Cam.PreviousPos - Engine.Cam.WholePos;// - Vector2.UnitX * (Engine.Cam.Size - OldCamSize);
+            Vector2 move = Platformer.GameCam.PreviousPos - Platformer.GameCam.WholePos;// - Vector2.UnitX * (Engine.Cam.Size - OldCamSize);
 
             for (int i = 0; i < Tiles.Length; i++)
             {
@@ -45,7 +51,7 @@ namespace Unnamed
 
             for (int i = 0; i < Tiles.Length; i++)
             {
-                //Tiles[i].Sprite.Scale = new Vector2((float)Engine.Cam.Width / Tiles[i].Width); //->Engine.Camera.Width
+                //Tiles[i].Sprite.Scale = new Vector2((float)Platformer.GameCam.Width / Tiles[i].Width); //->Platformer.GameCamera.Width
                 Tiles[i].Render();
                 Tiles[i].Pos.X -= Width;
                 Tiles[i].Render();

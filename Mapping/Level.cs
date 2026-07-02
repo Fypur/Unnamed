@@ -21,7 +21,7 @@ namespace Unnamed
             EnterAction = enterAction;
         }
 
-        public void LoadNoAutoTile()
+        public void Load()
         {
             EnterAction?.Invoke();
             foreach (Entity entity in EntityData)

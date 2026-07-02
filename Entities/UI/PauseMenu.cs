@@ -13,7 +13,7 @@ namespace Unnamed
         public override void Render()
         {
             if (Platformer.Paused)
-                Drawing.Draw(Drawing.PointTexture, new Rectangle((int)Platformer.Cam.Pos.X, (int)Platformer.Cam.Pos.Y, 1280 * Options.CurrentScreenSizeMultiplier / Options.DefaultUISizeMultiplier, 720 * Options.CurrentScreenSizeMultiplier / Options.DefaultUISizeMultiplier), new Color(Color.Black, 100));
+                Drawing.Draw(Drawing.PointTexture, new Rectangle((int)Platformer.GameCam.Pos.X, (int)Platformer.GameCam.Pos.Y, 1280 * Options.CurrentScreenSizeMultiplier / Options.DefaultUISizeMultiplier, 720 * Options.CurrentScreenSizeMultiplier / Options.DefaultUISizeMultiplier), new Color(Color.Black, 100));
 
             base.Render();
         }

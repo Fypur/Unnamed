@@ -12,7 +12,7 @@ namespace Unnamed
         public Level ToLevel;
         public LDtk.LDtkLevel LDtkToLevel;
 
-        private Camera cam = Platformer.Cam;
+        private Camera cam = Platformer.GameCam;
 
         private static List<Entity> destroyOnTransition = new();
 
@@ -54,7 +54,7 @@ namespace Unnamed
             if (ToLevel == null)
             {
                 ToLevel = new Level(LevelManager.GetLevel(LDtkToLevel));
-                ToLevel.LoadNoAutoTile();
+                ToLevel.Load();
             }
             else
                 ToLevel.LoadAutoTile();
@@ -132,7 +132,7 @@ namespace Unnamed
             Engine.CurrentMap.CurrentLevel.Unload();
             SwingingPoint.SwingingPoints.Clear();
 
-            toLevel.LoadNoAutoTile();
+            toLevel.Load();
 
             Platformer.Player.Pos = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>()[0].RespawnPoint;
 
@@ -164,7 +164,7 @@ namespace Unnamed
             SwingingPoint.SwingingPoints.Clear();
 
             Level toLevel = new Level(LevelManager.GetLevel(toLevelLDtk));
-            toLevel.LoadNoAutoTile();
+            toLevel.Load();
 
             var respawns = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>();
             if (respawns.Count > 0)
