@@ -9,9 +9,10 @@ namespace Unnamed
         private readonly ParticleType fireParticle = Particles.Fire.Copy();
         private Direction direction;
 
-        public Fire(Vector2 position, Vector2 size, Direction direction) : base(position, new HurtBox(Vector2.Zero, (int)size.X, (int)size.Y), null)
+        public Fire(Vector2 position, Vector2 size, Direction direction) : base(position, new AABBCollider(Vector2.Zero, (int)size.X, (int)size.Y), null)
         {
-            DetermineStats(direction);
+            Collider.Collidable = false;
+            AddHitbox((int)size.X, (int)size.Y, direction);
         }
 
         public override void Awake()
@@ -21,7 +22,7 @@ namespace Unnamed
             AddComponent(new Sound3D("SFX/Fire/FirePatch"));
         }
 
-        private void DetermineStats(Direction direction)
+        private void AddHitbox(int width, int height, Direction direction)
         {
             Rectangle emitRect;
             int amountEmitted;
@@ -32,34 +33,34 @@ namespace Unnamed
             {
                 default:
                 case Direction.Up:
-                    amountEmitted = (int)(Size.X * coefFire);
+                    amountEmitted = (int)(width * coefFire);
                     fireParticle.Direction = -90;
-                    emitRect = new Rectangle(amountMoved, Bounds.Height - 1, Bounds.Width - amountMoved * 2, 1);
+                    emitRect = new Rectangle(amountMoved, height - 1, width - amountMoved * 2, 1);
                     //FireParticle.Acceleration = -Vector2.UnitY * Accel;
                     break;
                 case Direction.Down:
-                    amountEmitted = (int)(Size.X * coefFire);
+                    amountEmitted = (int)(width * coefFire);
                     fireParticle.Direction = 90;
-                    emitRect = new Rectangle(amountMoved, 0, Bounds.Width - amountMoved * 2, 1);
+                    emitRect = new Rectangle(amountMoved, 0, width - amountMoved * 2, 1);
                     //FireParticle.Acceleration = Vector2.UnitY * Accel;
                     break;
                 case Direction.Left:
-                    amountEmitted = (int)(Size.Y * coefFire);
+                    amountEmitted = (int)(height * coefFire);
                     fireParticle.Direction = 180;
-                    emitRect = new Rectangle(Bounds.Width - 1, amountMoved, 1, Bounds.Height - amountMoved * 2);
+                    emitRect = new Rectangle(width - 1, amountMoved, 1, height - amountMoved * 2);
                     //FireParticle.Acceleration = -Vector2.UnitX * Accel;
                     break;
                 case Direction.Right:
-                    amountEmitted = (int)(Size.Y * coefFire);
+                    amountEmitted = (int)(height * coefFire);
                     fireParticle.Direction = 0;
-                    emitRect = new Rectangle(0, amountMoved, 1, Bounds.Height - amountMoved * 2);
+                    emitRect = new Rectangle(0, amountMoved, 1, height - amountMoved * 2);
                     //FireParticle.Acceleration = Vector2.UnitX * Accel;
                     break;
             }
 
             Vector2 hPos = Vector2.Zero;
-            int hWidth = Width;
-            int hHeight = Height;
+            int hWidth = width;
+            int hHeight = height;
             switch (direction)
             {
                 case Direction.Left:
@@ -78,7 +79,7 @@ namespace Unnamed
                     break;
             }
 
-            HurtBox h = new HurtBox(hPos, hWidth, hHeight);
+            HurtBox h = new HurtBox(new AABBCollider(hPos, hWidth, hHeight));
             h.DeathConditions = Conditions;
             h.InstaDeath = true;
             AddComponent(h);
@@ -86,7 +87,7 @@ namespace Unnamed
             AddComponent(new ParticleEmitter(Engine.CurrentMap.MiddlegroundSystem, fireParticle, emitRect, amountEmitted));
         }
 
-        private new bool Conditions(Player player)
+        private bool Conditions(Player player)
         {
             if (direction == Direction.Up)
                 return player.Velocity.Y >= 0;
