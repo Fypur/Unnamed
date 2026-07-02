@@ -7,8 +7,6 @@ namespace Unnamed
 {
     public abstract class PlayerTrigger : Trigger
     {
-        public Func<Player, bool> Conditions = (player) => true;
-
         public PlayerTrigger(Vector2 position, int width, int height, Sprite sprite)
             : base(position, new AABBCollider(Vector2.Zero, width, height), new List<Type> { typeof(Player) })
         {

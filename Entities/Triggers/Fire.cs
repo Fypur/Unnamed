@@ -3,23 +3,13 @@ using Microsoft.Xna.Framework;
 
 namespace Unnamed
 {
-    public class Fire : DeathTrigger
+    public class Fire : Kinematic
     {
         private const float coefFire = 0.05f;
         private readonly ParticleType fireParticle = Particles.Fire.Copy();
         private Direction direction;
 
-        public Fire(Rectangle bounds, Direction direction) : base(bounds)
-        {
-            DetermineStats(direction);
-        }
-
-        public Fire(Vector2 position, Vector2 size, Direction direction) : base(position, size)
-        {
-            DetermineStats(direction);
-        }
-
-        public Fire(Vector2 position, int width, int height, Direction direction) : base(position, width, height)
+        public Fire(Vector2 position, Vector2 size, Direction direction) : base(position, new HurtBox(Vector2.Zero, (int)size.X, (int)size.Y), null)
         {
             DetermineStats(direction);
         }
