@@ -44,7 +44,7 @@ namespace Unnamed
             Sprite.Offset.Y += 1;
             Sprite.Play("rotate");
 
-            AddComponent(new CircleLight(HalfSize, 30, new Color(Color.Orange, 50), new Color(Color.White, 0)));
+            AddComponent(new CircleLight(AABBCollider.HalfSize, 30, new Color(Color.Orange, 50), new Color(Color.White, 0)));
         }
 
         public override void WhileWait(Player player)
@@ -60,8 +60,8 @@ namespace Unnamed
             }, () =>
             {
 
-                Engine.Cam.LightShake();
-                Engine.CurrentMap.MiddlegroundSystem.Emit(CollectedParticle, Pos + HalfSize.OnlyX(), 30);
+                Platformer.GameCam.LightShake();
+                Engine.CurrentMap.MiddlegroundSystem.Emit(CollectedParticle, Pos + new Vector2(AABBCollider.Width / 2, 0), 30);
                 SelfDestroy();
 
             }));

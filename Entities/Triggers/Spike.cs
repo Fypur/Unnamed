@@ -4,46 +4,47 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Unnamed
 {
-    public class Spike : Solid
+    public class Spike : Entity
     {
         public const int DefaultSize = 8;
         private Direction direction;
         private static Texture2D texture = DataManager.GetTexture("Objects/Decals").CropTo(new Vector2(32, 56), new Vector2(8));
 
         public Spike(Vector2 position, Direction direction)
-            : base(position, DefaultSize, DefaultSize, new Sprite(texture))
+            : base(position)
         {
+            Sprite sprite = (Sprite)AddComponent(new Sprite(texture));
+
             this.direction = direction;
             float rotation = MathHelper.ToRadians(GetRotation(direction));
-            Collider.Collidable = false;
 
             Vector2 hPos = Vector2.Zero;
-            int width = Width;
-            int height = Height;
+            int width = DefaultSize;
+            int height = DefaultSize;
             switch (direction)
             {
                 case Direction.Left:
-                    hPos = Size.OnlyX() / 2;
+                    hPos = new Vector2(width / 2, 0);
                     width /= 2;
                     break;
                 case Direction.Right:
                     width /= 2;
                     break;
                 case Direction.Up:
-                    hPos = Size.OnlyY() / 2;
+                    hPos = new Vector2(0, height / 2);
                     height /= 2;
                     break;
                 case Direction.Down:
                     height /= 2;
                     break;
             }
-            HurtBox h = new HurtBox(hPos, width, height);
+            HurtBox h = new HurtBox(new AABBCollider(hPos, width, height));
             h.DeathConditions = Conditions;
             AddComponent(h);
 
-            Sprite.Rotation = rotation;
-            Sprite.Origin = HalfSize;
-            Sprite.Centered = true;
+            sprite.Rotation = rotation;
+            sprite.Origin = new Vector2(width, height) / 2;
+            sprite.Centered = true;
         }
 
         private bool Conditions(Player player)

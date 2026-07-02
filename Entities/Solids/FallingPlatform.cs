@@ -21,12 +21,13 @@ namespace Unnamed
         private bool previousOnGround;
         private Vector2 initPos;
 
+        private SpecialTrigger trig;
+
         public FallingPlatform(Vector2 position, int width, int height, bool respawning, NineSlice nineSlice)
             : base(position, new AABBCollider(Vector2.Zero, width, height), new Sprite())
         {
-            TriggerComponent trig = (TriggerComponent)AddComponent(new TriggerComponent(-Vector2.UnitY, width, 1, new List<Type> { typeof(Player) }));
-            trig.Trigger.OnTriggerEnterAction = (entity) => { Fall(); trig.Trigger.Active = false; };
-            //trig.trigger.OnTriggerEnterAction = (entity) => { AddComponent(new Coroutine(FallEnumerator())); trig.trigger.Active = false; };
+            trig = new SpecialTrigger(-Vector2.UnitY, width, 1, null);
+            trig.OnTriggerEnterAction = (entity) => { Fall(); trig.Active = false; };
 
             Sprite.NineSliceSettings = nineSlice;
             Dust.Acceleration = -Vector2.UnitY * 100;
@@ -40,9 +41,8 @@ namespace Unnamed
                 return;
 
             HasFallen = true;
-            TriggerComponent trig = GetComponent<TriggerComponent>();
-            trig.Trigger.Active = false;
-            AddComponent(new Shaker(shakeTime, 1.2f, null, true));
+            trig.Active = false;
+            AddComponent(new Shaker(shakeTime, 1.2f, null, Sprite));
             AddComponent(new Timer(shakeTime, null, () =>
             {
                 gravityScale = constGravityScale;
@@ -51,7 +51,7 @@ namespace Unnamed
                 {
                     AddComponent(new Timer(respawnTime, null, () =>
                     {
-                        wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Platformer.Player, initPos), () =>
+                        wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (AABBCollider.Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !CollideAt(Platformer.Player, initPos), () =>
                         {
                             Pos = initPos;
                             Velocity = Vector2.Zero;
@@ -59,7 +59,7 @@ namespace Unnamed
                             previousOnGround = false;
                             HasFallenOnGround = false;
                             HasFallen = false;
-                            trig.Trigger.Active = true;
+                            trig.Active = true;
                         });
                         Engine.CurrentMap.Instantiate(wipe);
                     }));
@@ -67,29 +67,9 @@ namespace Unnamed
             }));
         }
 
-        /*private IEnumerator FallEnumerator()
-        {
-            GetComponent<TriggerComponent>().trigger.Active = false;
-            AddComponent(new Shaker(shakeTime, 1.2f, null, true));
-            yield return new Coroutine.WaitForSeconds(shakeTime);
-            gravityScale = constGravityScale;
-
-            if (Respawning)
-            {
-                AddComponent(new Timer(respawnTime, null, () => {
-                    wipe = new Wipe(new Rectangle((initPos - Vector2.One).ToPoint(), (Size + Vector2.One * 2).ToPoint()), 1, Color.White, () => !Collider.CollideAt(Platformer.Player, initPos), () =>
-                    {
-                        Pos = initPos; Velocity = Vector2.Zero; gravityScale = 0; previousOnGround = false; Collided = false;
-                        GetComponent<TriggerComponent>().trigger.Active = true;
-                    });
-                    Engine.CurrentMap.Instantiate(wipe);
-                }));
-            }
-        }*/
-
         public override void Update()
         {
-            if (!Collider.CollideAt(Pos + new Vector2(0, 1)))
+            if (!CollideAt(new List<Kinematic>(InstantiatedSolids), Pos + new Vector2(0, 1)))
                 Velocity.Y += 9.81f * gravityScale;
 
             Action onCollision;
@@ -107,7 +87,7 @@ namespace Unnamed
             else
             {
                 onCollision = null;
-                if (!previousOnGround && Collider.CollideAt(Pos + new Vector2(0, 1)))
+                if (!previousOnGround && CollideAt(new List<Kinematic>(InstantiatedSolids), Pos + new Vector2(0, 1)))
                     HasFallenOnGround = true;
             }
 
@@ -116,13 +96,10 @@ namespace Unnamed
 
             if (HasFallenOnGround)
             {
-                previousOnGround = Collider.CollideAt(Pos + new Vector2(0, 1));
+                previousOnGround = CollideAt(new List<Kinematic>(InstantiatedSolids), Pos + new Vector2(0, 1));
             }
 
             base.Update();
-            //Debug.LogUpdate(Pos - PreviousPos);
-            if (Pos - PreviousExactPos != Vector2.Zero)
-            { }
         }
 
         public override void OnDestroy()

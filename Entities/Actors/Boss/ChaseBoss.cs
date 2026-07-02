@@ -19,12 +19,14 @@ namespace Unnamed
         Vector2 cannonPos;
 
         private Guid iid;
+        private AABBCollider aabbCollider;
 
         public ChaseBoss(Vector2[] positions, int id, Guid iid) : base(positions[0] + new Vector2(-4), new AABBCollider(Vector2.Zero, width, height), new Sprite(Color.White))
         {
             Positions = positions.Addition(new Vector2(-4));
+            aabbCollider = (AABBCollider)Collider;
 
-            AddComponent(new HurtBox(Vector2.Zero, width, height));
+            AddComponent(new HurtBox(new AABBCollider(Vector2.Zero, width, height)));
             this.id = id;
 
             cannons = new Tuple<Sprite, Sprite, Sprite>[2];
@@ -44,8 +46,8 @@ namespace Unnamed
             }
 
             Sprite.Add(Sprite.AllAnimData["Boss"]);
-            Sprite.Origin = HalfSize;
-            Sprite.Offset = HalfSize;
+            Sprite.Origin = new Vector2(width, height) / 2;
+            Sprite.Offset = Sprite.Origin;
             this.iid = iid;
 
             /*RemoveComponent(Collider);
@@ -128,7 +130,7 @@ namespace Unnamed
 
                     Coroutine.Do(() =>
                     {
-                        Engine.Cam.Shake(0.3f, 2);
+                        Platformer.GameCam.Shake(0.3f, 2);
                         Sprite.Visible = false;
                         foreach (var b in cannons)
                         {
@@ -145,7 +147,7 @@ namespace Unnamed
                         explosion.DirectionRange = 180;
                         explosion.SpeedMin = 10f;
                         explosion.SpeedMax = 200f;
-                        Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, Bounds, 100);
+                        Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, Collider.Bounds, 100);
                     })
                     ));
             }
@@ -245,10 +247,10 @@ namespace Unnamed
             MoveX(Positions[1].X - Pos.X, OnCollision);
             MoveY(Positions[1].Y - Pos.Y, OnCollision);
 
-            Engine.Cam.LightShake();
+            Platformer.GameCam.LightShake();
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 0, Particles.Dust.Color);
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 180, Particles.Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + aabbCollider.Height - 3, aabbCollider.Width, 3), null, 0, Particles.Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + aabbCollider.Height - 3, aabbCollider.Width, 3), null, 180, Particles.Dust.Color);
 
             yield return new Coroutine.WaitForSeconds(0.7f);
 
@@ -277,10 +279,10 @@ namespace Unnamed
             MoveX(Positions[2].X - Pos.X, OnCollision);
             MoveY(Positions[2].Y - Pos.Y, OnCollision);
 
-            Engine.Cam.LightShake();
+            Platformer.GameCam.LightShake();
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 0, Particles.Dust.Color);
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 180, Particles.Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + aabbCollider.Height - 3, aabbCollider.Width, 3), null, 0, Particles.Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + aabbCollider.Height - 3, aabbCollider.Width, 3), null, 180, Particles.Dust.Color);
 
             cannons[1].Item1.Color = Color.Yellow;
             cannons[1].Item2.Color = Color.Yellow;
@@ -296,8 +298,8 @@ namespace Unnamed
             for (int i = 1; i <= numBullets; i++)
             {
                 var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(cannonPos, i * range / numBullets + 180));
-                Engine.CurrentMap.CurrentLevel.DestroyOnUnload(m);
-                Engine.Cam.Shake(0.3f, 0.7f);
+                LevelManager.CurrentLevel.DestroyOnUnload(m);
+                Platformer.GameCam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.1f);
             }
 
@@ -353,10 +355,10 @@ namespace Unnamed
             MoveY(to.Y - Pos.Y, OnCollision);
             Sprite.Rotation = 0;
 
-            Engine.Cam.LightShake();
+            Platformer.GameCam.LightShake();
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 0, Particles.Dust.Color);
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 180, Particles.Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + aabbCollider.Height - 3, aabbCollider.Width, 3), null, 0, Particles.Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + aabbCollider.Height - 3, aabbCollider.Width, 3), null, 180, Particles.Dust.Color);
         }
 
         private IEnumerator MachineGun(float range, int numBullets, bool rightSide)
@@ -370,8 +372,8 @@ namespace Unnamed
             for (int i = 1; i <= numBullets; i++)
             {
                 var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(cannonPos, rightSide ? -i * range / numBullets : i * range / numBullets + 180));
-                Engine.CurrentMap.CurrentLevel.DestroyOnUnload(m);
-                Engine.Cam.Shake(0.3f, 0.7f);
+                LevelManager.CurrentLevel.DestroyOnUnload(m);
+                Platformer.GameCam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.1f);
             }
 
@@ -392,9 +394,9 @@ namespace Unnamed
             for (int i = 0; i < numBullets; i++)
             {
                 var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(cannonPos, middleAngle + i * increment));
-                Engine.CurrentMap.CurrentLevel.EntityData.Add(m);
+                LevelManager.CurrentLevel.EntityData.Add(m);
 
-                Engine.Cam.Shake(0.3f, 0.7f);
+                Platformer.GameCam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.1f);
             }
 
@@ -411,7 +413,7 @@ namespace Unnamed
 
         public IEnumerator Scream(int numScreams, float screamTime)
         {
-            Engine.Cam.Shake(screamTime * numScreams, 1);
+            Platformer.GameCam.Shake(screamTime * numScreams, 1);
 
             Audio.PlayEvent(numScreams switch
             {
@@ -563,7 +565,8 @@ namespace Unnamed
 
         private IEnumerator Room4()
         {
-            PushingFire p = Engine.CurrentMap.Data.GetEntity<PushingFire>();
+            yield return null; //REMOVE THIS ONCE THIS IS REWORKED
+            /*PushingFire p = Engine.CurrentMap.Data.GetEntity<PushingFire>();
             float origSpeed = 0;
             if (p != null)
             {
@@ -605,7 +608,7 @@ namespace Unnamed
             if (p != null)
                 p.ChangeSpeed(origSpeed);
 
-            Platformer.Player.OnDeath -= fireSpeed;
+            Platformer.Player.OnDeath -= fireSpeed;*/
         }
 
         private IEnumerator ProjectPlayer()
@@ -674,7 +677,7 @@ namespace Unnamed
 
             yield return new Coroutine.WaitForSeconds(1.5f);
 
-            TextBox s = (TextBox)AddChild(new TextBox("Jetpack has been lost", "LexendDeca", Engine.Cam.Pos + Engine.Cam.Size / 2, 800, 20, 1, Color.Transparent, true, TextBox.Alignement.Center));
+            /*TextBox s = (TextBox)AddChild(new TextBox("Jetpack has been lost", "LexendDeca", Engine.Cam.Pos + Engine.Cam.Size / 2, 800, 20, 1, Color.Transparent, true, TextBox.Alignement.Center));
 
             LevelManager.NonRespawnEntityIIds.Add(iid);
 
@@ -697,7 +700,7 @@ namespace Unnamed
                 yield return null;
             }
 
-            s.SelfDestroy();
+            s.SelfDestroy();*/
 
             player.CanMove = true;
         }

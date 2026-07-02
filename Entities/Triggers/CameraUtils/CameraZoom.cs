@@ -57,7 +57,7 @@ namespace Unnamed
         private void KillAllCameraZoomTimers()
         {
             foreach (CameraZoom camZoom in Engine.CurrentMap.Data.EntitiesByType[typeof(CameraZoom)])
-                camZoom.RemoveComponents<Timer>();
+                camZoom.RemoveAllComponents<Timer>();
         }
     }
 }

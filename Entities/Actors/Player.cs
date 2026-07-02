@@ -76,6 +76,7 @@ namespace Unnamed
         public Vector2 PrevVelocity;
         public int Health = initHealth;
         public bool CanAnimateSprite = false;
+        private Vector2 previousExactPos;
 
         private bool onGround;
         private bool previousOnGround = true;
@@ -231,7 +232,7 @@ namespace Unnamed
 
             AddComponent(new CircleLight(AABBCollider.HalfSize, 40, new Color(Color.White, 5), new Color(Color.White, 0)));
 
-            PreviousExactPos = ExactPos;
+            previousExactPos = ExactPos;
         }
 
         public override void Update()
@@ -531,7 +532,7 @@ namespace Unnamed
             //Debug.LogUpdate("Player Health : " + Health);
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
-            MoveY(Velocity.Y * Engine.Deltatime, new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
+            MoveY(Velocity.Y * Engine.Deltatime, new List<Kinematic>(Solid.InstantiatedSolids), CollisionY);
 
             if (!couldMove)
                 Input.OldState = canMoveState;
@@ -539,6 +540,13 @@ namespace Unnamed
 
         public override void Squish()
             => InstaDeath();
+
+        public override void LateUpdate()
+        {
+            base.LateUpdate();
+
+            previousExactPos = ExactPos;
+        }
 
         #region Movement
 
@@ -601,7 +609,7 @@ namespace Unnamed
                         if (g is GrapplingTrigger trigger && !trigger.Active)
                             continue;
 
-                        if (!Raycast.FastRay(MiddleExactPos, g.MiddleExactPos).Hit)
+                        if (!Raycast.FastRay(MiddleExactPos, g.MiddleExactPos, LevelManager.CurrentGrid.GridCollider).Hit)
                         {
                             if (onRightDir)
                             {
@@ -752,7 +760,7 @@ namespace Unnamed
 
             SwingPositions[0] = grappledSolid.MiddleExactPos;
 
-            List<Vector2> cornersToCheck = new List<Vector2>(Engine.CurrentMap.CurrentLevel.Corners);
+            List<Vector2> cornersToCheck = new List<Vector2>(LevelManager.CurrentGrid.GridCollider.Corners);
             RemoveGrapplingPoints();
 
             cornersToCheck.Remove(SwingPositions[SwingPositions.Count - 1]);
@@ -1096,7 +1104,7 @@ namespace Unnamed
             ResetJetpack();
             ResetSwing();
 
-            Engine.Cam.Shake(0.2f, 2);
+            Platformer.GameCam.Shake(0.2f, 2);
 
 
             if (Velocity == Vector2.Zero)
@@ -1153,7 +1161,7 @@ namespace Unnamed
             ResetJetpack();
             ResetSwing();
 
-            foreach (Trigger trig in Engine.CurrentMap.Data.Triggers)
+            foreach (Trigger trig in Trigger.InstanciatedTriggers)
             {
                 if (trig.Contains(this))
                     trig.OnTriggerExit(this);
@@ -1167,7 +1175,7 @@ namespace Unnamed
             OnDeath = delegate { };
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, AABBCollider.Bounds, 100);
-            Engine.Cam.Shake(0.4f, 1);
+            Platformer.GameCam.Shake(0.4f, 1);
 
             Audio.PlayEvent("SFX/Player/DeathExplosion");
             Health = initHealth;
@@ -1219,7 +1227,7 @@ namespace Unnamed
                     }
                 }
 
-                Engine.Cam.CenteredPos = Engine.Cam.InBoundsPos(Engine.Cam.InBoundsPos(Pos, Engine.Cam.Bounds) + Engine.Cam.InBoundsOffset, Engine.Cam.Bounds);
+                Platformer.GameCam.CenteredPos = Platformer.GameCam.InBoundsPos(Platformer.GameCam.InBoundsPos(Pos, Platformer.GameCam.Bounds) + Platformer.GameCam.InBoundsOffset, Platformer.GameCam.Bounds);
                 OnDeathTransition?.Invoke();
 
                 Active = true;
@@ -1253,7 +1261,7 @@ namespace Unnamed
         {
             if (collided is GlassWall gl && gl.Break(this, Velocity, true))
             {
-                MoveX(Velocity.X * Engine.Deltatime - (ExactPos.X - PreviousExactPos.X), CollisionX);
+                MoveX(Velocity.X * Engine.Deltatime - (ExactPos.X - previousExactPos.X), CollisionX);
                 return;
             }
 
@@ -1268,7 +1276,7 @@ namespace Unnamed
 
             if (collided is GlassWall gl && gl.Break(this, Velocity, false))
             {
-                MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - PreviousExactPos.Y), new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
+                MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - previousExactPos.Y), new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
                 return;
             }
 
@@ -1277,15 +1285,15 @@ namespace Unnamed
 
             if (collided is Grid grid && Velocity.Y < -40)
             {
-                int offset = (int)(Pos.X + AABBCollider.Width - grid.Pos.X) % grid.TileWidth;
+                int offset = (int)(Pos.X + AABBCollider.Width - grid.Pos.X) % grid.GridCollider.TileWidth;
                 if (offset > maxBonkOffset)
                 {
-                    offset = (int)(Pos.X - grid.Pos.X) % grid.TileWidth;
+                    offset = (int)(Pos.X - grid.Pos.X) % grid.GridCollider.TileWidth;
 
-                    if (offset < grid.TileWidth - maxBonkOffset)
+                    if (offset < grid.GridCollider.TileWidth - maxBonkOffset)
                         offset = 0;
                     else
-                        offset = grid.TileWidth - offset;
+                        offset = grid.GridCollider.TileWidth - offset;
                 }
                 else
                     offset = -offset;
@@ -1293,7 +1301,7 @@ namespace Unnamed
                 if (offset != 0 && !grid.Collider.Contains(Pos - Vector2.UnitY + new Vector2(offset, 0)))
                 {
                     Pos.X += offset;
-                    MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - PreviousExactPos.Y), new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
+                    MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - previousExactPos.Y), new List<Kinematic>(Solid.InstantiatedSolids), CollisionY);
                     return;
                 }
             }
@@ -1303,7 +1311,7 @@ namespace Unnamed
             collisionY = true;
         }
 
-        private bool CollisionCheck(Vector2 position, bool platforms, out Entity groundedEntity)
+        private bool CollisionCheck(Vector2 position, out Entity groundedEntity)
         {
             if (platforms)
                 return CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position, out groundedEntity) && groundedEntity is not InvisibleWall;
@@ -1311,7 +1319,7 @@ namespace Unnamed
                 return CollideAt(new List<Entity>(Engine.CurrentMap.Data.Solids), position, out groundedEntity) && groundedEntity is not InvisibleWall;
         }
         private bool CollisionCheck(Vector2 position, bool platforms)
-            => CollisionCheck(position, platforms, out _);
+            => CollisionCheck(position, platforms, out _); //TODO: deal with jumpthru not being detected as wall jumpable
 
         #endregion
 

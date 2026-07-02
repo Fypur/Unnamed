@@ -77,8 +77,8 @@ namespace Unnamed
             AddComponent(cannon);
 
             Sprite.Add(Sprite.AllAnimData["Boss"]);
-            Sprite.Origin = rotColl.HalfSize;
-            Sprite.Offset = rotColl.HalfSize;
+            Sprite.Origin = new Vector2(rotColl.Width, rotColl.Height) / 2;
+            Sprite.Offset = Sprite.Origin;
 
             dust = Particles.Dust.Copy();
         }
@@ -125,7 +125,7 @@ namespace Unnamed
             {
                 Visible = false;
 
-                AddComponent(new Coroutine(Wait()));
+                /*AddComponent(new Coroutine(Wait()));
                 IEnumerator Wait()
                 {
                     yield return null;
@@ -139,13 +139,13 @@ namespace Unnamed
 
                     if (Engine.CurrentMap.Data.GetEntity<PushingFire>() == null)
                     {
-                        PushingFire p = (PushingFire)Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos, 64));
-                        p.Height = Engine.CurrentMap.CurrentLevel.Height;
+                        PushingFire p = (PushingFire)Engine.CurrentMap.Instantiate(new PushingFire(LevelManagerCurrentLevel.Pos, 64));
+                        p.Height = LevelManagerCurrentLevel.Height;
                         p.GetComponent<HurtBox>().Trigger.Height = p.Height;
                         p.ChangeSpeed(64);
                     }
 
-                }
+                }*/
                 return;
             }
 
@@ -175,7 +175,7 @@ namespace Unnamed
             if (!stateMachine.Is(States.EnergyBeam) && !stateMachine.Is(States.Dead))
                 SetCannonPos();
 
-            if (!stateMachine.Is(States.Dead) && Collider.Collide(Platformer.Player))
+            if (!stateMachine.Is(States.Dead) && Collider.Collide(Platformer.Player.Collider))
                 Hit();
         }
 
@@ -183,7 +183,7 @@ namespace Unnamed
         {
             invulnerable = true;
             Vector2 init = Pos;
-            Vector2 jumpPos = MiddlePos.X - Engine.CurrentMap.CurrentLevel.Pos.X < Engine.CurrentMap.CurrentLevel.Size.X / 2 ? jumpPos0 : jumpPos1;
+            Vector2 jumpPos = MiddlePos.X - LevelManager.CurrentLevel.Pos.X < LevelManager.CurrentLevel.Size.X / 2 ? jumpPos0 : jumpPos1;
 
             if (Pos == jumpPos0)
                 jumpPos = jumpPos1;
@@ -330,9 +330,9 @@ namespace Unnamed
             {
 
                 var m = Engine.CurrentMap.Instantiate(new MachineGunBullet(cannonPos, initAngle + i * increment));
-                Engine.CurrentMap.CurrentLevel.EntityData.Add(m);
+                LevelManager.CurrentLevel.EntityData.Add(m);
 
-                Engine.Cam.Shake(0.3f, 0.7f);
+                Platformer.GameCam.Shake(0.3f, 0.7f);
                 yield return new Coroutine.WaitForSeconds(0.1f);
             }
 
@@ -350,7 +350,7 @@ namespace Unnamed
             cannon.Color = Color.Green;
 
             Vector2 targDir = cannonPos + (player.MiddlePos - cannonPos).Normalized() * 1000;
-            Raycast r = new Raycast(Raycast.RayTypes.MapTiles, cannonPos, targDir, true);
+            RaycastData r = Raycast.FastRay(cannonPos, targDir, LevelManager.CurrentGrid.GridCollider);
 
             if (r.Hit)
                 targDir = r.EndPoint;
@@ -364,7 +364,7 @@ namespace Unnamed
             for (int i = 0; timer >= 0; i++)
             {
                 targDir = cannonPos + (player.MiddlePos - cannonPos).Normalized() * 1000;
-                r = new Raycast(Raycast.RayTypes.MapTiles, cannonPos, targDir, true);
+                r = Raycast.FastRay(cannonPos, targDir, LevelManager.CurrentGrid.GridCollider);
                 if (r.Hit)
                     targDir = r.EndPoint;
 
@@ -411,7 +411,7 @@ namespace Unnamed
                 if (Collision.LineBoxCollision((AABBCollider)player.Collider, l.Positions[0], l.Positions[1]))
                     player.Damage();
 
-                Engine.Cam.LightShake();
+                Platformer.GameCam.LightShake();
                 yield return 0;
             }
 
@@ -495,13 +495,13 @@ namespace Unnamed
 
             if (!stateMachine.Is(States.Jumping))
             {
-                if (stateMachine.Is(States.EnergyBeam) && HasComponent<LineRenderer>(out LineRenderer l))
+                if (stateMachine.Is(States.EnergyBeam) && TryGetComponent<LineRenderer>(out LineRenderer l))
                 {
                     int orig = l.Thickness;
                     AddComponent(new Timer(0.5f, (timer) => l.Thickness = (int)(orig * timer.Value / timer.MaxValue), () => RemoveComponent(l)));
                 }
 
-                RemoveComponents<Coroutine>();
+                RemoveAllComponents<Coroutine>();
                 AddComponent(new Coroutine(Hit2()));
             }
 
@@ -522,12 +522,12 @@ namespace Unnamed
                 Sprite.Origin = new Vector2(24);
                 Sprite.OnChange = () =>
                 {
-                    Sprite.Origin = HalfSize;
+                    Sprite.Origin = new Vector2(rotColl.Width, rotColl.Height);
                     Sprite.OnChange = null;
                 };
 
                 Platformer.Freeze(0.2f);
-                Engine.Cam.Shake(0.4f, 2);
+                Platformer.GameCam.Shake(0.4f, 2);
 
                 bool stop = false;
                 Action resetTimeScale = () =>
@@ -556,17 +556,17 @@ namespace Unnamed
 
                 AddComponent(new Timer(0.2f, (t) =>
                 {
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Spark, Bounds, 3);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Spark, Collider.Bounds, 3);
                 }, null));
 
                 //yield return new Coroutine.WaitForSeconds(0.7f);
 
                 AddComponent(new Timer(1, (t) =>
                 {
-                    Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Fire, Bounds, 1);
+                    Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Fire, Collider.Bounds, 1);
                 }, null));
 
-                Engine.Cam.LightShake();
+                Platformer.GameCam.LightShake();
 
 
                 speedMult = GetSpeed();
@@ -575,10 +575,10 @@ namespace Unnamed
                 stateIndex = -1;
                 chosenSequence = Rand.NextInt(0, attackSequences.Length);
 
-                Engine.Cam.LightShake();
+                Platformer.GameCam.LightShake();
 
                 Vector2 dir = (MiddlePos - player.MiddlePos).Normalized();
-                Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Bounds, 20);
+                Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Collider.Bounds, 20);
 
                 if (Health <= 0)
                     stateMachine.Switch(States.Dead);
@@ -624,10 +624,10 @@ namespace Unnamed
 
             Pos = to;
 
-            Engine.Cam.LightShake();
+            Platformer.GameCam.LightShake();
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 0, Particles.Dust.Color);
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + Height - 3, Width, 3), null, 180, Particles.Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + rotColl.Height - 3, rotColl.Width, 3), null, 0, Particles.Dust.Color);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Dust, 6, new Rectangle((int)Pos.X, (int)Pos.Y + rotColl.Height - 3, rotColl.Width, 3), null, 180, Particles.Dust.Color);
         }
 
         public override void Render()
@@ -707,7 +707,7 @@ namespace Unnamed
 
             Audio.PlayEvent("SFX/Boss/Scream/Long");
 
-            Engine.Cam.Shake(0.5f * 5, 1);
+            Platformer.GameCam.Shake(0.5f * 5, 1);
             AddComponent(new Coroutine(FreezeInput(0.5f * 5 + 2)));
 
             for (int i = 0; i < 5; i++)
@@ -778,7 +778,7 @@ namespace Unnamed
                     yield return null;
             }
 
-            Vector2 aimed = Engine.CurrentMap.CurrentLevel.Pos + new Vector2(464, 112);
+            Vector2 aimed = LevelManager.CurrentLevel.Pos + new Vector2(464, 112);
             Vector2 targDir = MiddlePos + (aimed - MiddlePos).Normalized() * 1000;
 
             float timer = 1.5f;
@@ -819,10 +819,10 @@ namespace Unnamed
 
             AddComponent(new Sound3D("SFX/Boss/BeamExplode", autoRemove: true));
 
-            Engine.CurrentMap.Data.GetEntity<SolidPlatform>().SelfDestroy();
-            PushingFire p = (PushingFire)Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos, 64));
-            p.Height = Engine.CurrentMap.CurrentLevel.Height;
-            p.GetComponent<HurtBox>().Trigger.Height = p.Height;
+            /*Engine.CurrentMap.Data.GetEntity<SolidPlatform>().SelfDestroy();
+            PushingFire p = (PushingFire)Engine.CurrentMap.Instantiate(new PushingFire(LevelManagerCurrentLevel.Pos, 64));
+            p.Height = LevelManagerCurrentLevel.Height;
+            p.GetComponent<HurtBox>().Trigger.Height = p.Height;*/
 
             player.Health = 1;
 
@@ -863,7 +863,7 @@ namespace Unnamed
                 if (Collision.LineBoxCollision((AABBCollider)player.Collider, l.Positions[0], l.Positions[1]))
                     player.Damage();
 
-                Engine.Cam.LightShake();
+                Platformer.GameCam.LightShake();
                 yield return 0;
             }
 
@@ -885,7 +885,7 @@ namespace Unnamed
             yield return new Coroutine.WaitForSeconds(1);
 
             AddComponent(new Sound3D("SFX/Boss/Jump", autoRemove: true));
-            e = BezierJump(Pos, Engine.CurrentMap.CurrentLevel.Pos + new Vector2(Engine.CurrentMap.CurrentLevel.Size.X, 0), 1.5f, 300, false);
+            e = BezierJump(Pos, LevelManager.CurrentLevel.Pos + new Vector2(LevelManager.CurrentLevel.Size.X, 0), 1.5f, 300, false);
 
             while (e.MoveNext())
                 yield return null;

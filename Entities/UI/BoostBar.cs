@@ -8,9 +8,10 @@ namespace Unnamed
         public float Value;
         private Sprite filled;
 
-        public BoostBar(Vector2 position, int width, int height, float value) : base(position, width, height, new Sprite(Color.Orange))
+        public BoostBar(Vector2 position, int width, int height, float value) : base(position)
         {
-            filled = GetComponent<Sprite>();
+            AddComponent(filled = new Sprite(Color.Orange));
+
             AddComponent(new Sprite(Color.Gray));
 
             filled.Scale.X = value;

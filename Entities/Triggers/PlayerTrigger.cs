@@ -7,11 +7,14 @@ namespace Unnamed
 {
     public abstract class PlayerTrigger : Trigger
     {
+        protected AABBCollider AABBCollider;
+        protected Sprite Sprite;
         public PlayerTrigger(Vector2 position, int width, int height, Sprite sprite)
             : base(position, new AABBCollider(Vector2.Zero, width, height), new List<Type> { typeof(Player) })
         {
+            AABBCollider = (AABBCollider)Collider;
             if (sprite != null)
-                AddComponent(sprite);
+                AddComponent(Sprite = sprite);
         }
 
         public PlayerTrigger(Vector2 position, Vector2 size, Sprite sprite)

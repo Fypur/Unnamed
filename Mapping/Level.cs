@@ -1,4 +1,5 @@
 ﻿using Fiourp;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -8,12 +9,16 @@ namespace Unnamed
     {
         public readonly Map ParentMap;
 
+        public Vector2 Pos;
+        public Vector2 Size;
         public List<Entity> EntityData;
         public Action EnterAction = null;
 
-        public Level(List<Entity> entityData, Action enterAction = null)
+        public Level(Vector2 position, Vector2 size, List<Entity> entityData, Action enterAction = null)
         {
             EntityData = entityData;
+            Pos = position;
+            Size = size;
 
             if (EntityData == null)
                 EntityData = new List<Entity>();
@@ -35,6 +40,18 @@ namespace Unnamed
             {
                 ParentMap.Destroy(EntityData[i]);
             }
+        }
+
+        public void DestroyOnUnload(Entity entity)
+        {
+            if (!EntityData.Contains(entity))
+                EntityData.Add(entity);
+        }
+
+        public void DontDestroyOnUnload(Entity entity)
+        {
+            if (EntityData.Contains(entity))
+                EntityData.Remove(entity);
         }
     }
 }

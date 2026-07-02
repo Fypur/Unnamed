@@ -11,7 +11,7 @@ namespace Unnamed
         public bool DestroyOnX;
         public Direction? SolidDir;
 
-        private TextBox text;
+        //private TextBox text;
         private static Color Color = Color.LightBlue;
         private static Color DestroyableColor = new Color(68, 112, 148);
 
@@ -64,14 +64,14 @@ namespace Unnamed
                 AddComponent(Sprite);
             }
 
-            text = new TextBox(BreakVelocity.ToString(), "Pixel", Pos + AABBCollider.HalfSize, width, height, 1, DestroyableColor, true, TextBox.Alignement.Center);
+            //text = new TextBox(BreakVelocity.ToString(), "Pixel", Pos + AABBCollider.HalfSize, width, height, 1, DestroyableColor, true, TextBox.Alignement.Center);
         }
 
         public override void Awake()
         {
             base.Awake();
 
-            AddChild(text);
+            //AddChild(text);
         }
 
         public bool Break(Player player, Vector2 particleDirection, bool collisionDirectionIsX)
@@ -80,7 +80,7 @@ namespace Unnamed
                 return false;
 
             Engine.CurrentMap.MiddlegroundSystem.Emit(glass, 200, AABBCollider.Bounds, null, particleDirection.ToAngleDegrees(), glass.Color);
-            Engine.Cam.Shake(0.2f, 1.7f);
+            Platformer.GameCam.Shake(0.2f, 1.7f);
             player.HitStop(0.05f);
 
             FMOD.Studio.EventInstance g = Audio.PlayEvent("SFX/GlassBlock/Shatter");
@@ -95,7 +95,7 @@ namespace Unnamed
             base.Update();
 
             float percentage = Math.Clamp(Platformer.Player.Velocity.Length() / BreakVelocity, 0, 1);
-            text.SetText((int)(percentage * 100) + "%");
+            /*text.SetText((int)(percentage * 100) + "%");
             text.TextScale = 3;
 
             if (percentage == 1)
@@ -105,7 +105,7 @@ namespace Unnamed
                 text.TextScale = 2;
             }
             else
-                text.Color = DestroyableColor;
+                text.Color = DestroyableColor;*/
         }
 
         public override void Render()

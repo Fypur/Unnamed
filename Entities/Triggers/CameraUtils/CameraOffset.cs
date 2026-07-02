@@ -20,16 +20,16 @@ namespace Unnamed
             base.OnTriggerEnter(player);
 
             /*if(OverrideOffset)
-                Engine.Cam.InBoundsOffset = Offset;
+                Platformer.GameCam.InBoundsOffset = Offset;
             else*/
 
-            Engine.Cam.InBoundsOffset += Offset;
+            Platformer.GameCam.InBoundsOffset += Offset;
         }
 
         public override void OnTriggerExit(Player player)
         {
             base.OnTriggerExit(player);
-            Engine.Cam.InBoundsOffset -= Offset;
+            Platformer.GameCam.InBoundsOffset -= Offset;
         }
     }
 }

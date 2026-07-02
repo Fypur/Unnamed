@@ -45,7 +45,8 @@ namespace Unnamed
                     };
                 };
 
-                LevelManager.InstantiateAndAddToLevel(v);
+                Engine.CurrentMap.Instantiate(v);
+                LevelManager.CurrentLevel.DestroyOnUnload(v);
             }
 
             sound = (Sound3D)AddComponent(new Sound3D("Ambience/StreetLight"));

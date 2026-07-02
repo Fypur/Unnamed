@@ -43,7 +43,7 @@ namespace Unnamed
 
             List<Entity> toDestroy = new(destroyOnTransition);
 
-            Level oldLevel = Engine.CurrentMap.CurrentLevel;
+            Level oldLevel = LevelManagerCurrentLevel;
             SwingingPoint.SwingingPoints.Clear();
 
             cam.SetBoundaries(Rectangle.Empty);
@@ -59,7 +59,7 @@ namespace Unnamed
             else
                 ToLevel.LoadAutoTile();
 
-            Engine.CurrentMap.CurrentLevel = new MergedLevel(oldLevel, ToLevel);
+            LevelManagerCurrentLevel = new MergedLevel(oldLevel, ToLevel);
 
             Player p = (Player)entity;
             p.CanMove = false;
@@ -95,7 +95,7 @@ namespace Unnamed
                 p.RefillJetpack();
                 p.ResetSwing();
 
-                Engine.CurrentMap.CurrentLevel = ToLevel;
+                LevelManagerCurrentLevel = ToLevel;
 
                 if (Direction == Direction.Up)
                 {
@@ -118,7 +118,7 @@ namespace Unnamed
 
         public static void DontDestroyOnDeath(Entity entity)
         {
-            Engine.CurrentMap.CurrentLevel.DontDestroyOnUnload(entity);
+            LevelManagerCurrentLevel.DontDestroyOnUnload(entity);
             destroyOnTransition.Add(entity);
         }
 
@@ -129,7 +129,7 @@ namespace Unnamed
 
             List<Entity> toDestroy = new(destroyOnTransition);
 
-            Engine.CurrentMap.CurrentLevel.Unload();
+            LevelManagerCurrentLevel.Unload();
             SwingingPoint.SwingingPoints.Clear();
 
             toLevel.Load();
@@ -146,7 +146,7 @@ namespace Unnamed
             Platformer.Player.RefillJetpack();
             Platformer.Player.ResetSwing();
 
-            Engine.CurrentMap.CurrentLevel = toLevel;
+            LevelManagerCurrentLevel = toLevel;
 
             Engine.Cam.SetBoundaries(toLevel.Pos, size);
 
@@ -160,7 +160,7 @@ namespace Unnamed
         {
             List<Entity> toDestroy = new(destroyOnTransition);
 
-            Engine.CurrentMap.CurrentLevel.Unload();
+            LevelManagerCurrentLevel.Unload();
             SwingingPoint.SwingingPoints.Clear();
 
             Level toLevel = new Level(LevelManager.GetLevel(toLevelLDtk));
@@ -184,7 +184,7 @@ namespace Unnamed
             p.RefillJetpack();
             p.ResetSwing();
 
-            Engine.CurrentMap.CurrentLevel = toLevel;
+            LevelManagerCurrentLevel = toLevel;
 
             Engine.Cam.SetBoundaries(toLevel.Pos, size);
 

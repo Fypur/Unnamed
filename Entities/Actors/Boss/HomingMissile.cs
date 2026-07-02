@@ -14,12 +14,14 @@ namespace Unnamed
         private TrailRenderer trail;
 
         private bool canHitBoss;
+        private BoxCollider boxColl;
 
         public HomingMissile(Vector2 position, float rotation) : base(position, new BoxCollider(-new Vector2(5, 2.5f), 10, 5, rotation, Vector2.Zero), new Sprite(DataManager.Objects["boss/missile"]))
         {
             Rotation = rotation;
+            boxColl = (BoxCollider)Collider;
 
-            Sprite.Origin = HalfSize; //To change when texture gets bigger
+            Sprite.Origin = new Vector2(boxColl.Width, boxColl.Height) / 2;
             Sprite.Rotation = MathHelper.ToRadians(Rotation);
 
             AddComponent(new Timer(1, null, () => canHitBoss = true));
@@ -89,8 +91,8 @@ namespace Unnamed
         {
             base.OnDestroy();
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Bounds, 100);
-            Engine.Cam.Shake(0.4f, 1);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, boxColl.Bounds, 100);
+            Platformer.GameCam.Shake(0.4f, 1);
 
             AddComponent(new Sound3D("SFX/Boss/MissileExplode", autoRemove: true));
 

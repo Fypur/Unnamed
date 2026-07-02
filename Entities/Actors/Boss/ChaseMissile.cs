@@ -1,5 +1,4 @@
 ﻿using Fiourp;
-using LDtkTypes;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
@@ -11,11 +10,7 @@ namespace Unnamed
 
         public ChaseMissile(Vector2[] controlPoints, float time) : base(controlPoints[0], new BoxCollider(-new Vector2(5f, 2.5f), 10, 5, 0, Vector2.Zero), new Sprite(DataManager.Objects["boss/missile"]))
         {
-            RemoveComponent(Collider);
-            Collider = ;
-            AddComponent(Collider);
-
-            Sprite.Origin = HalfSize; //To change when texture gets bigger
+            Sprite.Origin = new Vector2(5f, 2.5f) / 2; //To change when texture gets bigger
             Sprite.Rotation = MathHelper.ToRadians(0);
 
             trail = (TrailRenderer)AddComponent(new TrailRenderer(Particles.FireTrail, Vector2.Zero, 0.01f));
@@ -54,15 +49,15 @@ namespace Unnamed
                 Platformer.Player.Damage();
                 Explode();
             }
-            else if (Collider.CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), Pos))
+            else if (CollideAt(new List<Kinematic>(Solid.InstantiatedSolids), Pos))
                 Explode();
         }
 
 
         public void Explode()
         {
-            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Bounds, 100);
-            Engine.Cam.Shake(0.4f, 1);
+            Engine.CurrentMap.MiddlegroundSystem.Emit(Particles.Explosion, Collider.Bounds, 100);
+            Platformer.GameCam.Shake(0.4f, 1);
 
             foreach (FallingPlatform falling in Engine.CurrentMap.Data.GetEntities<FallingPlatform>())
                 if (Vector2.DistanceSquared(MiddlePos, falling.MiddlePos) < 10 * 10)

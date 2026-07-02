@@ -14,6 +14,7 @@ namespace Unnamed
 
         private bool swinged;
         private PolygonPoint[] polygon;
+        private Vector2 previousExactPos;
 
         public float MaxSwingDistance { get; set; }
         public SwingingPoint(Vector2 position, float maxSwingDistance) : base(position, new AABBCollider(Vector2.Zero, width, height), new Sprite(DataManager.Objects["swingingPoint"]))
@@ -21,6 +22,7 @@ namespace Unnamed
             SwingingPoints.Add(this);
             Collider.Collidable = false;
             MaxSwingDistance = maxSwingDistance;
+            previousExactPos = ExactPos;
         }
 
         public SwingingPoint(Vector2 position, float maxSwingDistance, Vector2[] positions, float[] timesBetweenPositions, bool goingForwards, Func<float, float> easeFunction = null)
@@ -33,6 +35,7 @@ namespace Unnamed
 
             AddComponent(new CycleMover(position, width, height, goingForwards, positions, timesBetweenPositions, easeFunction, out Vector2 p));
             ExactPos = p;
+            previousExactPos = ExactPos;
         }
 
         public override void Awake()
@@ -40,7 +43,7 @@ namespace Unnamed
             base.Awake();
 
             AddComponent(new CircleLight(AABBCollider.HalfSize, Math.Min(MaxSwingDistance, 100), new Color(Color.LightBlue, 50), new Color(Color.LightBlue, 0)));
-            polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);
+            polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance, LevelManager.CurrentGrid.GridCollider);
         }
 
         public override void OnDestroy()
@@ -68,12 +71,12 @@ namespace Unnamed
 
             //if(ExactPos != PreviousExactPos)
             {
-                polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance);
+                polygon = Polygon.GetCircleVisibilityPolygon(MiddlePos, MaxSwingDistance, LevelManager.CurrentGrid.GridCollider);
 
                 if (!swinged)
                     return;
 
-                List<Vector2> cornersToCheck = new List<Vector2>(Engine.CurrentMap.CurrentLevel.Corners);
+                List<Vector2> cornersToCheck = new List<Vector2>(LevelManager.CurrentGrid.GridCollider.Corners);
 
                 RemoveGrapplingPoints();
 
@@ -88,7 +91,7 @@ namespace Unnamed
 
                 void AddGrapplingPoints(List<Vector2> cornersToCheck, Vector2 checkingFrom)
                 {
-                    float angle = VectorHelper.GetAngle(checkingFrom - PreviousExactPos - AABBCollider.HalfSize, checkingFrom - ExactPos - AABBCollider.HalfSize);
+                    float angle = VectorHelper.GetAngle(checkingFrom - previousExactPos - AABBCollider.HalfSize, checkingFrom - ExactPos - AABBCollider.HalfSize);
 
                     if (angle == 0)
                         return;
@@ -108,7 +111,7 @@ namespace Unnamed
                             continue;
                         }
 
-                        float pointAngle = VectorHelper.GetAngle(checkingFrom - PreviousExactPos - AABBCollider.HalfSize, checkingFrom - corner);
+                        float pointAngle = VectorHelper.GetAngle(checkingFrom - previousExactPos - AABBCollider.HalfSize, checkingFrom - corner);
 
                         if (pointAngle * Math.Sign(angle) >= 0 && pointAngle * Math.Sign(angle) <= angle * Math.Sign(angle))
                         {
@@ -159,6 +162,8 @@ namespace Unnamed
                 }
 
             }
+
+            previousExactPos = ExactPos;
         }
 
         public override void Render()
@@ -166,7 +171,7 @@ namespace Unnamed
             GetComponent<CircleLight>().Visible = true;
             base.Render();
 
-            if (Platformer.Player != null && !swinged && !Raycast.FastRay(MiddleExactPos, Platformer.Player.Pos + Platformer.Player.AABBCollider.HalfSize).Hit && Vector2.Distance(MiddleExactPos, Platformer.Player.Pos + Platformer.Player.AABBCollider.HalfSize) < MaxSwingDistance)
+            if (Platformer.Player != null && !swinged && !Raycast.FastRay(MiddleExactPos, Platformer.Player.Pos + Platformer.Player.AABBCollider.HalfSize, LevelManager.CurrentGrid.GridCollider).Hit && Vector2.Distance(MiddleExactPos, Platformer.Player.Pos + Platformer.Player.AABBCollider.HalfSize) < MaxSwingDistance)
                 Drawing.DrawDottedLine(MiddlePos, Platformer.Player.Pos + Platformer.Player.AABBCollider.HalfSize, new Color(Color.DeepSkyBlue * (40f / 255), 255), 1, 4, 4);
 
             Polygon.DrawCirclePolygon(polygon, MiddlePos, MaxSwingDistance, new Color(Color.DeepSkyBlue * (40f / 255), 255));

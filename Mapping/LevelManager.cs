@@ -125,8 +125,8 @@ namespace Unnamed
                 entities.Add(new SwingTriggered(p.Positions, p.MaxSwingDistance, p.Position, p.Width(), p.Height(), speed));
             }
 
-            foreach (LDtkTypes.TextSpawn p in level.GetEntities<LDtkTypes.TextSpawn>())
-                entities.Add(new TextSpawn(p.Position, p.Size, p.TextPos + new Vector2(p.XOffset, p.YOffset), p.Color, p.Text));
+            /*foreach (LDtkTypes.TextSpawn p in level.GetEntities<LDtkTypes.TextSpawn>())
+                entities.Add(new TextSpawn(p.Position, p.Size, p.TextPos + new Vector2(p.XOffset, p.YOffset), p.Color, p.Text));*/
 
             foreach (LDtkTypes.JetpackBooster p in level.GetEntities<LDtkTypes.JetpackBooster>())
                 entities.Add(new JetpackBooster(p.Position, p.Size, p.Direction.ToDirection()));
@@ -346,14 +346,14 @@ namespace Unnamed
                         entities.Add(trig4);
                         break;
                     case 9:
-                        if (!NonRespawnEntityIIds.Contains(p.Iid))
-                            entities.Add(new JetpackPickUp(p.Position, p.Iid, p.Id));
+                        /*if (!NonRespawnEntityIIds.Contains(p.Iid))
+                            entities.Add(new JetpackPickUp(p.Position, p.Iid, p.Id));*/
                         break;
                     case 10:
                         entities.Add(new Ghost(p.Id));
                         break;
                     case 11:
-                        entities.Add(new EndCinematic(p.Position, p.Size, p.Positions));
+                        //entities.Add(new EndCinematic(p.Position, p.Size, p.Positions));
                         break;
                     case 12:
                         SpecialTrigger trig5 = new SpecialTrigger(p.Position, p.Size, null);
@@ -921,7 +921,7 @@ namespace Unnamed
         public static Level GetLevel(LDtkLevel ldtk)
         {
             LastLDtkLevel = ldtk;
-            return new Level(ldtk.GetLevelEntities(), null);
+            return new Level(ldtk.Position.ToVector2(), ldtk.Size.ToVector2(), ldtk.GetLevelEntities(), null);
         }
 
         public static LDtkLevel GetLdtkLevel(string id)

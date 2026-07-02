@@ -45,8 +45,8 @@ namespace Unnamed
             player.RefillJetpack();
             canActivate = false;
 
-            Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, MiddlePos, 30);
-            Engine.Cam.LightShake();
+            Engine.CurrentMap.MiddlegroundSystem.Emit(explosion, AABBCollider.WorldPos + AABBCollider.HalfSize, 30);
+            Platformer.GameCam.LightShake();
             player.HitStop(0.05f);
 
             Visible = false;

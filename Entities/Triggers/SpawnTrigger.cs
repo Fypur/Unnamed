@@ -34,8 +34,8 @@ namespace Unnamed
 
             foreach (Entity e in Spawned)
             {
-                Engine.CurrentMap.CurrentLevel.DestroyOnUnload(e);
                 Engine.CurrentMap.Instantiate(e);
+                LevelManager.CurrentLevel.DestroyOnUnload(e);
             }
         }
 

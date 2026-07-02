@@ -36,9 +36,9 @@ namespace Unnamed
         {
             Sprite.Color.A = 220;
             base.Render();
-            for (int i = 0; i < Width / Sprite.Width; i++)
+            for (int i = 0; i < AABBCollider.Width / Sprite.Width; i++)
             {
-                for (int j = 0; j < Height / Sprite.Height; j++)
+                for (int j = 0; j < AABBCollider.Height / Sprite.Height; j++)
                 {
                     Sprite.Offset = new Vector2(Sprite.Width * i, Sprite.Height * j);
                     Sprite.Render();

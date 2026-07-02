@@ -15,7 +15,7 @@ namespace Unnamed
 
         public override bool CollidingConditions(Collider other)
         {
-            if (other.ParentEntity != Engine.Cam)
+            if (other.ParentEntity != Platformer.GameCam)
                 return false;
 
             return base.CollidingConditions(other);

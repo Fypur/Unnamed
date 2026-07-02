@@ -243,7 +243,7 @@ namespace Unnamed
             /*if (Input.GetKeyDown(Keys.P))
             {
                 int lvlNumber = int.Parse(System.Text.RegularExpressions.Regex.Match(Levels.LastLDtkLevel.Identifier, @"\d+$").Value); //Funny regex to get number at end of string
-                Engine.CurrentMap.CurrentLevel.Unload();
+                LevelManagerCurrentLevel.Unload();
                 Level lvl = new Level(Levels.GetLevelData(lvlNumber + 1));
                 lvl.LoadNoAutoTile();
 

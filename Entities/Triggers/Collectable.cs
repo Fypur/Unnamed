@@ -31,7 +31,7 @@ namespace Unnamed
 
         private IEnumerator WaitCollected(Player player)
         {
-            Engine.CurrentMap.CurrentLevel.DontDestroyOnUnload(this);
+            LevelManager.CurrentLevel.DontDestroyOnUnload(this);
 
             bool breakLoop = false;
             player.OnDeath += () => breakLoop = true;
@@ -47,7 +47,7 @@ namespace Unnamed
 
             if (breakLoop)
             {
-                Engine.CurrentMap.CurrentLevel.DestroyOnUnload(this);
+                LevelManager.CurrentLevel.DestroyOnUnload(this);
                 Vector2 oldPos = Pos;
                 AddComponent(new Timer(0.5f, (timer) =>
                 {

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Unnamed
 {
-    public class ProjectorLight : Decoration
+    public class ProjectorLight : Tile
     {
         public enum ProjectorType { Ground, Corner, Ceiling };
 
@@ -26,7 +26,7 @@ namespace Unnamed
             base.Awake();
 
             QuadLight.Direction -= Pos;
-            QuadLight.Direction -= new Vector2(Engine.CurrentMap.CurrentLevel.TileWidth, Engine.CurrentMap.CurrentLevel.TileHeight) / 2;
+            QuadLight.Direction -= new Vector2(LevelManager.CurrentGrid.GridCollider.TileWidth, LevelManager.CurrentGrid.GridCollider.TileHeight) / 2;
             //Direction -= Sprite.CurrentAnimation.Slices[0].Rect.Center.ToVector2();
             QuadLight.Direction.Normalize();
         }
