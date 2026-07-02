@@ -13,7 +13,7 @@ namespace Unnamed
 {
     public class Platformer : Game
     {
-        public static Platformer instance;
+        public static Platformer Instance;
         public static GraphicsDeviceManager GraphicsManager;
         public static RenderTarget2D RenderTarget => Engine.RenderTarget;
         public static RenderTarget2D SecondRenderTarget;
@@ -48,7 +48,6 @@ namespace Unnamed
 
         public static Vector2 GameDefaultSize = new Vector2(320, 180);
 
-        private MainMenu menu;
 #if DEBUG
         private FileSystemWatcher watcher;
         private bool waitRefresh;
@@ -62,7 +61,7 @@ namespace Unnamed
 
         public Platformer()
         {
-            instance = this;
+            Instance = this;
             GraphicsManager = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "Content";
@@ -79,7 +78,7 @@ namespace Unnamed
 
             base.Initialize();
 
-            Cam = new Camera(Vector2.Zero, 0, 1f);
+            Cam = new Camera(Vector2.Zero, 0, RenderTarget.Width, RenderTarget.Height);
 
             BgRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, RenderTarget.Width, RenderTarget.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             SecondRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, 1280, 720, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
@@ -115,7 +114,7 @@ namespace Unnamed
             LoadWorldSave(Save);
             LoadOptionsSave(Save);
 
-            menu = (MainMenu)Engine.CurrentMap.Instantiate(new MainMenu());
+            //menu = (MainMenu)Engine.CurrentMap.Instantiate(new MainMenu());
         }
 
         protected override void Update(GameTime gameTime)
@@ -210,31 +209,6 @@ namespace Unnamed
                 Engine.CurrentMap.Instantiate(new PushingFire(Engine.CurrentMap.CurrentLevel.Pos + Engine.CurrentMap.CurrentLevel.Size.OnlyY(), 32, Direction.Up));
             }
 
-            /*if (Input.GetKeyDown(Keys.U))
-            {
-                t = new Tile(Input.MousePos, 8, 8, new Sprite(Color.White));
-                t.RemoveComponent(t.Collider);
-                b = new BoxColliderRotated(Vector2.Zero, 8, 8, 0, t.HalfSize);
-                t.AddComponent(b);
-                Engine.CurrentMap.Instantiate(t);
-                t.Sprite.Origin = Vector2.One * 0.5f;
-                t.Sprite.Offset = t.HalfSize;
-            }
-            if (Input.GetKey(Keys.K))
-            {
-                b.Rotate(0.01f, 0.01f, null, null);
-                t.Sprite.Rotation = b.Rotation;
-            }
-
-            if (Input.GetKey(Keys.L))
-            {
-                b.Rotate(-0.01f, 0.01f, null, null);
-                t.Sprite.Rotation = b.Rotation;
-            }
-
-            Debug.PointUpdate(b.Rect);
-            Debug.LogUpdate(VectorHelper.RotateAround(Vector2.One, Vector2.UnitY, (float)(Math.PI / 2)));
-            */
 
             /*if (Input.GetKey(Keys.W))
             {
@@ -444,7 +418,6 @@ namespace Unnamed
 
             Drawing.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, Cam.ViewMatrix);
 
-            Engine.CurrentMap.UIRender();
             PauseMenu?.Render();
 
             Drawing.End();
@@ -452,9 +425,7 @@ namespace Unnamed
 
             Drawing.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
-            Engine.CurrentMap.UIOverlayRender();
 
-            PauseMenu?.UIChildRender();
 
             Drawing.End();
             Drawing.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
@@ -601,24 +572,24 @@ namespace Unnamed
 
         public static void Pause()
         {
-            if (Paused || Engine.CurrentMap.Data.UIElements.Exists((element) => element is MainMenu) || !CanPause)
+            /*if (Paused || Engine.CurrentMap.Data.UIElements.Exists((element) => element is MainMenu) || !CanPause)
                 return;
 
             Paused = true;
             Audio.GetBus("Sound effects").setPaused(true);
             PauseMenu.Show();
-            PreviousPauseOldState = Input.OldState;
+            PreviousPauseOldState = Input.OldState;*/
         }
 
         public static void Unpause()
         {
-            if (!Paused)
+            /*if (!Paused)
                 return;
 
             Audio.GetBus("Sound effects").setPaused(false);
             PauseMenu.Children = new();
             Paused = false;
-            Input.OldState = PreviousPauseOldState;
+            Input.OldState = PreviousPauseOldState;*/
         }
 
         protected override void EndRun()
