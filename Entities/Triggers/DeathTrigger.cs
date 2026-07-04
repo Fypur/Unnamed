@@ -3,47 +3,17 @@ using Microsoft.Xna.Framework;
 
 namespace Unnamed
 {
-    public class DeathTrigger : PlayerTrigger
+    public class DeathTrigger : Entity
     {
         public bool InstaDeath;
+        public DeathTrigger(Vector2 position, HurtBox hurtBox) : base(position)
+        {
+            AddComponent(hurtBox);
+        }
 
         public DeathTrigger(Vector2 position, Vector2 size)
-            : base(position, size, null) { }
-
-        public DeathTrigger(Rectangle bounds)
-            : base(bounds, null) { }
-
-        public DeathTrigger(Vector2 position, Vector2 size, bool instaDeath) : this(position, size)
-        {
-            InstaDeath = instaDeath;
-            Collider.DebugColor = Color.Red;
-        }
-
+            : this(position, new HurtBox(new AABBCollider(Vector2.Zero, (int)size.X, (int)size.Y))) { }
         public DeathTrigger(Vector2 position, int width, int height)
-            : base(position, width, height, null) { }
-
-        public override void OnTriggerEnter(Player player)
-        {
-            base.OnTriggerEnter(player);
-
-            if (!player.Is(Player.States.Dead) && Conditions(player))
-            {
-                if (InstaDeath)
-                    player.InstaDeath();
-                else
-                    player.Death();
-            }
-        }
-
-        public override void OnTriggerStay(Player player)
-        {
-            if (!player.Is(Player.States.Dead) && Conditions(player))
-            {
-                if (InstaDeath)
-                    player.InstaDeath();
-                else
-                    player.Death();
-            }
-        }
+            : this(position, new HurtBox(new AABBCollider(Vector2.Zero, width, height))) { }
     }
 }

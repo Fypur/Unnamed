@@ -10,10 +10,11 @@ namespace Unnamed
         public Collider Collider;
         public Action OnDeath = null;
         public bool InstaDeath;
-        public HurtBox(Collider collider)
+        public HurtBox(Collider collider, bool instaDeath = false)
         {
             Collider = collider;
             collider.DebugColor = Color.Red;
+            InstaDeath = instaDeath;
         }
 
         public override void Update()

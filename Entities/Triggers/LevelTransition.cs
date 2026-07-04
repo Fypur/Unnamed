@@ -5,105 +5,80 @@ using System.Collections.Generic;
 
 namespace Unnamed
 {
-    public class LevelTransition : Trigger
+    public class LevelTransition : PlayerTrigger
     {
         public Direction Direction;
         private const float transitionTime = 1f;
-        public Level ToLevel;
         public LDtk.LDtkLevel LDtkToLevel;
-
-        private Camera cam = Platformer.GameCam;
 
         private static List<Entity> destroyOnTransition = new();
 
-        public LevelTransition(Vector2 position, Vector2 size, Level toLevel, Direction dir)
-            : base(position, size, new List<Type>() { typeof(Player) }, null)
-        {
-            this.ToLevel = toLevel;
-            Direction = dir;
-        }
-
         public LevelTransition(Vector2 position, Vector2 size, LDtk.LDtkLevel ldtk, Direction dir)
-            : base(position, size, new List<Type>() { typeof(Player) }, null)
+            : base(position, size, null)
         {
             this.LDtkToLevel = ldtk;
             Direction = dir;
         }
 
-        public LevelTransition(Rectangle triggerRect, Level toLevel, Direction dir)
-            : base(triggerRect, new List<Type>() { typeof(Player) }, null)
+        public override void OnTriggerEnter(Player player)
         {
-            this.ToLevel = toLevel;
-            Direction = dir;
-        }
-
-        public override void OnTriggerEnter(Kinematic entity)
-        {
-            base.OnTriggerEnter(entity);
+            base.OnTriggerEnter(player);
 
             List<Entity> toDestroy = new(destroyOnTransition);
 
-            Level oldLevel = LevelManagerCurrentLevel;
+            Level oldLevel = LevelManager.CurrentLevel;
             SwingingPoint.SwingingPoints.Clear();
 
-            cam.SetBoundaries(Rectangle.Empty);
+            Platformer.GameCam.SetBoundaries(Rectangle.Empty);
 
             for (int i = Light.AllLights.Count - 1; i >= 0; i--)
                 Light.AllLights[i].Visible = false;
 
-            if (ToLevel == null)
-            {
-                ToLevel = new Level(LevelManager.GetLevel(LDtkToLevel));
-                ToLevel.Load();
-            }
-            else
-                ToLevel.LoadAutoTile();
+            Level ToLevel = LevelManager.GetLevel(LDtkToLevel);
+            ToLevel.Load();
 
-            LevelManagerCurrentLevel = new MergedLevel(oldLevel, ToLevel);
-
-            Player p = (Player)entity;
-            p.CanMove = false;
+            player.CanMove = false;
 
             Vector2 size = ToLevel.Size;
             if (size.Y == 184)
                 size.Y = 180;
 
-            cam.Move(cam.InBoundsPos(p.Pos, new Rectangle(ToLevel.Pos.ToPoint(), size.ToPoint())) - cam.CenteredPos, transitionTime, Ease.CubeInAndOut, () => Engine.CurrentMap.Data.GetEntity<MainMenu>() != null);
+            Platformer.GameCam.Move(Platformer.GameCam.InBoundsPos(player.Pos, new Rectangle(ToLevel.Pos.ToPoint(), size.ToPoint())) - Platformer.GameCam.CenteredPos, transitionTime, Ease.CubeInAndOut, () => Engine.CurrentMap.Data.GetEntity<MainMenu>() != null);
 
             switch (Direction)
             {
                 case Direction.Up:
-                    p.Pos.Y = Pos.Y - p.Height;
+                    player.Pos.Y = Pos.Y - player.AABBCollider.Height;
                     break;
                 case Direction.Down:
-                    p.Pos.Y = Pos.Y + Height;
+                    player.Pos.Y = Pos.Y + player.AABBCollider.Height;
                     break;
                 case Direction.Left:
-                    p.Pos.X = Pos.X - p.Width;
+                    player.Pos.X = Pos.X - player.AABBCollider.Width;
                     break;
                 case Direction.Right:
-                    p.Pos.X = Pos.X + Width;
+                    player.Pos.X = Pos.X + player.AABBCollider.Width;
                     break;
             }
 
             //p.UpdateChildrenPos();
-            p.CancelJump();
+            player.CancelJump();
 
             AddComponent(new Timer(transitionTime - Engine.Deltatime, null, () =>
             {
-                p.CanMove = true;
-                p.RefillJetpack();
-                p.ResetSwing();
+                player.CanMove = true;
+                player.RefillJetpack();
+                player.ResetSwing();
 
-                LevelManagerCurrentLevel = ToLevel;
+                LevelManager.CurrentLevel = ToLevel;
 
                 if (Direction == Direction.Up)
                 {
-                    p.Velocity.Y = Math.Min(p.Velocity.Y, -200);
+                    player.Velocity.Y = Math.Min(player.Velocity.Y, -200);
                     //p.LimitJetpackY(0.5f, 0.4f, () => p.Velocity.Y >= 0);
                 }
 
-                Engine.Cam.SetBoundaries(ToLevel.Pos, size);
+                Platformer.GameCam.SetBoundaries(ToLevel.Pos, size);
 
                 foreach (Entity e in toDestroy)
                 {
@@ -118,7 +93,7 @@ namespace Unnamed
 
         public static void DontDestroyOnDeath(Entity entity)
         {
-            LevelManagerCurrentLevel.DontDestroyOnUnload(entity);
+            LevelManager.CurrentLevel.DontDestroyOnUnload(entity);
             destroyOnTransition.Add(entity);
         }
 
@@ -129,7 +104,7 @@ namespace Unnamed
 
             List<Entity> toDestroy = new(destroyOnTransition);
 
-            LevelManagerCurrentLevel.Unload();
+            LevelManager.CurrentLevel.Unload();
             SwingingPoint.SwingingPoints.Clear();
 
             toLevel.Load();
@@ -146,9 +121,9 @@ namespace Unnamed
             Platformer.Player.RefillJetpack();
             Platformer.Player.ResetSwing();
 
-            LevelManagerCurrentLevel = toLevel;
+            LevelManager.CurrentLevel = toLevel;
 
-            Engine.Cam.SetBoundaries(toLevel.Pos, size);
+            Platformer.GameCam.SetBoundaries(toLevel.Pos, size);
 
             foreach (Entity e in toDestroy)
             {
@@ -160,10 +135,10 @@ namespace Unnamed
         {
             List<Entity> toDestroy = new(destroyOnTransition);
 
-            LevelManagerCurrentLevel.Unload();
+            LevelManager.CurrentLevel.Unload();
             SwingingPoint.SwingingPoints.Clear();
 
-            Level toLevel = new Level(LevelManager.GetLevel(toLevelLDtk));
+            Level toLevel = LevelManager.GetLevel(toLevelLDtk);
             toLevel.Load();
 
             var respawns = Engine.CurrentMap.Data.GetEntities<RespawnTrigger>();
@@ -184,9 +159,9 @@ namespace Unnamed
             p.RefillJetpack();
             p.ResetSwing();
 
-            LevelManagerCurrentLevel = toLevel;
+            LevelManager.CurrentLevel = toLevel;
 
-            Engine.Cam.SetBoundaries(toLevel.Pos, size);
+            Platformer.GameCam.SetBoundaries(toLevel.Pos, size);
 
             foreach (Entity e in toDestroy)
             {

@@ -1,11 +1,6 @@
-﻿using Fiourp;
-using Microsoft.Xna.Framework;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Unnamed
+﻿namespace Unnamed
 {
-    public class ChapterTransition : PlayerTrigger
+    /*public class ChapterTransition : PlayerTrigger
     {
         public string InitLevel;
         public ChapterTransition(Rectangle bounds, string initLevel) : base(bounds, null)
@@ -113,5 +108,5 @@ namespace Unnamed
                 }
             }
         }
-    }
+    }*/
 }

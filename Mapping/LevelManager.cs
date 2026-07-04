@@ -948,34 +948,6 @@ namespace Unnamed
             Engine.CurrentMap.Instantiate(CurrentGrid);
         }
 
-        private static List<LevelTransition> DefaultLevelTransitions(Vector2 fromLevelPosition, Level rightLevel, Level leftLevel, Level upLevel, Level downLevel)
-        {
-            Vector2 p = fromLevelPosition;
-            List<LevelTransition> transitions = new List<LevelTransition>();
-
-            if (rightLevel != null)
-                transitions.Add(new LevelTransition(new Vector2(Engine.ScreenSize.X - 2, 0) + p, new Vector2(4, Engine.ScreenSize.Y),
-                            rightLevel, Direction.Right));
-
-            if (leftLevel != null)
-                transitions.Add(new LevelTransition(new Vector2(-2, 0) + p, new Vector2(4, Engine.ScreenSize.Y),
-                            leftLevel, Direction.Left));
-
-            if (downLevel != null)
-                transitions.Add(new LevelTransition(new Vector2(0, Engine.ScreenSize.Y - 2) + p, new Vector2(Engine.ScreenSize.X, 4),
-                            downLevel, Direction.Down));
-
-            if (upLevel != null)
-                transitions.Add(new LevelTransition(new Vector2(0, -2) + p, new Vector2(Engine.ScreenSize.X, 4),
-                            upLevel, Direction.Up));
-
-            return transitions;
-        }
-
-        private static DeathTrigger FallDeathTrigger(Vector2 levelPos, Vector2 levelSize)
-            => new DeathTrigger(levelPos + new Vector2(0, levelSize.Y + Platformer.Player.AABBCollider.Height / 2), new Vector2(levelSize.X, 2));
-
-
         public static void ReloadLastLevelFetched()
         {
             CurrentLevel.Unload();

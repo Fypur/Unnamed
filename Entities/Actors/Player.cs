@@ -115,6 +115,8 @@ namespace Unnamed
         public List<int> SwingPositionsSign = new List<int>() { 0 };
         private bool isAtSwingEnd;
 
+        private List<Kinematic> wallJumpableKinematics;
+
         //Controls
         public static ControlList LeftControls = Input.LeftControls;
         public static ControlList RightControls = Input.RightControls;
@@ -260,7 +262,10 @@ namespace Unnamed
 
             PrevVelocity = Velocity;
 
-            onGround = CollisionCheck(Pos + new Vector2(0, 1), true, out Entity onGroundEntity);
+            wallJumpableKinematics = new List<Kinematic>(Solid.InstantiatedSolids);
+            wallJumpableKinematics.RemoveAll((k) => k is JumpThru);
+
+            onGround = CollisionCheck(Pos + new Vector2(0, 1), true, out Kinematic onGroundEntity);
             onRightWall = CollisionCheck(Pos + new Vector2(1, 0), false);
             onWall = onRightWall || CollisionCheck(Pos + new Vector2(-1, 0), false);
 
@@ -1311,12 +1316,12 @@ namespace Unnamed
             collisionY = true;
         }
 
-        private bool CollisionCheck(Vector2 position, out Entity groundedEntity)
+        private bool CollisionCheck(Vector2 position, bool platforms, out Kinematic groundedEntity)
         {
             if (platforms)
-                return CollideAt(new List<Entity>(Engine.CurrentMap.Data.Platforms), position, out groundedEntity) && groundedEntity is not InvisibleWall;
+                return CollideAt(new List<Kinematic>(Solid.InstantiatedSolids), position, out groundedEntity) && groundedEntity is not InvisibleWall;
             else
-                return CollideAt(new List<Entity>(Engine.CurrentMap.Data.Solids), position, out groundedEntity) && groundedEntity is not InvisibleWall;
+                return CollideAt(wallJumpableKinematics, position, out groundedEntity) && groundedEntity is not InvisibleWall;
         }
         private bool CollisionCheck(Vector2 position, bool platforms)
             => CollisionCheck(position, platforms, out _); //TODO: deal with jumpthru not being detected as wall jumpable
@@ -1347,7 +1352,7 @@ namespace Unnamed
                 return;
             }
 
-            Engine.Cam.LightShake();
+            Platformer.GameCam.LightShake();
             stateMachine.Switch(States.Damaged);
             invincible = true;
 
