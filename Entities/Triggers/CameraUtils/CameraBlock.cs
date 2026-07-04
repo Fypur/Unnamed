@@ -5,11 +5,11 @@ namespace Unnamed
 {
     public class CameraBlock : Solid
     {
-        public CameraBlock(Vector2 position, int width, int height) : base(position, width, height, null)
+        public CameraBlock(Vector2 position, int width, int height) : base(position, new AABBCollider(Vector2.Zero, width, height), null)
         {
         }
 
-        public CameraBlock(Vector2 position, Vector2 size) : base(position, (int)size.X, (int)size.Y, null)
+        public CameraBlock(Vector2 position, Vector2 size) : base(position, new AABBCollider(Vector2.Zero, (int)size.X, (int)size.Y), null)
         {
         }
 
@@ -25,16 +25,14 @@ namespace Unnamed
         {
             base.Awake();
 
-            Engine.CurrentMap.Data.CameraSolids.Add(this);
-            Move(-Vector2.UnitY);
-            Move(Vector2.UnitY);
+            Platformer.GameCam.CameraSolids.Add(this);
         }
 
         public override void OnDestroy()
         {
             base.OnDestroy();
 
-            Engine.CurrentMap.Data.CameraSolids.Remove(this);
+            Platformer.GameCam.CameraSolids.Remove(this);
         }
     }
 }

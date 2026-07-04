@@ -18,18 +18,13 @@ namespace Unnamed
         public override void OnTriggerEnter(Player player)
         {
             base.OnTriggerEnter(player);
-
-            /*if(OverrideOffset)
-                Platformer.GameCam.InBoundsOffset = Offset;
-            else*/
-
-            Platformer.GameCam.InBoundsOffset += Offset;
+            Platformer.GameCam.BoundedOffset += Offset;
         }
 
         public override void OnTriggerExit(Player player)
         {
             base.OnTriggerExit(player);
-            Platformer.GameCam.InBoundsOffset -= Offset;
+            Platformer.GameCam.BoundedOffset -= Offset;
         }
     }
 }

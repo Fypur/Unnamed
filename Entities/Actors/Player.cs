@@ -1232,7 +1232,7 @@ namespace Unnamed
                     }
                 }
 
-                Platformer.GameCam.CenteredPos = Platformer.GameCam.InBoundsPos(Platformer.GameCam.InBoundsPos(Pos, Platformer.GameCam.Bounds) + Platformer.GameCam.InBoundsOffset, Platformer.GameCam.Bounds);
+                Platformer.GameCam.CenteredPos = Platformer.GameCam.InBoundsPos(Platformer.GameCam.InBoundsPos(Pos, Platformer.GameCam.Bounds) + Platformer.GameCam.BoundedOffset, Platformer.GameCam.Bounds);
                 OnDeathTransition?.Invoke();
 
                 Active = true;
