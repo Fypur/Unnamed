@@ -21,7 +21,7 @@ namespace Unnamed
         public static RenderTarget2D FinalRenderTarget;
 
         public static bool Paused;
-        public static PauseMenu PauseMenu;
+        //public static PauseMenu PauseMenu;
         private static Input.State PreviousPauseOldState;
 
         public static LDtkFile LDtkFile;
@@ -78,7 +78,7 @@ namespace Unnamed
 
             base.Initialize();
 
-            GameCam = new GameCamera(new Camera(Vector2.Zero, 0, RenderTarget.Width, RenderTarget.Height));
+            GameCam = new GameCamera(Vector2.Zero, RenderTarget.Width, RenderTarget.Height);
 
             BgRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, RenderTarget.Width, RenderTarget.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             SecondRenderTarget = new RenderTarget2D(RenderTarget.GraphicsDevice, 1280, 720, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
@@ -182,17 +182,17 @@ namespace Unnamed
 
             if (Input.GetKey(Keys.P))
             {
-                int camWidth = Platformer.GameCam.Camera.Width - 16;
-                int camHeight = Platformer.GameCam.Camera.Height - 9;
-                Platformer.GameCam.Camera.Pos += new Vector2(Platformer.GameCam.Camera.Width - camWidth, Platformer.GameCam.Camera.Height - camHeight) / 2;
-                Platformer.GameCam.Camera.Size = new Vector2(camWidth, camHeight);
+                int camWidth = Platformer.GameCam.Width - 16;
+                int camHeight = Platformer.GameCam.Height - 9;
+                Platformer.GameCam.Pos += new Vector2(Platformer.GameCam.Width - camWidth, Platformer.GameCam.Height - camHeight) / 2;
+                Platformer.GameCam.Size = new Vector2(camWidth, camHeight);
             }
             if (Input.GetKey(Keys.O))
             {
-                int camWidth = Platformer.GameCam.Camera.Width + 16;
-                int camHeight = Platformer.GameCam.Camera.Height + 9;
-                Platformer.GameCam.Camera.Pos += new Vector2(Platformer.GameCam.Camera.Width - camWidth, Platformer.GameCam.Camera.Height - camHeight) / 2;
-                Platformer.GameCam.Camera.Size = new Vector2(camWidth, camHeight);
+                int camWidth = Platformer.GameCam.Width + 16;
+                int camHeight = Platformer.GameCam.Height + 9;
+                Platformer.GameCam.Pos += new Vector2(Platformer.GameCam.Width - camWidth, Platformer.GameCam.Height - camHeight) / 2;
+                Platformer.GameCam.Size = new Vector2(camWidth, camHeight);
             }
 
 
@@ -307,7 +307,7 @@ namespace Unnamed
 
 
             GraphicsDevice.SetRenderTarget(RenderTarget);
-            Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, GameCam.Camera.ViewMatrix);
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, GameCam.ViewMatrix);
 
 
             Drawing.BeginPrimitives(Engine.PrimitivesRenderTarget);
@@ -324,7 +324,7 @@ namespace Unnamed
 
 
 
-            Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, GameCam.Camera.ViewMatrix);
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, GameCam.ViewMatrix);
 
             Drawing.DebugPoint(1, 1);
 
@@ -337,13 +337,13 @@ namespace Unnamed
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
             Drawing.Draw(BgRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Vector2.One * FinalRenderTarget.Width / BackgroundTile.Width, SpriteEffects.None, 0);
-            Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Platformer.GameCam.Camera.Width, Platformer.GameCam.Camera.Height), Color.White, 0, Vector2.Zero, new Vector2(FinalRenderTarget.Width, FinalRenderTarget.Height) / Engine.Cam.Size, SpriteEffects.None, 0);
-            Drawing.Draw(Engine.PrimitivesRenderTarget, Vector2.Zero, new Rectangle(0, 0, Platformer.GameCam.Camera.Width, Platformer.GameCam.Camera.Height), Color.White, 0, Vector2.Zero, new Vector2(FinalRenderTarget.Width, FinalRenderTarget.Height) / Engine.Cam.Size, SpriteEffects.None, 0);
+            Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Platformer.GameCam.Width, Platformer.GameCam.Height), Color.White, 0, Vector2.Zero, new Vector2(FinalRenderTarget.Width, FinalRenderTarget.Height) / Platformer.GameCam.Size, SpriteEffects.None, 0);
+            Drawing.Draw(Engine.PrimitivesRenderTarget, Vector2.Zero, new Rectangle(0, 0, Platformer.GameCam.Width, Platformer.GameCam.Height), Color.White, 0, Vector2.Zero, new Vector2(FinalRenderTarget.Width, FinalRenderTarget.Height) / Platformer.GameCam.Size, SpriteEffects.None, 0);
 
             Drawing.End();
 
 
-            Drawing.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, GameCam.Camera.ViewMatrix * Matrix.CreateScale(FinalRenderTarget.Width / Platformer.GameCam.Camera.Width));
+            Drawing.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, GameCam.ViewMatrix * Matrix.CreateScale(FinalRenderTarget.Width / Platformer.GameCam.Width));
             Lighting.DrawAllLights();
             Drawing.End();
 
@@ -394,17 +394,17 @@ namespace Unnamed
             Drawing.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, null);
 
             Drawing.Draw(FinalRenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Engine.ScreenSize / new Vector2(FinalRenderTarget.Width, FinalRenderTarget.Height), SpriteEffects.None, 0);
-            //Drawing.Draw(BgRenderTarget, Vector2.Zero, new Rectangle(0, 0, Platformer.GameCam.Camera.Width, Platformer.GameCam.Camera.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Platformer.GameCam.Camera.Size, SpriteEffects.None, 0);
-            //Drawing.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Engine.ScreenSize / Platformer.GameCam.Camera.Size, SpriteEffects.None, 0);
-            //Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Platformer.GameCam.Camera.Width, Platformer.GameCam.Camera.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Platformer.GameCam.Camera.Size, SpriteEffects.None, 0);
+            //Drawing.Draw(BgRenderTarget, Vector2.Zero, new Rectangle(0, 0, Platformer.GameCam.Width, Platformer.GameCam.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Platformer.GameCam.Size, SpriteEffects.None, 0);
+            //Drawing.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, Engine.ScreenSize / Platformer.GameCam.Size, SpriteEffects.None, 0);
+            //Drawing.Draw(RenderTarget, Vector2.Zero, new Rectangle(0, 0, Platformer.GameCam.Width, Platformer.GameCam.Height), Color.White, 0, Vector2.Zero, Engine.ScreenSize / Platformer.GameCam.Size, SpriteEffects.None, 0);
             //Drawing.Draw(Engine.LightsRenderTarget, new Rectangle(new Point(0, 0), new Point(3000, 3000)), Color.White);
 
             Drawing.End();
 
 
-            Drawing.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, GameCam.Camera.ViewMatrix);
+            Drawing.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null, null, GameCam.ViewMatrix);
 
-            PauseMenu?.Render();
+            //PauseMenu?.Render();
 
             Drawing.End();
 
@@ -429,7 +429,7 @@ namespace Unnamed
         {
             var map = new Map();
             Engine.CurrentMap = map;
-            Engine.Cam.Size = GameDefaultSize;
+            Platformer.GameCam.Size = GameDefaultSize;
 
             World = RefreshWorld();
             int worldDepth = 0;
@@ -496,8 +496,8 @@ namespace Unnamed
             Engine.CurrentMap.Data = new MapData(); //Need to clear mapdata so that this update cycle is not finished
 
             Engine.CurrentMap = new Map();
-            /*Engine.Cam.SetBoundaries(Rectangle.Empty);
-            Engine.Cam.Pos = Vector2.Zero;*/
+            /*Platformer.GameCam.SetBoundaries(Rectangle.Empty);
+            Platformer.GameCam.Pos = Vector2.Zero;*/
             Platformer.Player = null;
 
             LevelManager.NonRespawnEntityIIds.Clear();

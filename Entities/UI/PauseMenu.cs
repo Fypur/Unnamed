@@ -1,10 +1,6 @@
-﻿using Fiourp;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-
-namespace Unnamed
+﻿namespace Unnamed
 {
-    public class PauseMenu : UIElement
+    /*public class PauseMenu : UIElement
     {
         public PauseMenu()
             : base(Vector2.Zero, 1280, 720, Sprite.None)
@@ -80,18 +76,18 @@ namespace Unnamed
                     Engine.CurrentMap.Instantiate(new MainMenu());
                 }));*/
 
-                MakeList(elements, true);
+    /*MakeList(elements, true);
 
-                return elements;
-            }
+    return elements;
+}
 
-            public override void OnBack()
-            {
-                base.OnBack();
+public override void OnBack()
+{
+    base.OnBack();
 
-                Platformer.PauseMenu.RemoveChild(this);
-                Platformer.Unpause();
-            }
-        }
-    }
+    Platformer.PauseMenu.RemoveChild(this);
+    Platformer.Unpause();
+}
+}
+}*/
 }

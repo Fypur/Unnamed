@@ -1214,12 +1214,12 @@ namespace Unnamed
                 foreach (CameraLock camLock in Engine.CurrentMap.Data.GetEntities<CameraLock>())
                     if (camLock.Contains(this))
                     {
-                        Engine.Cam.NoBoundsPos = Engine.Cam.InBoundsPos(Pos, camLock.Bounds);
+                        Platformer.GameCam.Pos = Platformer.GameCam.InBoundsPos(Pos, camLock.Collider.Bounds);
                         changedCamPos = true;
                     }
 
                 if (!changedCamPos)
-                    Engine.Cam.CenteredPos = ExactPos;
+                    Platformer.GameCam.Pos = ExactPos;
 
                 foreach (CameraOffset camOffset in Engine.CurrentMap.Data.GetEntities<CameraOffset>())
                 {
@@ -1227,12 +1227,12 @@ namespace Unnamed
                     {
                         camOffset.OnTriggerEnter(this);
 
-                        //Engine.Cam.InBoundsOffset += camOffset.Offset;
+                        //Platformer.GameCam.InBoundsOffset += camOffset.Offset;
 
                     }
                 }
 
-                Platformer.GameCam.CenteredPos = Platformer.GameCam.InBoundsPos(Platformer.GameCam.InBoundsPos(Pos, Platformer.GameCam.Bounds) + Platformer.GameCam.BoundedOffset, Platformer.GameCam.Bounds);
+                Platformer.GameCam.Pos = Platformer.GameCam.InBoundsPos(Platformer.GameCam.InBoundsPos(Pos) + Platformer.GameCam.BoundedOffset, Platformer.GameCam.Bounds);
                 OnDeathTransition?.Invoke();
 
                 Active = true;
@@ -1281,7 +1281,7 @@ namespace Unnamed
 
             if (collided is GlassWall gl && gl.Break(this, Velocity, false))
             {
-                MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - previousExactPos.Y), new List<Entity>(Engine.CurrentMap.Data.Platforms), CollisionY);
+                MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - previousExactPos.Y), new List<Kinematic>(Solid.InstantiatedSolids), CollisionY);
                 return;
             }
 

@@ -22,18 +22,15 @@ namespace Unnamed
 
         public override void OnTriggerStay(Player player)
         {
-            Engine.Cam.Locked = true;
-            Engine.Cam.CenteredPos = Engine.Cam.FollowedPos(Platformer.Player, 4.5f, 4.5f, new Rectangle(new Vector2(-Engine.ScreenSize.X / 6, -Engine.ScreenSize.Y / 12).ToPoint(), new Vector2(Engine.ScreenSize.X / 3, Engine.ScreenSize.Y / 6).ToPoint()), Bounds);
+            Platformer.GameCam.Locked = true;
+            Platformer.GameCam.Pos = Platformer.GameCam.FollowedPos(4.5f, 4.5f, new Rectangle(new Vector2(-Engine.ScreenSize.X / 6, -Engine.ScreenSize.Y / 12).ToPoint(), new Vector2(Engine.ScreenSize.X / 3, Engine.ScreenSize.Y / 6).ToPoint()), Collider.Bounds);
         }
 
         public override void OnTriggerExit(Player player)
         {
             base.OnTriggerExit(player);
 
-            Engine.Cam.Locked = false;
+            Platformer.GameCam.Locked = false;
         }
-
-        public Vector2 LockedPos()
-            => Engine.Cam.FollowedPos(Platformer.Player, 4.5f, 4.5f, new Rectangle(new Vector2(-Engine.ScreenSize.X / 6, -Engine.ScreenSize.Y / 12).ToPoint(), new Vector2(Engine.ScreenSize.X / 3, Engine.ScreenSize.Y / 6).ToPoint()), Bounds);
     }
 }

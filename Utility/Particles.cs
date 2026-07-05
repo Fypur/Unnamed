@@ -103,7 +103,7 @@ namespace Unnamed
             Direction = 180,
             SpeedMin = 2,
             SpeedMax = 5,
-            CustomRender = (p) => Drawing.DrawCircle(p.Pos, p.Size.X / p.StartSize * p.StartSize * 4, 1, new Color(p.Color, 20), Color.Transparent),
+            CustomRender = (p) => Drawing.DrawCircle(p.Pos, p.Size / p.StartSize * p.StartSize * 4, 1, new Color(p.Color, 20), Color.Transparent),
         };
 
         public static readonly ParticleType Explosion = new ParticleType()
@@ -120,7 +120,7 @@ namespace Unnamed
             SpeedMin = 4,
             SpeedMax = 100,
             Acceleration = Vector2.UnitY * 10,
-            CustomRender = (p) => Drawing.DrawCircle(p.Pos, p.Size.X / p.StartSize * p.StartSize * 10, 1, new Color(p.Color, 13), Color.Transparent),
+            CustomRender = (p) => Drawing.DrawCircle(p.Pos, p.Size / p.StartSize * p.StartSize * 10, 1, new Color(p.Color, 13), Color.Transparent),
         };
 
         public static ParticleType Spark = new ParticleType()

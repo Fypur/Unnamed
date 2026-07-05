@@ -27,7 +27,8 @@ namespace Unnamed
 
         public override void Update()
         {
-            Move(Velocity * Engine.Deltatime, Collision, Collision);
+            MoveX(Velocity.X * Engine.Deltatime, (k) => Collision());
+            MoveY(Velocity.Y * Engine.Deltatime, (k) => Collision());
 
             base.Update();
 

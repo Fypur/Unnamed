@@ -1,11 +1,14 @@
 ﻿using Fiourp;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace Unnamed
 {
     public class GameCamera : Actor
     {
+        private Camera camera;
+
         public int ViewportWidth;
         public int ViewportHeight;
 
@@ -15,45 +18,60 @@ namespace Unnamed
         public Vector2 BoundedOffset;
         public bool Locked;
 
-        public Rectangle Bounds;
-        private Camera camera;
+        public Vector2 PreviousPos;
 
-        private bool moving;
+        public Rectangle Bounds;
+        public Rectangle StrictFollowBounds => new Rectangle(new Point(-Width / 2, -Height / 4), new Point(Width, Height / 2));
 
         public List<Solid> CameraSolids = new List<Solid>();
+
+        private bool moving;
 
         public Matrix ViewMatrix => camera.ViewMatrix;
         public Matrix InverseViewMatrix => camera.InverseViewMatrix;
 
         private AABBCollider aabbCollider => (AABBCollider)this.Collider;
+
         public Vector2 Size
         {
             get => new Vector2(Width, Height);
             set { Width = (int)value.X; Height = (int)value.Y; }
         }
-
         public Vector2 HalfSize => new Vector2(Width / 2, Height / 2);
 
 
         public GameCamera(Vector2 pos, int viewportWidth, int viewportHeight) : base(pos, new AABBCollider(Vector2.Zero, viewportWidth, viewportHeight), null)
         {
-            camera = new Camera(pos, 0f, Vector2.One);
+            ViewportWidth = viewportWidth;
+            ViewportHeight = viewportHeight;
+            Width = viewportWidth;
+            Height = viewportHeight;
+
+            camera = new Camera(pos, 0f, Vector2.One, Width, Height);
+            Engine.Cam = camera;
         }
 
         public override void LateUpdate()
         {
             base.LateUpdate();
 
+            PreviousPos = Pos;
+
             aabbCollider.Width = Width;
             aabbCollider.Height = Height;
             aabbCollider.LocalPos = -Size / 2;
 
-            camera.Pos = InBoundsPos(Pos + BoundedOffset, Bounds) + UnboundedOffset;
-            if (Engine.Player != null && FollowsPlayer && !Locked && (moveTimer == null || moveTimer.Value <= 0))
-            {
-                Follow(Engine.Player, 4, 4, StrictFollowBounds);
-            }
+            camera.ViewportWidth = Width;
+            camera.ViewportHeight = Height;
 
+            if (Platformer.Player != null && !Locked && !moving)
+                Follow(4, 4, StrictFollowBounds);
+            else
+            {
+                Vector2 aim = InBoundsPos(Pos + BoundedOffset, Bounds) + UnboundedOffset;
+                MoveX(aim.X - Pos.X);
+                MoveY(aim.Y - Pos.Y);
+            }
         }
 
         public void LightShake()
@@ -91,7 +109,7 @@ namespace Unnamed
         }
 
 
-        private Vector2 FollowedPos(float xSmooth, float ySmooth, Rectangle strictFollowBounds, Rectangle bounds)
+        public Vector2 FollowedPos(float xSmooth, float ySmooth, Rectangle strictFollowBounds, Rectangle bounds)
         {
             Player player = Platformer.Player;
 
@@ -104,15 +122,18 @@ namespace Unnamed
                     Engine.Deltatime * ySmooth * (strictFollowBounds.Contains(player.MiddlePos) ? 1 : 2.5f)));
         }
 
+        public void RemoveBoundaries()
+            => Bounds = Rectangle.Empty;
+
         public void SetBoundaries(Vector2 position, Vector2 size)
             => Bounds = new Rectangle(position.ToPoint(), size.ToPoint());
 
         public Vector2 InBoundsPos(Vector2 position)
             => InBoundsPos(position, Bounds);
 
-        private Vector2 InBoundsPos(Vector2 position, Rectangle bounds)
+        public Vector2 InBoundsPos(Vector2 position, Rectangle bounds)
         {
-            if (BoundsContainsWholeCameraAtPosition(position) || Bounds == Rectangle.Empty)
+            if (Bounds == Rectangle.Empty || BoundsContainsWholeCameraAtPosition(position))
                 return position;
 
             float InBoundsPosAlongAxis(float x, float width, float boundsX, float boundsWidth)
@@ -137,5 +158,30 @@ namespace Unnamed
 
         private bool BoundsContainsWholeCameraAtPosition(Vector2 position)
             => Bounds.Contains(position - HalfSize) && Bounds.Contains(position + HalfSize);
+
+        public void Move(Vector2 offset, float time, Func<float, float> easingFunction = null, Func<bool> stop = null)
+        {
+            Vector2 initPos = Pos;
+            Vector2 newPos = Pos + offset;
+
+            moving = true;
+            AddComponent(new Timer(time, (t) =>
+            {
+                if (stop != null && stop.Invoke())
+                {
+                    RemoveComponent(t);
+                    return;
+                }
+
+                Pos = Vector2.Lerp(initPos, newPos, (easingFunction ?? Ease.None).Invoke(Ease.Reverse(t.Value / t.MaxValue)));
+
+            },
+
+                () =>
+                {
+                    Pos = newPos;
+                    moving = false;
+                }));
+        }
     }
 }

@@ -7,7 +7,6 @@ namespace Unnamed
     {
         private float acceleration = 6f;
         private float maxSpeed = 150f;
-        public float Rotation = 0;
 
         private Player player;
         private Boss3 boss;
@@ -64,7 +63,8 @@ namespace Unnamed
             base.Update();
 
 
-            Move(Velocity * Engine.Deltatime, SelfDestroy, SelfDestroy);
+            MoveX(Velocity.X * Engine.Deltatime, (k) => SelfDestroy());
+            MoveY(Velocity.Y * Engine.Deltatime, (k) => SelfDestroy());
 
             trail.LocalPosition = (colliderRotated.WorldVertices[3] + colliderRotated.WorldVertices[0]) / 2;
             trail.LocalPosition += (MiddlePos - trail.LocalPosition) / 3 - Pos;

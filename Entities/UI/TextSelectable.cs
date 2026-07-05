@@ -1,10 +1,6 @@
-﻿using Fiourp;
-using Microsoft.Xna.Framework;
-using System;
-
-namespace Unnamed
+﻿namespace Unnamed
 {
-    public class TextSelectable : Button
+    /*public class TextSelectable : Button
     {
         public TextBox Text;
         public TextSelectable(string text, string fontID, Vector2 position, int width, int height, float fontSize, Color color, bool centered = false, TextBox.Alignement alignement = TextBox.Alignement.Center, Action onPressed = null) : base(position, width, height, centered, null, onPressed)
@@ -38,5 +34,5 @@ namespace Unnamed
             base.OnRemoveSelectable();
             Text.Color = Color.Gray;
         }
-    }
+    }*/
 }

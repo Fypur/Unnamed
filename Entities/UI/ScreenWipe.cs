@@ -4,16 +4,20 @@ using System;
 
 namespace Unnamed
 {
-    public class ScreenWipe : UIElement
+    public class ScreenWipe : Entity
     {
         private float wipeTime;
         private Action onTransition;
         private Action onThreeFourths;
         private Action onEnd;
 
+        private Sprite sprite;
 
-        public ScreenWipe(float wipeTime, Color color, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : base(new Vector2(1280, 0), 1280, 720, new Sprite(color))
+        public ScreenWipe(float wipeTime, Color color, Action onTransition = null, Action onThreeFourths = null, Action onEnd = null) : base(new Vector2(1280, 0))
         {
+            sprite = (Sprite)AddComponent(new Sprite(color));
+            sprite.DesinationRectangle = new Rectangle((int)Pos.X, (int)Pos.Y, 1280, 720);
+
             this.wipeTime = wipeTime;
             this.onTransition = onTransition;
             this.onThreeFourths = onThreeFourths;
@@ -24,7 +28,7 @@ namespace Unnamed
         {
             base.Awake();
 
-            Overlay = true;
+            //Overlay = true;
             Vector2 initPos = Pos;
             Vector2 endPos = Pos - Engine.ScreenSize.OnlyX() * 2;
 
@@ -33,10 +37,12 @@ namespace Unnamed
                 float reversed = Ease.Reverse(timer.Value / wipeTime, 0.5f);
                 float eased = Ease.CubeInAndOut(reversed);
                 Pos = Vector2.Lerp(initPos, endPos, eased);
+                sprite.DesinationRectangle = new Rectangle((int)Pos.X, (int)Pos.Y, 1280, 720);
             },
             () =>
             {
                 Pos = Vector2.Lerp(initPos, endPos, 0.5f);
+                sprite.DesinationRectangle = new Rectangle((int)Pos.X, (int)Pos.Y, 1280, 720);
 
                 AddComponent(new Coroutine(Coroutine.WaitFramesThen(1, () =>
                 {

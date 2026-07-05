@@ -4,7 +4,7 @@ using System;
 
 namespace Unnamed
 {
-    public class Wipe : Entity
+    public class Wipe : Tile
     {
         public float Progress;
         public Vector2 initPos;

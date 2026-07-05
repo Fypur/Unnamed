@@ -29,7 +29,7 @@ namespace Unnamed
             Level oldLevel = LevelManager.CurrentLevel;
             SwingingPoint.SwingingPoints.Clear();
 
-            Platformer.GameCam.SetBoundaries(Rectangle.Empty);
+            Platformer.GameCam.RemoveBoundaries();
 
             for (int i = Light.AllLights.Count - 1; i >= 0; i--)
                 Light.AllLights[i].Visible = false;
@@ -43,7 +43,7 @@ namespace Unnamed
             if (size.Y == 184)
                 size.Y = 180;
 
-            Platformer.GameCam.Move(Platformer.GameCam.InBoundsPos(player.Pos, new Rectangle(ToLevel.Pos.ToPoint(), size.ToPoint())) - Platformer.GameCam.CenteredPos, transitionTime, Ease.CubeInAndOut, () => Engine.CurrentMap.Data.GetEntity<MainMenu>() != null);
+            Platformer.GameCam.Move(Platformer.GameCam.InBoundsPos(player.Pos, new Rectangle(ToLevel.Pos.ToPoint(), size.ToPoint())) - Platformer.GameCam.Pos, transitionTime, Ease.CubeInAndOut, null);
 
             switch (Direction)
             {

@@ -50,14 +50,14 @@ namespace Unnamed
             switch (pointingTowards)
             {
                 case Direction.Left:
-                    hPos = Size.OnlyX() / 2;
+                    hPos = new Vector2(Width / 2, 0);
                     hWidth /= 2;
                     break;
                 case Direction.Right:
                     hWidth /= 2;
                     break;
                 case Direction.Up:
-                    hPos = Size.OnlyY() / 2;
+                    hPos = new Vector2(0, Height / 2);
                     hHeight /= 2;
                     break;
                 case Direction.Down:
@@ -65,7 +65,7 @@ namespace Unnamed
                     break;
             }
 
-            HurtBox h = new HurtBox(hPos, hWidth, hHeight);
+            HurtBox h = new HurtBox(new AABBCollider(hPos, hWidth, hHeight));
             h.DeathConditions = Conditions;
             AddComponent(h);
         }

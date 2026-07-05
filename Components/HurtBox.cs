@@ -17,6 +17,18 @@ namespace Unnamed
             InstaDeath = instaDeath;
         }
 
+        public override void Added()
+        {
+            base.Added();
+            ParentEntity.AddComponent(Collider);
+        }
+
+        public override void Removed()
+        {
+            base.Removed();
+            ParentEntity.RemoveComponent(Collider);
+        }
+
         public override void Update()
         {
             base.Update();

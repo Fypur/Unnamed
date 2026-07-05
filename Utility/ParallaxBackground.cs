@@ -32,7 +32,7 @@ namespace Unnamed
         {
             base.LateUpdate();
 
-            Vector2 move = Platformer.GameCam.PreviousPos - Platformer.GameCam.WholePos;// - Vector2.UnitX * (Engine.Cam.Size - OldCamSize);
+            Vector2 move = Platformer.GameCam.PreviousPos - Platformer.GameCam.Pos;// - Vector2.UnitX * (Platformer.GameCam.Size - OldCamSize);
 
             for (int i = 0; i < Tiles.Length; i++)
             {

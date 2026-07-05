@@ -403,8 +403,8 @@ namespace Unnamed
                 }
             }
 
-            foreach (LDtkTypes.ChapterTransition p in level.GetEntities<LDtkTypes.ChapterTransition>())
-                entities.Add(new ChapterTransition(p.Position, p.Size, p.ToLevel));
+            /*foreach (LDtkTypes.ChapterTransition p in level.GetEntities<LDtkTypes.ChapterTransition>())
+                entities.Add(new ChapterTransition(p.Position, p.Size, p.ToLevel));*/
 
             bool downNeighbours = false;
             List<Rectangle> downNeighboursRect = new();
@@ -644,7 +644,7 @@ namespace Unnamed
             }
 
             if (!downNeighbours)
-                entities.Add(new DeathTrigger(level.Position.ToVector2() + new Vector2(0, level.Size.Y + 10), new Vector2(level.Size.X, intGrid.TileSize), true));
+                entities.Add(new DeathTrigger(level.Position.ToVector2() + new Vector2(0, level.Size.Y + 10), new HurtBox(new AABBCollider(Vector2.Zero, level.Size.X, intGrid.TileSize), true)));
             else
             {
                 bool inside = false;
@@ -676,7 +676,7 @@ namespace Unnamed
                         if (minX == int.MaxValue)
                             minX = level.Position.X + level.PxWid;
 
-                        entities.Add(new DeathTrigger(new Vector2(x, level.Position.Y + level.Size.Y + 10), new Vector2(minX - x, intGrid.TileSize), true));
+                        entities.Add(new DeathTrigger(new Vector2(x, level.Position.Y + level.Size.Y + 10), new HurtBox(new AABBCollider(Vector2.Zero, minX - x, intGrid.TileSize), true)));
                         x = minX + r.Width;
                     }
 

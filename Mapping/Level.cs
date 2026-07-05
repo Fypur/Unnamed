@@ -7,8 +7,6 @@ namespace Unnamed
 {
     public class Level
     {
-        public readonly Map ParentMap;
-
         public Vector2 Pos;
         public Vector2 Size;
         public List<Entity> EntityData;
@@ -30,7 +28,7 @@ namespace Unnamed
         {
             EnterAction?.Invoke();
             foreach (Entity entity in EntityData)
-                ParentMap.Instantiate(entity);
+                Engine.CurrentMap.Instantiate(entity);
 
         }
 
@@ -38,7 +36,7 @@ namespace Unnamed
         {
             for (int i = EntityData.Count - 1; i >= 0; i--)
             {
-                ParentMap.Destroy(EntityData[i]);
+                Engine.CurrentMap.Destroy(EntityData[i]);
             }
         }
 

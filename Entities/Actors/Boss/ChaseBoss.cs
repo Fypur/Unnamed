@@ -677,7 +677,7 @@ namespace Unnamed
 
             yield return new Coroutine.WaitForSeconds(1.5f);
 
-            /*TextBox s = (TextBox)AddChild(new TextBox("Jetpack has been lost", "LexendDeca", Engine.Cam.Pos + Engine.Cam.Size / 2, 800, 20, 1, Color.Transparent, true, TextBox.Alignement.Center));
+            /*TextBox s = (TextBox)AddChild(new TextBox("Jetpack has been lost", "LexendDeca", Platformer.GameCam.Pos + Platformer.GameCam.Size / 2, 800, 20, 1, Color.Transparent, true, TextBox.Alignement.Center));
 
             LevelManager.NonRespawnEntityIIds.Add(iid);
 
