@@ -262,7 +262,7 @@ namespace Unnamed
 
             PrevVelocity = Velocity;
 
-            wallJumpableKinematics = new List<Kinematic>(Solid.InstantiatedSolids);
+            wallJumpableKinematics = new List<Kinematic>(ParentMap.NonActorKinematics);
             wallJumpableKinematics.RemoveAll((k) => k is JumpThru);
 
             onGround = CollisionCheck(Pos + new Vector2(0, 1), true, out Kinematic onGroundEntity);
@@ -537,7 +537,7 @@ namespace Unnamed
             //Debug.LogUpdate("Player Health : " + Health);
 
             MoveX(Velocity.X * Engine.Deltatime, CollisionX);
-            MoveY(Velocity.Y * Engine.Deltatime, new List<Kinematic>(Solid.InstantiatedSolids), CollisionY);
+            MoveY(Velocity.Y * Engine.Deltatime, new List<Kinematic>(ParentMap.NonActorKinematics), CollisionY);
 
             if (!couldMove)
                 Input.OldState = canMoveState;
@@ -1281,7 +1281,7 @@ namespace Unnamed
 
             if (collided is GlassWall gl && gl.Break(this, Velocity, false))
             {
-                MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - previousExactPos.Y), new List<Kinematic>(Solid.InstantiatedSolids), CollisionY);
+                MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - previousExactPos.Y), new List<Kinematic>(ParentMap.NonActorKinematics), CollisionY);
                 return;
             }
 
@@ -1306,7 +1306,7 @@ namespace Unnamed
                 if (offset != 0 && !grid.Collider.Contains(Pos - Vector2.UnitY + new Vector2(offset, 0)))
                 {
                     Pos.X += offset;
-                    MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - previousExactPos.Y), new List<Kinematic>(Solid.InstantiatedSolids), CollisionY);
+                    MoveY(Velocity.Y * Engine.Deltatime - (ExactPos.Y - previousExactPos.Y), new List<Kinematic>(ParentMap.NonActorKinematics), CollisionY);
                     return;
                 }
             }
@@ -1319,7 +1319,7 @@ namespace Unnamed
         private bool CollisionCheck(Vector2 position, bool platforms, out Kinematic groundedEntity)
         {
             if (platforms)
-                return CollideAt(new List<Kinematic>(Solid.InstantiatedSolids), position, out groundedEntity) && groundedEntity is not InvisibleWall;
+                return CollideAt(new List<Kinematic>(ParentMap.NonActorKinematics), position, out groundedEntity) && groundedEntity is not InvisibleWall;
             else
                 return CollideAt(wallJumpableKinematics, position, out groundedEntity) && groundedEntity is not InvisibleWall;
         }

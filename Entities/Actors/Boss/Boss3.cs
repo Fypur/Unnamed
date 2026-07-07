@@ -501,7 +501,7 @@ namespace Unnamed
                     AddComponent(new Timer(0.5f, (timer) => l.Thickness = (int)(orig * timer.Value / timer.MaxValue), () => RemoveComponent(l)));
                 }
 
-                RemoveAllComponents<Coroutine>();
+                RemoveAllComponentsOfType<Coroutine>();
                 AddComponent(new Coroutine(Hit2()));
             }
 

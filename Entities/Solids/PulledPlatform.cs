@@ -32,12 +32,12 @@ namespace Unnamed
             Vector2 newPos = PulledPos;
             AddComponent(new Timer(1f, (timer) =>
             {
-                MoveTo(Vector2.Lerp(initPos, newPos,
-                     (EasingFunction ?? Ease.CubeInAndOut).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
+                Move(Vector2.Lerp(initPos, newPos,
+                     (EasingFunction ?? Ease.CubeInAndOut).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))) - ExactPos);
             },
             () =>
             {
-                MoveTo(newPos);
+                Move(newPos - ExactPos);
                 AddComponent(new Timer(PulledOutTime, null, () => Unpull(Ease.CubeInAndOut), false));
             }));
         }
@@ -48,9 +48,9 @@ namespace Unnamed
             Vector2 newPos = originalPos;
             AddComponent(new Timer(1f, (timer) =>
             {
-                MoveTo(Vector2.Lerp(initPos, newPos,
-                         (easingFunction ?? DefaultEasing).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))));
-            }, () => { MoveTo(originalPos); }));
+                Move(Vector2.Lerp(initPos, newPos,
+                         (easingFunction ?? DefaultEasing).Invoke(Ease.Reverse(timer.Value / timer.MaxValue))) - ExactPos);
+            }, () => { Move(originalPos - ExactPos); }));
         }
 
         public override void Render()

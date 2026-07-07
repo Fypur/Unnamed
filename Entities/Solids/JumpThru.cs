@@ -38,12 +38,12 @@ namespace Unnamed
             }
 
             bool onWallRight = false, onWallLeft = false;
-            if (Engine.CurrentMap.Data.EntitiesByType.TryGetValue(typeof(Grid), out List<Entity> grids))
-                foreach (Grid grid in grids)
-                {
-                    if (grid.Collider.Contains(Pos - Vector2.UnitX)) onWallLeft = true;
-                    if (grid.Collider.Contains(Pos + new Vector2(AABBCollider.Width, 0) + Vector2.UnitX)) onWallRight = true;
-                }
+
+            foreach (Grid grid in Engine.CurrentMap.Data.GetEntities<Grid>())
+            {
+                if (grid.Collider.Contains(Pos - Vector2.UnitX)) onWallLeft = true;
+                if (grid.Collider.Contains(Pos + new Vector2(AABBCollider.Width, 0) + Vector2.UnitX)) onWallRight = true;
+            }
 
             Sprite.NineSliceSettings = new NineSliceRandom((int)(Pos.X + Pos.Y))
             {

@@ -49,7 +49,7 @@ namespace Unnamed
                 Platformer.Player.Damage();
                 Explode();
             }
-            else if (CollideAt(new List<Kinematic>(Solid.InstantiatedSolids), Pos))
+            else if (CollideAt(new List<Kinematic>(ParentMap.NonActorKinematics), Pos))
                 Explode();
         }
 

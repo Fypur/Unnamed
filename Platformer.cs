@@ -440,11 +440,12 @@ namespace Unnamed
 
             LevelManager.LoadWorldGrid(World, worldDepth);
             LevelManager.CurrentLevel.Load();
+            GameCam.SetBoundaries(LevelManager.CurrentLevel.Pos, LevelManager.CurrentLevel.Size);
 
             Vector2 groundedRespawnPos = Player.RespawnPoint;
             bool found = false;
             for (int i = 0; i < 100; i++)
-                if (!Player.CollideAt(new List<Kinematic>(Solid.InstantiatedSolids), groundedRespawnPos + new Vector2(0, 1)))
+                if (!Player.CollideAt(new List<Kinematic>(Engine.CurrentMap.NonActorKinematics), groundedRespawnPos + new Vector2(0, 1)))
                     groundedRespawnPos += new Vector2(0, 1);
                 else
                 {
@@ -489,9 +490,12 @@ namespace Unnamed
 
         public static void EndGame()
         {
-            List<Entity> l = new(Engine.CurrentMap.Data.Entities);
+            List<Entity> l = new(Engine.CurrentMap.Data.Entities.Items);
+
             foreach (Entity entity in l)
                 entity.OnDestroy();
+
+            Engine.CurrentMap.Data.Entities.ProcessChanges();
 
             Engine.CurrentMap.Data = new MapData(); //Need to clear mapdata so that this update cycle is not finished
 
@@ -624,7 +628,7 @@ namespace Unnamed
                 LDtkLevel lvl = World.LoadLevel(LevelManager.LastLDtkLevel.Iid);
                 LevelManager.GetLevel(lvl).Load();
 
-                Engine.CurrentMap.Data.EntitiesByType[typeof(Grid)][0].SelfDestroy();
+                Engine.CurrentMap.Data.GetEntity<Grid>().SelfDestroy();
                 LevelManager.LoadWorldGrid(World, lvl.WorldDepth);
 
                 if (Platformer.Player != null)

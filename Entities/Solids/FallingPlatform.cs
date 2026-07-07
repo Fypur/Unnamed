@@ -42,7 +42,7 @@ namespace Unnamed
 
             HasFallen = true;
             trig.Active = false;
-            AddComponent(new Shaker(shakeTime, 1.2f, null, Sprite));
+            AddComponent(new Shaker(shakeTime, 1.2f, Sprite));
             AddComponent(new Timer(shakeTime, null, () =>
             {
                 gravityScale = constGravityScale;
@@ -69,7 +69,7 @@ namespace Unnamed
 
         public override void Update()
         {
-            if (!CollideAt(new List<Kinematic>(InstantiatedSolids), Pos + new Vector2(0, 1)))
+            if (!CollideAt(new List<Kinematic>(ParentMap.NonActorKinematics), Pos + new Vector2(0, 1)))
                 Velocity.Y += 9.81f * gravityScale;
 
             Action onCollision;
@@ -87,7 +87,7 @@ namespace Unnamed
             else
             {
                 onCollision = null;
-                if (!previousOnGround && CollideAt(new List<Kinematic>(InstantiatedSolids), Pos + new Vector2(0, 1)))
+                if (!previousOnGround && CollideAt(new List<Kinematic>(ParentMap.NonActorKinematics), Pos + new Vector2(0, 1)))
                     HasFallenOnGround = true;
             }
 
@@ -96,7 +96,7 @@ namespace Unnamed
 
             if (HasFallenOnGround)
             {
-                previousOnGround = CollideAt(new List<Kinematic>(InstantiatedSolids), Pos + new Vector2(0, 1));
+                previousOnGround = CollideAt(new List<Kinematic>(ParentMap.NonActorKinematics), Pos + new Vector2(0, 1));
             }
 
             base.Update();

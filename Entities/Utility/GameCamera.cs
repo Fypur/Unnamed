@@ -69,9 +69,11 @@ namespace Unnamed
             else
             {
                 Vector2 aim = InBoundsPos(Pos + BoundedOffset, Bounds) + UnboundedOffset;
-                MoveX(aim.X - Pos.X);
-                MoveY(aim.Y - Pos.Y);
+                MoveX(aim.X - ExactPos.X);
+                MoveY(aim.Y - ExactPos.Y);
             }
+
+            camera.Pos = InBoundsPos(Pos + BoundedOffset) + UnboundedOffset;
         }
 
         public void LightShake()
@@ -82,30 +84,19 @@ namespace Unnamed
             Shaker shaker = GetComponent<Shaker>();
             if (shaker == null || time > shaker.Time || intensity > shaker.Intensity)
             {
-                RemoveComponent(shaker);
-                AddComponent(new Shaker(time, intensity, () => Pos));
+                if (shaker != null)
+                    RemoveComponent(shaker);
+                AddComponent(new Shaker(time, intensity));
             }
         }
 
         public void Follow(float xSmooth, float ySmooth, Rectangle strictFollowBounds)
         {
-            Vector2 amount = FollowedPos(xSmooth, ySmooth, strictFollowBounds, Bounds) - Pos;
+            Vector2 amount = FollowedPos(xSmooth, ySmooth, strictFollowBounds, Bounds) - ExactPos;
             Vector2 previous = ExactPos;
 
-            //Debug.LogUpdate(FollowedPos(actor, xSmooth, ySmooth, strictFollowBounds, Bounds));
-            //if(Math.Abs(amount.X) >= 0.1f)
             MoveX(amount.X, new List<Kinematic>(CameraSolids), null);
-            //if (Math.Abs(amount.Y) >= 0.1f)
             MoveY(amount.Y, new List<Kinematic>(CameraSolids), null);
-
-            /*if (HasComponent<Shaker>())
-            {
-                //ExactPos = previous;
-                shakerInitPos += ExactPos - previous;
-            }*/
-
-            if (!Bounds.Contains(Pos + Vector2.One) || !Bounds.Contains(Pos + Size - Vector2.One))
-                Pos = FollowedPos(xSmooth, ySmooth, strictFollowBounds, Bounds);
         }
 
 
@@ -113,12 +104,16 @@ namespace Unnamed
         {
             Player player = Platformer.Player;
 
-            strictFollowBounds.Location += Pos.ToPoint();
+            strictFollowBounds.Location += ExactPos.ToPoint();
             Vector2 inBoundsActorPos = InBoundsPos(InBoundsPos(player.MiddlePos, bounds) + BoundedOffset, bounds);
 
+            if (Vector2.DistanceSquared(ExactPos, inBoundsActorPos) < 1)
+                return inBoundsActorPos;
+
+            Debug.LogUpdate(inBoundsActorPos);
             return new Vector2(
-                MathHelper.Lerp(Pos.X, inBoundsActorPos.X, Engine.Deltatime * xSmooth),
-                MathHelper.Lerp(Pos.Y, inBoundsActorPos.Y,
+                MathHelper.Lerp(ExactPos.X, inBoundsActorPos.X, Engine.Deltatime * xSmooth),
+                MathHelper.Lerp(ExactPos.Y, inBoundsActorPos.Y,
                     Engine.Deltatime * ySmooth * (strictFollowBounds.Contains(player.MiddlePos) ? 1 : 2.5f)));
         }
 
@@ -158,6 +153,14 @@ namespace Unnamed
 
         private bool BoundsContainsWholeCameraAtPosition(Vector2 position)
             => Bounds.Contains(position - HalfSize) && Bounds.Contains(position + HalfSize);
+
+        public override Vector2 Move(Vector2 moveAmount)
+        {
+            List<Kinematic> kCameraSolids = new List<Kinematic>(CameraSolids);
+            float xMoved = MoveX(moveAmount.X, kCameraSolids, null);
+            float yMoved = MoveY(moveAmount.Y, kCameraSolids, null);
+            return new Vector2(xMoved, yMoved);
+        }
 
         public void Move(Vector2 offset, float time, Func<float, float> easingFunction = null, Func<bool> stop = null)
         {

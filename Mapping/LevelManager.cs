@@ -137,7 +137,7 @@ namespace Unnamed
             foreach (LDtkTypes.Collectable p in level.GetEntities<LDtkTypes.Collectable>())
                 if ((!NonRespawnEntityIIds.Contains(p.Iid))
                     && (!Engine.CurrentMap.Data.EntitiesByType.ContainsKey(typeof(RAM)) ||
-                    Engine.CurrentMap.Data.EntitiesByType[typeof(RAM)].TrueForAll((collected) => ((RAM)collected).iid != p.Iid)))
+                    Engine.CurrentMap.Data.GetEntities<RAM>().TrueForAll((collected) => ((RAM)collected).iid != p.Iid)))
                     entities.Add(new RAM(p.Position, p.Iid));
 
             foreach (LDtkTypes.HangingWire p in level.GetEntities<LDtkTypes.HangingWire>())
@@ -313,7 +313,7 @@ namespace Unnamed
                         {
                             var s = Engine.CurrentMap.Data.GetEntity<SwingTriggered>();
 
-                            s.AddComponent(new Shaker(0.4f, 4, null, s.Sprite));
+                            s.AddComponent(new Shaker(0.4f, 4, s.Sprite));
                             s.GravityScale = 0.7f;
                             s.Attached = false;
                         };

@@ -25,7 +25,7 @@ namespace Unnamed
             if (Drawing.GetCurrentPixelShader() != null)
                 Drawing.SwitchPixelShader(null);
 
-            Vector2 startPos = (Platformer.GameCam.Pos - Pos) / GridCollider.GridSize;
+            Vector2 startPos = (Platformer.GameCam.Pos - Platformer.GameCam.HalfSize - Pos) / GridCollider.GridSize;
 
             if (startPos.X > this.GridCollider.Width || startPos.Y > this.GridCollider.Height || startPos.X + Platformer.GameCam.Width < 0 || startPos.Y + Platformer.GameCam.Height < 0)
                 return;
