@@ -35,9 +35,7 @@ namespace Unnamed
         public void Unload()
         {
             for (int i = EntityData.Count - 1; i >= 0; i--)
-            {
                 Engine.CurrentMap.Destroy(EntityData[i]);
-            }
         }
 
         public void DestroyOnUnload(Entity entity)

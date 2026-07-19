@@ -228537,6 +228537,22 @@
 								],
 								"__worldX": 936,
 								"__worldY": 40
+							},
+							{
+								"__identifier": "DeathTrigger",
+								"__grid": [21,3],
+								"__pivot": [0,0],
+								"__tags": ["Trigger"],
+								"__tile": null,
+								"__smartColor": "#FF0404",
+								"iid": "e05bfb10-6fc0-11f1-af9a-bbe1282fa7de",
+								"width": 48,
+								"height": 32,
+								"defUid": 29,
+								"px": [168,24],
+								"fieldInstances": [{ "__identifier": "InstaDeath", "__type": "Bool", "__value": false, "__tile": null, "defUid": 1490, "realEditorValues": [] }],
+								"__worldX": 168,
+								"__worldY": 24
 							}
 						]
 					},

@@ -33,7 +33,7 @@ namespace Unnamed
         {
             base.Update();
 
-            if (Collider.Collide(Platformer.Player.Collider) && !Platformer.Player.Is(Player.States.Dead) && !DeathConditions(Platformer.Player))
+            if (Collider.Collide(Platformer.Player.Collider) && !Platformer.Player.Is(Player.States.Dead) && DeathConditions(Platformer.Player))
             {
                 if (InstaDeath)
                     Platformer.Player.InstaDeath();

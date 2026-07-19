@@ -951,7 +951,8 @@ namespace Unnamed
         public static void ReloadLastLevelFetched()
         {
             CurrentLevel.Unload();
-            GetLevel(LastLDtkLevel).Load();
+            CurrentLevel = GetLevel(LastLDtkLevel);
+            CurrentLevel.Load();
         }
 
         private static int Width(this ILDtkEntity entity)
