@@ -60,8 +60,9 @@ namespace Unnamed
                 }
 
                 RemoveComponent(Sprite);
-                AddComponent(new Sprite(Color.Gray, new Rectangle(Pos.ToPoint() + spritePos, spriteSize), 0.5f));
-                AddComponent(Sprite);
+                AddComponent(Sprite = new Sprite(Color.Gray));
+                Sprite.DesinationRectangle = new Rectangle(Pos.ToPoint() + spritePos, spriteSize);
+                Sprite.LayerDepth = 0;
             }
 
             //text = new TextBox(BreakVelocity.ToString(), "Pixel", Pos + AABBCollider.HalfSize, width, height, 1, DestroyableColor, true, TextBox.Alignement.Center);

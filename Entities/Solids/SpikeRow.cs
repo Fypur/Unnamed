@@ -9,17 +9,18 @@ namespace Unnamed
         public int Height;
 
         public const int defaultSize = 8;
-        public Direction Direction;
+        private Direction pointingTowards;
+        private Vector2 move;
+        private int spikeNb;
+        private float rotation;
 
         public SpikeRow(Vector2 position, Direction direction, int length, Direction pointingTowards)
             : base(GetBaseParameter(direction, length, position, out int width, out int height))
         {
             Width = width;
             Height = height;
-
-            int spikeNb = length / Spike.DefaultSize;
-            Vector2 move = Vector2.Zero;
-            Direction = pointingTowards;
+            spikeNb = length / Spike.DefaultSize;
+            this.pointingTowards = pointingTowards;
 
             switch (direction)
             {
@@ -35,13 +36,6 @@ namespace Unnamed
                 case Direction.Right:
                     move = new Vector2(Spike.DefaultSize, 0);
                     break;
-            }
-
-            for (int i = 0; i < spikeNb; i++)
-            {
-                Spike s = new Spike(position + move * i, pointingTowards);
-                AddChild(s);
-                s.Active = false;
             }
 
             Vector2 hPos = Vector2.Zero;
@@ -68,6 +62,8 @@ namespace Unnamed
             HurtBox h = new HurtBox(new AABBCollider(hPos, hWidth, hHeight));
             h.DeathConditions = Conditions;
             AddComponent(h);
+
+            rotation = MathHelper.ToRadians(Spike.GetRotation(pointingTowards));
         }
 
         public static Vector2 GetBaseParameter(Direction direction, int length, Vector2 position, out int width, out int height)
@@ -83,13 +79,23 @@ namespace Unnamed
             return position;
         }
 
+        public override void Render()
+        {
+            base.Render();
+
+            for (int i = 0; i < spikeNb; i++)
+            {
+                Drawing.Draw(Spike.Texture, Pos + move * i + new Vector2(Spike.Texture.Width, Spike.Texture.Height) / 2, null, Color.White, rotation, new Vector2(Spike.Texture.Width, Spike.Texture.Height) / 2, Vector2.One);
+            }
+        }
+
         private bool Conditions(Player player)
         {
-            if (Direction == Direction.Up)
+            if (pointingTowards == Direction.Up)
                 return player.Velocity.Y >= 0;
-            else if (Direction == Direction.Down)
+            else if (pointingTowards == Direction.Down)
                 return player.Velocity.Y <= 0;
-            else if (Direction == Direction.Left)
+            else if (pointingTowards == Direction.Left)
                 return player.Velocity.X >= 0;
             else
                 return player.Velocity.X <= 0;

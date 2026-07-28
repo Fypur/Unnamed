@@ -26,13 +26,20 @@ namespace Unnamed
         public FallingPlatform(Vector2 position, int width, int height, bool respawning, NineSlice nineSlice)
             : base(position, new AABBCollider(Vector2.Zero, width, height), new Sprite())
         {
-            trig = new SpecialTrigger(-Vector2.UnitY, width, 1, null);
+            trig = new SpecialTrigger(position - Vector2.UnitY, width, 1, null);
             trig.OnTriggerEnterAction = (entity) => { Fall(); trig.Active = false; };
 
             Sprite.NineSliceSettings = nineSlice;
             Dust.Acceleration = -Vector2.UnitY * 100;
             initPos = Pos;
             Respawning = respawning;
+        }
+
+        public override void Awake()
+        {
+            base.Awake();
+
+            Engine.CurrentMap.Instantiate(trig);
         }
 
         public void Fall()
@@ -106,6 +113,7 @@ namespace Unnamed
         {
             base.OnDestroy();
 
+            Engine.CurrentMap.Destroy(trig);
             if (wipe != null)
                 Engine.CurrentMap.Destroy(wipe);
         }

@@ -43,9 +43,6 @@ namespace Unnamed
                         Tiles[y, x].Draw(pos);
                     if (Debug.DebugMode && GridCollider.GridLayout[y, x])
                         Drawing.DrawEdge(new Rectangle(pos.ToPoint(), new Point(GridCollider.TileWidth, GridCollider.TileHeight)), 1, Color.Blue);
-                    /*if (Organisation[y, x] != 0 && (Tiles[y, x] == null || Tiles[y, x] == Sprite.None))
-                        Debug.LogUpdate(Organisation[y, x], Tiles[y, x], pos);
-                    */
                 }
             }
         }

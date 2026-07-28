@@ -8,12 +8,12 @@ namespace Unnamed
     {
         public const int DefaultSize = 8;
         private Direction direction;
-        private static Texture2D texture = DataManager.GetTexture("Objects/Decals").CropTo(new Vector2(32, 56), new Vector2(8));
+        public static Texture2D Texture = DataManager.GetTexture("Objects/Decals").CropTo(new Vector2(32, 56), new Vector2(8));
 
         public Spike(Vector2 position, Direction direction)
             : base(position)
         {
-            Sprite sprite = (Sprite)AddComponent(new Sprite(texture));
+            Sprite sprite = (Sprite)AddComponent(new Sprite(Texture));
 
             this.direction = direction;
             float rotation = MathHelper.ToRadians(GetRotation(direction));
@@ -44,7 +44,6 @@ namespace Unnamed
 
             sprite.Rotation = rotation;
             sprite.Origin = new Vector2(width, height) / 2;
-            sprite.Centered = true;
         }
 
         private bool Conditions(Player player)
@@ -59,7 +58,7 @@ namespace Unnamed
                 return player.Velocity.X <= 0;
         }
 
-        private static float GetRotation(Direction direction)
+        public static float GetRotation(Direction direction)
         {
             switch (direction)
             {

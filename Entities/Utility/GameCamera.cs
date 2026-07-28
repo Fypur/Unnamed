@@ -69,8 +69,8 @@ namespace Unnamed
             else
             {
                 Vector2 aim = InBoundsPos(Pos + BoundedOffset, Bounds) + UnboundedOffset;
-                MoveX(aim.X - ExactPos.X);
-                MoveY(aim.Y - ExactPos.Y);
+                /*MoveX(aim.X - ExactPos.X);
+                MoveY(aim.Y - ExactPos.Y);*/
             }
 
             camera.Pos = InBoundsPos(Pos + BoundedOffset) + UnboundedOffset;

@@ -89,8 +89,8 @@ namespace Unnamed
             BloomFilter.BloomPreset = BloomFilter.BloomPresets.SuperWide;
 
 #if DEBUG
-            InitLevel = "Lvl82";
-            InitWorld = 3;
+            InitLevel = "Lvl3";
+            InitWorld = 0;
             WorldsUnlocked = 3;
             StartGame();
 

@@ -30,7 +30,6 @@ namespace Unnamed
 
             if (turnOffRect is Rectangle r)
             {
-                //TriggerComponent trig = (TriggerComponent)AddComponent(new TriggerComponent(r.Location.ToVector2() - Pos, r.Width, r.Height, new List<Type>() { typeof(Player) }));
                 SpecialTrigger v = new SpecialTrigger(r.Location.ToVector2(), r.Size.ToVector2(), null);
                 v.OnTriggerEnterAction = (entity) =>
                 {
@@ -54,7 +53,6 @@ namespace Unnamed
 
         public override void Update()
         {
-            //lightSound = Audio.PlayEvent("StreetLight2");
             base.Update();
 
             if (Sprite.CurrentAnimationFrame.Tag is string tag)

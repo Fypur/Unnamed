@@ -16,9 +16,6 @@ namespace Unnamed
             Sprite.Add(Sprite.AllAnimData["ProjectorLight"]);
             Sprite.Play(type.ToString());
             lightRect = Sprite.CurrentAnimation.Slices[0].Rect;
-            //Sprite.CurrentAnimation.Slices[0].
-
-            //QuadLight = (QuadPointLight)AddComponent(new QuadPointLight(lightRect.Location.ToVector2(), (lightRect.Location + lightRect.Size).ToVector2() - Vector2.UnitY, directionPoint, 170, new Color(Color.LightYellow, 90), new Color(color, 0), range));
         }
 
         public override void Awake()
@@ -27,7 +24,6 @@ namespace Unnamed
 
             QuadLight.Direction -= Pos;
             QuadLight.Direction -= new Vector2(LevelManager.CurrentGrid.GridCollider.TileWidth, LevelManager.CurrentGrid.GridCollider.TileHeight) / 2;
-            //Direction -= Sprite.CurrentAnimation.Slices[0].Rect.Center.ToVector2();
             QuadLight.Direction.Normalize();
         }
     }

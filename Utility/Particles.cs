@@ -5,7 +5,6 @@ namespace Unnamed
 {
     public static class Particles
     {
-
         static Particles()
         {
 

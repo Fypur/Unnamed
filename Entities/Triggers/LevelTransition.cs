@@ -43,7 +43,7 @@ namespace Unnamed
             if (size.Y == 184)
                 size.Y = 180;
 
-            Platformer.GameCam.Move(Platformer.GameCam.InBoundsPos(player.Pos, new Rectangle(ToLevel.Pos.ToPoint(), size.ToPoint())) - Platformer.GameCam.Pos, transitionTime, Ease.CubeInAndOut, null);
+            //Platformer.GameCam.Move(Platformer.GameCam.InBoundsPos(player.Pos, new Rectangle(ToLevel.Pos.ToPoint(), size.ToPoint())) - Platformer.GameCam.Pos, transitionTime, Ease.CubeInAndOut, null);
 
             switch (Direction)
             {

@@ -35,17 +35,5 @@ namespace Unnamed
                 }
             }, () => RestartTimer(!going)));
         }
-
-        /*public override void Update()
-        {
-            base.Update();
-
-            //bezier.ControlPoints = new List<Vector2>(ControlPoints);
-            for(int i = 1; i < bezier.ControlPoints.Count - 1; i++)
-            {
-                //bezier.ControlPoints[i] += Vector2.One * moveMultiplier * Rand.NextFloat(0, 0);
-                bezier.ControlPoints[i] = Input.MousePos;
-            }
-        }*/
     }
 }
